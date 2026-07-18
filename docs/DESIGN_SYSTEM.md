@@ -1,11 +1,11 @@
 # Design System
 
-**Status:** Under Review (Part A: Principles — Approved; Part B: Foundations v1 — Draft, includes new functional colors pending sign-off)
-**Version:** 2.0
+**Status:** Under Review (Part A: Principles — Approved; Part B: Foundations v1 — Approved except §B6 Color Architecture, refined per Paul's feedback and awaiting confirmation of four specific Functional Color values)
+**Version:** 2.1
 **Owner:** Design
 **Last Updated:** 2026-07-18
 
-This document has two parts. **Part A (Principles)** was approved during the Brand Identity phase and hasn't changed. **Part B (Foundations)** is new — concrete, implementable tokens built on top of Part A and `BRAND_IDENTITY.md`, per Paul's Design System Foundations recommendation (`ROADMAP.md` Phase 0b). Building actual UI components/screens should wait until Part B is reviewed, since it introduces a small number of new functional colors not among the four originally approved brand colors — flagged clearly below, not assumed.
+This document has two parts. **Part A (Principles)** was approved during the Brand Identity phase and hasn't changed. **Part B (Foundations)** is concrete, implementable tokens built on top of Part A and `BRAND_IDENTITY.md`, per Paul's Design System Foundations recommendation (`ROADMAP.md` Phase 0b). Overall direction approved; §B6 (Color Architecture) was refined per Paul's follow-up review into an explicit three-tier structure (Brand Colors, Functional UI Colors, Semantic Design Tokens). Building actual UI components/screens should wait only on confirming the four specific Functional Color values in §B6 — everything else in this document can be treated as settled.
 
 ---
 
@@ -158,38 +158,111 @@ A restrained, three-step shadow scale — soft and diffuse, never hard or dark, 
 - **Risks/trade-offs:** none material.
 - **Paul's approval needed?** No.
 
-## B6. Color roles
+## B6. Color Architecture
 
-Semantic roles mapped onto the four **approved** brand colors, respecting the usage hierarchy and contrast findings already established in `BRAND_IDENTITY.md` §13.
+Refined 2026-07-18 per Paul's review — this section replaces the earlier, less structured "Color roles" draft. It explicitly separates three tiers: **Brand Colors** (fixed identity), **Functional UI Colors** (system states, independent of brand meaning), and **Semantic Design Tokens** (the only thing components ever reference). Every color below derives from `BRAND_IDENTITY.md`; none of it redefines that document.
 
-### Roles filled directly by approved colors
+### Why three tiers, not one color list
 
-| Role | Color | Notes |
+Collapsing "what LiquorCentral looks like" and "what a component should reference" into one list is what causes brand colors to get pressed into service for jobs they weren't designed for (e.g. Gold used for a warning banner because "it's the only yellow we have"). Separating the tiers means:
+
+- **Brand Colors** stay exactly what `BRAND_IDENTITY.md` defined — untouched, and never reasoned about in terms of "does this work as an error color?"
+- **Functional Colors** exist purely to communicate system state, chosen for accessibility and universal recognizability, independent of brand meaning.
+- **Semantic Tokens** are the only thing a component's code ever references (`color.primary`, `color.danger`, etc.) — never a raw hex value. If the brand palette ever evolves, only the token *definitions* change; no component is rewritten.
+
+### Tier 1 — Brand Colors (fixed, unchanged)
+
+| Color | Hex | Status |
 |---|---|---|
-| `color-primary` | Red `#EC2D07` | Primary CTAs only ("Add to Cart," "Order Now"). Large text/buttons only — never small body text on off-white (§13). |
-| `color-secondary` | Green `#1A9902` | Supporting actions, confirmation states, Food Central emphasis. Same contrast caveat as primary. |
-| `color-success` | Green `#1A9902` | Reuses secondary — green already reads as "confirmed/go," no new color needed. |
-| `color-accent` | Gold `#CFCA43` | Rare "seal of distinction" only (badges, premium moments) — dark-ground contexts only, per §13's finding that gold fails contrast on the off-white base at every text size. |
-| `color-surface` | Off White `#F3F5F0` | Dominant background, 60–70% of any composition. |
+| Primary Red | `#EC2D07` | Approved, fixed |
+| Green | `#1A9902` | Approved, fixed |
+| Gold | `#CFCA43` | Approved, fixed |
+| Off White | `#F3F5F0` | Approved, fixed |
 
-### Roles needing new functional colors — not among the four approved, flagged for sign-off
+These define LiquorCentral's visual identity per `BRAND_IDENTITY.md` and are not reinterpreted, tinted into new "brand" meanings, or replaced anywhere in this document. The usage hierarchy from `BRAND_IDENTITY.md` §13 still governs how often each appears (Off White dominant at 60–70%, Green 15–25%, Red 5–10% reserved, Gold under 5% and dark-ground only) — semantic tokens (Tier 3) don't override that discipline, they implement it.
 
-The four approved colors cover brand/accent roles but do not include a neutral grayscale for body text/borders, nor safe, distinguishable colors for warning/danger/info states. Reusing Red for both "primary CTA" and "error" risks confusing a call-to-action with a problem; reusing Gold for "warning" would cheapen its status as a rare premium seal. The following are **proposed**, not decided:
+### Tier 2 — Functional UI Colors
 
-| Role | Proposed color | Reasoning |
+Independent of the brand palette, chosen solely for accessibility and to communicate state unambiguously. Each is computed against WCAG's contrast formula, the same method used for the Tier 1 analysis in `BRAND_IDENTITY.md` §13.
+
+| State | Hex | Contrast on Off White | Reasoning |
+|---|---|---|---|
+| **Success** | Green `#1A9902` (reused from Tier 1) | ~3.4:1 (large text/UI only, per §13) | The one intentional, non-conflicting reuse: `BRAND_IDENTITY.md` §13 already established Green as the brand's "confirmation/go" accent — "success" is that same meaning, not a new one. Inventing a second, unrelated green purely for success states would create two greens in the system with no clear distinction. |
+| **Warning** | `#B45309` (burnt orange) | ~4.6:1 (passes AA for normal text) | Chosen independently of Gold. Despite both sitting loosely in the amber/orange family — a near-universal convention for warning semantics that would be counter-intuitive to abandon entirely — this shade is shifted clearly toward orange (hue ≈ 28°) away from Gold's yellow-green mustard tone (hue ≈ 58–60°), so the two are never visually interchangeable. Gold is never used in a warning context and warning is never described as, or styled like, a variant of Gold. |
+| **Danger / Error** | `#B3261E` (deep red) | ~5.95:1 (passes AA for normal text — better than Primary Red's own ~3.87:1) | Deliberately a *different* shade from Primary Red, not the same color doing double duty. This satisfies Paul's specific concern: Red retains one meaning (primary action) and Danger retains a different, distinct meaning (something's wrong) — related by hue family (red universally reads as "stop/error"), but never the literal same value, and used in entirely different contexts (a button vs. an inline error message). |
+| **Info** | `#2B6CB0` (muted blue) | ~4.9:1 (passes AA for normal text) | A conventional, unambiguous informational blue; no brand color fills this role without conflict, so an independent color is used. |
+
+- **Why (overall):** a complete, accessible UI needs more states than four brand/accent colors can fill without compromising either accessibility (contrast) or the brand's own usage hierarchy. These four are chosen to be accessible on their own terms, not squeezed out of the brand palette.
+- **Business value:** prevents two real failure modes named directly in Paul's feedback — Gold's premium status being cheapened by everyday warning use, and Red's call-to-action meaning being confused with a destructive/error meaning.
+- **Customer experience benefit:** clearer, safer, more accessible signaling of state than forcing the brand palette to do jobs it isn't suited for.
+- **Implementation impact:** four new functional design tokens in the storefront codebase. **No change to the four Tier 1 brand colors.**
+- **Risks/trade-offs:** Warning's amber/orange family membership is a deliberate, explained choice, not an oversight — flagged here so it's never mistaken for accidental overlap with Gold later.
+- **Paul's approval needed?** These four specific hex values are proposed and reasoned above, ready for confirmation or adjustment — this is the one item in the whole Design System that isn't a purely mechanical engineering decision.
+
+### Gold Usage — explicit rule
+
+Gold is a **premium brand accent**, never a functional system color.
+
+**Appropriate uses:** premium collections, featured products, curated selections (e.g. "Sommelier's Picks"), awards/quality indicators, luxury/gifting highlights — always on a dark ground or as a small, rare accent, per `BRAND_IDENTITY.md` §13's contrast finding that Gold fails WCAG contrast against the Off White base at every text size.
+
+**Gold must never communicate:** errors, warnings, success, information, or validation states of any kind. If a future component is tempted to reach for Gold to indicate "something needs attention," that is a sign the component needs a Tier 2 Functional Color (Warning/Danger/Info), not Gold.
+
+### Neutral System
+
+A dedicated warm-neutral grayscale (echoing Off White's slight warmth rather than a cold, clinical gray) covers everything text/UI-chrome-related that the four brand colors can't safely do at scale:
+
+| Token | Hex | Contrast on Off White | Use |
+|---|---|---|---|
+| `ink-900` | `#1A1A1A` | ~15.9:1 (AAA) | Primary text |
+| `ink-700` | `#46443F` | ~8.9:1 (AAA) | Secondary text, subheadings |
+| `ink-500` | `#706C63` | ~4.8:1 (AA) | Muted text, placeholders, disabled text |
+| `ink-300` | `#B8B4AA` | — (non-text) | Default borders, input outlines |
+| `ink-200` | `#D8D5CC` | — (non-text) | Subtle dividers |
+| `ink-100` | `#ECEAE3` | — (non-text) | Card/hover backgrounds, subtle alternate surfaces |
+| `ink-900 @ 50% opacity` | `rgba(26,26,26,0.5)` | — (non-text) | Modal/drawer overlay backdrop |
+
+- **Why this scale supports readability and accessibility:** every text-bearing step (`ink-900`, `ink-700`, `ink-500`) clears WCAG AA on the Off White base — `ink-500`, the lightest text-permitted step, still reaches ~4.8:1, comfortably above the 4.5:1 minimum for body text. This means designers never have to guess whether a "muted" text color is still legible — the scale is built so every step that's labeled for text use already passes. The warm undertone (each step's red/green/blue channels stay close together rather than perfectly neutral) keeps the whole system feeling considered against Off White's own warm-neutral base, rather than introducing a cold gray that would visually clash.
+- **Disabled states:** use `ink-500` for disabled text/icons and `ink-100` for disabled surface fills — intentionally lower-contrast, since WCAG doesn't require inactive controls to meet the same contrast bar as active ones, but still legible enough to read as "present but inactive" rather than invisible.
+- **Cards/backgrounds:** the page background and default card surface both resolve to Off White (Tier 1) — `ink-100` is reserved for a *secondary* surface (hover states, alternating rows, input backgrounds) that needs to read as subtly recessed relative to the primary Off White ground.
+- **Paul's approval needed?** No — this is a standard, accessibility-driven neutral scale; flag only if the warm undertone reads wrong once real screens exist.
+
+### Tier 3 — Semantic Design Tokens
+
+The only thing component code ever references. Every token resolves to a Tier 1 or Tier 2 color — never a raw hex written directly into a component.
+
+| Token | Resolves to | Tier |
 |---|---|---|
-| `color-text` / `color-text-muted` / `color-border` | A warm-neutral grayscale (e.g. ink `#1A1A1A` → `#7A7A75` → `#EDEDE8`) | None of the four approved colors are neutral enough for extensive text/border/surface use at scale; a grayscale with a faint warm undertone (echoing Off White) is proposed to harmonize rather than clash. |
-| `color-danger` | A deeper, cooler red distinct from Primary Red (e.g. `#B3261E`) | Keeps "something's wrong" visually distinct from "buy now," avoiding a known UI anti-pattern. |
-| `color-warning` | A deep amber (e.g. `#A66A00`) | A "family member" of Gold but darkened enough to pass contrast on the off-white base for large text/icons — Gold itself cannot (§13) and shouldn't be diluted from its "rare seal" role. |
-| `color-info` | A muted blue (e.g. `#2B6CB0`) | A conventional, low-risk informational color with strong contrast; nothing in the approved four palette fills this role. |
-| `color-focus-ring` | Ink `#1A1A1A` (from the proposed neutral scale) | The most robust choice for a focus indicator regardless of surrounding color — brand colors are not reliable enough at every contrast context to serve this safety-critical role. |
+| `color.primary` | Red `#EC2D07` | 1 (Brand) |
+| `color.secondary` | Green `#1A9902` | 1 (Brand) |
+| `color.accent` | Gold `#CFCA43` | 1 (Brand) — dark-ground/rare use only, per Gold Usage above |
+| `color.background` | Off White `#F3F5F0` | 1 (Brand) |
+| `color.surface` | Off White `#F3F5F0` | 1 (Brand) — same value as `color.background` today, kept as a separate token for forward flexibility (e.g. if a future dark mode needs them to diverge) |
+| `color.surface.secondary` | `ink-100` `#ECEAE3` | 2 (Neutral) |
+| `color.text.primary` | `ink-900` `#1A1A1A` | 2 (Neutral) |
+| `color.text.secondary` | `ink-700` `#46443F` | 2 (Neutral) |
+| `color.text.muted` | `ink-500` `#706C63` | 2 (Neutral) — additional token beyond Paul's list, useful for placeholders/captions |
+| `color.border.default` | `ink-300` `#B8B4AA` | 2 (Neutral) |
+| `color.border.subtle` | `ink-200` `#D8D5CC` | 2 (Neutral) |
+| `color.success` | Green `#1A9902` (reused) | 1/2 (intentional reuse, see Tier 2) |
+| `color.warning` | `#B45309` | 2 (Functional) |
+| `color.danger` | `#B3261E` | 2 (Functional) |
+| `color.info` | `#2B6CB0` | 2 (Functional) |
+| `color.focus` | `ink-900` `#1A1A1A` | 2 (Neutral) — most robust choice regardless of surrounding color |
+| `color.disabled` | `ink-500` `#706C63` (text/icon) / `ink-100` `#ECEAE3` (surface) | 2 (Neutral) |
 
-- **Why:** a complete, accessible UI needs more roles than four brand/accent colors can fill without compromising either accessibility (contrast) or the brand's own usage hierarchy (e.g. not overusing Gold). These proposals are chosen to harmonize with the approved palette (warm undertones, gold-adjacent warning) rather than introduce clashing new colors.
-- **Business value:** prevents two real failure modes — customers confusing an error state with a call-to-action, and the brand's premium gold accent being cheapened by everyday use.
-- **Customer experience benefit:** clearer, safer, more accessible signaling of state (error, warning, info) than forcing the brand palette to do jobs it isn't suited for.
-- **Implementation impact:** these become new design tokens in the storefront codebase; **no change to the four originally approved brand colors themselves.**
-- **Risks/trade-offs:** these are new colors being introduced to the brand's functional palette — a real, if narrow, brand decision, not a technical detail.
-- **Paul's approval needed? Yes** — this is the one part of Part B that isn't purely mechanical. Everything else in Part B can proceed without further sign-off; these five functional colors should be confirmed (or adjusted) before they appear in shipped UI.
+- **Why:** decouples implementation from the underlying palette — a component that renders a primary button references `color.primary`, never `#EC2D07` directly. If the brand palette ever evolves, only these token definitions change.
+- **Business value:** the brand can evolve (a new campaign color, a seasonal accent) without rewriting components — exactly the goal Paul specified.
+- **Customer experience benefit:** guarantees the consistency principle in `EXPERIENCE_PRINCIPLES.md` #11 (Consistency Creates Confidence) — every "primary action" looks identical everywhere, because every component draws from the same token, not a locally-chosen hex.
+- **Implementation impact:** implemented as design tokens (CSS custom properties or equivalent) in the storefront codebase; component code never hard-codes a color value.
+- **Paul's approval needed?** No, beyond the Tier 2 hex values already flagged above — the token *names* and *structure* are an engineering convention, not a creative decision.
+
+### Consistency check
+
+This Color Architecture derives from, and does not redefine, the source documents:
+
+- **`BRAND_IDENTITY.md` §13** — the four brand colors, their usage hierarchy, and the WCAG contrast findings (including that Gold fails contrast on Off White) are carried forward unchanged; Tier 2/3 exist specifically to avoid ever contradicting that hierarchy.
+- **`EXPERIENCE_PRINCIPLES.md` #13 (Accessibility Is Premium)** — every Tier 2 color and the Neutral System were chosen to clear WCAG AA on their own terms, not retrofitted.
+- **`PRODUCT_BLUEPRINT.md` §15 (Accessibility Principles)** — the same WCAG AA baseline governs this entire section; nothing here introduces a lower standard.
 
 ## B7. Breakpoints
 
@@ -263,6 +336,15 @@ The concrete, testable expression of `BRAND_IDENTITY.md` §22 and `EXPERIENCE_PR
 
 ## What's still open
 
-- **The five proposed functional colors in B6** — the one genuine open decision in this document; everything else in Part B can be treated as settled engineering detail.
+- **The four proposed Functional UI Colors in §B6** (Warning, Danger, Info, plus the Neutral System's general approach) — the one genuine open decision in this document; everything else can be treated as settled engineering detail.
 - Final typeface selection (`BRAND_GUIDELINES.md`) — may prompt minor numeric tuning of the type scale (B1).
 - The concrete component inventory (which components get built first) — should be derived from `USER_FLOWS.md` once component/screen work begins, not decided speculatively here.
+
+## Consistency with source documents
+
+This entire document is derived from, and does not redefine, `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, and `EXPERIENCE_PRINCIPLES.md` — reviewed in full against all three as of this version:
+
+- Every Part A principle traces to a specific `BRAND_IDENTITY.md` or `EXPERIENCE_PRINCIPLES.md` section (cited inline throughout).
+- Every Part B foundation implements a Part A principle concretely — none introduces a new principle of its own.
+- §B6's Color Architecture is the most detailed cross-check: it inherits `BRAND_IDENTITY.md` §13's brand colors, hierarchy, and contrast findings unchanged, and its Functional Colors/Neutral System exist solely to fill gaps those four colors cannot safely fill — never to compete with or reinterpret them.
+- Mobile-first (B3, B7), accessibility (B11, §B6), and performance-relevant restraint (B4 shadows, B10 motion) all trace directly to `PRODUCT_BLUEPRINT.md` §14–§16.

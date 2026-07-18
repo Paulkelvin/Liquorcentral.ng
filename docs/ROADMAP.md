@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 1.2
+**Version:** 1.3
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -27,7 +27,7 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 - **Grid system** — concrete column/gutter rules for the mobile-first responsive grid already established in principle.
 - **Elevation/shadows** — how depth and layering are expressed (modals, cards, dropdowns).
 - **Border radius** — a consistent corner-rounding scale, one part of visual consistency.
-- **Color roles** — semantic roles (primary, secondary, success, warning, danger, info, disabled, etc.) mapped onto the four approved brand colors and their approved hierarchy/contrast rules from `BRAND_IDENTITY.md` §13 — not raw hex values used ad hoc.
+- **Color Architecture** — an explicit three-tier system (Brand Colors / Functional UI Colors / Semantic Design Tokens), refined per Paul's direct feedback, mapped onto the four approved brand colors and their approved hierarchy/contrast rules from `BRAND_IDENTITY.md` §13 — not raw hex values used ad hoc.
 - **Motion timing** — concrete durations/easings implementing `BRAND_IDENTITY.md` §17's "calm, confident gesture" principle.
 - **Breakpoints** — the specific screen-width steps the mobile-first grid responds to.
 - **Icon sizing** — a consistent size scale implementing `BRAND_IDENTITY.md` §18's clarity-first iconography principle.
@@ -36,7 +36,7 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 
 Every item above is a foundational rule every future component and screen will draw from — not a page design. Building actual UI after these are agreed should require far fewer ad hoc decisions, since every component follows the same language.
 
-**Status:** All of the above is drafted in `DESIGN_SYSTEM.md` Part B. One open item remains: five new functional colors proposed to complete the color-role system (a neutral grayscale plus distinct danger/warning/info colors) — see `DESIGN_SYSTEM.md` §B6 and `PROJECT_STATUS.md`. Everything else in Phase 0b can be treated as settled; actual UI component/screen design should wait only on that one item.
+**Status:** All of the above is drafted in `DESIGN_SYSTEM.md` Part B; Paul approved the overall direction and requested one refinement, now complete: §B6 (Color Architecture) restructured into three explicit tiers (Brand Colors, Functional UI Colors, Semantic Design Tokens), with Gold's role locked to premium/curation use only and Danger kept visually distinct from primary Red. One open item remains: confirming the four specific Tier 2 Functional Color values (Warning, Danger, Info, and the Neutral System) — see `DESIGN_SYSTEM.md` §B6 and `PROJECT_STATUS.md`. Everything else in Phase 0b, including the entire Color Architecture structure and Tier 1/3 mappings, can be treated as settled.
 
 - This phase can run in parallel with Phase 1's backend work below; it blocks visual/frontend work specifically, not backend/architecture work.
 

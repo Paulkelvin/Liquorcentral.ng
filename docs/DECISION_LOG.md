@@ -11,6 +11,14 @@
 
 ---
 
+### Design System Foundations approved overall; Color Architecture refined into three explicit tiers
+
+- **Decision:** Paul approved the overall Design System Foundations direction, and requested one specific refinement: `DESIGN_SYSTEM.md` §B6 restructured to explicitly separate **Tier 1 (Brand Colors — fixed, unchanged)**, **Tier 2 (Functional UI Colors — Success/Warning/Danger/Info, independent of brand meaning)**, and **Tier 3 (Semantic Design Tokens — `color.primary`, `color.text.primary`, `color.danger`, etc., the only thing components reference)**. Gold's role is now explicitly restricted to premium/curation contexts only, never a functional state (errors, warnings, success, info, validation). Danger uses a distinct deep red (`#B3261E`) rather than reusing Primary Red, so "buy now" and "something's wrong" are never the same color. A full Neutral System (7 grayscale steps) was documented for typography, borders, dividers, disabled states, cards, backgrounds, and overlays, with every text-bearing step verified to pass WCAG AA on the Off White base.
+- **Reasoning:** Paul's feedback identified that the prior draft's functional-color reasoning was too loosely connected to Gold (describing Warning as a "family member" of Gold risked exactly the conflation he wanted avoided) and that color roles needed a clearer architecture (raw brand colors vs. functional colors vs. the tokens components actually reference) so the brand can evolve without rewriting components.
+- **Date:** 2026-07-18
+- **Impact:** `DESIGN_SYSTEM.md` §B6 rewritten in full (v2.1) as "Color Architecture," including a full token-reference table and an explicit "Consistency check" confirming every recommendation traces back to `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `PRODUCT_BLUEPRINT.md` rather than redefining them. `PROJECT_STATUS.md` and `ROADMAP.md` updated to narrow the remaining open item to the four specific Tier 2 hex values (Warning `#B45309`, Danger `#B3261E`, Info `#2B6CB0`) plus the Neutral System's general approach.
+- **Status:** Overall direction and architecture approved. The four specific Tier 2 color values remain pending Paul's confirmation before shipping in UI.
+
 ### Design System Foundations v1 drafted (`DESIGN_SYSTEM.md` Part B)
 
 - **Decision:** `DESIGN_SYSTEM.md` restructured into Part A (Principles, already approved) and Part B (Foundations v1, new): concrete typography scale, spacing scale, grid system, elevation/shadows, border radius, semantic color roles, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens.

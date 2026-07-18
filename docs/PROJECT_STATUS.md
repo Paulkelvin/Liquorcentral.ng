@@ -9,9 +9,9 @@
 
 ## Current phase
 
-**Design System Foundations — v1 drafted (Phase 0b), one open item pending Paul's sign-off.**
+**Design System Foundations — overall direction approved; Color Architecture refined per Paul's feedback, one narrower item pending sign-off.**
 
-The project has moved through: (1) initial Medusa architecture research, (2) technology/marketplace research (since partially superseded — see below), (3) UX and product research, (4) establishing `/docs` as the project's permanent, versioned source of truth, (5) drafting the Brand Identity foundation, (6) drafting the Experience Principles that define how customers should experience the product, (7) Paul finalizing the positioning statement/category definition, and **(8) Paul approving `BRAND_IDENTITY.md` v1 and `EXPERIENCE_PRINCIPLES.md` v1.0 in full**, and (9) drafting `DESIGN_SYSTEM.md` Part B (Foundations v1) — concrete typography scale, spacing scale, grid, elevation, border radius, color roles, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens. No implementation code, UI design, wireframes, or mockups have been produced at any point so far — this has been, deliberately, research and definition work only. **Do not begin building actual UI components or screens until `DESIGN_SYSTEM.md` Part B's one open item (new functional colors, see below) is resolved.**
+The project has moved through: (1) initial Medusa architecture research, (2) technology/marketplace research (since partially superseded — see below), (3) UX and product research, (4) establishing `/docs` as the project's permanent, versioned source of truth, (5) drafting the Brand Identity foundation, (6) drafting the Experience Principles that define how customers should experience the product, (7) Paul finalizing the positioning statement/category definition, (8) Paul approving `BRAND_IDENTITY.md` v1 and `EXPERIENCE_PRINCIPLES.md` v1.0 in full, (9) drafting `DESIGN_SYSTEM.md` Part B (Foundations v1), and **(10) Paul approving the overall Design System direction and requesting a specific refinement: an explicit three-tier Color Architecture** (Brand Colors / Functional UI Colors / Semantic Design Tokens), now built into `DESIGN_SYSTEM.md` §B6. No implementation code, UI design, wireframes, or mockups have been produced at any point so far — this has been, deliberately, research and definition work only. **Do not begin building actual UI components or screens until §B6's four specific Functional Color values (Warning, Danger, Info, and the Neutral System's general approach) are confirmed** — a narrow, specific item, not a broad blocker.
 
 ## Completed work
 
@@ -28,19 +28,20 @@ The project has moved through: (1) initial Medusa architecture research, (2) tec
 - **Positioning finalized by Paul:** the Positioning Statement (`BRAND_IDENTITY.md` §10) and Category Definition (`EXPERIENCE_PRINCIPLES.md`) were both rewritten in Paul's own words and cross-referenced as consistent — the one open reconciliation item between the two documents is resolved.
 - **Document status convention adopted** — every file in `/docs` now carries a `Status | Version | Owner | Last Updated` header (see `README.md` → "Document status convention"), so anyone can tell at a glance which documents are settled vs. still being shaped.
 - **`BRAND_IDENTITY.md` v1 and `EXPERIENCE_PRINCIPLES.md` v1.0 approved in full by Paul (2026-07-18)** — the Phase 0 gate is lifted; see `DECISION_LOG.md`.
-- **`DESIGN_SYSTEM.md` restructured into Part A (Principles, approved) and Part B (Foundations v1, draft)** — concrete typography scale, spacing scale, grid, elevation/shadows, border radius, color roles, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens, per Paul's Design System Foundations recommendation. One item flagged for sign-off: five new functional colors (`color-text`/neutral grayscale, `color-danger`, `color-warning`, `color-info`, `color-focus-ring`) proposed to complete the semantic color-role system, since the four originally approved brand colors don't cover neutral text/border use or safe warning/danger/info states without either failing contrast or overloading an existing role's meaning. See `DESIGN_SYSTEM.md` §B6.
+- **`DESIGN_SYSTEM.md` restructured into Part A (Principles, approved) and Part B (Foundations v1, approved except §B6)** — concrete typography scale, spacing scale, grid, elevation/shadows, border radius, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens, per Paul's Design System Foundations recommendation. **Paul approved the overall direction.**
+- **§B6 Color Architecture refined into an explicit three-tier structure per Paul's follow-up feedback:** Tier 1 (Brand Colors, fixed/unchanged), Tier 2 (Functional UI Colors — Success reuses Green intentionally; Warning, Danger, and Info are new, independently-chosen, WCAG-AA-passing colors, deliberately distinct from Gold and from Primary Red respectively), and Tier 3 (Semantic Design Tokens — `color.primary`, `color.text.primary`, `color.danger`, etc. — the only thing components ever reference). Gold's role is now explicitly restricted to premium/curation use, never a functional state. A full Neutral System (7 steps, all text-bearing steps pass WCAG AA) covers text/borders/dividers/disabled/surfaces/overlays. Reviewed against `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, and `EXPERIENCE_PRINCIPLES.md` for consistency — see `DESIGN_SYSTEM.md`'s "Consistency check" section.
 
 ## Work in progress
 
-None currently active. **One item needs Paul's sign-off before UI component work begins:** the five new functional colors proposed in `DESIGN_SYSTEM.md` §B6 (a neutral grayscale for text/borders, plus distinct danger/warning/info colors) — everything else in `DESIGN_SYSTEM.md` Part B can be treated as settled.
+None currently active. **One narrow item needs Paul's sign-off before UI component work begins:** the four specific Tier 2 Functional Color hex values in `DESIGN_SYSTEM.md` §B6 (Warning `#B45309`, Danger `#B3261E`, Info `#2B6CB0`, and the Neutral System's general warm-gray approach) — everything else in `DESIGN_SYSTEM.md` can be treated as settled.
 
 ## Next recommended task
 
-**Paul reviews and confirms (or adjusts) the five proposed functional colors in `DESIGN_SYSTEM.md` §B6.** Once confirmed, Design System Foundations (Phase 0b) is complete and actual component/screen design can begin. In parallel, Paul should also resolve the `PRODUCT_BLUEPRINT.md` open questions below — in particular the payment-provider decision, which blocks the start of `ROADMAP.md` Phase 1 regardless of design-system status.
+**Paul reviews and confirms (or adjusts) the four Tier 2 Functional Colors in `DESIGN_SYSTEM.md` §B6.** Once confirmed, Design System Foundations (Phase 0b) is fully complete and actual component/screen design can begin. In parallel, Paul should also resolve the `PRODUCT_BLUEPRINT.md` open questions below — in particular the payment-provider decision, which blocks the start of `ROADMAP.md` Phase 1 regardless of design-system status.
 
 ## Blockers
 
-- **Building actual UI components/screens should wait** until `DESIGN_SYSTEM.md` §B6's five proposed functional colors are confirmed — a narrow, specific blocker, not a broad one (Parts A and almost all of Part B are already settled).
+- **Building actual UI components/screens should wait** until `DESIGN_SYSTEM.md` §B6's four Functional Color values are confirmed — a narrow, specific blocker, not a broad one (Part A, and all of Part B except this one item, are already settled).
 - **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1.
 - **A separate session was mid-edit on an `AI_HANDOFF.md` file (and updates to this document, `DECISION_LOG.md`, `CHANGELOG.md`, and the root `README.md`) when it hit its usage limit.** That work was never committed or pushed — this repository's history has no trace of it, and it should be treated as lost unless recovered from that other session directly. No `AI_HANDOFF.md` exists in this repository as of this update. Flagging so it isn't silently forgotten or assumed to exist.
 - No other hard blockers — architecture and product-catalog work can proceed in parallel with the open questions below, as long as nothing below is assumed in their place.
@@ -74,8 +75,8 @@ Grouped by document, so each can be resolved in context:
 - Formal approval of the Meilisearch search recommendation.
 - Formal approval (or deferral) of the Sanity CMS recommendation — low urgency.
 
-**Design system (`DESIGN_SYSTEM.md` §B6):**
-- Confirm (or adjust) the five proposed new functional colors: a neutral grayscale for text/borders/surfaces, plus distinct `color-danger`, `color-warning`, and `color-info` colors, and the choice of ink (not a brand color) for the focus-ring. This is the one open item blocking actual UI component work.
+**Design system (`DESIGN_SYSTEM.md` §B6 — Color Architecture):**
+- Confirm (or adjust) the four Tier 2 Functional Colors: Warning `#B45309`, Danger `#B3261E`, Info `#2B6CB0`, and the Neutral System's warm-gray scale for text/borders/surfaces/overlays. This is the one open item blocking actual UI component work — everything else in the Design System (Tier 1 brand colors, Tier 3 semantic tokens, typography, spacing, grid, motion, etc.) is settled.
 
 ~~**Brand (`BRAND_IDENTITY.md`)**~~ — **Approved in full, 2026-07-18.** See `DECISION_LOG.md`.
 
