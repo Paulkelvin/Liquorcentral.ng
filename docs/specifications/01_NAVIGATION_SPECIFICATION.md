@@ -1,6 +1,6 @@
 # Navigation Specification
 
-**Status:** Under Review
+**Status:** Approved — Frozen (2026-07-18)
 **Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
@@ -429,11 +429,11 @@ Every future navigation change — a new category, a new promotional Collection,
 - [ ] **Does it preserve equal prominence between Wine & Spirits and Food Central?** (§2, `BUSINESS_RULES.md`) — no change may make either line read as primary and the other as an afterthought.
 - [ ] **Does it stay within the two established patterns (§5, §10, §14)?** A third pattern is never introduced silently — only through a logged `DECISION_LOG.md` decision (§28).
 
-This document is now **Version 1.0 — the authoritative Navigation Specification** for all future navigation implementation, submitted for Paul's review and approval; see the Document status note below for what "Version 1.0" means at this stage specifically.
+This document is now **Version 1.0 — Approved and Frozen — the authoritative Navigation Specification** for all future navigation implementation. See the Document status note below.
 
 ---
 
-**Document status:** Under Review (v1.0). This is the final draft — complete against all requirements set for it, including this refinement pass (Navigation Governance, Merchandising Strategy, an expanded Scalability treatment in §28, expanded Performance expectations in §27, and the Navigation Quality Checklist above) — and is now submitted for Paul's review and approval. "Version 1.0" here means *complete and frozen-ready*, not yet *approved*; per `DOCUMENTATION_GOVERNANCE.md` Section 4, status Under Review is what carries the "awaiting explicit approval" meaning, and this document does not claim Approved status until Paul confirms it. Upon approval, this specification becomes the reference for all navigation implementation platform-wide, and the shell definition every other Product Specification (starting with `02_HOMEPAGE_SPECIFICATION.md`) already references rather than redefines.
+**Document status:** Approved — Frozen (v1.0, approved by Paul 2026-07-18). This is the authoritative reference for all navigation implementation platform-wide, and the shell definition every other Product Specification (starting with `02_HOMEPAGE_SPECIFICATION.md`) already references rather than redefines. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, a Frozen document may only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md` — not as a side effect of downstream specification or implementation work.
 
 ## Sources
 

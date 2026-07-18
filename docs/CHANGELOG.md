@@ -1,11 +1,29 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.5
+**Version:** 1.6
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v13 — 2026-07-18 — `01_NAVIGATION_SPECIFICATION.md` approved and frozen; `03_SEARCH_SPECIFICATION.md` drafted in full
+
+**Context:** Paul approved Navigation Specification v1.0 in full. Product Specifications resumed with Search, per Paul's direction. Full reasoning in `DECISION_LOG.md`.
+
+**Changed:**
+
+- `docs/specifications/01_NAVIGATION_SPECIFICATION.md` — status changed from Under Review to **Approved — Frozen**. Header, closing checklist statement, and Document status note all updated to reflect approval; per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/03_SEARCH_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative search and product-discovery specification, covering all 30 required sections: Search Philosophy, Business Objectives, Customer Objectives, Search Entry Points (integrating with `01_NAVIGATION_SPECIFICATION.md` §15 rather than redefining it), Search Scope, Search Behaviour, Autocomplete Strategy, Typo Tolerance, Synonym Strategy, Product Ranking, Editorial Boosting, Merchandising Rules, Filtering Strategy, Sorting Strategy, Wine Discovery, Food Discovery, Cross-selling Opportunities, Zero Results Behaviour, Empty States, Loading States, Error States, Accessibility, Mobile Search, Analytics, SEO Considerations, Backend Requirements, Performance Expectations, Future Expansion, Risks & Assumptions, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §8, the four frozen Phase 0 documents, and both approved/under-review prior specifications. Grounded in limited external research (Baymard, Meilisearch documentation, mobile filter UX research, WAI-ARIA live-region guidance, semantic-search industry research) cited for principles only; no interfaces, layouts, or wording copied. Names editorial boosting, filtering, and merchandising rules against the same non-manipulation, capped, auto-expiring discipline `01_NAVIGATION_SPECIFICATION.md`'s Merchandising Strategy already established. Flags the "pairs with" cross-sell relationship as not yet scoped in `MEDUSA_EXTENSIONS.md` at all (previously only flagged as "not yet built").
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v1.5) — specification status table updated: `01_NAVIGATION_SPECIFICATION.md` now **Approved — Frozen**, `03_SEARCH_SPECIFICATION.md` now **In Progress**.
+- `docs/PROJECT_STATUS.md` (v1.6), `docs/ROADMAP.md` (v1.9) — Phase 1 status, Completed work, Work in progress, and Next recommended task all updated; `03_SEARCH_SPECIFICATION.md`'s dependency on Meilisearch's formal sign-off and the newly-sharpened "pairs with" scoping gap both logged as open items.
+- `docs/DECISION_LOG.md` — two new entries: Navigation Specification's approval/freeze, and the Search Specification's drafting.
 
 ## v12 — 2026-07-18 — `01_NAVIGATION_SPECIFICATION.md` finalized to v1.0
 

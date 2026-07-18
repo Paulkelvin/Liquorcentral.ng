@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 1.4
+**Version:** 1.5
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -53,9 +53,9 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 
 | Specification | Status |
 |---|---|
-| [`01_NAVIGATION_SPECIFICATION.md`](./specifications/01_NAVIGATION_SPECIFICATION.md) | **Under Review** — complete, v1.0, awaiting Paul's approval |
+| [`01_NAVIGATION_SPECIFICATION.md`](./specifications/01_NAVIGATION_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 | [`02_HOMEPAGE_SPECIFICATION.md`](./specifications/02_HOMEPAGE_SPECIFICATION.md) | **Under Review** — fully drafted, v0.1, awaiting Paul's approval |
-| [`03_SEARCH_SPECIFICATION.md`](./specifications/03_SEARCH_SPECIFICATION.md) | Not Started (placeholder) |
+| [`03_SEARCH_SPECIFICATION.md`](./specifications/03_SEARCH_SPECIFICATION.md) | **In Progress** — fully drafted, v0.1, awaiting review |
 | [`04_PRODUCT_LISTING_SPECIFICATION.md`](./specifications/04_PRODUCT_LISTING_SPECIFICATION.md) | Not Started (placeholder) |
 | [`05_PRODUCT_DETAILS_SPECIFICATION.md`](./specifications/05_PRODUCT_DETAILS_SPECIFICATION.md) | Not Started (placeholder) |
 | [`06_CART_SPECIFICATION.md`](./specifications/06_CART_SPECIFICATION.md) | Not Started (placeholder) |
