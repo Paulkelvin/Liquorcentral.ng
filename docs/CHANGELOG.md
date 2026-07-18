@@ -1,11 +1,25 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.9
+**Version:** 2.0
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v17 — 2026-07-18 — `05_PRODUCT_DETAILS_SPECIFICATION.md` drafted in full and frozen to v1.0
+
+**Context:** Paul directed Product Specifications to continue with Product Details, this time specifying the full scope (including the deep-dive treatments and closing Quality Checklist) up front and instructing a direct freeze on completion, rather than the draft-then-separate-refinement-pass sequence used for `01`–`04`. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/05_PRODUCT_DETAILS_SPECIFICATION.md` (v1.0, status Approved — Frozen) — the authoritative product detail page specification, covering all 30 required sections plus a closing **Product Details Quality Checklist**: Product Detail Philosophy, Business/Customer Objectives, Entry Points, Information Architecture, Product Gallery Behaviour, a four-tier **Product Information Hierarchy** (always visible / progressively disclosed / optional / never shown), Pricing and Availability Behaviour (reusing `04`'s unavailable/hidden/discontinued distinction), a **Wine Product Experience** section, a **Food Product Experience** section, Product Attributes vs. Product Facts (data model vs. presentation, kept distinct), Pairing Recommendations, Related Products, Cross-selling, Quantity Selection, Add to Cart Behaviour, a **Trust Signals** section, Delivery and Pickup Information, a Reviews Strategy confirming no review system exists in v1, Empty/Error States, Accessibility, Analytics, SEO Considerations, Backend Requirements, a **Future Expansion** section (reviews, expert reviews, recommendations, personalization, AI assistance, richer educational content — documented as capability only), and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §3/§13, the four frozen Phase 0 documents, and all four frozen prior specifications. Grounded in limited external research (Baymard, wine-ecommerce UX research, digital-menu allergen-transparency research, progressive-disclosure and cart-feedback research) cited for principles only; no layouts, interfaces, or wording copied. Confirms the "pairs with" gap as a dependency of a fifth specification.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v1.9) — specification status table updated: `05_PRODUCT_DETAILS_SPECIFICATION.md` now **Approved — Frozen**, v1.0.
+- `docs/PROJECT_STATUS.md` (v2.0), `docs/ROADMAP.md` (v2.3) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: five specifications now frozen; `06_CART_SPECIFICATION.md` named as the natural next candidate, not yet begun.
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting and direct freeze.
 
 ## v16 — 2026-07-18 — `04_PRODUCT_LISTING_SPECIFICATION.md` finalized to v1.0 and frozen
 
