@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.1
+**Version:** 3.2
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v29 — 2026-07-18 — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` drafted in full
+
+**Context:** With ten customer-facing specifications frozen, Paul directed Product Specifications to proceed with `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — the eleventh and final planned Phase 1 specification, and the first internal/staff-facing one — naming an extensive coverage list and directing no UI mockups, wireframes, implementation code, database schema, or API design. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative internal-operations specification, covering all 30 required sections: Admin Workflows Philosophy, Business/Operational Objectives, Entry Points & Scope Boundary, Dashboard, Product Management, Category & Collection Management, Inventory Management, Pricing Management, Promotions Management, Order Management, a **Food Order Workflow** section (the kitchen-facing counterpart to `09_FOOD_ORDERING_SPECIFICATION.md` §7), a **Delivery Management** section (the staff-facing counterpart to `10_DELIVERY_SPECIFICATION.md`), Customer Management, a **Staff Roles & Permissions** section flagging granular RBAC as a genuine open decision, Content Management, a **Search Merchandising Workflow** section, Reports & Analytics, staff-facing Notifications, **Audit Logging** (attributability as a baseline accountability requirement), Security, Operational Decision States, Empty/Loading/Error States, Accessibility (scoped to custom admin extensions, not Medusa's native admin UI), Backend Requirements, Performance Expectations, a **Future Expansion & Explicitly Out of Scope** section naming every excluded capability, Risks & Assumptions, a closing **Admin Workflows Quality Checklist**, and Acceptance Criteria. Derives from and does not contradict `ARCHITECTURE.md`, `MEDUSA_EXTENSIONS.md`, `BUSINESS_RULES.md`, and all ten frozen prior specifications. Contains no UI mockups, wireframes, implementation code, database schema, or API design, per direct instruction. Confirms several genuine open business/operational decisions (allergen/ingredient data-verification responsibility, staff-permission granularity, audit-log retention and granularity, report definitions, staff-facing alert thresholds), none resolved here.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.0) — specification status table updated: `11_ADMIN_WORKFLOWS_SPECIFICATION.md` now **In Progress**, v0.1, full draft complete, awaiting review; the placeholder note replaced with confirmation that all 11 planned specifications are now drafted, none remaining as placeholders.
+- `docs/PROJECT_STATUS.md` (v3.1), `docs/ROADMAP.md` (v3.4) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: all eleven specifications now drafted (ten frozen, Admin Workflows awaiting review); a new "Admin operations" grouping added to Decisions Awaiting Approval.
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting.
+
+**Not changed:** granular role-based staff permissions, a dispatch/route-optimization module, a business-intelligence platform, a vendor-facing capability, and AI-assisted decision-making remain unbuilt and unspecified anywhere in `/docs` — this draft explicitly names each as out of scope rather than silently omitting them.
 
 ## v28 — 2026-07-18 — `10_DELIVERY_SPECIFICATION.md` finalized to v1.0 and frozen
 
