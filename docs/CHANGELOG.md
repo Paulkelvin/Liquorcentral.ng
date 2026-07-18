@@ -1,11 +1,28 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.1
+**Version:** 1.2
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v9 — 2026-07-18 — Repository reconciliation: two documentation branches merged into one
+
+**Context:** `claude/medusa-repo-clone-ut5dl5` (this v8 documentation set) and `claude/ai-handoff-docs-ufdn5t` (an older documentation snapshot plus a uniquely-authored `AI_HANDOFF.md`) had diverged from a common commit and were never merged. Reconciled per Paul's explicit instruction, ahead of any further Product Specifications work. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/AI_HANDOFF.md` — recovered from `claude/ai-handoff-docs-ufdn5t` and rewritten (v3.0) against the current, reconciled project state: updated executive summary and current-phase statement; new Repository Structure section; new explicit Documentation Reading Order section; new Documentation Guide and Status Summary section categorizing every document as Frozen / Approved / In Progress / Not Started / Draft / Superseded; updated Current Project State, Current Roadmap, and Immediate Next Step sections; an accurate provenance note describing this reconciliation; and a corrected `Status`/`Version`/`Owner`/`Last Updated` header (it previously had none, despite `README.md` requiring one on every document).
+
+**Changed:**
+
+- `docs/README.md` (v1.2) — fixed a broken link (`../AI_HANDOFF.md` → `docs/AI_HANDOFF.md`, since the file lives inside `/docs`, not at the repository root); updated the "Start here" reading order to list `AI_HANDOFF.md` first, matching what the document map row already implied but the numbered list had never been updated to say.
+- `docs/PRODUCT_BLUEPRINT.md` (v1.1) — status header corrected from "Draft — pending Paul's review and approval" to "Approved — Frozen as Phase 0 foundation (2026-07-18)," matching how `PROJECT_STATUS.md` and `DECISION_LOG.md` had already been describing it since Phase 0 was declared complete. Content unchanged.
+- `docs/PROJECT_STATUS.md` (v1.2) — added the reconciliation to Completed work; removed the stale "`AI_HANDOFF.md` work should be treated as lost" blocker (it was recovered, not lost) and replaced it with confirmation that no documentation-branch blockers remain; added an explicit note to "Next recommended task" that further Product Specification work is paused pending Paul's approval of this reconciliation.
+- `docs/DECISION_LOG.md` — new entry recording the reconciliation, the audit that found it necessary, and every file it touched.
+
+**Not changed:** no business decision, architecture decision, or approved content within any Phase 0 document (`BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, `DESIGN_SYSTEM.md`, and `PRODUCT_BLUEPRINT.md`'s substantive content) was altered by this reconciliation — only `PRODUCT_BLUEPRINT.md`'s status header, which was a pre-existing inconsistency this audit surfaced rather than something the reconciliation itself introduced.
 
 ## v8 — 2026-07-18 — Phase 0 frozen; Phase 1 Product Specifications opened
 

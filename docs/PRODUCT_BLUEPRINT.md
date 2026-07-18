@@ -1,7 +1,7 @@
 # LiquorCentral Product Blueprint — v1
 
-**Status:** Draft — pending Paul's review and approval.
-**Version:** 1.0
+**Status:** Approved — Frozen as Phase 0 foundation (2026-07-18)
+**Version:** 1.1
 **Owner:** Product
 **Last Updated:** 2026-07-18
 **Scope:** Product definition only. No UI, wireframes, or branding are defined here — this document defines *what* LiquorCentral is and *why* it's structured the way it is; visual design begins only after this is approved.
