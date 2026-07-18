@@ -1,7 +1,7 @@
 # Food Ordering Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -120,6 +120,7 @@ Every customer type additionally needs: to trust a stated cutoff or prep-time es
 - **Adding a dish to a cart that already contains Wine & Spirits items (or vice versa) triggers no special interstitial or warning** — the mixed-cart structure absorbs it silently and correctly, per the established model; the only customer-facing consequence is the two-group cart/checkout presentation already specified elsewhere.
 - **Food Central's same-day cutoff and scheduling rules apply only to the Food Central portion of a mixed order** — the Wine & Spirits portion's nationwide delivery timeline is entirely independent, restating `06_CART_SPECIFICATION.md` §6's "never a merged delivery promise" rule specifically for the ordering-flow moment where a mixed cart is built.
 - **The "Wine & Food, Connected" pairing moment** (`02_HOMEPAGE_SPECIFICATION.md` §8.6, `05_PRODUCT_DETAILS_SPECIFICATION.md` §14) **is the primary mechanism by which a Food Central visit turns into a mixed order** — this document does not introduce a second, competing cross-sell mechanism for Food Central specifically.
+- **Re-validation of a mixed order (per `06_CART_SPECIFICATION.md` §12 and `07_CHECKOUT_SPECIFICATION.md` §12) applies to each fulfillment group independently** — a Food Central item becoming unavailable (§16) does not invalidate or block the Wine & Spirits portion of the same order, and vice versa. Each group's blocking condition (§19) is surfaced and resolved on its own terms, never forcing the customer to restart or re-confirm the entire mixed order over a single item in one group.
 
 ## 14. Ingredient Transparency & Allergen Information
 
@@ -183,6 +184,7 @@ This document reuses the same five-state taxonomy already established in `06_CAR
 - **Allergen and dietary information is never conveyed by icon or color alone** — paired with explicit, screen-reader-accessible text (§14), the same never-color-alone rule applied with particular weight given the safety stakes.
 - **The same-day cutoff countdown (§9) is announced to assistive technology as it changes**, not only visually — reusing the same live-region mechanism already established in `06_CART_SPECIFICATION.md` §23 and `07_CHECKOUT_SPECIFICATION.md` §22, so a countdown updating visually is not silently invisible to a screen-reader user.
 - **Order-status progression (§7) uses real heading/list semantics and is announced via a live region on each stage change** — a screen-reader user tracking "Preparing" → "Ready" is not left to re-scan the page to notice a change.
+- **A dish's availability-state transition (Availability Transition Behaviour, below) is announced via the same live-region mechanism if the customer is actively viewing the menu when it occurs** — extending the existing cutoff-countdown and order-status live-region pattern to the general case of any availability-state change, not only the cutoff-specific one, so a dish flipping to schedulable or unavailable while a screen-reader user is browsing is not silently invisible.
 - **Every touch target** (quantity stepper, schedule-date picker, pickup/delivery toggle) **meets the 44×44px minimum** (`DESIGN_SYSTEM.md` §B11), with particular attention to the calendar-style scheduling picker already flagged as a common small-touch-target risk in `07_CHECKOUT_SPECIFICATION.md` §22.
 
 ## 22. Kitchen Operational Considerations
@@ -283,6 +285,9 @@ Every future change to Food Central's ordering experience — a new menu section
 - [ ] **Does it avoid any manufactured urgency or pressure**, especially during the post-order waiting period? (§17)
 - [ ] **Is the customer decision-state vocabulary reused, not reinvented?** (§19)
 - [ ] **Does a kitchen-hours-driven closure read as an honest operational state, never an unexplained error?** (§22)
+- [ ] **Does it communicate freshness and quality through honest, specific information, never a fabricated quality score or rating?** (Freshness & Quality Philosophy)
+- [ ] **Does an availability-state transition get communicated accurately and promptly, never silently or after the fact?** (Availability Transition Behaviour)
+- [ ] **Does an interruption preserve as much of the customer's food order as is still genuinely valid?** (Food Ordering Recovery)
 
 ## 30. Acceptance Criteria
 
@@ -300,10 +305,61 @@ Every future change to Food Central's ordering experience — a new menu section
 - [ ] All analytics events listed in §23 fire correctly and exactly once per corresponding user action.
 - [ ] No feature named as explicitly out of scope in §27 (table booking, dine-in, loyalty, subscriptions, AI recommendations, reviews, recipe content, customization) appears anywhere in the Food Central ordering experience.
 - [ ] No operational decision named as open in §9, §10, §22, §28 (cutoff timing, slot parameters, scheduling horizon, kitchen hours, allergen-data ownership) is silently assumed or resolved by this document or its implementation.
+- [ ] A dish's availability-state transition (available now → schedulable → unavailable, or back) is reflected accurately and promptly, and an item already in a customer's cart is never silently removed when this happens.
+- [ ] An interrupted food order (a closed tab, an availability change, a network failure during placement) preserves cart and selection progress wherever technically possible, per Food Ordering Recovery, and never leaves a customer uncertain whether their order was placed.
+
+## Food Ordering Intent
+
+Food ordering is reached by every customer type named in §3, but the *intent* a customer brings narrows to a small number of recognizable patterns. Naming them here does not introduce personalization or a new mechanism — it confirms that the sections already specified serve each of these intents, mirroring the same "Intent" pattern already established in `07_CHECKOUT_SPECIFICATION.md`'s Checkout Intent and `03_SEARCH_SPECIFICATION.md`/`04_PRODUCT_LISTING_SPECIFICATION.md`'s own refinement passes:
+
+| Intent | What the customer wants | Where this document already serves it |
+|---|---|---|
+| Craving-driven speed | Order a known, wanted dish and reach checkout as fast as possible, confident it's genuinely available right now. | §6's card-level availability, §8's honest prep-time estimate, §3's Confident Buyer objective. |
+| Menu discovery | Browse today's menu and decide what to eat quickly, understanding dietary fit and spice level at a glance. | §5's flat menu structure, §14's ingredient/allergen/spice-level transparency, §3's Guided Browser objective. |
+| Planning ahead | Secure a specific dish for a future date/time rather than right now. | §10 Scheduling Orders, §9's explicit past-cutoff-to-schedule path. |
+| Mixed-order pairing | Add a dish to an existing wine order, or a bottle to an existing food order, without friction or a separate checkout. | §13 Mixed Wine & Food Orders. |
+| Recovery | Return to a food order that was interrupted (a closed tab, an availability change, a failed submission) and pick up with minimal re-entry. | Food Ordering Recovery, below. |
+
+No new mechanism is introduced by this section, and no AI or personalization is implied — it is a mapping of existing behavior onto recognizable customer intent, not a new capability.
+
+## Freshness & Quality Philosophy
+
+Freshness is a stated brand promise, not merely a side effect of the cook-to-order model (§7) — `BRAND_IDENTITY.md` names "freshly cooked Nigerian food" and "freshness, immediacy" (its Food Central color emphasis) directly, and `EXPERIENCE_PRINCIPLES.md` requires photography to "communicate authenticity, freshness, craftsmanship, and quality." This section names the philosophy governing how that promise shows up in ordering *behavior* specifically, not imagery (which remains `BRAND_IDENTITY.md`'s domain, untouched here):
+
+- **A dish is never presented as if it were held finished in stock** — restating §7's operational fact as a standing behavioral rule: no ordering-flow language or interaction implies instant, pre-made fulfillment (e.g., no "ships immediately" framing borrowed from Wine & Spirits), since that would misrepresent the cooked-to-order reality this whole document specifies honestly.
+- **A realistic prep-time estimate (§8) is itself a quality signal, not a competing concern to speed** — restating §1's "speed is never achieved by hiding a real constraint" directly: a platform that states an honest wait communicates care, not slowness.
+- **Quality is communicated through accurate, specific information — ingredients (§14), preparation honesty (§8, §17), availability accuracy (§6, Availability Transition Behaviour, below) — never a numeric rating or quality score.** `05_PRODUCT_DETAILS_SPECIFICATION.md`'s Reviews Strategy already confirms no review or rating system exists in v1 (§27); this document does not introduce one under a different name.
+- **This section does not change any interface, photography, or copy decision already governed by `BRAND_IDENTITY.md` or `EXPERIENCE_PRINCIPLES.md`** — it names the connective principle between those documents and this one's ordering-specific behavior, so a future contributor understands *why* §1, §8, and §18 are written the way they are, rather than treating freshness as an unstated assumption.
+
+## Availability Transition Behaviour
+
+*Extends §6 (Availability States) — this section unifies the transition rules between Available now, Available to schedule, and Unavailable, which §6, §9, §16, and §22 each described from a different angle without stating the general rule connecting them.*
+
+- **A transition between availability states is driven only by a real kitchen event** — the same-day cutoff passing (§9), an ingredient shortage (§16), or the kitchen closing or reopening (§22) — never a manual, arbitrary, or marketing-driven flip.
+- **A transition is reflected the moment it is known, not batched or delayed** — restating §9's live-countdown discipline as the general rule governing every availability-state change, not only the cutoff-specific one.
+- **An item already in a customer's cart when a transition occurs is not silently removed** — the same re-validation discipline already established in `06_CART_SPECIFICATION.md` §12 and `07_CHECKOUT_SPECIFICATION.md` §12 surfaces the change at the next natural checkpoint (opening the cart, proceeding to checkout), consistent with §16's existing treatment.
+- **A dish returning to Available (e.g., an ingredient restocked, kitchen capacity freed up) does not require proactively notifying a customer who previously saw it unavailable** — no "notify me when available" mechanism is established anywhere in `/docs`; this is a plausible future capability (§27), not built here.
+- **Exact transition-detection timing and latency are backend/operational concerns** (§25), not specified further here beyond: the transition, once real, is shown accurately and promptly.
+
+## Food Ordering Recovery
+
+*Extends §16 (Menu Availability Changes & Ingredient Shortages) and §20 (Empty, Loading & Error States) — governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery, `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery, and `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`'s Account Recovery sections, adapted here to a made-to-order menu rather than generic commerce or identity state.*
+
+The governing principle: **an interrupted food order preserves as much of the customer's progress as is still genuinely valid, and clearly communicates the one part that had to change — it never silently discards more than the interrupting event actually requires.**
+
+| Scenario | Food ordering behaviour | How customer progress is preserved |
+|---|---|---|
+| Browser closed or navigated away mid-menu-browse | The cart persists exactly as `06_CART_SPECIFICATION.md` §16 already establishes — no Food Central-specific loss mechanism exists. | Cart contents are never lost; only unsaved, in-progress browsing state (e.g., an open filter) is not guaranteed to persist. |
+| A dish in the cart becomes unavailable (86'd) before checkout completes | Handled exactly as §16 and the shared `06_CART_SPECIFICATION.md` §12 / `07_CHECKOUT_SPECIFICATION.md` §12 re-validation and blocking-condition mechanism already specify — no separate recovery mechanism is introduced. | Only the affected dish requires the customer's attention; the rest of the order, including any Wine & Spirits items (§13), is unaffected. |
+| The same-day cutoff passes while a dish sits unpurchased in the cart | The dish flips to Available to schedule (§6, §9, Availability Transition Behaviour, above); the customer is offered a direct reschedule path rather than losing the item silently. | The customer's intent to order that dish is preserved as a scheduling option, not discarded. |
+| A confirmed scheduled order's date arrives but kitchen capacity has genuinely changed since booking | **No established mechanism exists yet for renegotiating a confirmed scheduled slot** — flagged as an open operational question (§28), not invented here. | Not resolved by this document; a future operational decision is required before this scenario can be specified further. |
+| Network interruption during order placement | The same duplicate-prevention and honest-status discipline already required by `07_CHECKOUT_SPECIFICATION.md` §21 and Checkout Recovery applies without modification — this document does not introduce a food-specific variant. | The customer is never left uncertain whether their order was placed or their payment was charged. |
+
+**Nothing in this section authorizes silently discarding a customer's food order progress for implementation convenience.** Where a scenario cannot yet be resolved automatically (a confirmed scheduled slot whose capacity has changed), this document is honest that it cannot, rather than inventing a resolution mechanism that has not actually been decided.
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for Food Central ordering implementation, alongside `01_NAVIGATION_SPECIFICATION.md` §14, `04_PRODUCT_LISTING_SPECIFICATION.md` §19, `05_PRODUCT_DETAILS_SPECIFICATION.md` §11 (which it extends without redefining), `06_CART_SPECIFICATION.md` §6, and `07_CHECKOUT_SPECIFICATION.md` §9/§10 (whose mechanics it builds on), and `10_DELIVERY_SPECIFICATION.md` (not yet drafted, which will own the operational logistics this document explicitly defers).
+**Document status:** Approved — Frozen (v1.0). This is now the authoritative reference for all Food Central ordering implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` §14, `04_PRODUCT_LISTING_SPECIFICATION.md` §19, `05_PRODUCT_DETAILS_SPECIFICATION.md` §11 (which it extends without redefining), `06_CART_SPECIFICATION.md` §6, and `07_CHECKOUT_SPECIFICATION.md` §9/§10 (whose mechanics it builds on) without redefining any of them. `10_DELIVERY_SPECIFICATION.md` (not yet drafted) will own the operational logistics this document explicitly defers. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.
 
 ## Sources
 

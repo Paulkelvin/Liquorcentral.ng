@@ -1,11 +1,37 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.8
+**Version:** 2.9
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v26 — 2026-07-18 — `09_FOOD_ORDERING_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved `09_FOOD_ORDERING_SPECIFICATION.md`, then requested a final refinement pass — a full review against all four frozen Phase 0 documents and all eight frozen prior specifications, plus meaningful refinements in named areas — before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/09_FOOD_ORDERING_SPECIFICATION.md`):**
+
+- **Food Ordering Intent** — a table mapping five recognizable customer intents (craving-driven speed, menu discovery, planning ahead, mixed-order pairing, recovery) onto mechanisms already specified elsewhere in the document, mirroring `07_CHECKOUT_SPECIFICATION.md`'s Checkout Intent pattern.
+- **Freshness & Quality Philosophy** — names the connective principle between `BRAND_IDENTITY.md`'s and `EXPERIENCE_PRINCIPLES.md`'s existing freshness/quality language and this document's ordering-specific behaviour: no dish presented as held finished in stock, a prep-time estimate read as a quality signal rather than a competing concern to speed, and quality communicated through accurate information rather than a numeric rating or score.
+- **Availability Transition Behaviour** — unifies the transition rules between the three availability states first specified across §6, §9, §16, and §22: a transition is always driven by a real kitchen event, reflected the moment it's known, never silently drops a cart item, and does not require proactively notifying a customer when a dish returns to available.
+- **Food Ordering Recovery** — five named scenarios (mid-browse interruption, an item becoming unavailable before checkout, a same-day cutoff passing on an unpurchased cart item, a confirmed scheduled order's kitchen capacity changing before its date, network interruption during placement) governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery, `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery, and `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`'s Account Recovery sections.
+
+**Changed (within the same document):**
+
+- §13 (Mixed Wine & Food Orders) — new bullet confirming each fulfillment group's re-validation is independent, so a Food Central item becoming unavailable never invalidates the Wine & Spirits portion of the same order or vice versa.
+- §21 (Accessibility) — new bullet extending the existing live-region pattern to any availability-state transition, not only the cutoff countdown and order-status progression.
+- §29 (Food Ordering Quality Checklist) — three new checks; §30 (Acceptance Criteria) — two new checks. No previously-flagged open operational decision was resolved or silently assumed.
+- Header changed to **Version 1.0, Status: Approved — Frozen**.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.7) — specification status table updated: `09_FOOD_ORDERING_SPECIFICATION.md` now **Approved — Frozen**, v1.0.
+- `docs/PROJECT_STATUS.md` (v2.8), `docs/ROADMAP.md` (v3.1) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: all nine drafted specifications now frozen at v1.0; the "Food ordering operations" grouping in Decisions Awaiting Approval is unchanged, since none of its items were resolved by this pass.
+- `docs/DECISION_LOG.md` — new entry recording the refinement and freeze.
+
+**Not changed:** no previously-flagged open operational decision (order-status vocabulary, cutoff/slot parameters, scheduling horizon, kitchen operating hours, allergen-data ownership) was resolved by this pass — all remain explicitly open; one new open item was flagged rather than invented (renegotiating a confirmed scheduled slot whose kitchen capacity has changed since booking).
 
 ## v25 — 2026-07-18 — `09_FOOD_ORDERING_SPECIFICATION.md` drafted in full
 
