@@ -7,6 +7,21 @@
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
 
+## v7 — 2026-07-18 — DESIGN_SYSTEM.md v2.0 finalized and frozen
+
+**Changed:**
+
+- `DESIGN_SYSTEM.md` (v2.0, status **Approved — Authoritative Foundation, frozen**) — final refinement per Paul's review:
+  - Tier 3 color tokens reorganized around semantic intent (Primary, Secondary, Accent, Surface, Surface Elevated, Text Primary, Text Secondary, Border, Divider, Focus, Interactive/Hover/Active, Disabled, Success, Warning, Danger, Information) as the system's canonical language, replacing the earlier dot-notation-first framing.
+  - New **Surface Elevated** token (`#FFFFFF`) for cards/modals/dropdowns, paired with the existing elevation shadows.
+  - New **Interactive States** mechanism — hover/active expressed as percentage-based overlays on whichever base color is active, rather than fixed hex values per color/state combination.
+  - New **Future Theme Support** section documenting how the token architecture enables dark mode, seasonal themes, brand refreshes, and accessibility themes without component changes (not implemented — architecture only).
+  - New **Component Philosophy** section preceding any component specification work.
+  - New concluding **Design Quality Checklist** every future component must satisfy.
+- `PROJECT_STATUS.md` — Phase 0 (Brand & Design Foundation) marked fully complete with no open items; next recommended task updated to component specification work.
+- `ROADMAP.md` (v1.4) — Phase 0b marked complete; new Phase 0c (component specification, not yet started) added.
+- `DECISION_LOG.md` — new entry recording the final refinement and freeze.
+
 ## v6 — 2026-07-18 — Color Architecture refined into three explicit tiers
 
 **Changed:**

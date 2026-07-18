@@ -1,11 +1,11 @@
 # Design System
 
-**Status:** Under Review (Part A: Principles — Approved; Part B: Foundations v1 — Approved except §B6 Color Architecture, refined per Paul's feedback and awaiting confirmation of four specific Functional Color values)
-**Version:** 2.1
+**Status:** Approved — Authoritative Foundation (frozen)
+**Version:** 2.0
 **Owner:** Design
 **Last Updated:** 2026-07-18
 
-This document has two parts. **Part A (Principles)** was approved during the Brand Identity phase and hasn't changed. **Part B (Foundations)** is concrete, implementable tokens built on top of Part A and `BRAND_IDENTITY.md`, per Paul's Design System Foundations recommendation (`ROADMAP.md` Phase 0b). Overall direction approved; §B6 (Color Architecture) was refined per Paul's follow-up review into an explicit three-tier structure (Brand Colors, Functional UI Colors, Semantic Design Tokens). Building actual UI components/screens should wait only on confirming the four specific Functional Color values in §B6 — everything else in this document can be treated as settled.
+Approved in full by Paul, 2026-07-18, across three rounds of review: overall direction, the three-tier Color Architecture and its WCAG validation, and this final refinement (semantic token naming, future theme support, component philosophy, and a design quality checklist). **This is now the authoritative foundation all future UI and component work is checked against.** It has two parts: **Part A (Principles)**, approved during the Brand Identity phase, and **Part B (Foundations)** — concrete, implementable tokens built on top of Part A and `BRAND_IDENTITY.md`.
 
 ---
 
@@ -59,7 +59,7 @@ A design system built without agreed principles tends to accumulate inconsistenc
 
 ---
 
-# Part B — Foundations v1 (Draft)
+# Part B — Foundations (Approved)
 
 Concrete tokens implementing Part A, covering exactly the list Paul specified: typography scale, spacing scale, grid system, elevation/shadows, border radius, color roles, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens.
 
@@ -190,14 +190,14 @@ Independent of the brand palette, chosen solely for accessibility and to communi
 | **Success** | Green `#1A9902` (reused from Tier 1) | ~3.4:1 (large text/UI only, per §13) | The one intentional, non-conflicting reuse: `BRAND_IDENTITY.md` §13 already established Green as the brand's "confirmation/go" accent — "success" is that same meaning, not a new one. Inventing a second, unrelated green purely for success states would create two greens in the system with no clear distinction. |
 | **Warning** | `#B45309` (burnt orange) | ~4.6:1 (passes AA for normal text) | Chosen independently of Gold. Despite both sitting loosely in the amber/orange family — a near-universal convention for warning semantics that would be counter-intuitive to abandon entirely — this shade is shifted clearly toward orange (hue ≈ 28°) away from Gold's yellow-green mustard tone (hue ≈ 58–60°), so the two are never visually interchangeable. Gold is never used in a warning context and warning is never described as, or styled like, a variant of Gold. |
 | **Danger / Error** | `#B3261E` (deep red) | ~5.95:1 (passes AA for normal text — better than Primary Red's own ~3.87:1) | Deliberately a *different* shade from Primary Red, not the same color doing double duty. This satisfies Paul's specific concern: Red retains one meaning (primary action) and Danger retains a different, distinct meaning (something's wrong) — related by hue family (red universally reads as "stop/error"), but never the literal same value, and used in entirely different contexts (a button vs. an inline error message). |
-| **Info** | `#2B6CB0` (muted blue) | ~4.9:1 (passes AA for normal text) | A conventional, unambiguous informational blue; no brand color fills this role without conflict, so an independent color is used. |
+| **Information** | `#2B6CB0` (muted blue) | ~4.9:1 (passes AA for normal text) | A conventional, unambiguous informational blue; no brand color fills this role without conflict, so an independent color is used. |
 
 - **Why (overall):** a complete, accessible UI needs more states than four brand/accent colors can fill without compromising either accessibility (contrast) or the brand's own usage hierarchy. These four are chosen to be accessible on their own terms, not squeezed out of the brand palette.
 - **Business value:** prevents two real failure modes named directly in Paul's feedback — Gold's premium status being cheapened by everyday warning use, and Red's call-to-action meaning being confused with a destructive/error meaning.
 - **Customer experience benefit:** clearer, safer, more accessible signaling of state than forcing the brand palette to do jobs it isn't suited for.
 - **Implementation impact:** four new functional design tokens in the storefront codebase. **No change to the four Tier 1 brand colors.**
 - **Risks/trade-offs:** Warning's amber/orange family membership is a deliberate, explained choice, not an oversight — flagged here so it's never mistaken for accidental overlap with Gold later.
-- **Paul's approval needed?** These four specific hex values are proposed and reasoned above, ready for confirmation or adjustment — this is the one item in the whole Design System that isn't a purely mechanical engineering decision.
+- **Paul's approval needed?** No — these four specific hex values, reasoned above, are approved as of 2026-07-18.
 
 ### Gold Usage — explicit rule
 
@@ -223,38 +223,67 @@ A dedicated warm-neutral grayscale (echoing Off White's slight warmth rather tha
 
 - **Why this scale supports readability and accessibility:** every text-bearing step (`ink-900`, `ink-700`, `ink-500`) clears WCAG AA on the Off White base — `ink-500`, the lightest text-permitted step, still reaches ~4.8:1, comfortably above the 4.5:1 minimum for body text. This means designers never have to guess whether a "muted" text color is still legible — the scale is built so every step that's labeled for text use already passes. The warm undertone (each step's red/green/blue channels stay close together rather than perfectly neutral) keeps the whole system feeling considered against Off White's own warm-neutral base, rather than introducing a cold gray that would visually clash.
 - **Disabled states:** use `ink-500` for disabled text/icons and `ink-100` for disabled surface fills — intentionally lower-contrast, since WCAG doesn't require inactive controls to meet the same contrast bar as active ones, but still legible enough to read as "present but inactive" rather than invisible.
-- **Cards/backgrounds:** the page background and default card surface both resolve to Off White (Tier 1) — `ink-100` is reserved for a *secondary* surface (hover states, alternating rows, input backgrounds) that needs to read as subtly recessed relative to the primary Off White ground.
+- **Cards/backgrounds:** the page background resolves to Off White (Tier 1); `ink-100` is reserved for a *subtle* surface (hover states, alternating rows, input backgrounds) that needs to read as slightly recessed relative to the primary Off White ground. See **Surface Elevated** below for the separate, *raised*-surface case.
 - **Paul's approval needed?** No — this is a standard, accessibility-driven neutral scale; flag only if the warm undertone reads wrong once real screens exist.
 
-### Tier 3 — Semantic Design Tokens
+### Surface Elevated
 
-The only thing component code ever references. Every token resolves to a Tier 1 or Tier 2 color — never a raw hex written directly into a component.
+A dedicated, distinct value for surfaces that sit *above* the page — cards, modals, dropdowns, the cart drawer — used together with the elevation shadows in B4:
 
-| Token | Resolves to | Tier |
+| Token | Hex | Use |
 |---|---|---|
-| `color.primary` | Red `#EC2D07` | 1 (Brand) |
-| `color.secondary` | Green `#1A9902` | 1 (Brand) |
-| `color.accent` | Gold `#CFCA43` | 1 (Brand) — dark-ground/rare use only, per Gold Usage above |
-| `color.background` | Off White `#F3F5F0` | 1 (Brand) |
-| `color.surface` | Off White `#F3F5F0` | 1 (Brand) — same value as `color.background` today, kept as a separate token for forward flexibility (e.g. if a future dark mode needs them to diverge) |
-| `color.surface.secondary` | `ink-100` `#ECEAE3` | 2 (Neutral) |
-| `color.text.primary` | `ink-900` `#1A1A1A` | 2 (Neutral) |
-| `color.text.secondary` | `ink-700` `#46443F` | 2 (Neutral) |
-| `color.text.muted` | `ink-500` `#706C63` | 2 (Neutral) — additional token beyond Paul's list, useful for placeholders/captions |
-| `color.border.default` | `ink-300` `#B8B4AA` | 2 (Neutral) |
-| `color.border.subtle` | `ink-200` `#D8D5CC` | 2 (Neutral) |
-| `color.success` | Green `#1A9902` (reused) | 1/2 (intentional reuse, see Tier 2) |
-| `color.warning` | `#B45309` | 2 (Functional) |
-| `color.danger` | `#B3261E` | 2 (Functional) |
-| `color.info` | `#2B6CB0` | 2 (Functional) |
-| `color.focus` | `ink-900` `#1A1A1A` | 2 (Neutral) — most robust choice regardless of surrounding color |
-| `color.disabled` | `ink-500` `#706C63` (text/icon) / `ink-100` `#ECEAE3` (surface) | 2 (Neutral) |
+| Surface Elevated | `#FFFFFF` (pure white) | Cards, modals, popovers, dropdowns — anything rendered with an elevation shadow |
 
-- **Why:** decouples implementation from the underlying palette — a component that renders a primary button references `color.primary`, never `#EC2D07` directly. If the brand palette ever evolves, only these token definitions change.
-- **Business value:** the brand can evolve (a new campaign color, a seasonal accent) without rewriting components — exactly the goal Paul specified.
+- **Why a distinct value, not the same Off White as the page:** a card in the exact same tone as the page it sits on relies on its shadow alone to read as "raised" — a subtle brightness step (Off White's warm `#F3F5F0` → pure white `#FFFFFF`) combined with the shadow gives real, legible separation without needing a heavier border or a darker shadow to compensate. This is a small, restrained difference — consistent with "premium through discipline" (`EXPERIENCE_PRINCIPLES.md` #3) — not a strong color shift.
+- **Paul's approval needed?** No — a standard elevation technique; flag only if it reads as inconsistent once real screens exist.
+
+### Interactive States
+
+Rather than hard-coding a separate fixed color for every element's hover and pressed state, **Interactive / Interactive Hover / Interactive Active are a state-layer mechanism**, not fixed hex values — they apply consistently on top of *whichever* color a given interactive element already uses (`color.primary`, `color.secondary`, or the default `color.interactive` below).
+
+| Token | Definition |
+|---|---|
+| `color.interactive` | The resting-state color of a low-emphasis clickable element (a text link, a secondary list action) that isn't a full CTA — defaults to Green `#1A9902`, consistent with Green's existing "actionable" role in the brand hierarchy. |
+| `color.interactive.hover` | The element's current base color (whether `color.primary`, `color.secondary`, or `color.interactive`) blended with an 8% black overlay. |
+| `color.interactive.active` | The element's current base color blended with a 16% black overlay (pressed/active state). |
+
+- **Why a state-layer mechanism, not a fixed hex per state:** a hardcoded "hover green" and "hover red" would need a new pair of colors defined for every current *and future* interactive color — and would need to be redefined entirely under a future theme. A percentage-based overlay applies uniformly to any base color, today or under any future theme, with zero new color decisions required as the system grows. This is the same reasoning behind Future Theme Support below.
+- **Business value:** any future button, link, or interactive component — however many are eventually built — gets correct, consistent hover/press feedback automatically, without a designer choosing a new hover shade each time.
+- **Customer experience benefit:** directly serves `EXPERIENCE_PRINCIPLES.md` #11 (Consistency Creates Confidence) — every interactive element darkens the same way on hover and press, everywhere.
+- **Paul's approval needed?** No — a standard, mechanical technique; the 8%/16% figures are a reasonable starting point, tunable once real components exist.
+
+### Tier 3 — Semantic Design Tokens: the canonical language
+
+**These semantic names — not raw hex values, and not literal color names — are the canonical vocabulary of this system.** A designer or developer should say "use Primary" or "this is a Danger state," never "make it red" or "use `#EC2D07`." Every token resolves to a Tier 1 or Tier 2 color, or to the Interactive state-layer mechanism above — component code never references a raw hex directly.
+
+| Semantic name | Token | Resolves to |
+|---|---|---|
+| **Primary** | `color.primary` | Red `#EC2D07` (Tier 1) |
+| **Secondary** | `color.secondary` | Green `#1A9902` (Tier 1) |
+| **Accent** | `color.accent` | Gold `#CFCA43` (Tier 1 — dark-ground/rare use only, per Gold Usage above) |
+| **Surface** | `color.surface` | Off White `#F3F5F0` (Tier 1) |
+| **Surface Elevated** | `color.surface.elevated` | White `#FFFFFF` (see Surface Elevated above) |
+| **Text Primary** | `color.text.primary` | `ink-900` `#1A1A1A` |
+| **Text Secondary** | `color.text.secondary` | `ink-700` `#46443F` |
+| **Border** | `color.border` | `ink-300` `#B8B4AA` |
+| **Divider** | `color.divider` | `ink-200` `#D8D5CC` |
+| **Focus** | `color.focus` | `ink-900` `#1A1A1A` — most robust choice regardless of surrounding color |
+| **Interactive** | `color.interactive` | Green `#1A9902` (default), or the state-layer mechanism described above |
+| **Interactive Hover** | `color.interactive.hover` | Base color + 8% black overlay (mechanism) |
+| **Interactive Active** | `color.interactive.active` | Base color + 16% black overlay (mechanism) |
+| **Disabled** | `color.disabled` | `ink-500` `#706C63` (text/icon) / `ink-100` `#ECEAE3` (surface) |
+| **Success** | `color.success` | Green `#1A9902` (reused, intentional — see Tier 2) |
+| **Warning** | `color.warning` | `#B45309` (Tier 2) |
+| **Danger** | `color.danger` | `#B3261E` (Tier 2) |
+| **Information** | `color.information` | `#2B6CB0` (Tier 2) |
+
+Two supplementary tokens exist beyond this canonical list, for technical completeness: `color.background` (Off White — same value as Surface today, kept as a separate token for forward flexibility) and `color.text.muted` (`ink-500` — a third text tier for placeholders/captions).
+
+- **Why:** decouples implementation from the underlying palette — a component that renders a primary button references **Primary**, never `#EC2D07` directly. If the brand palette ever evolves, only these token definitions change.
+- **Business value:** the brand can evolve (a new campaign color, a seasonal accent, a full refresh) without rewriting components — exactly the goal Paul specified.
 - **Customer experience benefit:** guarantees the consistency principle in `EXPERIENCE_PRINCIPLES.md` #11 (Consistency Creates Confidence) — every "primary action" looks identical everywhere, because every component draws from the same token, not a locally-chosen hex.
 - **Implementation impact:** implemented as design tokens (CSS custom properties or equivalent) in the storefront codebase; component code never hard-codes a color value.
-- **Paul's approval needed?** No, beyond the Tier 2 hex values already flagged above — the token *names* and *structure* are an engineering convention, not a creative decision.
+- **Paul's approval needed?** No — the token names and structure are now approved; only the underlying Tier 2 hex values were subject to sign-off, and those are approved as of this version.
 
 ### Consistency check
 
@@ -334,11 +363,61 @@ The concrete, testable expression of `BRAND_IDENTITY.md` §22 and `EXPERIENCE_PR
 
 ---
 
-## What's still open
+# Future Theme Support
 
-- **The four proposed Functional UI Colors in §B6** (Warning, Danger, Info, plus the Neutral System's general approach) — the one genuine open decision in this document; everything else can be treated as settled engineering detail.
-- Final typeface selection (`BRAND_GUIDELINES.md`) — may prompt minor numeric tuning of the type scale (B1).
-- The concrete component inventory (which components get built first) — should be derived from `USER_FLOWS.md` once component/screen work begins, not decided speculatively here.
+Nothing in this section is built today — only the default (light) theme exists. This documents the *capability* the token architecture provides, so a future theme is an extension of this system, not a rewrite of it.
+
+**The mechanism:** because every component references only Tier 3 semantic tokens (Primary, Surface, Text Primary, and so on) and never a raw hex or a Tier 1/2 color directly, a "theme" is simply an alternate set of values bound to those same token names. Switching a theme means changing the token-to-value mapping in one place; no component is touched.
+
+**Illustrative examples (not implemented):**
+
+- **Dark Mode** — Surface/Background would remap to a dark ink tone, Text Primary to a light neutral, and Primary/Secondary would likely need a lightness adjustment to hold contrast on a dark ground. Notably, **Gold would become more usable, not less** — `BRAND_IDENTITY.md` §13 and this document's own contrast analysis already found Gold exceeds AAA contrast on a dark ground (versus failing entirely on Off White), so a dark theme is where the Accent token could appear more freely, still within the "premium, rare" spirit of Gold Usage above.
+- **Seasonal Themes** — e.g. a festive campaign could rebind Accent to a different value for a limited period, with zero component changes.
+- **Brand Refreshes** — if the four Tier 1 colors themselves are ever revised, only Tier 1's definitions change; every Tier 3 token, and every component, follows automatically.
+- **Accessibility Themes** — e.g. a high-contrast mode could remap the Neutral System to wider steps (pushing Text Secondary from AA to AAA), again without touching a single component.
+
+- **Why:** documents the payoff of the Tier 1/2/3 separation and the Interactive state-layer mechanism — both were built with exactly this future flexibility in mind, not as an afterthought.
+- **Business value:** the brand can evolve — a new season, a new market, a full refresh — without a component rewrite each time.
+- **Paul's approval needed?** No — this is architecture documentation for a capability, not a proposal to build any of the illustrative themes now.
+
+---
+
+# Component Philosophy
+
+Before any component is specified, this is the standard every future component is measured against.
+
+- **Components solve problems, not decorate screens.** A component earns its place by removing friction, per `EXPERIENCE_PRINCIPLES.md` #2 (Simplicity Before Features) — never by making a screen look busier.
+- **Consistency is more valuable than novelty.** A clever one-off interaction that isn't reused anywhere else costs more in relearning than it earns in delight — directly serves `EXPERIENCE_PRINCIPLES.md` #11 (Consistency Creates Confidence).
+- **Accessibility is part of every component, not an afterthought applied to it.** Every component is built against B11's tokens from the start, not audited for accessibility after the fact.
+- **Motion communicates state, not entertainment.** A component's animation exists to confirm something happened (B10) — if it would still make sense with the motion removed entirely, the motion wasn't necessary.
+- **Components compose naturally.** A smaller component (a button, a badge) should combine into a larger one (a product card) without special-case overrides — if composing two components requires fighting one of them, one of them is wrong.
+- **Every component has one obvious primary purpose.** A component trying to do several unrelated jobs becomes unpredictable exactly where predictability matters most — split it instead.
+- **Components reference only semantic tokens, never raw values.** This is what makes Future Theme Support real rather than aspirational, and what makes the Design Quality Checklist below actually checkable.
+
+**How future components are expected to evolve:** a new component that needs a value not yet in this system (a new spacing step, a new color, a new duration) is a signal to propose a new *token* at the appropriate tier in Part B first — never to hard-code a one-off value inside that single component. Every future component specification should open by naming which existing tokens it uses; needing an entirely new token should be the exception worth a second look, not the routine case.
+
+---
+
+# Design Quality Checklist
+
+Every future component must be able to answer **yes** to all of the following before it's considered complete. A component that looks polished but fails one of these isn't finished.
+
+- [ ] **Is it accessible?** Meets WCAG AA at minimum (B11), including for keyboard and screen-reader use.
+- [ ] **Is it mobile-first?** Designed and tested at the smallest breakpoint first, not shrunk down from desktop (B3, B7).
+- [ ] **Does it reduce cognitive load?** (`EXPERIENCE_PRINCIPLES.md` #12)
+- [ ] **Does it reinforce trust?** (`EXPERIENCE_PRINCIPLES.md` #9; `BRAND_IDENTITY.md` §21)
+- [ ] **Does it support the Brand Identity?** Consistent with the brand's personality, voice, and visual philosophy (`BRAND_IDENTITY.md`).
+- [ ] **Does it align with the Experience Principles?** Checked against all 15 (`EXPERIENCE_PRINCIPLES.md`), not just the obviously relevant ones.
+- [ ] **Does it follow the semantic token system?** No raw hex values, no hardcoded spacing/type/motion values — only Tier 3 tokens and Part B scales.
+- [ ] **Is the interaction predictable?** Behaves the same way everywhere it appears (`EXPERIENCE_PRINCIPLES.md` #11).
+- [ ] **Is the motion purposeful, not decorative?** (B10, Component Philosophy)
+- [ ] **Is the component reusable across both Wine & Spirits and Food Central contexts**, not built for only one?
+- [ ] **Would it still work correctly under a future theme** (dark mode, seasonal, accessibility) without code changes? (Future Theme Support)
+- [ ] **Does it respect the brand color usage hierarchy** — Off White dominant, Red and Gold reserved and rare, never overused because they happen to be available? (`BRAND_IDENTITY.md` §13)
+
+This document is now **Version 2.0 — the authoritative Design System foundation** for all future UI and component work.
+
+---
 
 ## Consistency with source documents
 
@@ -348,3 +427,4 @@ This entire document is derived from, and does not redefine, `PRODUCT_BLUEPRINT.
 - Every Part B foundation implements a Part A principle concretely — none introduces a new principle of its own.
 - §B6's Color Architecture is the most detailed cross-check: it inherits `BRAND_IDENTITY.md` §13's brand colors, hierarchy, and contrast findings unchanged, and its Functional Colors/Neutral System exist solely to fill gaps those four colors cannot safely fill — never to compete with or reinterpret them.
 - Mobile-first (B3, B7), accessibility (B11, §B6), and performance-relevant restraint (B4 shadows, B10 motion) all trace directly to `PRODUCT_BLUEPRINT.md` §14–§16.
+- Future Theme Support and Component Philosophy both trace to `EXPERIENCE_PRINCIPLES.md` #11 (Consistency Creates Confidence) and #15 (Build Relationships, Not Just Transactions) — a system built to evolve without rewrites is itself a long-term-trust decision, not just an engineering convenience.

@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 1.3
+**Version:** 1.4
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -18,7 +18,7 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 - `BRAND_IDENTITY.md` v1 — vision, personality, voice, color-usage hierarchy, and visual/typography/photography principles for the four already-approved brand colors. **Approved in full by Paul, 2026-07-18.**
 - `EXPERIENCE_PRINCIPLES.md` v1.0 — 15 principles defining how customers should experience every screen and interaction, plus a product vision and competitive positioning. **Approved in full by Paul, 2026-07-18.**
 
-### Phase 0b — Design System Foundations — Draft v1, one open item
+### Phase 0b — Design System Foundations ✅ Complete (frozen as v2.0)
 
 `DESIGN_SYSTEM.md` has been elevated from principles-only to concrete, agreed foundations — **foundational rules, not page layouts**, deliberately not jumping straight to designing buttons, cards, or screens. Covers:
 
@@ -36,9 +36,13 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 
 Every item above is a foundational rule every future component and screen will draw from — not a page design. Building actual UI after these are agreed should require far fewer ad hoc decisions, since every component follows the same language.
 
-**Status:** All of the above is drafted in `DESIGN_SYSTEM.md` Part B; Paul approved the overall direction and requested one refinement, now complete: §B6 (Color Architecture) restructured into three explicit tiers (Brand Colors, Functional UI Colors, Semantic Design Tokens), with Gold's role locked to premium/curation use only and Danger kept visually distinct from primary Red. One open item remains: confirming the four specific Tier 2 Functional Color values (Warning, Danger, Info, and the Neutral System) — see `DESIGN_SYSTEM.md` §B6 and `PROJECT_STATUS.md`. Everything else in Phase 0b, including the entire Color Architecture structure and Tier 1/3 mappings, can be treated as settled.
+**Status:** Complete and approved in full by Paul, 2026-07-18, across three rounds of review. §B6 (Color Architecture) is a three-tier system (Brand Colors, Functional UI Colors, Semantic Design Tokens) with Gold's role locked to premium/curation use only, Danger kept visually distinct from primary Red, and all four Tier 2 Functional Colors (Success, Warning, Danger, Information) confirmed. The final round added semantic-intent token naming as the system's canonical language, an Interactive States mechanism, a Surface Elevated token, a Future Theme Support section, a Component Philosophy section, and a concluding Design Quality Checklist. `DESIGN_SYSTEM.md` is now frozen as **Version 2.0 — the authoritative foundation for all future UI and component work.** No open items remain.
 
-- This phase can run in parallel with Phase 1's backend work below; it blocks visual/frontend work specifically, not backend/architecture work.
+- This phase can run in parallel with Phase 1's backend work below; it blocked visual/frontend work specifically, not backend/architecture work — that block is now lifted.
+
+### Phase 0c — Component specification — Not yet started
+
+The next frontend-track step: specifying actual components (buttons, cards, forms, navigation) against `DESIGN_SYSTEM.md` v2.0, each checked against its Design Quality Checklist and referencing only Tier 3 semantic tokens. Has not begun; awaits Paul's direction to start. Can run in parallel with Phase 1's backend work.
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 
