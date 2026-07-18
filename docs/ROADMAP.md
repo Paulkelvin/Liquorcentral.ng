@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 1.5
+**Version:** 1.6
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -51,9 +51,19 @@ The next frontend-track step: specifying actual components (buttons, cards, form
 With `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 declared complete and frozen by Paul, this phase translates those decisions into **behavior-level specifications** for each product surface — what it must do, for whom, backed by what data — under a new `/docs/specifications/` directory. Deliberately not visual/UI design; that remains Phase 0c's job once it starts.
 
 - `02_HOMEPAGE_SPECIFICATION.md` — **fully drafted (v0.1)**, all 25 required sections, awaiting Paul's review.
-- `01_NAVIGATION_SPECIFICATION.md`, `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, `06_CART_SPECIFICATION.md`, `07_CHECKOUT_SPECIFICATION.md`, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, `09_FOOD_ORDERING_SPECIFICATION.md`, `10_DELIVERY_SPECIFICATION.md`, `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — created as **approved placeholders only** (Document Purpose, Scope, Dependencies, Planned Sections, Status = Not Started). Detailed content is intentionally not invented ahead of sequencing; each will be developed in its own turn once Paul directs.
+- `01_NAVIGATION_SPECIFICATION.md` — **next**, per Paul's explicit direction following the Phase 0e governance pass below.
+- `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, `06_CART_SPECIFICATION.md`, `07_CHECKOUT_SPECIFICATION.md`, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, `09_FOOD_ORDERING_SPECIFICATION.md`, `10_DELIVERY_SPECIFICATION.md`, `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — remain **approved placeholders only** (Document Purpose, Scope, Dependencies, Planned Sections, Status = Not Started). Detailed content is intentionally not invented ahead of sequencing; each will be developed in its own turn once Paul directs.
 
-Can run in parallel with Phase 0c and Phase 1's backend work — it is documentation, not implementation, and does not block or get blocked by either.
+Can run in parallel with Phase 0c and Phase 1's backend work — it is documentation, not implementation, and does not block or get blocked by either. Briefly paused between 2026-07-18's repository reconciliation and the completion of Phase 0e below, per Paul's explicit instruction; resumed once Phase 0e was approved.
+
+### Phase 0e — Documentation governance and repository reconciliation ✅ Complete
+
+Infrastructure work on `/docs` itself, not the product — necessary once an audit found project documentation split across two unmerged git branches (see `DECISION_LOG.md`, "Repository reconciliation"). Two parts, both completed and approved by Paul, 2026-07-18:
+
+- **Repository reconciliation** — the two unmerged branches were merged into one authoritative documentation branch, preserving full git history from both; `docs/AI_HANDOFF.md` was recovered and rewritten against the reconciled state.
+- **Documentation governance hardening** — `docs/DOCUMENTATION_GOVERNANCE.md` created as the governing standard (hierarchy, lifecycle statuses, change rules, cross-reference rules, versioning rules, AI/human contributor rules, workflow, quality checklist, audit process), followed by a full `/docs` audit against that standard, fixing every inconsistency found.
+
+The documentation architecture is now considered stable. This phase exists in the roadmap so future sessions can see why Phase 0d paused briefly and what unblocked it — it is not expected to recur as a scheduled phase, only as an occasional future audit per `DOCUMENTATION_GOVERNANCE.md` Section 12.
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 

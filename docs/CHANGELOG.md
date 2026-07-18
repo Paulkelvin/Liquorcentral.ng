@@ -1,11 +1,29 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.2
+**Version:** 1.3
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v10 — 2026-07-18 — Documentation governance hardening pass
+
+**Context:** Repository governance work, not product design, per Paul's explicit instruction — a final hardening pass before resuming Product Specifications. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/DOCUMENTATION_GOVERNANCE.md` (v1.0) — the governing standard for all documentation work: Purpose; Single Source of Truth; Documentation Hierarchy (Business Decisions → Brand & Experience → Design System → Product Specifications → Implementation Planning → Code); Document Lifecycle (nine statuses: Not Started, Draft, In Progress, Under Review, Approved, Frozen, Deprecated, Superseded, Archived); Change Rules; Cross-Reference Rules; Versioning Rules; AI Contributor Rules; Human Contributor Rules; Repository Workflow; Quality Checklist; Future Maintenance; and the Audit Process used for this pass's own audit.
+
+**Changed (audit fixes — every genuine inconsistency the audit found; nothing else was touched):**
+
+- `docs/README.md` (v1.3) — "Document status convention" section rewritten to defer to `DOCUMENTATION_GOVERNANCE.md` Section 4 as the single authoritative status list, instead of maintaining its own shorter four-status list that was already out of step with how statuses like "Not Started" (used throughout `docs/specifications/`) were actually being used; "Start here" reading order and document map updated to include `DOCUMENTATION_GOVERNANCE.md`; "Continuity rules" section now points to `DOCUMENTATION_GOVERNANCE.md` Sections 8–9 as the full contributor rules.
+- `docs/AI_HANDOFF.md` (v3.1) — repository structure tree, reading order, document-count (20 → 21 documents, 31 → 32 files total), Documentation Guide table, and status-summary category all updated to include `DOCUMENTATION_GOVERNANCE.md`; "Immediate Next Step" section updated — it previously gated all further Product Specification work on reconciliation approval (now granted), and now names `01_NAVIGATION_SPECIFICATION.md` as the next specification to draft.
+- `docs/PROJECT_STATUS.md` (v1.3) — logged both the reconciliation's approval and the governance pass under Completed work; "Work in progress" and "Next recommended task" updated to reflect that documentation work is unblocked and `01_NAVIGATION_SPECIFICATION.md` is next.
+- `docs/ROADMAP.md` (v1.6) — new Phase 0e ("Documentation governance and repository reconciliation," marked complete) added, explaining why Phase 0d briefly paused and what unblocked it; Phase 0d's specification list updated to name `01_NAVIGATION_SPECIFICATION.md` as next.
+- `docs/DECISION_LOG.md` — new entry recording the governance pass and every audit finding/fix.
+
+**Audit result:** headers, statuses, cross-references, terminology, version numbering, and the document map were checked across all 21 top-level documents and 11 specifications. No broken links, no duplicate/diverging concepts (brand-color hex values checked specifically, since they're repeated across four documents — all consistent), and no orphaned documents were found beyond the two issues already fixed during the prior reconciliation pass. No Frozen document's substantive content was modified.
 
 ## v9 — 2026-07-18 — Repository reconciliation: two documentation branches merged into one
 

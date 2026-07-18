@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 1.2
+**Version:** 1.3
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -14,17 +14,19 @@ This directory is the **single source of truth** for the LiquorCentral project. 
 Anyone — human or AI — picking up this project should read, in this order:
 
 1. **[`AI_HANDOFF.md`](./AI_HANDOFF.md)** — the project-level onboarding document (business model, tech stack, approved decisions, current phase, and the rules every AI session must follow). Always read this first, before anything else in `/docs`.
-2. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this second.
-3. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
-4. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
-5. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below.
-6. Everything else, as relevant to the task at hand (see the map below).
+2. **[`DOCUMENTATION_GOVERNANCE.md`](./DOCUMENTATION_GOVERNANCE.md)** — the governing standard for how every document in `/docs` is statused, changed, cross-referenced, and versioned, and the rules every AI and human contributor follows when touching documentation. Read this before editing anything below.
+3. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this next.
+4. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
+5. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
+6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below.
+7. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
 | Document | What it answers |
 |---|---|
 | [`AI_HANDOFF.md`](./AI_HANDOFF.md) | Project-level onboarding — read this first |
+| [`DOCUMENTATION_GOVERNANCE.md`](./DOCUMENTATION_GOVERNANCE.md) | What are the rules for creating, statusing, changing, and cross-referencing documentation itself? |
 | [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) | Where is the project right now? |
 | [`PRODUCT_BLUEPRINT.md`](./PRODUCT_BLUEPRINT.md) | What is LiquorCentral, and why is it built this way? |
 | [`BUSINESS_RULES.md`](./BUSINESS_RULES.md) | What are the non-negotiable rules of how the business operates? |
@@ -70,22 +72,17 @@ Placeholders exist so the full scope of Phase 1 is visible up front; their detai
 Every document in `/docs` carries a metadata block directly under its title:
 
 ```
-**Status:** Draft | Under Review | Approved | Superseded
+**Status:** Not Started | Draft | In Progress | Under Review | Approved | Frozen | Deprecated | Superseded | Archived
 **Version:** major.minor
 **Owner:** the team/function responsible for keeping it current
 **Last Updated:** YYYY-MM-DD
 ```
 
-- **Draft** — proposed, not yet reviewed.
-- **Under Review** — actively being discussed; parts may already be finalized (the document will say which).
-- **Approved** — authoritative; treat as decided unless a `DECISION_LOG.md` entry says otherwise.
-- **Superseded** — kept for history only; the document itself will say what replaced it.
-
-This lets anyone joining the project — human or AI — tell at a glance which documents are settled and which are still being shaped, without reading the whole file or asking in chat. When a document's status changes, update its header in the same change that changes the content, and log the change in `DECISION_LOG.md` if it's a material decision (not just a wording fix).
+This lets anyone joining the project — human or AI — tell at a glance which documents are settled and which are still being shaped, without reading the whole file or asking in chat. **`DOCUMENTATION_GOVERNANCE.md` Section 4 is the authoritative definition of each status and when to use it** — this section only points to it rather than restating it, so the two can never drift apart. When a document's status changes, update its header in the same change that changes the content, and log the change in `DECISION_LOG.md` if it's a material decision (not just a wording fix) — see `DOCUMENTATION_GOVERNANCE.md` Sections 5 and 6 for the full change and cross-reference rules.
 
 ## Continuity rules (read this before doing anything)
 
-These rules apply to every future session, human or AI:
+These rules apply to every future session, human or AI. They are the short version; `DOCUMENTATION_GOVERNANCE.md` Sections 8 and 9 are the full AI and human contributor rules, and win if the two ever appear to disagree.
 
 1. **Read the docs before acting.** At the start of any task, read `PROJECT_STATUS.md` in full, then whichever documents are relevant to the task. Do not rely on prior chat history — it is not authoritative and may not be available to whoever picks this up next.
 2. **The docs are the memory, not the conversation.** A decision made in conversation but not written down here does not count as decided.

@@ -1,7 +1,7 @@
 # AI Handoff Document — LiquorCentral.ng
 
 **Status:** Approved (living, authoritative onboarding document)
-**Version:** 3.0
+**Version:** 3.1
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -110,6 +110,7 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
 └── docs/
     ├── AI_HANDOFF.md                  This file — read first
     ├── README.md                      Documentation index, reading order, continuity rules — see Section 6
+    ├── DOCUMENTATION_GOVERNANCE.md    Governing standard for all documentation work — statuses, change rules, versioning, contributor rules
     ├── PROJECT_STATUS.md              Current phase, work status, blockers, open questions — always current
     ├── PRODUCT_BLUEPRINT.md           Product vision, positioning, 18 strategic pillars — frozen (Phase 0)
     ├── BRAND_IDENTITY.md              Brand vision, personality, voice, approved colors and their usage — frozen (Phase 0)
@@ -152,17 +153,18 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 1. **This document (`AI_HANDOFF.md`)** — project-level onboarding, business model, tech stack, current phase, rules.
 2. **`docs/README.md`** — the documentation index proper: full document map, the document-status convention, and continuity rules for keeping `/docs` synchronized.
-3. **`docs/PROJECT_STATUS.md`** — current phase in full detail, completed/in-progress/blocked work, and every decision awaiting Paul's approval.
-4. **`docs/PRODUCT_BLUEPRINT.md`**, then **`docs/BRAND_IDENTITY.md`**, **`docs/EXPERIENCE_PRINCIPLES.md`**, and **`docs/DESIGN_SYSTEM.md`** — the four frozen Phase 0 documents; read together, they answer what LiquorCentral is, who it is, how it should feel to use, and what design foundations everything downstream builds on.
-5. **`docs/specifications/`** — behavior-level specifications for individual product surfaces, built on the four frozen documents above. Start with `02_HOMEPAGE_SPECIFICATION.md`, the only one drafted so far.
-6. **`docs/DECISION_LOG.md`** and **`docs/CHANGELOG.md`** — the authoritative history of what was decided and what changed, respectively. Read these when you need to understand *why* something is the way it is, or whether a document you're about to read is current.
-7. Everything else in `docs/README.md`'s document map, as relevant to the task at hand.
+3. **`docs/DOCUMENTATION_GOVERNANCE.md`** — the governing standard behind everything in step 2: the document hierarchy, lifecycle statuses, change rules, cross-reference rules, versioning rules, and the AI/human contributor rules that apply to any work on `/docs` from here on.
+4. **`docs/PROJECT_STATUS.md`** — current phase in full detail, completed/in-progress/blocked work, and every decision awaiting Paul's approval.
+5. **`docs/PRODUCT_BLUEPRINT.md`**, then **`docs/BRAND_IDENTITY.md`**, **`docs/EXPERIENCE_PRINCIPLES.md`**, and **`docs/DESIGN_SYSTEM.md`** — the four frozen Phase 0 documents; read together, they answer what LiquorCentral is, who it is, how it should feel to use, and what design foundations everything downstream builds on.
+6. **`docs/specifications/`** — behavior-level specifications for individual product surfaces, built on the four frozen documents above. Start with `02_HOMEPAGE_SPECIFICATION.md`, the only one drafted so far.
+7. **`docs/DECISION_LOG.md`** and **`docs/CHANGELOG.md`** — the authoritative history of what was decided and what changed, respectively. Read these when you need to understand *why* something is the way it is, or whether a document you're about to read is current.
+8. Everything else in `docs/README.md`'s document map, as relevant to the task at hand.
 
 ---
 
 ## 7. Documentation Guide and Status Summary
 
-`/docs` contains 20 documents plus the 11-file `specifications/` directory (31 files total). `docs/README.md` is the detailed document map with cross-links and the document-status convention; this section summarizes current status by category.
+`/docs` contains 21 documents plus the 11-file `specifications/` directory (32 files total). `docs/README.md` is the detailed document map with cross-links and the document-status convention; `docs/DOCUMENTATION_GOVERNANCE.md` is the governing standard behind that convention (statuses, change rules, cross-reference rules, versioning, contributor rules); this section summarizes current status by category.
 
 ### Frozen (Phase 0 output — do not modify unless a business decision changes)
 
@@ -173,7 +175,7 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 ### Approved (living or reference documents, not frozen)
 
-- `docs/AI_HANDOFF.md` (this file), `docs/README.md`, `docs/PROJECT_STATUS.md`, `docs/DECISION_LOG.md`, `docs/CHANGELOG.md` — process documents, expected to keep changing as the project moves.
+- `docs/AI_HANDOFF.md` (this file), `docs/README.md`, `docs/PROJECT_STATUS.md`, `docs/DECISION_LOG.md`, `docs/CHANGELOG.md`, `docs/DOCUMENTATION_GOVERNANCE.md` — process/governance documents, expected to keep changing as the project moves (`DOCUMENTATION_GOVERNANCE.md` less often than the others — see its own Section 12, "Future Maintenance").
 - `BUSINESS_RULES.md` — finalized business decisions, changes only if Paul explicitly revisits a rule.
 - `ARCHITECTURE.md` — reference document, changes only if the Medusa version or conventions change materially.
 
@@ -199,6 +201,7 @@ Anyone — human or AI — picking up this project should read, in this order:
 |---|---|---|---|
 | `docs/AI_HANDOFF.md` (this file) | Project-level onboarding; single source of truth entry point | Paul (final approver); maintained by whichever session makes the last approved change | Immediately on any business, architecture, tech-stack, or phase change |
 | `docs/README.md` | Documentation index, reading order, continuity rules | Same | Whenever a document is added/removed/restructured |
+| `docs/DOCUMENTATION_GOVERNANCE.md` | Governing standard: hierarchy, lifecycle statuses, change rules, cross-reference rules, versioning rules, AI/human contributor rules, workflow, quality checklist, audit process | Program | Rarely — see its own Section 12, "Future Maintenance" |
 | `docs/PROJECT_STATUS.md` | Current phase, completed/in-progress/blocked work, open questions | Whoever is actively working; approved by Paul | Every session — "an out-of-date status is a bug" |
 | `docs/PRODUCT_BLUEPRINT.md` | Product vision, positioning, and 18 strategic pillars | Paul (approved, frozen) | Only if a strategic/product decision changes |
 | `docs/BRAND_IDENTITY.md` | Brand vision, personality, voice, approved colors and their usage | Paul (approved, frozen) | Only if a business decision changes |
@@ -283,12 +286,13 @@ Full detail in `ROADMAP.md`. Summary:
 
 ## 10. Immediate Next Step
 
-Two independent next steps, neither blocking the other:
+Repository reconciliation (2026-07-18) and the subsequent documentation governance hardening pass (2026-07-18) are both complete and approved by Paul — see `DECISION_LOG.md` for both entries. The documentation architecture is now considered stable. Product Specifications work resumes as follows:
 
-1. **Paul to review and approve (or request changes to) `docs/specifications/02_HOMEPAGE_SPECIFICATION.md`.** Once approved, the next candidate specifications are `01_NAVIGATION_SPECIFICATION.md` and `03_SEARCH_SPECIFICATION.md` — but none should begin without Paul's explicit go-ahead, per the placeholder-only instruction for this phase.
-2. **Paul to resolve the payment-provider decision** (`MEDUSA_EXTENSIONS.md` #4) — this is the project's sole launch-blocking open item, and blocks `ROADMAP.md` Phase 1 (backend foundation) regardless of how specification work proceeds.
+1. **`01_NAVIGATION_SPECIFICATION.md` is next**, per Paul's explicit direction — the first specification to be drafted in full since `02_HOMEPAGE_SPECIFICATION.md`. Draft it the same way `02_HOMEPAGE_SPECIFICATION.md` was: derived from and consistent with the four frozen Phase 0 documents, with testable acceptance criteria (see `DOCUMENTATION_GOVERNANCE.md` Section 11).
+2. **`02_HOMEPAGE_SPECIFICATION.md` still awaits Paul's review/approval** — drafting `01` does not supersede that.
+3. **Paul still needs to resolve the payment-provider decision** (`MEDUSA_EXTENSIONS.md` #4) — the project's sole launch-blocking open item, independent of specification-work progress.
 
-Per Paul's explicit instruction as of this reconciliation: **do not begin Navigation Specification or any further Product Specifications until repository reconciliation is complete and approved.** That work is described in `DECISION_LOG.md`'s reconciliation entry; once Paul confirms it, Section 10's two items above resume as the next actionable work.
+Any specification beyond `01_NAVIGATION_SPECIFICATION.md` still requires Paul's explicit go-ahead before it begins, per `DOCUMENTATION_GOVERNANCE.md` Section 5's rule on placeholder specifications.
 
 ---
 
@@ -328,7 +332,7 @@ Every future AI assistant working on this project must:
 
 | Field | Value |
 |---|---|
-| Document Version | 3.0 |
+| Document Version | 3.1 |
 | Last Updated | 2026-07-18 |
 | Project Phase | Phase 0 complete and frozen; Phase 1 — Product Specifications underway (`02_HOMEPAGE_SPECIFICATION.md` drafted, awaiting review) |
-| Next Planned Milestone | Paul's review of `02_HOMEPAGE_SPECIFICATION.md` and the payment-provider decision — see Section 10 |
+| Next Planned Milestone | Draft `01_NAVIGATION_SPECIFICATION.md`; Paul's review of `02_HOMEPAGE_SPECIFICATION.md`; the payment-provider decision — see Section 10 |
