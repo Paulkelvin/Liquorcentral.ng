@@ -23,6 +23,7 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 | Document | What it answers |
 |---|---|
+| [`AI_HANDOFF.md`](../AI_HANDOFF.md) | Project-level onboarding — read this first |
 | [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) | Where is the project right now? |
 | [`PRODUCT_BLUEPRINT.md`](./PRODUCT_BLUEPRINT.md) | What is LiquorCentral, and why is it built this way? |
 | [`BUSINESS_RULES.md`](./BUSINESS_RULES.md) | What are the non-negotiable rules of how the business operates? |
