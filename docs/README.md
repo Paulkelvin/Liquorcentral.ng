@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.0
+**Version:** 3.1
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -63,9 +63,9 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 | [`08_CUSTOMER_ACCOUNT_SPECIFICATION.md`](./specifications/08_CUSTOMER_ACCOUNT_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 | [`09_FOOD_ORDERING_SPECIFICATION.md`](./specifications/09_FOOD_ORDERING_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 | [`10_DELIVERY_SPECIFICATION.md`](./specifications/10_DELIVERY_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
-| [`11_ADMIN_WORKFLOWS_SPECIFICATION.md`](./specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md) | **In Progress**, v0.1 — fully drafted, awaiting review |
+| [`11_ADMIN_WORKFLOWS_SPECIFICATION.md`](./specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 
-All 11 planned specifications have now been drafted; none remain placeholders. Each was sequenced only on Paul's explicit direction, and each was drafted, reviewed, and frozen in two passes rather than invented ahead of approval — see `PROJECT_STATUS.md` for the current status of each.
+All 11 planned specifications are now **Approved — Frozen** at v1.0 — Phase 1 — Product Specifications is complete. Each was sequenced only on Paul's explicit direction, and each was drafted, reviewed, and frozen in two passes rather than invented ahead of approval — see `PROJECT_STATUS.md` for what comes next.
 
 ## Document status convention
 

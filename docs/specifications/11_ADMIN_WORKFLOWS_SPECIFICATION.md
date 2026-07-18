@@ -1,7 +1,7 @@
 # Admin Workflows Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen
+**Version:** 1.0
 **Owner:** Operations
 **Last Updated:** 2026-07-18
 
@@ -61,6 +61,7 @@ Every staff user additionally needs: to trust that what the admin shows is curre
 - **Built as Medusa Admin widgets and routes, not a bespoke application** — restating `ARCHITECTURE.md` directly: new admin pages/data are added via Medusa's documented widget/route extension points, never by editing the dashboard's own source.
 - **The dashboard reflects genuinely current state** — restating the same honesty discipline every customer-facing specification already applies (`10_DELIVERY_SPECIFICATION.md` §1): a stale count or status shown to staff risks the same downstream dishonesty to a customer that this whole document exists to prevent.
 - **Exact dashboard composition (which metrics, in what arrangement) is an operational/design decision, not fixed by this document** — this document specifies that an at-a-glance overview exists and what categories of information it must be able to show, not its exact layout (which belongs to implementation, not this behavioral specification).
+- **Both catalogs' operational state is surfaced with equal prominence** — restating the Cross-Catalog Operational Parity principle (below) directly: the dashboard never implicitly reads as Wine-&-Spirits-first with Food Central as an afterthought, or vice versa.
 
 ## 6. Product Management
 
@@ -177,6 +178,7 @@ Every staff user additionally needs: to trust that what the admin shows is curre
 - **An audit record is never editable or deletable by the staff whose action it records** — a basic integrity requirement for the log to be trustworthy at all; this document does not specify who (if anyone) can ever amend a historical record, since no prior document establishes that capability and this document does not invent one.
 - **Exact audit-log retention duration and the precise granularity of what is logged are operational parameters, not fixed by this document** — flagged as open (§28), consistent with the treatment already given to other operational parameters throughout `/docs`.
 - **Audit logging is a baseline requirement, not contingent on the open staff-permissions decision** (§15) — attributability to an individual admin-user is required whether or not roles are ever formally differentiated.
+- **This mechanism exists for accountability and troubleshooting, not staff performance evaluation** — restating the governing principle named directly in Operational Trust & Accountability (below); this document does not introduce a staff scoring, ranking, or performance-review mechanism, which is an HR/management matter outside this document's scope.
 
 ## 21. Security
 
@@ -210,6 +212,7 @@ This document reuses the same five-state taxonomy already established in `06_CAR
 - **The native Medusa Admin dashboard's own accessibility characteristics are Medusa's responsibility, not `DESIGN_SYSTEM.md`'s** — `DESIGN_SYSTEM.md` governs LiquorCentral's customer-facing brand experience and any custom admin extension this project builds; it does not retroactively govern Medusa's own unmodified admin UI, consistent with `ARCHITECTURE.md`'s "never modify Medusa core" rule.
 - **Every consequential action (a save, a status change, a deletion) provides clear, non-color-alone confirmation or error feedback** — restating the platform-wide never-color-alone rule directly, applied here to the staff audience as much as the customer-facing one.
 - **Every interactive control in a custom admin extension is fully keyboard-operable**, consistent with the platform-wide accessibility baseline — staff are not assumed to exclusively use a mouse any more than customers are assumed to exclusively use one.
+- **Focus is placed on the relevant confirmation, error, or recovered-state message after a save, a recovered interruption (Admin Workflow Recovery, below), or an exception-handling action completes** — reusing the identical focus-management discipline already established in `07_CHECKOUT_SPECIFICATION.md` §22, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` §22, and `10_DELIVERY_SPECIFICATION.md` §21 for their own post-action moments, applied here to the staff audience.
 
 ## 25. Backend Requirements
 
@@ -284,6 +287,9 @@ Every future change to the admin experience — a new workflow, a new report, a 
 - [ ] **Is the staff decision-state vocabulary reused, not reinvented?** (§22)
 - [ ] **Does it stay proportionate to the company's current operating scale**, rather than over-building for a size or complexity the business has not asked for? (§1, §2)
 - [ ] **Does it preserve no mockups, no wireframes, no implementation code, no database schema, and no API design** — this document's own governing constraint?
+- [ ] **Does it treat Wine & Spirits and Food Central with equal operational rigor**, never implicitly prioritizing one catalog's tooling over the other's? (Cross-Catalog Operational Parity)
+- [ ] **Does it avoid turning accountability tooling into a staff-performance-scoring mechanism?** (Operational Trust & Accountability)
+- [ ] **Does an interrupted staff action preserve as much completed work as is still genuinely valid?** (Admin Workflow Recovery)
 
 ## 30. Acceptance Criteria
 
@@ -297,7 +303,56 @@ Every future change to the admin experience — a new workflow, a new report, a 
 - [ ] Every custom admin extension this project builds meets §24's accessibility requirements, with no exception carved out for internal tooling.
 - [ ] No customer-facing capability not already established elsewhere in `/docs` (e.g., a loyalty benefit, a discount mechanism) is introduced through a staff-facing workflow.
 - [ ] This document itself contains no UI mockup, wireframe, implementation code, database schema, or API design, consistent with its own governing constraint.
+- [ ] Wine & Spirits and Food Central are represented with equal prominence across the dashboard, reporting, and notification surfaces, never one implicitly read as primary.
+- [ ] An interrupted staff action (a session expiring mid-edit, a partially completed multi-step action, a failed save during peak load) preserves as much completed work as is still genuinely valid, per Admin Workflow Recovery.
+
+## Admin Workflow Intent
+
+Every staff workflow specified in §5–§21 serves a small number of recognizable staff intents. Naming them here does not introduce a new mechanism — it confirms that the sections already specified serve each of these intents, mirroring the same "Intent" pattern already established in `07_CHECKOUT_SPECIFICATION.md`'s Checkout Intent, `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Intent, and `10_DELIVERY_SPECIFICATION.md`'s Delivery Intent:
+
+| Intent | What the staff member wants | Where this document already serves it |
+|---|---|---|
+| Keep the catalog accurate | Update pricing, availability, or attribute data so the customer-facing experience stays honest. | §6 Product Management, §8 Inventory Management, §9 Pricing Management. |
+| Run a promotion within the rules | Feature a collection or promotional price without needing to ask engineering, and without breaching an established cap. | §7 Category & Collection Management, §10 Promotions Management. |
+| Fulfill and resolve an order | Advance an order or food-order/kitchen stage honestly, and resolve a delivery exception. | §11 Order Management, §12 Food Order Workflow, §13 Delivery Management. |
+| Support a customer | Look up order/account context to resolve a query without overstepping into customer-owned data. | §14 Customer Management. |
+| Recover from an interruption | Get back to where they were after a session expiry, a failed save, or a partially completed action, with minimal redone work. | Admin Workflow Recovery, below. |
+
+No new mechanism is introduced by this section — it is a mapping of existing behavior onto recognizable staff intent, consistent with every prior specification's identical treatment for its own customer-facing audience.
+
+## Operational Trust & Accountability
+
+*Extends §1 (Admin Workflows Philosophy), §2 (Business Objectives), and §20 (Audit Logging) — names the connective principle directly, mirroring `10_DELIVERY_SPECIFICATION.md`'s Delivery Trust & Professionalism section's naming of the connection between a customer-facing trust claim and the operational mechanism that makes it real.*
+
+- **Staff accountability is the internal twin of `PRODUCT_BLUEPRINT.md` §11's "sold and delivered by us directly" claim** — a customer-facing trust statement is only as true as the internal discipline behind it; §20's attributability requirement is how that discipline is made real, not a bureaucratic add-on.
+- **An admin action of consequence is never anonymous, regardless of the open staff-permissions decision (§15)** — restating §20 directly as a matter of principle, not only mechanism.
+- **This document does not use audit logging as a staff-performance-scoring, ranking, or surveillance mechanism** — its purpose is accountability and troubleshooting (§20), and any future use of this data for staff evaluation is an HR/management decision entirely outside this document's scope, not an extension of what this specification establishes.
+- **Trust, in the admin context, is built the same way it is built for customers** (`EXPERIENCE_PRINCIPLES.md` #6, Speed Builds Trust; #3, Premium Through Discipline) — honest, current, attributable information, not a rating or scoring device layered on top of it.
+
+## Cross-Catalog Operational Parity
+
+*Extends §2 (Business Objectives) — restates `BUSINESS_RULES.md`'s and `01_NAVIGATION_SPECIFICATION.md`'s "equal prominence" principle, established for the customer-facing experience, applied here to internal tooling investment for the first time.*
+
+- **Wine & Spirits and Food Central receive equal operational seriousness in this document's tooling, never one treated as the primary business and the other as a secondary feature** — restating `BUSINESS_RULES.md`'s customer-experience rule ("the experience must feel like one premium LiquorCentral ecosystem") applied here to the internal side of that same ecosystem.
+- **Equal seriousness does not mean identical workflows** — restating §8's own finding directly: Wine & Spirits' stock-count model and Food Central's availability-state model are genuinely different operational realities, and treating them with equal rigor means each gets a workflow suited to its own reality, not a forced shared mechanism that fits neither well.
+- **Dashboard, reporting, and notification surfaces (§5, §18, §19) reflect both catalogs' operational state without implicit prioritization** — restating the new §5 bullet directly: neither catalog's queue, alert, or summary is positioned or weighted as more important by default.
+- **This section does not change any workflow already specified in §6–§14** — it names the standing principle those sections already follow, so a future contributor understands why neither catalog's tooling was ever treated as secondary, rather than leaving it as an unstated assumption.
+
+## Admin Workflow Recovery
+
+*Extends §23 (Empty, Loading & Error States) — governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery, `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`'s Account Recovery, `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Recovery, and `10_DELIVERY_SPECIFICATION.md`'s Delivery Recovery sections, adapted here to staff-side interruptions rather than customer-side ones.*
+
+The governing principle: **an interrupted staff action preserves as much completed work as is still genuinely valid, and clearly communicates the one part that had to be redone — it never silently discards more than the interrupting event actually requires.**
+
+| Scenario | Admin behaviour | How staff progress is preserved |
+|---|---|---|
+| A staff session expires mid-edit (a product, category, or promotion) | The staff member is told plainly their session ended and prompted to log in again; work already saved before expiry remains saved. | As much in-progress work as is genuinely possible is preserved; nothing is silently discarded, and nothing is silently saved on the staff member's behalf either. |
+| A multi-step action partially completes then fails (e.g., a promotional collection created but its end date fails to save) | The staff member is told specifically what succeeded and what did not — never a generic failure that leaves them unsure what state the record is in. | The successfully completed portion is not rolled back or lost; only the failed step needs to be retried. |
+| A save fails during peak load | The staff member is told the save failed and is offered a retry, consistent with §23's honest-error-messaging requirement. | The staff member's input is not silently cleared, so a retry does not require re-entering everything from scratch, wherever technically possible. |
+| A network interruption occurs during an order-status or food-order-stage update (§11, §12) | The staff member is never left uncertain whether the update registered — the interface confirms the actual current state once connectivity is restored, mirroring `10_DELIVERY_SPECIFICATION.md` §21's identical requirement for the customer-facing equivalent. | The order's true state is never ambiguous to the staff member acting on it, since an ambiguous internal state risks an equally ambiguous customer-facing one (§1). |
+
+**Nothing in this section authorizes silently discarding a staff member's in-progress work for implementation convenience.** Where a scenario cannot be resolved automatically, the admin experience is honest that it cannot, rather than presenting an unexplained empty or broken state.
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the internal-operations counterpart to all ten customer-facing specifications (`01_NAVIGATION_SPECIFICATION.md` through `10_DELIVERY_SPECIFICATION.md`), each of which it mirrors operationally without redefining.
+**Document status:** Approved — Frozen (v1.0). This is now the authoritative reference for all internal/staff-facing admin implementation platform-wide — the internal-operations counterpart to all ten customer-facing specifications (`01_NAVIGATION_SPECIFICATION.md` through `10_DELIVERY_SPECIFICATION.md`), each of which it mirrors operationally without redefining. With this freeze, all 11 planned Phase 1 specifications are complete. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.

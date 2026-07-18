@@ -1,11 +1,38 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.2
+**Version:** 3.3
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v30 — 2026-07-18 — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` finalized to v1.0 and frozen — Phase 1 complete
+
+**Context:** Paul approved `11_ADMIN_WORKFLOWS_SPECIFICATION.md`, then requested a final refinement pass — a full review against all four frozen Phase 0 documents and all ten frozen prior specifications, plus meaningful refinements where they genuinely strengthened the specification — before freezing v1.0. This was the eleventh and final planned Phase 1 specification. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md`):**
+
+- **Admin Workflow Intent** — a table mapping five recognizable staff intents (keeping the catalog accurate, running a promotion within the rules, fulfilling and resolving an order, supporting a customer, recovering from an interruption) onto mechanisms already specified elsewhere in the document, mirroring `07_CHECKOUT_SPECIFICATION.md`'s Checkout Intent, `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Intent, and `10_DELIVERY_SPECIFICATION.md`'s Delivery Intent.
+- **Operational Trust & Accountability** — names staff accountability as the internal twin of `PRODUCT_BLUEPRINT.md` §11's "sold and delivered by us directly" claim; explicitly confirms audit logging exists for accountability and troubleshooting, never staff-performance scoring.
+- **Cross-Catalog Operational Parity** — extends `BUSINESS_RULES.md`'s and `01_NAVIGATION_SPECIFICATION.md`'s customer-facing "equal prominence" principle to internal tooling investment for the first time: equal seriousness of treatment, not identical workflows.
+- **Admin Workflow Recovery** — four named scenarios (a session expiring mid-edit, a multi-step action partially completing then failing, a save failing during peak load, a network interruption during a status update) governed by the same intent-preservation principle already established in `06`'s Cart Recovery, `07`'s Checkout Recovery, `08`'s Account Recovery, `09`'s Food Ordering Recovery, and `10`'s Delivery Recovery sections.
+
+**Changed (within the same document):**
+
+- §5 (Dashboard) — new bullet on cross-catalog parity.
+- §20 (Audit Logging) — new bullet confirming the mechanism is not a staff-performance-scoring device.
+- §24 (Accessibility) — new bullet on focus management after a save or recovery action.
+- §29 (Admin Workflows Quality Checklist) — three new checks; §30 (Acceptance Criteria) — two new checks. No previously-flagged open operational decision was resolved or silently assumed.
+- Header changed to **Version 1.0, Status: Approved — Frozen**.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.1) — specification status table updated: `11_ADMIN_WORKFLOWS_SPECIFICATION.md` now **Approved — Frozen**, v1.0; confirms all 11 planned specifications are frozen and Phase 1 — Product Specifications is complete.
+- `docs/PROJECT_STATUS.md` (v3.2), `docs/ROADMAP.md` (v3.5) — Current phase, Phase 1 status, Completed work, Work in progress, and Next recommended task all updated to reflect Phase 1's completion; Phase 0d marked ✅ Complete in `ROADMAP.md`; the "Admin operations" grouping in Decisions Awaiting Approval is unchanged, since none of its items were resolved by this pass.
+- `docs/DECISION_LOG.md` — new entry recording the refinement and freeze.
+
+**Not changed:** no previously-flagged open operational or business decision (allergen/ingredient data-verification responsibility, staff-permission granularity, audit-log retention and granularity, report definitions, staff-facing alert thresholds) was resolved by this pass — all remain explicitly open.
 
 ## v29 — 2026-07-18 — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` drafted in full
 
