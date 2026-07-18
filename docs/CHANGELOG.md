@@ -1,11 +1,37 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.6
+**Version:** 2.7
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v24 — 2026-07-18 — `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, then requested a final refinement pass — a full review against all four frozen Phase 0 documents and all seven frozen prior specifications, plus meaningful refinements in named areas — before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/08_CUSTOMER_ACCOUNT_SPECIFICATION.md`):**
+
+- **Account Lifecycle** — a new unnumbered section consolidating the account's state transitions (Guest → Registered → Active → Deactivated → Deleted) into one view, specifying reactivation mechanics and an explicit rule that in-progress orders are never affected by a lifecycle transition.
+- **Session & Security Behaviour** — a new unnumbered section specifying password-change session invalidation, permitted concurrent multi-device sessions, login rate-limiting/lockout, and step-up reauthentication for sensitive actions.
+- **Account Recovery** — a new unnumbered section (five named scenarios: forgotten password, lost registration-email access, expired links, session expiry mid-edit, lockout), governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery and `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery sections.
+
+**Changed:**
+
+- §12 (Saved Addresses) gained a bullet on default-address-deletion behavior.
+- §15 (Reordering Behaviour) gained an opening "reorder philosophy" framing.
+- §16 (Notification Preferences) gained a bullet on the pre-preference default state.
+- §19 (Trust Considerations) gained a cross-reference to session security as a trust mechanism.
+- §22 (Accessibility) gained two bullets: focus management after an irreversible action, live-region announcements for account state changes.
+- §28 (Risks & Assumptions) updated to note the lifecycle/session/recovery gaps are now fully specified, without altering any still-open business/legal decision.
+- §29 (Account Quality Checklist) gained three new checks; §30 (Acceptance Criteria) gained five new checks.
+- Document header: **Version 0.1 → 1.0**, **Status: In Progress → Approved — Frozen**, per Paul's explicit instruction to freeze once the refinement pass was complete.
+- `docs/README.md` (v2.5) — specification status table updated to `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`: Approved — Frozen, v1.0.
+- `docs/PROJECT_STATUS.md` (v2.6), `docs/ROADMAP.md` (v2.9) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: eight specifications now frozen; a new "Account & privacy" grouping added to Decisions Awaiting Approval.
+- `docs/DECISION_LOG.md` — new entry recording the refinement pass and the freeze.
+
+**Not changed:** a standalone "Operational Behaviour" section was deliberately not added — the one genuine operational question (lifecycle-vs-in-progress-order interaction) is addressed within Account Lifecycle instead, avoiding collision with the different, already-established meaning "Operational Behaviour" carries in `04_PRODUCT_LISTING_SPECIFICATION.md` and `06_CART_SPECIFICATION.md`.
 
 ## v23 — 2026-07-18 — `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` drafted in full
 

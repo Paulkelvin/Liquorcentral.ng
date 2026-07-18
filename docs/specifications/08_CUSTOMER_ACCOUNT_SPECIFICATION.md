@@ -1,7 +1,7 @@
 # Customer Account Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen (2026-07-18)
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -112,6 +112,7 @@ This is a flat, single-level structure — no nested account sub-sections deep e
 - **Saved addresses use the identical freeform, landmark-friendly field structure already established in `07_CHECKOUT_SPECIFICATION.md` §7** — the account area does not introduce a second, stricter address format; an address good enough to check out with is good enough to save.
 - **One saved address may be marked as default**, pre-selected at checkout (`07_CHECKOUT_SPECIFICATION.md` §7's "logged-in customer may select a saved address" reference) — but manual entry or selecting a different saved address always remains available, never overridden by the default.
 - **Editing or removing a saved address never retroactively changes a past order** — an order's delivery address is fixed at the time it was placed (§14); saved addresses are a convenience for *future* checkouts only.
+- **Removing a saved address marked as default leaves no default until the customer sets a new one** — checkout (`07_CHECKOUT_SPECIFICATION.md` §7) falls back to manual entry or another saved address in that case, never guessing which remaining address should silently become the new default.
 - **Current research finds address-book management is a genuinely distinct concern from checkout's own address capture**, since customers manage saved addresses both proactively (from the account area) and reactively (during checkout itself) — this document specifies the account-area management path; `07_CHECKOUT_SPECIFICATION.md` §7 remains the authoritative source for address capture behavior during checkout itself (Baymard Institute, cited below).
 
 ## 13. Order History
@@ -131,6 +132,8 @@ This is a flat, single-level structure — no nested account sub-sections deep e
 
 ## 15. Reordering Behaviour
 
+**Reordering exists to make a known-good decision fast again, not to make a new decision for the customer.** Every item, quantity, and configuration in a past order is treated as a hypothesis to re-validate below, never as ground truth to blindly restore — the same discipline `06_CART_SPECIFICATION.md` §1 already applies to the cart, applied here to a cart populated from history rather than from fresh browsing.
+
 - **A single "Reorder" action on a past order** re-adds its items to a fresh cart — directly implementing `USER_FLOWS.md` Flow 7's exact sequence.
 - **Reordered items are re-validated against current availability and pricing, never a blind copy of the old order** — an item that's since become unavailable, discontinued, or changed in price is shown honestly in the resulting cart (`06_CART_SPECIFICATION.md` §12, §13), not silently re-added as if nothing changed. This is the same "prepare, never surprise" principle `06_CART_SPECIFICATION.md` §1 already established, applied to a cart populated from history rather than from fresh browsing.
 - **A partially-reorderable order still reorders what it can**, with the customer told plainly which items could not be re-added and why (e.g., discontinued) — never a silent, all-or-nothing failure over one unavailable item among several.
@@ -142,6 +145,7 @@ This is a flat, single-level structure — no nested account sub-sections deep e
 - **A customer can choose which order-related notifications they receive and through which channel(s)**, once the notification-channel decision is made (`MEDUSA_EXTENSIONS.md` #5 — WhatsApp and/or SMS remain undecided) — this document specifies that a preference exists and is respected, not the channel(s) it applies to.
 - **Transactional notifications directly tied to an order in progress** (confirmation, delivery updates) are not optional — a customer cannot silently opt out of being told their own order is on its way; only the *channel* choice, and any non-transactional communication (if any is ever introduced), is a genuine preference.
 - **No marketing or promotional preference is specified here**, since no prior document establishes a marketing-communication program for this platform — this document does not invent one; if introduced later, it is a new decision requiring its own specification.
+- **Before a customer sets an explicit preference, the default is essential/transactional notifications only, through whichever channel is ultimately adopted** (`MEDUSA_EXTENSIONS.md` #5) — a new account is never opted into anything beyond the transactional baseline this section already requires.
 - **This section deliberately does not specify personalization of any kind** (e.g., preference-driven content curation) — personalization is explicitly deferred platform-wide (`02_HOMEPAGE_SPECIFICATION.md` §14, `03_SEARCH_SPECIFICATION.md`'s Search Intent section, `04_PRODUCT_LISTING_SPECIFICATION.md`'s Listing Intent section), and this document does not reopen that deferral for notifications specifically.
 
 ## 17. Privacy & Security
@@ -167,6 +171,7 @@ Every trust mechanism the account area must honor, extending the same discipline
 - **Order history is a permanent, unaltered record** (§14) — a customer must be able to trust that what they see there is exactly what happened, not a live view that could quietly drift from what was actually charged or delivered.
 - **No account feature is used to pressure a purchase** — no artificial urgency, no manufactured "your saved item is almost gone" messaging tied to account data, consistent with `EXPERIENCE_PRINCIPLES.md` #15 (Build Relationships, Not Just Transactions) and the identical rule already established in every prior specification.
 - **Account creation is never framed as safer or more legitimate than guest checkout** — both are equally trustworthy, equally secure paths to the same purchase (§7); the account area earns its use through convenience, not through implying guest checkout is somehow lesser.
+- **Session security (Session & Security Behaviour, below) is itself a trust mechanism** — a customer who changes their password expects every other session to respect that change immediately, not silently continue as if nothing happened.
 
 ## 20. Customer Decision States
 
@@ -196,6 +201,8 @@ This document reuses the same five-state taxonomy already established in `06_CAR
 - **Every touch target** (reorder buttons, address edit/delete controls, notification-preference toggles) **meets the 44×44px minimum** (`DESIGN_SYSTEM.md` §B11).
 - **No account status or notice** (verification reminders, decision states in §20) **is conveyed by color alone** — the same platform-wide rule.
 - **Keyboard navigation**: every account page and form is fully operable by keyboard alone, with no trap anywhere, including the password show/hide toggle and any confirmation dialog (e.g., account deletion, §18).
+- **Focus moves to a confirmation message after an irreversible action** (e.g., an account deletion request, §18) — never left on a button that no longer has the same meaning once the action has been taken.
+- **Account state changes** (a lockout, a session expiry, any Account Recovery scenario below) **are announced via the same polite live-region mechanism already established in `06_CART_SPECIFICATION.md` §23** — a screen-reader user is told what happened, not left to notice a state change only visually.
 
 ## 23. Analytics Events
 
@@ -269,6 +276,7 @@ None of the above is authorized or scoped work — this section exists solely to
 - **Reorder re-validation (§15) is only as good as the honesty of its "what changed" messaging** — a reorder that silently succeeds despite meaningful price/availability changes would violate this document's own trust standard (§19) as surely as a cart that hides a price change would violate `06_CART_SPECIFICATION.md` §1.
 - **The order-status vocabulary (§13) is not specified in detail here** — it depends on operational/fulfillment tracking granularity not yet established in `MEDUSA_EXTENSIONS.md` or `DELIVERY_MODEL.md`.
 - **A returns pathway (§14) is deliberately unspecified** pending the alcohol return-policy decision — implementing order details without anticipating that dependency risks a rework once the policy exists.
+- **Account Lifecycle, Session & Security Behaviour, and Account Recovery are now fully specified** (below), closing what was previously only an implied gap around reactivation, concurrent sessions, rate-limiting, and lost-access scenarios — none of this resolves the three still-open business/legal decisions above, which remain exactly as open as before this pass.
 
 **Assumptions:**
 
@@ -290,6 +298,9 @@ Every future change to the account area — a new profile field, a new notificat
 - [ ] **Does it avoid any manufactured urgency or pressure?** (§19)
 - [ ] **Is the customer decision-state vocabulary reused, not reinvented?** (§20)
 - [ ] **Does it stay within v1's scope**, correctly deferring everything named in §27 rather than smuggling any of it in early?
+- [ ] **Does it respect the full account lifecycle** (Guest → Registered → Active → Deactivated → Deleted), including that an in-progress order is never affected by a lifecycle transition? (Account Lifecycle)
+- [ ] **Does it maintain session security** — invalidating other sessions on password change, rate-limiting failed logins, requiring step-up reauthentication for sensitive actions? (Session & Security Behaviour)
+- [ ] **Does recovery restore access without weakening security?** (Account Recovery)
 
 ## 30. Acceptance Criteria
 
@@ -307,10 +318,52 @@ Every future change to the account area — a new profile field, a new notificat
 - [ ] All analytics events listed in §23 fire correctly and exactly once per corresponding user action.
 - [ ] No business or legal decision named as open in §16, §17, §18, §28 (notification channel, data retention/NDPR specifics, deletion/deactivation policy) is silently assumed or resolved by this document or its implementation.
 - [ ] No feature named as explicitly out of scope in §27 (loyalty, wishlists, reviews, subscriptions, personalization, social login, AI features) appears anywhere in the account area.
+- [ ] Changing a password invalidates any other active session for that account.
+- [ ] Repeated failed login attempts trigger a rate limit, communicated honestly and distinctly from a wrong-password error.
+- [ ] Changing the primary email or requesting account deletion each require re-confirming identity immediately before the action completes.
+- [ ] Deactivating or deleting an account never affects the fulfillment of an order already placed.
+- [ ] A customer locked out by repeated failed attempts is offered a clear path back to access (password reset), not left waiting with no alternative.
+
+## Account Lifecycle
+
+*Consolidates the account's state transitions — already specified individually across §4, §6, §7, and §18 — into one lifecycle view. Operational behaviour concerning in-progress orders is addressed here rather than as a separate section, since its substance belongs to lifecycle transitions specifically and would otherwise duplicate the different, already-established meaning "Operational Behaviour" carries in `04_PRODUCT_LISTING_SPECIFICATION.md` and `06_CART_SPECIFICATION.md` (product availability, not account state).*
+
+- **Guest** — the default state for every visitor and every customer who has never created an account (§7). A guest can browse, add to cart, and complete checkout in full (`07_CHECKOUT_SPECIFICATION.md` §6) without ever transitioning out of this state.
+- **Registered** — created via deliberate sign-up or the post-purchase offer (§6). A newly registered account is immediately Active (below); registration and activation are the same event, not two separate steps.
+- **Active** — the account's ordinary, ongoing state: login works, order history accumulates, saved data is usable. Everything specified in §5–§17 describes the Active state.
+- **Deactivated** — a reversible state requested by the customer (§18). A deactivated account cannot log in, and its saved data (addresses, preferences) is retained but not usable, until reactivated. **Reactivation** occurs the moment the customer successfully authenticates again (e.g., via password reset, since ordinary login is disabled while deactivated) — no separate "reactivate" request or waiting period is specified here; the exact mechanics of re-enabling login credentials are an implementation detail, not a new business decision, since deactivation is explicitly reversible by design.
+- **Deleted** — a not-reversible state requested by the customer (§18). Login is permanently disabled and personal data is removed per the retention policy still open (§17, §28) — but, restated from §18, an order already placed remains its own historical/transactional record independent of the account's existence.
+- **In-progress orders are never affected by a lifecycle transition.** An order placed while Active continues to be fulfilled normally regardless of a subsequent deactivation or deletion request — deactivating or deleting an account is a statement about future access, never a cancellation of a commitment already made to a courier, kitchen, or payment provider. This is the direct, necessary consequence of `06_CART_SPECIFICATION.md` §1's "prepare, never surprise" principle applied to the account relationship itself: a customer choosing to leave should never accidentally orphan an order already in motion.
+
+## Session & Security Behaviour
+
+*Expands §8 (Login & Logout) and §9 (Password Reset) with baseline security expectations that apply regardless of which specific technology choices are made — none of what follows requires a business decision, the same way §8's "never confirm or deny account existence" rule did not.*
+
+- **Changing a password invalidates every other active session** (§8) — logging in again on the device making the change is expected, but a session on another device is not left silently authenticated with a password the customer just changed, a standard security baseline.
+- **Concurrent sessions across multiple devices are permitted** — nothing in this document restricts an account to a single device or session at a time; if a future security decision requires otherwise, that is a new decision requiring its own specification, not assumed here.
+- **Repeated failed login attempts are rate-limited** — a standard, non-optional security baseline protecting against automated guessing, distinct from any business decision about *how* login itself behaves (§8). The exact threshold and lockout duration are implementation parameters, not fixed by this document.
+- **A temporary lockout from repeated failed attempts is communicated honestly** (e.g., "too many attempts, try again shortly" or a reset-link offer) — never indistinguishable from a genuine wrong-password failure, so a locked-out customer isn't left guessing why login keeps failing.
+- **Sensitive actions require re-confirmation of identity**: changing the password (§11, already requires the current password), changing the primary email (§11), and requesting account deletion (§18) each require the customer to re-enter their password or complete a fresh authentication step immediately before the action completes — a standard "step-up" pattern preventing a momentarily unattended, still-logged-in session from being used to take an irreversible action.
+
+## Account Recovery
+
+*Extends §21 (Empty, Loading & Error States) and §9/§10 (Password Reset, Email Verification) — governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery and `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery sections, adapted here to identity and access rather than commerce state.*
+
+The governing principle: **recovery restores a customer's access without ever weakening the security the rest of this document establishes** — a fast recovery path and a secure one are not competing goals here.
+
+| Scenario | Account behaviour | How the customer is served |
+|---|---|---|
+| Forgotten password | Standard password-reset flow (§9) — no account-existence leakage. | Full access restored via a fresh password, no data lost. |
+| Lost access to the email used to register | No self-service recovery path exists for this specific case, since email is the sole identity anchor for a native-Auth-only account (§6) — this is a support-assisted case, not a gap this document fills silently. Flagged, not invented (§28). | The customer is told plainly that this specific recovery requires support contact, rather than being led through a reset flow that cannot succeed. |
+| Expired password-reset or verification link (§9, §10) | The customer is told the link expired, plainly, with a one-action path to request a fresh one — never a generic or confusing error. | A fresh link is requested in one action; no other account data is affected. |
+| Session expires mid-edit (profile, §11; address, §12) | Unsaved changes are not silently lost without warning where technically avoidable — the customer is told their session ended and prompted to log in again; anything already saved before expiry remains saved. | As much of the customer's in-progress work is preserved as is genuinely possible; nothing is saved silently on their behalf either. |
+| Locked out after repeated failed attempts (Session & Security Behaviour, above) | The lockout message itself offers the password-reset path as the way out, rather than leaving the customer to wait with no alternative. | A clear, immediate path back to access, not just a wait. |
+
+**Nothing in this section authorizes silently discarding a customer's account data or access for implementation convenience.** Where a scenario cannot be resolved automatically (lost email access), the account area is honest that it cannot, rather than pretending a self-service path exists when it doesn't.
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for customer account implementation, alongside `01_NAVIGATION_SPECIFICATION.md` §16 (the shell it sits beneath), `06_CART_SPECIFICATION.md` (Saved-for-Later, cart persistence), and `07_CHECKOUT_SPECIFICATION.md` (the post-purchase account-creation offer it extends).
+**Document status:** Approved — Frozen (v1.0). This is now the authoritative reference for all customer account implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` §16 (the shell it sits beneath), `06_CART_SPECIFICATION.md` (Saved-for-Later, cart persistence), and `07_CHECKOUT_SPECIFICATION.md` (the post-purchase account-creation offer it extends) without redefining any of them. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.
 
 ## Sources
 
