@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.7
+**Version:** 2.8
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v25 — 2026-07-18 — `09_FOOD_ORDERING_SPECIFICATION.md` drafted in full
+
+**Context:** With eight specifications frozen, Paul directed Product Specifications to continue with `09_FOOD_ORDERING_SPECIFICATION.md`, naming an extensive coverage list and directing that the document define Food Central as its own operational experience while remaining part of the single LiquorCentral platform. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/09_FOOD_ORDERING_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative Food Central ordering specification, covering all 30 required sections: Food Ordering Philosophy, Business/Customer Objectives, Entry Points, Food Catalog Structure & Menu Organization, Availability States (a three-state model distinct from Wine & Spirits' stock-based taxonomy), Cook-to-Order Workflow, Preparation Status & Estimated Preparation Times, Same-Day Ordering Rules & Cutoff Behaviour, Scheduling Orders, Pickup Workflow, Delivery Workflow (Customer-Facing), Mixed Wine & Food Orders, Ingredient Transparency & Allergen Information, Quantity Handling & Customisation (Explicitly Out of Scope), Menu Availability Changes & Ingredient Shortages, Customer Expectations During Preparation, Food-Specific Trust Considerations, Customer Decision States, Empty/Loading/Error States, Accessibility, a **Kitchen Operational Considerations** section, Analytics Events, SEO Considerations, Backend Requirements, Performance Expectations, a **Future Expansion & Explicitly Out of Scope** section naming every excluded feature, Risks & Assumptions, a closing **Food Ordering Quality Checklist**, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §6/§10, `BUSINESS_RULES.md`, `DELIVERY_MODEL.md`, `USER_FLOWS.md` Flow 4, and all eight frozen prior specifications. Grounded in limited external research (Baymard on food delivery/takeout UX benchmarking) cited inline and in a Sources section — no layouts, interfaces, or wording copied. Confirms several genuine open operational decisions (order-status vocabulary, cutoff/slot parameters, scheduling horizon, kitchen operating hours, allergen-data ownership), none resolved here.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.6) — specification status table updated: `09_FOOD_ORDERING_SPECIFICATION.md` now **In Progress**, v0.1, full draft complete, awaiting review.
+- `docs/PROJECT_STATUS.md` (v2.7), `docs/ROADMAP.md` (v3.0) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: nine specifications now drafted (eight frozen, Food Ordering awaiting review); a new "Food ordering operations" grouping added to Decisions Awaiting Approval.
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting.
+
+**Not changed:** table booking, dine-in, loyalty, subscriptions, AI recommendations, reviews, recipe content, and meal customization beyond established attributes remain unbuilt and unspecified anywhere in `/docs` — this draft explicitly names each as out of scope rather than silently omitting them.
 
 ## v24 — 2026-07-18 — `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` finalized to v1.0 and frozen
 
