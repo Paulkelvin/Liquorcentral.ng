@@ -1,7 +1,7 @@
 # Product Listing Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen (2026-07-18)
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -89,6 +89,8 @@ Not specified here — see `03_SEARCH_SPECIFICATION.md`. The only fact this docu
 
 The product card is the single most-repeated component on the platform, appearing in every listing type (§5), on the homepage (`02_HOMEPAGE_SPECIFICATION.md` §8.4–§8.6, §8.8), and in search results (`03_SEARCH_SPECIFICATION.md`). Its behavior is specified once, here, and referenced everywhere else — no page redefines it independently.
 
+*See "Product Card Information Hierarchy" near the end of this document for the explicit always-visible/conditionally-visible/never-shown priority order this section's "at most one supporting fact" rule implements.*
+
 **Available information.** A card shows, at minimum: product image, name, and current price. Current research on card design is specific and worth taking seriously here: reducing a card to its essential elements (image, name, price) rather than crowding it with every available fact measurably improves click-through to the detail page — a card's job is to earn the click, not to replace the product detail page's structured fact sheet (`PRODUCT_BLUEPRINT.md` §3). Beyond the three essentials, a card may show **at most one** supporting fact appropriate to context (e.g. a Food Central card's prep-time/availability indicator, or a single promotional badge, §17) — never both at once, to preserve the restraint this research and `EXPERIENCE_PRINCIPLES.md` #3 both call for.
 
 **Interaction behaviour.** The card's primary action is navigation to the product detail page, and the entire card surface (image, name) is that one primary link. Where a secondary action exists (a quick-add, §9's "quick actions" below), it is implemented as a separate, sibling control outside the primary link — never a second link nested inside the first, which is both invalid markup and a documented screen-reader confusion source. This is a deliberate, research-grounded accessibility decision, not an implementation detail left open (§24).
@@ -150,6 +152,8 @@ Reuses `03_SEARCH_SPECIFICATION.md` §6/§13's existing rules in full: selected 
 
 ## 16. Merchandising Rules
 
+*See "Merchandising Governance" near the end of this document for the full statement of what merchandising can and cannot influence, promotional limits, expiry behavior, and trust requirements — this section's rules are that governance model's application to listing pages specifically.*
+
 Listing pages inherit the same merchandising discipline already established for navigation and search, rather than defining a parallel set of rules:
 
 - **Default order is Featured** (§11), driven by the same Category/Collection position field merchandising already controls without developer involvement, per `01_NAVIGATION_SPECIFICATION.md`'s Navigation Governance model.
@@ -183,6 +187,8 @@ Listing pages inherit the same merchandising discipline already established for 
 - **Richer facet sets are expected and supported** (§10) — a Wine & Spirits listing is where the platform's discovery-oriented pacing is most fully expressed, in contrast to Food Central's speed-oriented listings (§19).
 
 ## 21. Empty States
+
+*See "Operational Behaviour" near the end of this document for how listings handle the full catalog-state lifecycle (unavailable, low stock, price changes, promotion expiry, hidden, discontinued) — this section covers the empty-page cases specifically; that section covers state transitions within an otherwise-populated listing.*
 
 - **A category or collection with zero currently-available products** does not disappear from navigation (`01_NAVIGATION_SPECIFICATION.md` §24 already covers this) and, when reached, shows a clear "nothing available right now" message with a link to a sibling category or collection — the same graceful-fallback discipline `02_HOMEPAGE_SPECIFICATION.md` §19 and `03_SEARCH_SPECIFICATION.md` §18 already apply elsewhere, not restated with different wording here.
 - **A facet combination reducing an otherwise-nonempty listing to zero** reuses `03_SEARCH_SPECIFICATION.md` §19's exact treatment: indicate which filter is responsible and offer to remove the most restrictive one, distinct from a genuinely empty category.
@@ -281,7 +287,100 @@ None of the above is authorized or scoped work — `PRODUCT_BLUEPRINT.md` and `M
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for all product listing and browsing implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` (entry points), `02_HOMEPAGE_SPECIFICATION.md` (curated shelf links), and `03_SEARCH_SPECIFICATION.md` (the shared product card component) without redefining any of them.
+# Listing Intent
+
+Everything above specifies *mechanisms* (facets, sorting, cards, Load More). This section maps those mechanisms onto named customer browsing intentions, so listing behavior can be checked against real scenarios — the listing-page counterpart to `03_SEARCH_SPECIFICATION.md`'s "Search Intent" section. **Every adaptation below is achieved through mechanisms already specified elsewhere in this document — none of it introduces AI, machine learning, or personalization into Version 1.** Intent is inferred only from which listing a customer entered and what they do within it (facets applied, sort chosen), never from browsing history, account data, or an inferred profile.
+
+| Browsing intent | Typical signal | How listing behavior supports it | Mechanism |
+|---|---|---|---|
+| Browsing for inspiration | Entering a broad category or an editorial Collection with no facets applied | A scannable grid at Featured order (§11) surfaces merchandising-curated context first; the restrained card (§9, Product Card Information Hierarchy below) keeps browsing low-pressure | §6, §7, §9, §11 |
+| Buying a known product | Arriving via a specific category, or a search-result "closest matching category" link (`03_SEARCH_SPECIFICATION.md` §18) | Fast-scan grid, click-through (or quick-add, §9) reaches the product with minimal steps | §9, §13 |
+| Comparing similar products | Applying one or more facets within a category (§10) | Facets narrow to genuinely comparable items; Load More (§13) keeps every compared item on one stable, referenceable page rather than scattering them across auto-loading content | §10, §12, §13 |
+| Shopping within a budget | Applying the Price facet or the Price sort (§10, §11) | Price is always shown in full and honestly (§9) so a budget-driven comparison is trustworthy at a glance; no query-free-text budget parsing exists in v1 — the same deliberate limitation `03_SEARCH_SPECIFICATION.md`'s Search Intent section already states for search, extended here | §9, §10, §11 |
+| Premium/luxury exploration | Entering a premium-framed Collection (e.g. "Sommelier's Picks") | Featured order (§11) and the restrained, one-badge-maximum card (§9) protect a premium feel rather than a discount-grid one — the listing-level expression of `EXPERIENCE_PRINCIPLES.md` #3 | §7, §9, §11 |
+| Gift shopping | Entering the Gifting Collection (`01_NAVIGATION_SPECIFICATION.md` §12) | The same Collection-listing pattern as any other, framed by curated membership rather than a gift-specific listing mode | §7 |
+| Pairing wine with food | Entering a Wine & Spirits listing already primed by a cross-sell moment (§18), or a Food Central listing considering the reverse | Served by the single page-level cross-sell moment (§18), not a per-card mechanism — consistent with the restraint already established there | §18, §20 |
+
+No intent above requires new backend infrastructure beyond what §6–§17 already specify — this section is a map of existing mechanisms onto named customer scenarios, not a new system. If a future intent genuinely cannot be served this way, that is a trigger to consider the personalization or AI-ranking work already named in §29 (Future Expansion) — not a reason to force a workaround into v1's deterministic model.
+
+# Product Card Information Hierarchy
+
+This section states, explicitly and in priority order, what appears on a product card — extending §9's "at most one supporting fact" rule into a complete, checkable hierarchy. The objective is consistency across both catalogs while still respecting their different shopping patterns (§19, §20).
+
+**Always visible, on every card, in every context (§9):**
+- Product image
+- Product name
+- Current price, in full, in the platform's currency
+
+**Conditionally visible — at most one of the following per card, never more than one at a time (§9):**
+- A single promotional badge (§17), when a genuine, active promotion applies
+- A catalog-specific supporting fact: for Food Central, prep-time or availability/cutoff information (`01_NAVIGATION_SPECIFICATION.md` §14, `02_HOMEPAGE_SPECIFICATION.md` §8.5); for Wine & Spirits, this slot is more often left empty than used, consistent with §20's click-through-first pacing — a badge (when genuinely warranted) is the more common occupant of this single slot on a wine card
+- A quick-add control (§9) — present or absent per catalog (§9's Quick Actions rule), and visually and structurally separate from the one-fact slot above, not competing with it for the same space
+
+**Never shown on a listing card, regardless of catalog:**
+- Full tasting notes, full ingredient lists, or full product descriptions — these belong to the product detail page's structured fact sheet (`PRODUCT_BLUEPRINT.md` §3) and repeating them on a card would directly contradict the card-simplification research already cited in §9
+- Multiple simultaneous badges or supporting facts — the one-slot rule above has no exception for "important" information; if something feels important enough to break the rule, that is a signal it belongs on the product detail page, not a reason to add a second slot
+- Any customer-specific or personalized content (a "recommended for you" label, a browsing-history-based note) — out of scope for v1 per §29 and Listing Intent's own explicit boundary above
+- Fabricated or unverifiable claims (invented scarcity, unverified "best-seller" labels not backed by real data) — the same non-manipulation standard §16/§17 and Merchandising Governance below already establish
+
+This hierarchy applies identically whether the card renders in a category listing, a collection listing, a homepage shelf, or a search result (§9) — one card specification, not a per-surface variation.
+
+# Merchandising Governance
+
+Extends §16's rules into a complete statement of merchandising's authority over listing pages — what it can influence, what it cannot, and the limits that keep the difference enforceable rather than aspirational. This is the listing-page instance of the same governance model `01_NAVIGATION_SPECIFICATION.md`'s Navigation Governance and `03_SEARCH_SPECIFICATION.md`'s Ranking Philosophy already establish for their own domains.
+
+**What merchandising can influence, without developer involvement, once the mechanism is built:**
+- The Featured default order (§11), via the same Category/Collection position field navigation already uses.
+- Which products carry the single promotional badge slot (§9, Product Card Information Hierarchy) and its content ("New," "Limited," "Gift-Ready," etc.).
+- Which Collections exist and which products belong to them (§7), including time-boxed promotional Collections.
+- The single page-level cross-sell moment's placement and content, where the underlying "pairs with" data exists (§18).
+
+**What merchandising cannot influence, under any circumstance:**
+- **Relevance or ranking established by Search.** A listing's Featured order (§11) is a distinct, browsing-context concept from `03_SEARCH_SPECIFICATION.md`'s Ranking Philosophy — the two are not in conflict because they answer different questions (curated position for a query-less listing vs. genuine relevance for a typed query), but neither may be used to quietly override the other. Featured order never leaks into or substitutes for search ranking, and search relevance is never treated as if it were a merchandising-controlled listing order.
+- **Availability facts.** Whether a product is in stock, low-stock, or unavailable (§21, Operational Behaviour below) is a state fact, not a merchandising choice — merchandising can decide to *hide* a product (a deliberate visibility decision, Operational Behaviour below) but cannot present an unavailable product as available, or vice versa.
+- **Pricing beyond a genuine, dated promotion.** Price itself is a catalog fact; a promotional price requires a real original price and a real active promotion behind it (§9) — merchandising cannot fabricate either.
+- **The one-slot-per-card and one-promotional-module-per-page caps** (§9, §17, Product Card Information Hierarchy above) — these are architectural restraint limits, not merchandising defaults that can be raised for a campaign.
+- **Card structure or the accessibility/interaction rules governing it** (§9, §24) — content within the governed slots is merchandising's domain; the slots and their behavior are not.
+
+**Promotional limits** (restated from §17 as the governance-level rule, not a duplicate mechanism): at most one badge per card, at most one promotional module per listing page, every promotional Collection or badge time-boxed where campaign-driven.
+
+**Expiry behaviour:** every promotional Collection and badge carries a start/end date enforced by data — the same auto-expiring mechanism `01_NAVIGATION_SPECIFICATION.md`'s Merchandising Strategy already established for navigation, reused here without a separate listing-specific expiry system. No manual cleanup step exists or is required.
+
+**Trust requirements:** no fabricated urgency or scarcity (§9, §16); every promotional price shown alongside its genuine original price; no badge or supporting-fact claim that cannot be verified against real catalog data. **Merchandising must never mislead a customer, and must never override the relevance and ranking authority `01_NAVIGATION_SPECIFICATION.md` and `03_SEARCH_SPECIFICATION.md` already establish for their own domains** — this is the listing specification's explicit, standalone statement of that boundary, not left to inference from the individual rules above.
+
+# Operational Behaviour
+
+Extends §21's empty-state handling into the full catalog-state lifecycle a populated listing must handle predictably:
+
+- **Products becoming unavailable** (sold out, or a Food Central item the kitchen can no longer fulfill): labeled in place per §9's availability handling, never silently removed — reusing the same rule and the same index-freshness expectations `03_SEARCH_SPECIFICATION.md`'s Operational Considerations already establishes, not a separate listing-specific mechanism.
+- **Low stock** (a new state beyond simple available/unavailable): where shown at all, a low-stock indicator occupies the same single conditional-fact slot (Product Card Information Hierarchy, above) as any other supporting fact — never stacked alongside a badge — and states a factual, verifiable condition ("Limited stock") rather than a manufactured countdown or a specific unverified number, consistent with §16's no-fake-urgency rule. Showing a low-stock indicator at all is optional per product line; it is never fabricated where genuine stock levels don't warrant it.
+- **Price changes:** reflected at the next data sync, the same freshness expectation already established in `03_SEARCH_SPECIFICATION.md`'s Operational Considerations — a listing sorted by price (§11) is only ever as stale as the underlying data, with no separate listing-specific price cache to reason about.
+- **Promotions expiring:** reuses §17's and Merchandising Governance's existing start/end-date, auto-expiring mechanism — no manual cleanup, no separate expiry logic for listings specifically.
+- **Products deliberately hidden** by a merchandising decision are fully excluded from listings and their parent category/collection counts, not shown-with-a-label — the same "hidden" vs. "unavailable" distinction `03_SEARCH_SPECIFICATION.md`'s Operational Considerations already draws, reused here rather than redefined: hiding is an intentional visibility decision, unavailability is a stock/capacity fact, and the two must not be conflated.
+- **Products being discontinued** is a third, distinct state from both of the above: a discontinued product is permanently retired from sale (not a temporary stock or visibility state) and is removed from all listings promptly once discontinued, the same "never surface a broken/dead result" principle `03_SEARCH_SPECIFICATION.md`'s Operational Considerations applies to deleted search-index entries, applied here to the listing context. "Unavailable" (temporary, stock-driven), "hidden" (temporary, a deliberate visibility choice), and "discontinued" (permanent) are three different states and must not be handled as if they were one.
+
+None of the above introduces a new backend mechanism beyond the index/data-freshness sync pattern already required by `03_SEARCH_SPECIFICATION.md` §26 and reused throughout this document (§27) — this section makes explicit what customer-facing guarantee that sync pattern must deliver specifically for listing pages.
+
+# Listing Quality Checklist
+
+Every future change to a listing page — a new facet, a new card element, a new promotional mechanism, a sort-order change — must be able to answer **yes** to all of the following before it's considered complete, the same discipline `DESIGN_SYSTEM.md`, `01_NAVIGATION_SPECIFICATION.md`, and `03_SEARCH_SPECIFICATION.md` already apply to their own domains:
+
+- [ ] **Are listings easy to scan?** Checked against §1's philosophy and §9/Product Card Information Hierarchy's restraint limits — nothing crowds a card or a grid beyond what those sections allow.
+- [ ] **Is product information consistent?** The same card hierarchy (Product Card Information Hierarchy, above) holds across category listings, collection listings, the homepage, and search results (§9) — no surface-specific variation.
+- [ ] **Are unavailable products handled correctly?** Labeled, not hidden, for genuine stock/capacity states — and correctly distinguished from a deliberately hidden or permanently discontinued product (Operational Behaviour, above).
+- [ ] **Are promotions honest?** Capped, time-bound, genuinely priced, and never asserting fabricated urgency (§16, §17, Merchandising Governance).
+- [ ] **Does the experience remain accessible?** Real list semantics, no link nested inside a link, full keyboard operability, and live-region announcements for Load More all hold with no exceptions (§24).
+- [ ] **Does it perform well on mobile?** The mobile grid, sticky filter/sort bar, and Load More pattern are a deliberate design, not a reduced version of desktop (§14, §15).
+- [ ] **Does it support both business lines equally?** Wine & Spirits' discovery pacing and Food Central's speed pacing are both served by one shared pattern without either reading as an afterthought (§19, §20).
+- [ ] **Does it preserve customer trust?** Honest pricing, honest availability, no manipulated ranking or fabricated scarcity, and merchandising kept within the bounds Merchandising Governance sets — checked together, not assumed from any single rule in isolation.
+- [ ] **Does it stay within v1's deterministic, non-AI intent model**, or does it actually require personalization or machine learning — in which case it belongs in §29 (Future Expansion), not smuggled into v1 (Listing Intent, above)?
+- [ ] **Does it preserve the allergen-filtering trust guarantee without exception?** (§10, referencing `03_SEARCH_SPECIFICATION.md` §13/§16) — a safety commitment, not an ordinary UX preference.
+
+This document is now **Version 1.0 — Approved and Frozen — the authoritative Product Listing Specification** for all future listing and browsing implementation.
+
+---
+
+**Document status:** Approved — Frozen (v1.0, approved by Paul 2026-07-18). This is the authoritative reference for all product listing and browsing implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` (entry points), `02_HOMEPAGE_SPECIFICATION.md` (curated shelf links), and `03_SEARCH_SPECIFICATION.md` (the shared product card component) without redefining any of them. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, a Frozen document may only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md` — not as a side effect of downstream specification or implementation work.
 
 ## Sources
 

@@ -1,11 +1,31 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.8
+**Version:** 1.9
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v16 — 2026-07-18 — `04_PRODUCT_LISTING_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved the overall Product Listing Specification, then requested a final refinement pass before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/04_PRODUCT_LISTING_SPECIFICATION.md`):**
+
+- **Listing Intent** — a new unnumbered section mapping seven named browsing intentions (inspiration, buying a known product, comparing, budget shopping, premium/luxury exploration, gift shopping, food pairing) onto mechanisms already specified elsewhere in the document, explicitly without introducing AI or personalization into v1.
+- **Product Card Information Hierarchy** — a new unnumbered section stating exactly what's always visible (image, name, price), conditionally visible (at most one of: badge, catalog-specific fact, quick-add), and never shown (full descriptions, multiple simultaneous facts, personalized content, fabricated claims) on a listing card.
+- **Merchandising Governance** — a new unnumbered section stating what merchandising can influence (Featured order, badge content, Collection membership) and cannot (relevance/ranking established by Navigation and Search, availability facts, pricing beyond a genuine promotion, the one-slot/one-module caps), with explicit promotional limits, expiry behavior, and trust requirements.
+- **Operational Behaviour** — a new unnumbered section specifying predictable behavior as products become unavailable, low stock, price changes, promotions expire, products are hidden, or products are discontinued — introducing a "low stock" state and a clean three-way "unavailable/hidden/discontinued" distinction.
+- **Listing Quality Checklist** — a new unnumbered closing section every future listing change must satisfy.
+
+**Changed:**
+
+- §9 (Product Card Behaviour), §16 (Merchandising Rules), and §21 (Empty States) each gained a one-line cross-reference to their corresponding new section, avoiding duplicated explanation.
+- Document header: **Version 0.1 → 1.0**, **Status: In Progress → Approved — Frozen**, per Paul's explicit instruction to move directly to frozen status once the refinement pass was complete.
+- `docs/README.md` (v1.8) — specification status table updated to `04_PRODUCT_LISTING_SPECIFICATION.md`: Approved — Frozen, v1.0.
+- `docs/PROJECT_STATUS.md` (v1.9), `docs/ROADMAP.md` (v2.2) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: four specifications now frozen; `05_PRODUCT_DETAILS_SPECIFICATION.md` named as the natural next candidate, not yet begun.
+- `docs/DECISION_LOG.md` — new entry recording the refinement pass and the freeze.
 
 ## v15 — 2026-07-18 — `02_HOMEPAGE_SPECIFICATION.md` frozen; `04_PRODUCT_LISTING_SPECIFICATION.md` drafted in full
 
