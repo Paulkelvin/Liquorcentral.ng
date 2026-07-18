@@ -18,6 +18,7 @@ The project has moved through: (1) initial Medusa architecture research, (2) tec
 - Business model finalized by Paul: single-company retailer, no marketplace, no vendors (see `DECISION_LOG.md`).
 - `PRODUCT_BLUEPRINT.md` v1 drafted, covering all 18 required sections with reasoning, business benefit, and Medusa impact for each.
 - Full `/docs` documentation system established (this file plus 16 others — see `README.md` for the index).
+- **Documentation audit (2026-07-18):** this documentation set had been committed on a sibling branch (`claude/medusa-repo-clone-ut5dl5`, alongside the Medusa submodule) but never merged into `main`. A separate onboarding effort had, in parallel, created `AI_HANDOFF.md` on a different branch without knowledge of this set. Both branches have now been merged together; `/docs` (18 documents, including `AI_HANDOFF.md`) is consolidated on one working branch and is the repository's actual single source of truth. See `DECISION_LOG.md` for the full entry.
 
 ## Work in progress
 

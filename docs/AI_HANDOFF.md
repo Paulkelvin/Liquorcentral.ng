@@ -2,7 +2,7 @@
 
 **This is the primary onboarding document for this project.** If you are a new developer or a new AI session, read this document in full before touching code, writing content, or answering questions about the project. Do not rely on prior chat history — none is available to you, and none should be assumed to exist. This document, and the rest of `/docs`, is the single source of truth.
 
-> **Repository note (as of this writing):** `/docs` currently contains only this file. There is no `PROJECT_STATUS.md` or any other document in the repository yet — the project's business and architecture decisions have, until now, existed only in conversation and are being formalized here for the first time. Section 5 explains what this means for future sessions, and Section 6 stands in for a `PROJECT_STATUS.md` until one is created.
+> **Provenance note.** This documentation set was assembled from two separately-authored, unmerged git branches that were consolidated into one working branch on 2026-07-18 following a documentation audit. If `/docs` ever again appears sparser than this document describes, check `git log --all` and `git branch -r` before concluding documentation is missing — it may simply be sitting on an unmerged branch. Full detail is in `DECISION_LOG.md` under "Documentation audit: two unmerged branches consolidated into one working branch."
 
 ---
 
@@ -25,13 +25,13 @@
 
 **LiquorCentral** is a premium online liquor and wine retailer serving customers nationwide across Nigeria. It is not a marketplace — LiquorCentral owns its own inventory, sets its own prices, and fulfills its own orders. The brand is positioned at the premium end of the market: the experience is designed to feel trustworthy, considered, and high-confidence rather than discount-driven or transactional.
 
-**Food Central** is a food delivery subsidiary of the same company. It is not a separate business, a spin-off, or a marketplace of independent restaurants — it is a second product line operated by LiquorCentral under the same corporate structure, same storefront, and same underlying commerce platform. Unlike liquor and wine (nationwide), Food Central currently operates in **Lagos only**, reflecting the operational realities of same-day, perishable food delivery.
+**Food Central** is a food delivery subsidiary of the same company — a product line, not a separate business, spin-off, or marketplace of independent restaurants. It shares LiquorCentral's storefront, customer identity, cart, and checkout. Unlike liquor and wine (nationwide), Food Central currently operates in **Lagos only**, cooked to order, reflecting the operational realities of same-day, perishable food delivery.
 
-**Business model:** One company, two product lines, no third-party vendors. All inventory (liquor, wine, and food) is company-owned. All delivery is fulfilled by company-owned riders — not a gig-economy logistics marketplace. Customers can check out as guests, must confirm legal drinking age before purchasing alcohol, and can choose between same-day delivery, scheduled delivery, or pickup depending on product line and location.
+**Business model:** One company, two product lines, no third-party vendors. All inventory (liquor, wine, and food) is company-owned. All delivery is fulfilled by company-owned riders for Food Central — not a gig-economy logistics marketplace. Customers can check out as guests, must confirm legal drinking age before browsing alcohol, and can choose between same-day delivery, scheduled delivery, or pickup depending on product line and location.
 
-**Current project phase:** Documentation. All core business and architecture decisions have been finalized and are recorded in this document. No implementation, UI, or wireframe work has begun. The project is about to transition into the **Design System** phase (see Section 7).
+**Current project phase:** Product Definition — documentation established, **awaiting Paul's review and approval** of `PRODUCT_BLUEPRINT.md` v1 and a substantial list of open questions (payment provider, delivery mechanics, brand identity, and more — see Section 6). No implementation code, UI, or wireframe work has begun anywhere in this project. Paul has indicated the next phase is **Design System** (see Section 7) — but see Section 7 for an important open dependency on brand identity that this handoff surfaces rather than resolves.
 
-**Product vision:** Become Nigeria's most trusted premium destination for buying liquor and wine online, with food delivery as a complementary, same-day convenience offering in Lagos. Every part of the product — from search to checkout — should reduce friction and increase the customer's confidence that they are buying the right product from a legitimate, premium operator.
+**Product vision:** LiquorCentral is the platform Nigerians trust to deliver a bottle of wine and a home-cooked meal with the same care — curated, fast, and confident enough to buy on impulse. Every part of the product, from search to checkout, should reduce friction and increase the customer's confidence that they are buying the right product from a legitimate, premium operator.
 
 ---
 
@@ -39,106 +39,137 @@
 
 | Technology | Role | Why it was chosen |
 |---|---|---|
-| **Medusa** | Headless commerce engine — carts, checkout, orders, inventory, product catalog, customers | Open-source, self-hostable, and built on Node.js/TypeScript. Provides commerce fundamentals out of the box while remaining fully extensible via custom modules — necessary because the business has requirements a closed SaaS platform (e.g., Shopify) would make difficult or expensive: age verification, two product lines with different attribute schemas, and company-owned delivery logistics. Avoids vendor lock-in and per-transaction platform fees at scale. |
-| **Next.js** | Customer-facing storefront | Industry-standard React framework. Server-side rendering and static generation deliver fast page loads and strong SEO — important for organic discovery of liquor, wine, and food products. Supports the fast, polished, premium-feeling experience the brand requires on both mobile and desktop. |
-| **Sanity** | Content management (marketing pages, banners, editorial/brand content) | Headless CMS that keeps structured marketing and editorial content separate from transactional commerce data in Medusa. Real-time collaborative editing lets non-technical team members update content without engineering involvement or deploys. |
-| **Meilisearch** | Product search and discovery | Lightweight, self-hostable, typo-tolerant search engine that returns instant, relevant results. Chosen over heavier options (e.g., Elasticsearch) for simpler operations and faster relevance tuning — important given the catalog spans two distinct product lines with different attributes. |
-| **PostgreSQL** | Primary relational database (via Medusa) | ACID-compliant and battle-tested for transactional integrity of orders, payments, and inventory. Non-negotiable for a commerce platform handling real money and real stock. It is also Medusa's default and best-supported database. |
-| **Redis** | Caching, session storage, background jobs/event queues | Keeps checkout, search, and session operations fast under concurrent load and reduces pressure on PostgreSQL. Used by Medusa's event bus and job queue infrastructure. |
+| **Medusa** (v2, vendored as a git submodule at `./medusa`) | Headless commerce engine — carts, checkout, orders, inventory, product catalog, customers | Open-source, self-hostable, modular by design (no core-editing required to extend it). Provides commerce fundamentals out of the box while remaining fully extensible via custom modules — necessary because the business has requirements a closed SaaS platform would make difficult or expensive: age verification, two product lines with different attribute schemas, and company-owned delivery logistics. See `ARCHITECTURE.md` and `MEDUSA_EXTENSIONS.md`. |
+| **Next.js** (Medusa's official Next.js Starter, recommended — not yet formally approved) | Customer-facing storefront | Ships with cart, checkout, region/tax handling, and payment integration already wired against Medusa's API, avoiding a from-scratch reimplementation with no maintained upgrade path. SSR/SEO supports organic product discovery. See `TECH_STACK.md`. |
+| **Sanity** (recommended, not urgent, not yet formally approved) | Content management (marketing/editorial content) | Kept strictly separate from commerce data, synced one-way from Medusa. Real-time collaborative editing, strong localization, official Medusa integration pattern. See `MEDUSA_EXTENSIONS.md` #7. |
+| **Meilisearch** (recommended, not yet formally approved) | Product search and discovery | Open-source, officially documented Medusa integration, strong faceting for wine/food attribute filtering — the lowest-integration-risk option versus Algolia/Elasticsearch/Typesense. See `MEDUSA_EXTENSIONS.md` #6. |
+| **PostgreSQL** | Primary relational database (via Medusa) | Medusa's own requirement; ACID-compliant and battle-tested for transactional integrity of orders, payments, and inventory. |
+| **Redis** | Caching, session storage, background jobs/event queues | Required for production Medusa (its in-memory dev mode is explicitly not production-appropriate). Keeps checkout, search, and session operations fast under load. |
+
+Payment provider and delivery-notification channel are **not yet decided** — see Section 6 and `MEDUSA_EXTENSIONS.md` #4–#5.
 
 ---
 
 ## 3. Business Decisions
 
-The following business decisions are **finalized and approved**. Do not contradict, re-litigate, or silently revise any of these without Paul's explicit sign-off.
+The following are **finalized, non-negotiable** unless Paul explicitly revisits one (logged in `DECISION_LOG.md`). Full detail in `BUSINESS_RULES.md`.
 
-- **Single company.** LiquorCentral is one company operating its own product lines — not a federation of independent sellers or brands.
-- **Not a marketplace.** No third-party vendors sell through the platform. There is no vendor onboarding, no seller storefronts, and no commission model.
-- **Food Central is a subsidiary product line, not a separate business.** It shares the same company, same storefront, and same commerce platform as LiquorCentral.
-- **Wine (and liquor) ships nationwide** across Nigeria.
-- **Food is Lagos-only.** Food Central's delivery service does not currently extend beyond Lagos, due to the operational demands of same-day, perishable delivery.
-- **Same-day food delivery** is a core Food Central offering.
-- **Scheduled delivery** is supported — customers can choose a future date/time window rather than immediate delivery.
-- **Pickup** is supported as an alternative to delivery.
-- **Company-owned riders.** Delivery is fulfilled by riders employed or contracted directly by the company — not by a third-party gig-logistics marketplace.
-- **Guest checkout** is supported — customers can complete a purchase without creating an account.
-- **Age confirmation** is required before any alcohol purchase can be completed.
-- **Premium positioning.** The brand is positioned as a premium, trustworthy retailer — not a discount or bargain-driven platform. This informs tone, visual design, and product presentation across the entire product.
+- **Single company.** LiquorCentral is one company operating its own product lines — not a federation of independent sellers.
+- **Not a marketplace.** No third-party vendors, no vendor onboarding, no vendor dashboard, no vendor payouts, no marketplace commissions.
+- **Food Central is a subsidiary product line**, not a separate company or website.
+- **Wine and spirits ship nationwide** across Nigeria.
+- **Food Central delivers Lagos only**, and is cooked on demand (no held stock of finished dishes).
+- **Same-day delivery** is a core Food Central offering.
+- **Scheduled delivery** — a future date/time window — is supported.
+- **Pickup** is supported, with equal visual/UX weight to delivery.
+- **Company-owned riders** fulfill all Food Central delivery — no third-party courier/dispatch platform. (Wine & Spirits' nationwide delivery mechanism — in-house fleet vs. courier partner — is still open; see Section 6.)
+- **Guest checkout** is required throughout — never force account creation to complete a purchase.
+- **Age confirmation** is required before browsing alcohol content, not just at checkout.
+- **Premium positioning.** Feel: premium, modern, elegant, fast, trustworthy, mobile-first, effortless. Every design/product decision is judged against: *does this reduce friction and increase purchase confidence?*
 
 ---
 
 ## 4. Major Architecture Decisions
 
+Full detail in `ARCHITECTURE.md`, `MEDUSA_EXTENSIONS.md`, and `PRODUCT_BLUEPRINT.md`.
+
 ### Approved
 
-- **One Medusa instance.** A single backend serves both product lines (liquor/wine and food) rather than separate backend deployments per business line.
-- **One storefront.** A single Next.js application serves both the LiquorCentral and Food Central customer experiences — there is no separate app or subdomain-as-a-separate-product split.
-- **Two product lines.** Liquor/wine and food are modeled as two distinct product lines within the shared catalog, reflecting their different regulatory, fulfillment, and geographic constraints.
-- **Two attribute modules.** Each product line has its own product attribute schema — e.g., ABV, volume, and vintage for liquor/wine; perishability, prep time, and dietary tags for food — because the two product lines have fundamentally different data needs. Both live inside the single Medusa instance.
+- **One Medusa instance / one store** serves both product lines — not separate backends per business line.
+- **One storefront**, one shared shell (header, search, cart, account) over two internally-distinct sections — not two microsites.
+- **Two product lines** (Wine & Spirits, Food Central) as two configurations of the same Product module — not two catalog systems.
+- **Two focused product-attribute modules** (`wine-details`, `food-details`), each linked 1:1 to Product via Medusa's `defineLink` — not one universal attribute module. A wine has no spice level; a dish has no vintage.
+- **One cart, one checkout**, even for a mixed wine + food order — no order-splitting workflow.
+- **Medusa vendored as a git submodule** at `./medusa`; **Medusa core is never modified** — all customization goes through documented extension points (custom modules, module links, workflow hooks, custom API routes, admin widgets).
+- **Medusa's native auth** (customer + admin-user) is the system of record — no third-party identity provider for v1.
 
 ### Rejected / Superseded
 
-These are recorded intentionally, not deleted, so future sessions understand what was considered and explicitly ruled out. **Do not reintroduce these unless Paul explicitly changes the business model.**
+Recorded intentionally, not deleted, so future sessions understand what was considered and explicitly ruled out. **Do not reintroduce these unless Paul explicitly changes the business model.**
 
-- **Marketplace architecture — REJECTED.** A multi-vendor marketplace model was considered and formally rejected in favor of the single-company, company-owned-inventory model described in Section 3.
-- **Vendor modules — REJECTED.** No seller onboarding, vendor storefronts, split payments, or commission/payout logic will be built. Any Medusa vendor/marketplace modules or plugins are explicitly out of scope.
+- **Marketplace architecture — REJECTED/SUPERSEDED.** Earlier research explored a multi-vendor marketplace (Vendor module, vendor staff accounts, order-splitting checkout, per-vendor payouts). Retired in favor of the single-company model above. See the supersession notice at the top of `PRODUCT_BLUEPRINT.md`.
+- **Vendor modules, vendor actor-type, order-splitting workflow, per-vendor payout API — REJECTED/SUPERSEDED**, along with the marketplace model that required them.
 
 ---
 
 ## 5. Documentation Guide
 
-At the time of writing, `docs/AI_HANDOFF.md` is the **only** document in `/docs`. There is nothing else to reconcile it against yet.
+`/docs` contains 18 documents. `README.md` (inside `/docs`) is the detailed document map with cross-links; this table adds ownership and update cadence for each.
 
 | Document | Purpose | Owner | Update when |
 |---|---|---|---|
-| `docs/AI_HANDOFF.md` (this file) | Primary onboarding document and single source of truth for business decisions, architecture decisions, and project state. First document any developer or AI session should read. | Paul (final approver of content); updated by whichever developer or AI session makes the last approved change | Immediately, whenever a business decision, architecture decision, technology choice, or project phase changes. Never let this file go stale — a stale handoff doc is worse than no handoff doc. |
-
-**As the project grows, expect additional documents to be added here** — for example, a dedicated `PROJECT_STATUS.md` for granular task-level status, an architecture reference, or a design system specification once that phase begins. Each new document added to `/docs` should get its own row in this table describing its purpose, owner, and update cadence. Until such documents exist, do not assume them — this table is the accurate record of what actually exists in the repository.
+| `AI_HANDOFF.md` (this file, repo root) | Project-level onboarding; single source of truth entry point | Paul (final approver); maintained by whichever session makes the last approved change | Immediately on any business, architecture, tech-stack, or phase change |
+| `docs/README.md` | Documentation index, reading order, continuity rules | Same | Whenever a document is added/removed/restructured |
+| `docs/PROJECT_STATUS.md` | Current phase, completed/in-progress/blocked work, open questions | Whoever is actively working; approved by Paul | Every session — "an out-of-date status is a bug" |
+| `docs/PRODUCT_BLUEPRINT.md` | Product vision, positioning, and 18 strategic pillars (with reasoning + Medusa impact per pillar) | Paul (approval pending on v1) | When a strategic/product decision changes |
+| `docs/BUSINESS_RULES.md` | Finalized, non-negotiable business decisions | Paul | Only when Paul explicitly revisits a rule |
+| `docs/ARCHITECTURE.md` | How the vendored Medusa codebase is structured, and the module-isolation rule | Engineering | When the Medusa version changes materially, or conventions change |
+| `docs/MEDUSA_EXTENSIONS.md` | Authoritative catalog of every custom module/extension needed, with risk and approval status | Engineering; per-item approval from Paul | Before building anything not already listed here |
+| `docs/API_DECISIONS.md` | Native vs. custom API routes, and why | Engineering | Whenever a new route is anticipated or built |
+| `docs/TECH_STACK.md` | Full technology stack end to end, confirmed vs. recommended | Engineering; sign-off from Paul | Any stack component change, logged in `DECISION_LOG.md` |
+| `docs/INFORMATION_ARCHITECTURE.md` | Site/navigation structure for both product lines | Product; merchandising input from Paul | When IA/category structure changes |
+| `docs/PRODUCT_CATALOG.md` | How Wine & Spirits and Food Central products are modeled; proposed attribute field lists | Paul/merchandising (field lists); engineering (structure) | When attribute field lists are finalized or changed |
+| `docs/DELIVERY_MODEL.md` | Delivery/pickup/scheduling strategy for both product lines | Paul (ops decisions); engineering (mechanics) | When delivery/ops decisions change |
+| `docs/USER_FLOWS.md` | Step-by-step customer journeys (no visuals) | Product | When a flow's steps change |
+| `docs/DESIGN_SYSTEM.md` | Design *principles* (spacing, type scale, accessibility, grid, motion) — no visual tokens yet | Design/Paul | When principles change, or once visual tokens are ready to be added |
+| `docs/BRAND_GUIDELINES.md` | **Placeholder.** Visual/verbal identity — not yet defined | Paul / a designer, once engaged | Once the brand phase begins — currently blocking all visual design work |
+| `docs/ROADMAP.md` | Phased build sequence (no dates) | Paul/engineering | When sequencing or phase scope changes |
+| `docs/DECISION_LOG.md` | Append-only record of every material decision: what, why, when, impact, status | Whoever makes/logs the decision | Every material decision — append a new entry, never edit an old one |
+| `docs/CHANGELOG.md` | Changelog of the documentation set itself (not the product) | Whoever adds/removes/restructures a document | Whenever `/docs` itself changes |
 
 ---
 
 ## 6. Current Project State
 
-*(This section is the current source of truth for project status. A dedicated `PROJECT_STATUS.md` does not yet exist — if one is created later, keep it in sync with this section, or replace this section with a pointer to it.)*
+*(Condensed from `docs/PROJECT_STATUS.md` — that file is the detailed, always-current version. If the two ever disagree, `docs/PROJECT_STATUS.md` wins and this section should be updated to match.)*
 
 **Completed**
-- Core business model decisions finalized (Section 3).
-- Core architecture decisions finalized, including explicit rejection of the marketplace model (Section 4).
-- Technology stack selected (Section 2).
-- This handoff document created as the project's foundational documentation artifact.
+- Business model finalized: single company, no marketplace, no vendors.
+- `PRODUCT_BLUEPRINT.md` v1 drafted (18 sections, each with reasoning, business benefit, and Medusa impact).
+- Full architecture research of the vendored Medusa codebase, distilled into `ARCHITECTURE.md`.
+- Technology recommendations researched (storefront, search, CMS, auth), distilled into `TECH_STACK.md` and `MEDUSA_EXTENSIONS.md`.
+- UX/product research (premium commerce, wine retail, food ordering, Nigerian-market conventions), distilled into `PRODUCT_BLUEPRINT.md`, `USER_FLOWS.md`, `DELIVERY_MODEL.md`.
+- Medusa v2 vendored as a git submodule.
+- Full `/docs` documentation system established and, as of this audit, consolidated onto one working branch (see the provenance note at the top of this document).
 
 **In Progress**
-- Nothing is actively in progress at the time of writing. This documentation task is the most recent completed work.
+- Nothing actively in progress. The next step is Paul's review (below).
 
 **Not Started**
-- Design System (visual identity, color, typography, spacing/grid, component tokens).
-- UI/UX design and wireframes.
-- Implementation of Medusa modules (product attribute modules for the two product lines, age-verification logic, rider/fulfillment logic).
-- Sanity schema design.
-- Meilisearch index configuration.
-- Infrastructure/deployment setup.
+- Any implementation code, UI design, or wireframes — none have been produced anywhere in this project.
+- Visual/brand identity (`BRAND_GUIDELINES.md` is a placeholder).
+- All custom Medusa modules listed in `MEDUSA_EXTENSIONS.md` (wine-details, food-details, delivery-slot scheduling, payment provider, notification provider), and the search/CMS integrations.
 
 **Blocked**
-- Nothing is currently blocked.
+- **Brand identity is entirely undefined**, which blocks any visual design work (but not backend/architecture work).
+- **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1 (a launch blocker).
 
-**Awaiting Paul's Approval**
-- The Design System direction (visual identity, palette, typography) once that phase begins.
-- Any future decision that would alter, extend, or contradict the business or architecture decisions recorded in Sections 3 and 4.
+**Awaiting Paul's Approval** (full list with document references in `docs/PROJECT_STATUS.md`)
+- Wine & Spirits' nationwide delivery mechanism (in-house fleet vs. courier partner) and whether cash-on-delivery is offered at all.
+- Local payment provider choice (e.g. Paystack, Flutterwave) — **launch-blocking**.
+- Delivery-update channel(s) (WhatsApp Business API and/or SMS).
+- Exact age-gate mechanics (session duration; site-wide vs. alcohol-section-only) and whether a hard compliance re-check happens at order confirmation.
+- Alcohol return/refund policy.
+- Final field lists for the wine-attributes and food-attributes modules, and who owns allergen/ingredient data accuracy operationally.
+- Delivery-slot operational parameters (slot length, cutoff times, capacity).
+- Exact curated/occasion collections for Wine & Spirits (a merchandising decision).
+- Formal sign-off on the Next.js Starter, Meilisearch, and Sanity recommendations (currently "recommended," not "confirmed").
+- The entire brand phase (visual + verbal identity).
 
 ---
 
 ## 7. Immediate Next Step
 
-The next phase of this project is the **Design System** phase.
+Paul has indicated the next phase is **Design System.**
 
-This means: establishing the visual and structural foundations the product will be built on — a color palette, typography scale, spacing/grid system, and premium-appropriate design tokens — grounded in the premium positioning described in Section 3.
+**This is explicitly not:** implementation, coding, UI design, or wireframing. It is a foundations-first step — spacing scale, type scale, accessibility baseline, grid, and motion principles — that precedes all of the above. `docs/DESIGN_SYSTEM.md` already captures these principles at the abstraction level ("one spacing scale," "5–7 type sizes," "WCAG basics from day one," etc.) without committing to any specific colors, typefaces, or visual tokens.
 
-**The Design System phase is explicitly not:**
-- Implementation or coding.
-- UI design.
-- Wireframing.
+**One thing this handoff must surface rather than quietly resolve:** `docs/PROJECT_STATUS.md` lists brand identity (`BRAND_GUIDELINES.md`, currently a placeholder) as a hard blocker on *any visual design work*, and `docs/DESIGN_SYSTEM.md` states plainly that its own open items — specific visual tokens — depend on `BRAND_GUIDELINES.md` being filled in first. So:
 
-It is a foundations-first step that precedes all of the above. No implementation, UI, or wireframe work should begin until the Design System phase is complete and approved by Paul.
+- Reviewing and refining the *principles* in `docs/DESIGN_SYSTEM.md` can proceed now.
+- Producing actual visual tokens (a color palette, chosen typefaces, iconography) cannot proceed until brand identity is defined — which per `docs/BRAND_GUIDELINES.md` requires Paul (or a designer engaged for this purpose) to make those decisions first.
+
+Do not resolve this tension by assuming an answer. Flag it to Paul at the start of the Design System phase so scope can be set correctly — either brand identity is defined first, or the Design System phase begins at the principles/token-structure level only, with visual tokens filled in once brand identity lands.
 
 ---
 
@@ -146,29 +177,29 @@ It is a foundations-first step that precedes all of the above. No implementation
 
 Every future AI assistant working on this project must:
 
-1. **Read `docs/AI_HANDOFF.md` first.**
-2. **Read `docs/PROJECT_STATUS.md` second** — if it exists. As of this writing it does not; until it is created, use Section 6 of this document as the current project state.
+1. **Read `AI_HANDOFF.md` first** (this document).
+2. **Read `docs/PROJECT_STATUS.md` second** — it is the detailed, always-current status; this document's Section 6 is a condensed mirror of it.
 3. **Consult the relevant documentation** in `/docs` before answering questions or making changes, rather than guessing.
 4. **Treat the documentation as the single source of truth** — not memory, not assumption, not inference from the codebase alone.
-5. **Never rely on previous chat history.** Assume no prior conversation exists or is accessible.
+5. **Never rely on previous chat history.** Assume no prior conversation exists or is accessible. If something a user describes as "already created" or "already decided" doesn't appear in `/docs` on the current branch, check `git log --all` / `git branch -r` before concluding it doesn't exist — it may be sitting on an unmerged branch, as happened here (see the provenance note at the top of this document and `DECISION_LOG.md`). Do not fabricate content to fill the gap either way.
 6. **Never contradict approved business decisions** (Section 3) or architecture decisions (Section 4).
 7. **Never introduce marketplace concepts** — multi-vendor support, seller onboarding, vendor modules, commission/payout logic — unless Paul explicitly changes the business model. If asked to build something that resembles a marketplace feature, stop and confirm with Paul rather than proceeding.
+8. **Never invent business or brand decisions.** Where a document has a placeholder or an open question (Section 6), leave it open and flag it for Paul rather than assuming an answer.
+9. **Log every material decision** in `docs/DECISION_LOG.md` (append, don't edit old entries) and keep `docs/PROJECT_STATUS.md` current in the same change.
 
 ---
 
 ## 9. Project Principles
 
-These principles guide every future decision on this project, from design through implementation:
-
 - **Premium over flashy.** Restraint and quality signal trust; novelty for its own sake does not.
 - **Simplicity over feature bloat.** Ship what customers need to buy with confidence, not everything that's technically possible.
 - **Documentation before implementation.** Decisions get written down and approved before code gets written.
-- **Extend Medusa, never modify its core.** Custom logic lives in extensions and modules, not in forked core code, to keep the platform upgradeable.
-- **Research principles, never copy competitors.** Design and product decisions should be grounded in what works for customers, not in mimicking other retailers.
+- **Extend Medusa, never modify its core.** Custom logic lives in modules, module links, workflow hooks, and admin widgets/routes — never in edits to the `medusa/` submodule.
+- **Research principles, never copy competitors.** Design and product decisions are grounded in what works for customers, not in mimicking other retailers.
 - **Every page should reduce friction and increase purchase confidence.** This is the standard every screen and flow is judged against.
-- **Mobile-first.** Design and build for mobile as the primary experience, not an afterthought.
-- **Accessibility by default.** Accessibility is a baseline requirement, not a later pass.
-- **Performance matters.** Speed is part of the premium experience, not a separate concern from it.
+- **Mobile-first**, with a stricter performance bar for Food Central specifically (more likely to be a fast, one-thumb, on-the-go action).
+- **Accessibility by default** — contrast, keyboard navigation, alt text, focus states — built in from launch, not retrofitted.
+- **Performance matters.** Page weight and interaction latency are treated as conversion metrics, not just engineering ones.
 
 ---
 
@@ -176,7 +207,7 @@ These principles guide every future decision on this project, from design throug
 
 | Field | Value |
 |---|---|
-| Document Version | 1.0 |
+| Document Version | 2.0 |
 | Last Updated | 2026-07-18 |
-| Project Phase | Documentation complete → entering Design System |
-| Next Planned Milestone | Design System foundations (color, typography, spacing/grid, design tokens) |
+| Project Phase | Product Definition — documentation consolidated, awaiting Paul's review and approval of open questions (Section 6) |
+| Next Planned Milestone | Design System phase — principles-level work can start now; visual tokens are blocked on brand identity (`BRAND_GUIDELINES.md`), see Section 7 |

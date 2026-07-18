@@ -8,14 +8,16 @@ This directory is the **single source of truth** for the LiquorCentral project. 
 
 Anyone — human or AI — picking up this project should read, in this order:
 
-1. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this first.
-2. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
-3. Everything else, as relevant to the task at hand (see the map below).
+1. **[`AI_HANDOFF.md`](../AI_HANDOFF.md)** — the project-level onboarding document (business model, tech stack, approved decisions, and the rules every AI session must follow). Always read this first, before anything in `/docs` itself.
+2. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this second.
+3. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
+4. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
 | Document | What it answers |
 |---|---|
+| [`AI_HANDOFF.md`](../AI_HANDOFF.md) | Project-level onboarding — read this first |
 | [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) | Where is the project right now? |
 | [`PRODUCT_BLUEPRINT.md`](./PRODUCT_BLUEPRINT.md) | What is LiquorCentral, and why is it built this way? |
 | [`BUSINESS_RULES.md`](./BUSINESS_RULES.md) | What are the non-negotiable rules of how the business operates? |

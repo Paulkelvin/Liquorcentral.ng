@@ -6,6 +6,14 @@
 
 ---
 
+### Documentation audit: two unmerged branches consolidated into one working branch
+
+- **Decision:** No new business or architecture decision. A requested documentation audit found that this entire `/docs` set (17 files, plus the `medusa` git submodule) existed only on branch `claude/medusa-repo-clone-ut5dl5`, never merged into `main`, while a separately-authored `AI_HANDOFF.md` existed only on another branch — each unaware of the other. The two were merged into one working branch so `/docs` is an actual, single, current source of truth rather than knowledge split across divergent, unmerged history.
+- **Reasoning:** A prior AI session had reported creating this documentation, but a later session found the working tree apparently empty because it was looking at a branch that never received the merge. Verified via `git log --all` and `git branch -r` that the content was real (real commits, real authorship, real dates) rather than chat-only or artifact-only content that had never been committed.
+- **Date:** 2026-07-18
+- **Impact:** `/docs` now contains 18 documents (the original 17 plus `AI_HANDOFF.md`); `.gitmodules` and the `medusa` submodule reference are present on this branch. `README.md`'s "Start here" order was updated to read `AI_HANDOFF.md` first. No business rule, architecture decision, or open question recorded in any document was altered by this merge.
+- **Status:** Final. Future sessions should not assume a fresh clone of `main` has this history until this branch is merged — check `git log --all` if `/docs` ever again looks emptier than expected before concluding documentation is missing.
+
 ### Documentation system established as the project's single source of truth
 
 - **Decision:** All project knowledge (product definition, architecture, business rules, decisions, status) now lives in `/docs` as versioned Markdown, not in chat history.
