@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 1.0
+**Version:** 1.1
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -15,8 +15,9 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 1. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this first.
 2. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
-3. **`BRAND_IDENTITY.md`** and **`EXPERIENCE_PRINCIPLES.md`** — who LiquorCentral is, and how customers should experience using it. Anyone about to do design-system or visual work must read both first — they are approval gates, not optional background reading (see `PROJECT_STATUS.md`).
-4. Everything else, as relevant to the task at hand (see the map below).
+3. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
+4. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below.
+5. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
@@ -37,9 +38,30 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`EXPERIENCE_PRINCIPLES.md`](./EXPERIENCE_PRINCIPLES.md) | How should every screen, feature, and interaction feel to use? |
 | [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) | What design principles govern the interface (not yet: what it looks like)? |
 | [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What are the exact logo/type/asset specs? *(placeholder — narrower scope now that `BRAND_IDENTITY.md` exists)* |
+| [`specifications/`](./specifications/) | What exactly should each product surface do, in enough behavioral detail to design, build, and test it? See below. |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |
+
+## Product Specifications (`/docs/specifications/`)
+
+Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, `DESIGN_SYSTEM.md` v2.0) is complete and frozen. Phase 1 — Product Specifications translates those decisions into behavior-level specifications for each product surface: what each page/flow must do, for whom, backed by what data — not what it looks like. Each specification derives from and must not contradict the four frozen documents.
+
+| Specification | Status |
+|---|---|
+| [`01_NAVIGATION_SPECIFICATION.md`](./specifications/01_NAVIGATION_SPECIFICATION.md) | Not Started (placeholder) |
+| [`02_HOMEPAGE_SPECIFICATION.md`](./specifications/02_HOMEPAGE_SPECIFICATION.md) | **In Progress** — fully drafted, v0.1, awaiting review |
+| [`03_SEARCH_SPECIFICATION.md`](./specifications/03_SEARCH_SPECIFICATION.md) | Not Started (placeholder) |
+| [`04_PRODUCT_LISTING_SPECIFICATION.md`](./specifications/04_PRODUCT_LISTING_SPECIFICATION.md) | Not Started (placeholder) |
+| [`05_PRODUCT_DETAILS_SPECIFICATION.md`](./specifications/05_PRODUCT_DETAILS_SPECIFICATION.md) | Not Started (placeholder) |
+| [`06_CART_SPECIFICATION.md`](./specifications/06_CART_SPECIFICATION.md) | Not Started (placeholder) |
+| [`07_CHECKOUT_SPECIFICATION.md`](./specifications/07_CHECKOUT_SPECIFICATION.md) | Not Started (placeholder) |
+| [`08_CUSTOMER_ACCOUNT_SPECIFICATION.md`](./specifications/08_CUSTOMER_ACCOUNT_SPECIFICATION.md) | Not Started (placeholder) |
+| [`09_FOOD_ORDERING_SPECIFICATION.md`](./specifications/09_FOOD_ORDERING_SPECIFICATION.md) | Not Started (placeholder) |
+| [`10_DELIVERY_SPECIFICATION.md`](./specifications/10_DELIVERY_SPECIFICATION.md) | Not Started (placeholder) |
+| [`11_ADMIN_WORKFLOWS_SPECIFICATION.md`](./specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md) | Not Started (placeholder) |
+
+Placeholders exist so the full scope of Phase 1 is visible up front; their detailed content is intentionally not invented ahead of sequencing. Do not add detail to a placeholder without Paul's direction to begin that specification.
 
 ## Document status convention
 

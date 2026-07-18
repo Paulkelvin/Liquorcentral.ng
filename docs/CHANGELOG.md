@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.0
+**Version:** 1.1
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v8 — 2026-07-18 — Phase 0 frozen; Phase 1 Product Specifications opened
+
+**Added:**
+
+- `docs/specifications/` — new directory, 11 numbered specification files:
+  - `02_HOMEPAGE_SPECIFICATION.md` (v0.1) — **fully drafted**, all 25 required sections: purpose, homepage responsibilities, business/customer goals, primary journeys, information hierarchy, all 9 homepage sections (Persistent Header/Shell, Age Verification Gate, Hero, Curated Collections, Food Central Spotlight, Wine & Food Connected, Trust & Delivery Band, Returning Customer Strip, Footer) each with a 9-part behavior breakdown, backend data requirements, search/discovery entry point, Food Central integration strategy, trust/delivery messaging, personalization (future), SEO/accessibility/performance targets (LCP < 2.5s at p75 mobile), 8 named analytics events, empty/loading/error states, Version 1 scope, future enhancements, risks/assumptions, and acceptance criteria. Includes a Sources section citing the UX/performance research used to ground behavioral decisions (no layouts, branding, or UI copied).
+  - `01_NAVIGATION_SPECIFICATION.md`, `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, `06_CART_SPECIFICATION.md`, `07_CHECKOUT_SPECIFICATION.md`, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, `09_FOOD_ORDERING_SPECIFICATION.md`, `10_DELIVERY_SPECIFICATION.md`, `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — created as **approved placeholders only** (Document Purpose, Scope, Dependencies, Planned Sections, Status = Not Started), each naming its scope boundary against sibling specs. Detailed content intentionally not invented ahead of sequencing.
+
+**Changed:**
+
+- `README.md` (v1.1) — new "Product Specifications" section indexing all 11 files and their status; "Start here" reading order updated to name `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` as frozen Phase 0 output.
+- `PROJECT_STATUS.md` (v1.1) — current phase updated to reflect Phase 0's closure (four documents frozen, not to be modified absent a business decision) and Phase 1 — Product Specifications now underway; completed work, work in progress, next recommended task, and blockers all updated accordingly.
+- `ROADMAP.md` (v1.5) — new Phase 0d ("Product Specifications") added, explicitly disambiguated by name from the existing backend-foundation "Phase 1," running in parallel with Phase 0c and Phase 1.
+- `DECISION_LOG.md` — new entry recording Phase 0's closure and the opening of the Product Specifications phase.
 
 ## v7 — 2026-07-18 — DESIGN_SYSTEM.md v2.0 finalized and frozen
 

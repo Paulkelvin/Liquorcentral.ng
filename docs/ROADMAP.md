@@ -1,9 +1,11 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 1.4
+**Version:** 1.5
 **Owner:** Program
 **Last Updated:** 2026-07-18
+
+> **Naming note:** this document uses "Phase 1" for the **backend foundation** track (Medusa/Postgres/payment/Wine & Spirits end-to-end — see below). Paul's Product Specification work is tracked separately below as **"Phase 0d — Product Specifications"**, since it is a documentation/behavior-definition track that runs on the frontend-track side, parallel to (not sequenced after) backend Phase 1. This avoids two unrelated efforts sharing the same phase number.
 
 Based on the confirmed no-marketplace, single-company model.
 
@@ -43,6 +45,15 @@ Every item above is a foundational rule every future component and screen will d
 ### Phase 0c — Component specification — Not yet started
 
 The next frontend-track step: specifying actual components (buttons, cards, forms, navigation) against `DESIGN_SYSTEM.md` v2.0, each checked against its Design Quality Checklist and referencing only Tier 3 semantic tokens. Has not begun; awaits Paul's direction to start. Can run in parallel with Phase 1's backend work.
+
+### Phase 0d — Product Specifications — In progress
+
+With `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 declared complete and frozen by Paul, this phase translates those decisions into **behavior-level specifications** for each product surface — what it must do, for whom, backed by what data — under a new `/docs/specifications/` directory. Deliberately not visual/UI design; that remains Phase 0c's job once it starts.
+
+- `02_HOMEPAGE_SPECIFICATION.md` — **fully drafted (v0.1)**, all 25 required sections, awaiting Paul's review.
+- `01_NAVIGATION_SPECIFICATION.md`, `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, `06_CART_SPECIFICATION.md`, `07_CHECKOUT_SPECIFICATION.md`, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, `09_FOOD_ORDERING_SPECIFICATION.md`, `10_DELIVERY_SPECIFICATION.md`, `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — created as **approved placeholders only** (Document Purpose, Scope, Dependencies, Planned Sections, Status = Not Started). Detailed content is intentionally not invented ahead of sequencing; each will be developed in its own turn once Paul directs.
+
+Can run in parallel with Phase 0c and Phase 1's backend work — it is documentation, not implementation, and does not block or get blocked by either.
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 
@@ -95,4 +106,4 @@ The next frontend-track step: specifying actual components (buttons, cards, form
 
 ## Open questions blocking Phase 0 and Phase 1
 
-See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` approval together gate all visual/frontend work (Phase 0 onward), and the payment provider choice (`MEDUSA_EXTENSIONS.md` #4) is the most launch-critical open decision blocking backend Phase 1. None of these block each other.
+See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: Phase 0 (including 0b) is complete with no open items; Phase 0d (Product Specifications) has `02_HOMEPAGE_SPECIFICATION.md` awaiting review, and specs `07`/`10` will need the payment-provider and courier/notification decisions resolved before they can be developed in detail. The payment provider choice (`MEDUSA_EXTENSIONS.md` #4) remains the most launch-critical open decision blocking backend Phase 1. None of these block each other.
