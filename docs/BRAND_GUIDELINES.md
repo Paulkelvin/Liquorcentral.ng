@@ -1,31 +1,38 @@
 # Brand Guidelines
 
-**Status: Placeholder.** No visual or verbal brand identity has been defined yet, by design — earlier phases of this project were explicitly scoped as research and product definition, not branding. This document exists to hold that identity once it's decided, and to make clear to anyone working on the project that **nothing below has been chosen yet.**
+**Status: Placeholder — narrowed in scope now that `BRAND_IDENTITY.md` exists.** This document is the tactical execution layer: actual logo files, exact typeface selections, and a usable asset library. The strategic and emotional foundation those assets must express — vision, personality, voice, color roles, typography direction, photography direction — is now defined in `BRAND_IDENTITY.md` and should not be duplicated or re-decided here.
 
-> Do not invent logos, color palettes, typefaces, taglines, or tone-of-voice rules on behalf of this document. If a decision is needed before it's made here, flag it in `PROJECT_STATUS.md` rather than assuming an answer.
+> Do not invent a logo, typefaces, or asset specifics on behalf of this document. If a decision is needed before it's made here, flag it in `PROJECT_STATUS.md` rather than assuming an answer.
 
-## What is decided (belongs elsewhere, referenced here)
+## Relationship to `BRAND_IDENTITY.md`
 
-- The brand is **one cohesive LiquorCentral ecosystem**, with Food Central presented as a premium subsidiary, not a separate brand or website. See `PRODUCT_BLUEPRINT.md` §2 (Brand Positioning).
-- The intended feel across the whole platform: **premium, modern, elegant, fast, trustworthy, mobile-first, effortless to use.** See `BUSINESS_RULES.md`.
-- Content tone should be consistent across both product lines (one voice, two subjects) — see `PRODUCT_BLUEPRINT.md` §12 (Content Strategy).
+These two documents coexist with distinct responsibilities — see `BRAND_IDENTITY.md`'s own "Relationship" section for the full explanation. In short:
 
-## What is not yet decided
+- **`BRAND_IDENTITY.md`** — why the brand exists, how it should feel, and the principles governing color, type, photography, and motion. **Approved v1 exists.**
+- **`BRAND_GUIDELINES.md` (this document)** — the exact files and specs built on top of that foundation. **Still a placeholder.**
 
-- **Visual identity:** logo, color palette, typography, iconography, imagery style.
-- **Verbal identity:** tone of voice, tagline, naming conventions beyond "LiquorCentral" and "Food Central," specific copywriting rules.
-- **How Food Central is visually distinguished** from Wine & Spirits within the shared brand system (e.g. a secondary accent color, a distinct icon set) — while still reading as one ecosystem, per the business rule above.
-- Logo lockups, favicon, social/marketing assets, packaging or delivery-branding (rider uniforms, bags, receipts).
+Anyone reaching for "what's our brand voice" or "how should we use the color red" should go to `BRAND_IDENTITY.md`, not here. Anyone reaching for "the actual logo file" or "the exact hex code for a hover state" should look here once it's populated.
+
+## What is decided (defined in `BRAND_IDENTITY.md`, referenced here)
+
+- Vision, mission, values, personality, voice, and tone — see `BRAND_IDENTITY.md` §1–§6.
+- Brand story and positioning — see `BRAND_IDENTITY.md` §9–§11.
+- The four approved brand colors and their usage hierarchy (including computed accessibility contrast findings) — see `BRAND_IDENTITY.md` §13. **The colors themselves are fixed and approved; only their exact application as UI tokens remains to be specified below.**
+- Typography *direction* (a warm serif/slab display face paired with a legible humanist sans) — see `BRAND_IDENTITY.md` §14. **Specific typefaces are not yet selected.**
+- Photography and art direction principles — see `BRAND_IDENTITY.md` §15–§16.
+- How Food Central relates visually to Wine & Spirits: same palette and system, different emphasis only — see `BRAND_IDENTITY.md` §13 and `PRODUCT_BLUEPRINT.md` §2.
+
+## What is still not decided (this document's actual remaining scope)
+
+- **Logo:** mark, wordmark, lockup rules, favicon, clear-space and minimum-size rules.
+- **Exact typeface selection:** specific display and body typefaces satisfying the direction in `BRAND_IDENTITY.md` §14, plus licensing and web-font-loading decisions.
+- **Exact color tokens:** precise tints/shades/opacities derived from the four approved colors for specific UI roles (e.g. a button hover state, a disabled state) — built on `BRAND_IDENTITY.md` §13's hierarchy and contrast findings, not a re-decision of the colors themselves.
+- **Icon set:** the specific icon library/style satisfying `BRAND_IDENTITY.md` §18's clarity-first principle.
+- **Physical/operational branding:** rider uniforms, delivery bags, packaging, receipts — anything a customer encounters outside the app.
+- **Social and marketing assets:** templates for social posts, ads, and email.
 
 ## How this document should be filled in
 
-Once brand decisions are made (by Paul, or a designer engaged for this purpose), this document should be populated with:
-
-1. Brand story / positioning statement (in full, beyond the one-line summary in `PRODUCT_BLUEPRINT.md`).
-2. Logo usage rules.
-3. Color palette (with accessible contrast pairs — see `DESIGN_SYSTEM.md` for the accessibility principles any palette must satisfy).
-4. Typography choices (see `DESIGN_SYSTEM.md` for the type-scale principles a chosen typeface family should be fit into).
-5. Voice and tone guide, with examples for both Wine & Spirits and Food Central copy.
-6. Imagery and photography direction (building on the photography principles already researched — see the product-blueprint's product philosophy and the standalone UX research referenced in `DECISION_LOG.md`).
+Once these decisions are made (by Paul, or a designer engaged for this purpose), populate this document with the actual specs and asset references — logo files and usage rules, the final type stack, a color-token table, the icon library, and physical-branding specs — each one explicitly satisfying a principle from `BRAND_IDENTITY.md` rather than introduced independently of it.
 
 Each addition should be logged in `DECISION_LOG.md` and reflected in `PROJECT_STATUS.md`.

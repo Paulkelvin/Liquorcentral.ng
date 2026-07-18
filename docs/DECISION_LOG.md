@@ -6,6 +6,14 @@
 
 ---
 
+### Brand Identity v1 drafted, with four brand colors approved as fixed inputs
+
+- **Decision:** `BRAND_IDENTITY.md` v1 created as the strategic/emotional brand foundation (vision, mission, values, personality, voice, tone, positioning, and visual/color/typography/photography/motion principles). Four brand colors — Primary Red `#EC2D07`, Green `#1A9902`, Gold `#CFCA43`, Off White `#F3F5F0` — are confirmed as approved and fixed; this document defines how they're used, not what they are. `BRAND_GUIDELINES.md` is reconciled to a narrower, non-overlapping scope: tactical asset execution (logo, exact typefaces, exact color tokens) built on top of `BRAND_IDENTITY.md`, rather than duplicating it.
+- **Reasoning:** The project moved from product definition into brand definition as its own phase, per Paul's explicit instruction, ahead of any design-system or visual work. A computed WCAG contrast analysis of the four approved colors (not assumed) found that gold fails contrast against the off-white base at every text size, informing a recommended usage hierarchy (off-white dominant, green as primary accent, red reserved for calls-to-action, gold reserved for dark-ground/accent use) rather than an even application of all four.
+- **Date:** 2026-07-18
+- **Impact:** New `docs/BRAND_IDENTITY.md`. `docs/BRAND_GUIDELINES.md` rewritten to reference it rather than duplicate it. `PROJECT_STATUS.md` and `ROADMAP.md` updated to reflect a new Phase 0 (Brand & Design Foundation) and a hard gate: `DESIGN_SYSTEM.md` visual-token work and all UI design are blocked until `BRAND_IDENTITY.md` is approved.
+- **Status:** Drafted — awaiting Paul's approval. Not yet a final decision.
+
 ### Documentation system established as the project's single source of truth
 
 - **Decision:** All project knowledge (product definition, architecture, business rules, decisions, status) now lives in `/docs` as versioned Markdown, not in chat history.

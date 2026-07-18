@@ -8,6 +8,12 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 
 > This roadmap supersedes the marketplace-oriented rollout considered in earlier research (which included vendor onboarding and payout phases). Those phases are removed entirely — see `PRODUCT_BLUEPRINT.md` supersession notice.
 
+## Phase 0 — Brand & design foundation
+
+- `BRAND_IDENTITY.md` v1 drafted — vision, personality, voice, color-usage hierarchy, and visual/typography/photography principles for the four already-approved brand colors. **Awaiting Paul's approval.**
+- `DESIGN_SYSTEM.md` visual-token work (actual color tokens, typeface selection, component specs) and any UI design are explicitly blocked until that approval lands — this is a hard gate, not a soft sequencing preference.
+- This phase can run in parallel with Phase 1's backend work below; it blocks visual/frontend work specifically, not backend/architecture work.
+
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 
 - Stand up Medusa on Postgres + Redis (production-mode from day one, never launched on in-memory dev defaults).
@@ -57,6 +63,6 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 - Loyalty/subscription mechanics (noted as a future opportunity, not committed).
 - Third-party carrier integration (company riders only, per `BUSINESS_RULES.md`).
 
-## Open questions blocking Phase 1
+## Open questions blocking Phase 0 and Phase 1
 
-See `PROJECT_STATUS.md` for the current, consolidated list — as of this version, the payment provider choice (`MEDUSA_EXTENSIONS.md` #4) is the most launch-critical open decision.
+See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: `BRAND_IDENTITY.md` approval is the gate on all visual/frontend work (Phase 0 onward), and the payment provider choice (`MEDUSA_EXTENSIONS.md` #4) is the most launch-critical open decision blocking backend Phase 1. Neither blocks the other.

@@ -10,7 +10,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 1. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this first.
 2. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
-3. Everything else, as relevant to the task at hand (see the map below).
+3. **`BRAND_IDENTITY.md`** — the brand's reason for feeling the way it does. Anyone about to do design-system or visual work must read this first — it is an approval gate, not optional background reading (see `PROJECT_STATUS.md`).
+4. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
@@ -27,8 +28,9 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`PRODUCT_CATALOG.md`](./PRODUCT_CATALOG.md) | How are Wine & Spirits and Food Central products modeled? |
 | [`DELIVERY_MODEL.md`](./DELIVERY_MODEL.md) | How does delivery/pickup/scheduling actually work? |
 | [`USER_FLOWS.md`](./USER_FLOWS.md) | What are the step-by-step customer journeys? |
+| [`BRAND_IDENTITY.md`](./BRAND_IDENTITY.md) | Who is LiquorCentral, how should it feel, and how should its approved colors/type/photography be used? |
 | [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) | What design principles govern the interface (not yet: what it looks like)? |
-| [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What is LiquorCentral's visual and verbal identity? *(placeholder — not yet defined)* |
+| [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What are the exact logo/type/asset specs? *(placeholder — narrower scope now that `BRAND_IDENTITY.md` exists)* |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |

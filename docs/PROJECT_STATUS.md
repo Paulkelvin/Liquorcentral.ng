@@ -5,9 +5,9 @@
 
 ## Current phase
 
-**Product Definition — documentation established, awaiting Paul's review.**
+**Brand Identity — v1 drafted, awaiting Paul's review.**
 
-The project has moved through: (1) initial Medusa architecture research, (2) technology/marketplace research (since partially superseded — see below), (3) UX and product research, and (4) is now establishing `/docs` as the project's permanent, versioned source of truth. No implementation code, UI design, or wireframes have been produced at any point so far — this has been, deliberately, research and product-definition work only.
+The project has moved through: (1) initial Medusa architecture research, (2) technology/marketplace research (since partially superseded — see below), (3) UX and product research, (4) establishing `/docs` as the project's permanent, versioned source of truth, and (5) drafting the Brand Identity foundation. No implementation code, UI design, wireframes, or mockups have been produced at any point so far — this has been, deliberately, research and definition work only. **Do not proceed into `DESIGN_SYSTEM.md` visual-token work or any UI design until `BRAND_IDENTITY.md` is approved** — this is an explicit gate, not just a sequencing preference.
 
 ## Completed work
 
@@ -17,20 +17,23 @@ The project has moved through: (1) initial Medusa architecture research, (2) tec
 - UX and product research across premium commerce, wine retail, food-ordering, and Nigerian-market conventions — distilled into `PRODUCT_BLUEPRINT.md`, `USER_FLOWS.md`, and `DELIVERY_MODEL.md`.
 - Business model finalized by Paul: single-company retailer, no marketplace, no vendors (see `DECISION_LOG.md`).
 - `PRODUCT_BLUEPRINT.md` v1 drafted, covering all 18 required sections with reasoning, business benefit, and Medusa impact for each.
-- Full `/docs` documentation system established (this file plus 16 others — see `README.md` for the index).
+- Full `/docs` documentation system established (see `README.md` for the index).
+- **`BRAND_IDENTITY.md` v1 drafted** — vision, mission, values, personality, voice/tone, emotional and perception goals, brand story, positioning, value proposition, and visual/color/typography/photography/motion/iconography/accessibility principles for the four already-approved brand colors (Primary Red `#EC2D07`, Green `#1A9902`, Gold `#CFCA43`, Off White `#F3F5F0`). Includes a computed WCAG contrast analysis of all four colors — notably, **gold fails contrast against the off-white base at every text size** and should be reserved for dark-ground/accent use only (see `BRAND_IDENTITY.md` §13).
+- `BRAND_GUIDELINES.md` reconciled with `BRAND_IDENTITY.md` — the two now have distinct, non-overlapping responsibilities (identity/strategy vs. tactical asset execution); see either document's "Relationship" section.
 
 ## Work in progress
 
-None currently active. The immediate next step is Paul's review (see below) before any further work — implementation or design — begins.
+None currently active. The immediate next step is Paul's review of `BRAND_IDENTITY.md` (see below) before `DESIGN_SYSTEM.md` visual-token work or any UI design begins.
 
 ## Next recommended task
 
-**Paul reviews `PRODUCT_BLUEPRINT.md` v1 and resolves the open questions listed below.** Until at least the payment-provider and delivery-mechanism questions are resolved, Phase 1 of `ROADMAP.md` (foundation build) should not begin, since payment integration is a launch blocker.
+**Paul reviews and approves `BRAND_IDENTITY.md` v1.** In parallel (not blocked by brand review), Paul should also resolve the `PRODUCT_BLUEPRINT.md` open questions below — in particular the payment-provider decision, which blocks the start of `ROADMAP.md` Phase 1 regardless of brand approval status.
 
 ## Blockers
 
-- **Brand identity is entirely undefined** (`BRAND_GUIDELINES.md` is a placeholder). This blocks any visual design work, but does not block backend/architecture work.
+- **`DESIGN_SYSTEM.md` visual-token work and all UI design are explicitly blocked** until `BRAND_IDENTITY.md` is approved — this was a direct instruction, not an inferred sequencing choice.
 - **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1.
+- **A separate session was mid-edit on an `AI_HANDOFF.md` file (and updates to this document, `DECISION_LOG.md`, `CHANGELOG.md`, and the root `README.md`) when it hit its usage limit.** That work was never committed or pushed — this repository's history has no trace of it, and it should be treated as lost unless recovered from that other session directly. No `AI_HANDOFF.md` exists in this repository as of this update. Flagging so it isn't silently forgotten or assumed to exist.
 - No other hard blockers — architecture and product-catalog work can proceed in parallel with the open questions below, as long as nothing below is assumed in their place.
 
 ## Decisions awaiting Paul's approval
@@ -62,8 +65,12 @@ Grouped by document, so each can be resolved in context:
 - Formal approval of the Meilisearch search recommendation.
 - Formal approval (or deferral) of the Sanity CMS recommendation — low urgency.
 
-**Brand (`BRAND_GUIDELINES.md`):**
-- The entire visual and verbal identity is undefined and needs a dedicated brand phase before visual design can begin.
+**Brand (`BRAND_IDENTITY.md`):**
+- Formal approval of `BRAND_IDENTITY.md` v1 in full — this is the explicit gate before `DESIGN_SYSTEM.md` visual-token work or any UI design begins.
+- Specifically worth Paul's attention: the recommended color-usage hierarchy and the stance that gold is reserved for dark-ground/accent use only (§13), the visual philosophy of "color-forward premium" rather than muted-minimalist premium (§12), and the draft brand story (§9), which is explicitly flagged as directional rather than final.
+
+**Brand execution (`BRAND_GUIDELINES.md`, blocked on the above):**
+- Logo, exact typeface selection, exact color tokens, icon set, and physical/operational branding (rider uniforms, packaging, receipts) — none of this should be started until `BRAND_IDENTITY.md` is approved.
 
 ## How to use this section
 
