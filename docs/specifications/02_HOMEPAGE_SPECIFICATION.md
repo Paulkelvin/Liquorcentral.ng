@@ -1,7 +1,7 @@
 # Homepage Specification
 
-**Status:** Under Review
-**Version:** 0.1
+**Status:** Approved — Frozen (2026-07-18)
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -330,7 +330,7 @@ Each ties back to the business goals in §3 — specifically, time-to-first-mean
 
 ---
 
-**Document status:** Under Review (v0.1). This is the first full draft, ready for and now awaiting Paul's review — not yet approved. Upon approval, this specification becomes the reference for homepage implementation, alongside `01_NAVIGATION_SPECIFICATION.md` for the shared shell it references.
+**Document status:** Approved — Frozen (v1.0, approved by Paul 2026-07-18, following review for internal consistency against `01_NAVIGATION_SPECIFICATION.md` and `03_SEARCH_SPECIFICATION.md`, both also frozen). This is the authoritative reference for homepage implementation, alongside `01_NAVIGATION_SPECIFICATION.md` for the shared shell it references and `03_SEARCH_SPECIFICATION.md` for the search results it links out to. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, a Frozen document may only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md` — not as a side effect of downstream specification or implementation work.
 
 ## Sources
 

@@ -1,11 +1,29 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.7
+**Version:** 1.8
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v15 — 2026-07-18 — `02_HOMEPAGE_SPECIFICATION.md` frozen; `04_PRODUCT_LISTING_SPECIFICATION.md` drafted in full
+
+**Context:** Paul reconfirmed `03_SEARCH_SPECIFICATION.md`'s frozen status, directed a consistency review of `02_HOMEPAGE_SPECIFICATION.md` against the now-frozen Navigation and Search specifications, and directed Product Specifications to continue with Product Listing. Full reasoning in `DECISION_LOG.md`.
+
+**Changed:**
+
+- `docs/specifications/02_HOMEPAGE_SPECIFICATION.md` — reviewed for internal consistency against `01_NAVIGATION_SPECIFICATION.md` and `03_SEARCH_SPECIFICATION.md` (both frozen); no content changes required. Status changed from Under Review to **Approved — Frozen**, version bumped **0.1 → 1.0**. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision.
+
+**Added:**
+
+- `docs/specifications/04_PRODUCT_LISTING_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative product listing and browsing specification, covering all 30 required sections: Product Listing Philosophy, Business Objectives, Customer Objectives, Entry Points, Listing Types, Category Listings, Collection Listings, Search Result Listings (deferred to `03_SEARCH_SPECIFICATION.md`), a detailed Product Card Behaviour section, Filtering, Sorting, Active Filter Behaviour, Pagination vs. Infinite Scroll, Mobile Behaviour, Desktop Behaviour, Merchandising Rules, Promotional Content, Cross-selling Opportunities, Food Central Listings, Wine & Spirits Listings, Empty States, Loading States, Error States, Accessibility, Analytics, SEO Considerations, Backend Requirements, Performance Expectations, Future Expansion, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §6, the four frozen Phase 0 documents, and all three frozen prior specifications. Grounded in limited external research (Baymard, Smashing Magazine, NN/g, product-card and accessible-card design research) cited for principles only; no layouts, interfaces, or wording copied. Key decisions: pure infinite scroll rejected in favor of "Load More" with lazy-loading and URL-reflected state; default listing sort is "Featured," explicitly distinct from search's "Relevance" default; product cards implement at most one supporting fact and one promotional badge, with quick-add as a separate sibling control (never a link nested inside a link); Food Central cards default to quick-add, Wine & Spirits cards favor click-through. Flags the "pairs with" relationship as a fourth surface depending on the same unscoped `MEDUSA_EXTENSIONS.md` gap.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v1.7) — specification status table updated: `02_HOMEPAGE_SPECIFICATION.md` now **Approved — Frozen**, `04_PRODUCT_LISTING_SPECIFICATION.md` now **In Progress**.
+- `docs/PROJECT_STATUS.md` (v1.8), `docs/ROADMAP.md` (v2.1) — Phase 1 status, Completed work, Work in progress, and Next recommended task all updated: three specifications now frozen, `04` is the only one awaiting a decision.
+- `docs/DECISION_LOG.md` — two new entries: the homepage specification's freeze, and the listing specification's drafting.
 
 ## v14 — 2026-07-18 — `03_SEARCH_SPECIFICATION.md` finalized to v1.0 and frozen
 
