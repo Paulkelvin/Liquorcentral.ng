@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.9
+**Version:** 3.0
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v27 — 2026-07-18 — `10_DELIVERY_SPECIFICATION.md` drafted in full
+
+**Context:** With nine specifications frozen, Paul directed Product Specifications to continue with `10_DELIVERY_SPECIFICATION.md`, naming an extensive coverage list and directing that this document own delivery operations and customer delivery behaviour without redefining checkout, food ordering, or cart behaviour except where delivery-specific logic genuinely belongs here. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/10_DELIVERY_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative delivery-operations specification, covering all 30 required sections: Delivery Philosophy, Business/Customer Objectives, Entry Points & Scope Boundary, Delivery Coverage (Lagos vs. Nationwide), Wine & Spirits Delivery Workflow, Food Central Delivery Workflow (company-owned riders), Pickup Workflow, Same-Day & Scheduled Delivery Fulfillment, Delivery Status Progression & Delivery Windows (specifying Wine & Spirits' own status vocabulary for the first time), Delivery Tracking Expectations, Address Validation & Landmark Handling, Failed Delivery & Customer-Unavailable Scenarios, Delivery Rescheduling & Cancellation, Mixed Wine & Food Delivery Handling, Delivery Fees, Proof of Delivery & Age Verification at Delivery, Customer Communication, Customer Decision States, Empty/Loading/Error States, Accessibility, a **Delivery Operations Considerations** section, Analytics Events, SEO Considerations, Backend Requirements, Performance Expectations, a **Future Expansion & Explicitly Out of Scope** section naming every excluded feature, Risks & Assumptions, a closing **Delivery Quality Checklist**, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §10, `BUSINESS_RULES.md`, `DELIVERY_MODEL.md`, and all nine frozen prior specifications. Grounded in limited external research (Baymard on order confirmation and food-delivery/takeout UX, already cited by prior specifications) cited inline and in a Sources section — no layouts, interfaces, or wording copied. Confirms several genuine open operational and business decisions (Wine & Spirits' delivery mechanism, the Lagos delivery-area definition, the delivery-fee schedule, the failed-delivery-attempt policy, the cancellation-cutoff policy, and doorstep age verification), none resolved here.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.8) — specification status table updated: `10_DELIVERY_SPECIFICATION.md` now **In Progress**, v0.1, full draft complete, awaiting review.
+- `docs/PROJECT_STATUS.md` (v2.9), `docs/ROADMAP.md` (v3.2) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: ten specifications now drafted (nine frozen, Delivery awaiting review); a new "Delivery operations" grouping added to Decisions Awaiting Approval.
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting.
+
+**Not changed:** third-party courier integrations, live GPS tracking, route optimisation, delivery marketplace features, AI dispatch, autonomous delivery, and locker pickup remain unbuilt and unspecified anywhere in `/docs` — this draft explicitly names each as out of scope rather than silently omitting them.
 
 ## v26 — 2026-07-18 — `09_FOOD_ORDERING_SPECIFICATION.md` finalized to v1.0 and frozen
 
