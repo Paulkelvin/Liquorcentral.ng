@@ -1,11 +1,32 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.4
+**Version:** 1.5
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v12 — 2026-07-18 — `01_NAVIGATION_SPECIFICATION.md` finalized to v1.0
+
+**Context:** Paul approved the overall Navigation Specification's architecture as aligned with `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md`, then requested one final refinement pass before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/01_NAVIGATION_SPECIFICATION.md`):**
+
+- **Navigation Governance** — a new unnumbered section with a table classifying every navigation element (shell structure, category tree, collections, promotional collections, facets, footer links, breadcrumbs, search, account/cart, accessibility mechanics) by who controls it and whether developer involvement is required, organized around the rule that navigation *structure* is developer-governed and navigation *content* is data/merchandising-governed.
+- **Merchandising Strategy** — a new unnumbered section defining promotional navigation (featured collections, seasonal campaigns, limited-time promotions, gifting occasions, editorial destinations, new arrivals, premium selections) as an optional, capped (3–4 simultaneous entries), auto-expiring layer distinct from permanent taxonomy, with an explicit no-fake-urgency rule per `EXPERIENCE_PRINCIPLES.md` #15.
+- **Navigation Quality Checklist** — a new unnumbered closing section, mirroring `DESIGN_SYSTEM.md`'s own Design Quality Checklist, that every future navigation change must satisfy.
+
+**Changed:**
+
+- §27 (Performance Considerations) expanded with a maximum navigation-depth budget (three levels beneath a root branch), interaction-latency targets reusing `DESIGN_SYSTEM.md` §B10's existing motion tokens rather than inventing new ones, and a three-tier graceful-degradation model (cached tree → hardcoded two-branch fallback → independent shell rendering).
+- §28 (Future Expansion Strategy) expanded with a table demonstrating the architecture's reach into additional services, subscriptions, educational content, events, corporate gifting, and a hypothetical future business line — explicitly framed as a capability demonstration, not authorized roadmap work, mirroring `DESIGN_SYSTEM.md`'s "Future Theme Support" framing.
+- Document header: **Version 0.1 → 1.0**, **Status: In Progress → Under Review**. A closing note clarifies that "Version 1.0" here means complete and frozen-ready, not yet formally Approved — that status still requires Paul's confirmation, per `DOCUMENTATION_GOVERNANCE.md` Section 4.
+- `docs/README.md` (v1.4) — specification status table updated to `01_NAVIGATION_SPECIFICATION.md`: Under Review, v1.0.
+- `docs/PROJECT_STATUS.md` (v1.5), `docs/ROADMAP.md` (v1.8) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated to reflect the finalized v1.0 draft awaiting final approval.
+- `docs/DECISION_LOG.md` — new entry recording the refinement pass and its content.
+
+**Not changed:** no external research was added for this pass — Governance, Merchandising, Scalability, and Performance are internal architecture/process decisions extending the already-cited research base, not new claims requiring new citations.
 
 ## v11 — 2026-07-18 — `01_NAVIGATION_SPECIFICATION.md` drafted in full
 

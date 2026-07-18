@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 1.7
+**Version:** 1.8
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -51,7 +51,7 @@ The next frontend-track step: specifying actual components (buttons, cards, form
 With `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 declared complete and frozen by Paul, this phase translates those decisions into **behavior-level specifications** for each product surface — what it must do, for whom, backed by what data — under a new `/docs/specifications/` directory. Deliberately not visual/UI design; that remains Phase 0c's job once it starts.
 
 - `02_HOMEPAGE_SPECIFICATION.md` — **fully drafted (v0.1)**, all 25 required sections, status **Under Review**, awaiting Paul's approval.
-- `01_NAVIGATION_SPECIFICATION.md` — **fully drafted (v0.1)**, all 30 required sections, status **In Progress**, awaiting Paul's review. No further specification begins until this review is complete, per Paul's explicit instruction.
+- `01_NAVIGATION_SPECIFICATION.md` — **complete (v1.0)**, status **Under Review**, following a final refinement pass adding Navigation Governance, Merchandising Strategy, expanded Scalability and Performance sections, and a Navigation Quality Checklist. Paul has confirmed the overall architecture aligns with `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md`; final approval of v1.0 is pending. No further specification begins until this approval lands, per Paul's explicit instruction.
 - `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, `06_CART_SPECIFICATION.md`, `07_CHECKOUT_SPECIFICATION.md`, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, `09_FOOD_ORDERING_SPECIFICATION.md`, `10_DELIVERY_SPECIFICATION.md`, `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — remain **approved placeholders only** (Document Purpose, Scope, Dependencies, Planned Sections, Status = Not Started). Detailed content is intentionally not invented ahead of sequencing; each will be developed in its own turn once Paul directs.
 
 Can run in parallel with Phase 0c and Phase 1's backend work — it is documentation, not implementation, and does not block or get blocked by either. Briefly paused between 2026-07-18's repository reconciliation and the completion of Phase 0e below, per Paul's explicit instruction; resumed once Phase 0e was approved.
@@ -116,4 +116,4 @@ The documentation architecture is now considered stable. This phase exists in th
 
 ## Open questions blocking Phase 0 and Phase 1
 
-See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: Phase 0 (including 0b) is complete with no open items; Phase 0d (Product Specifications) has `01_NAVIGATION_SPECIFICATION.md` and `02_HOMEPAGE_SPECIFICATION.md` both fully drafted and awaiting Paul's review (specs `03`–`11` do not begin until `01`'s review completes), and specs `07`/`10` will need the payment-provider and courier/notification decisions resolved before they can be developed in detail. `01_NAVIGATION_SPECIFICATION.md` also surfaced a new open merchandising item — the exact Wine & Spirits mega-menu category grouping — tracked in `PROJECT_STATUS.md`. The payment provider choice (`MEDUSA_EXTENSIONS.md` #4) remains the most launch-critical open decision blocking backend Phase 1. None of these block each other.
+See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: Phase 0 (including 0b) is complete with no open items; Phase 0d (Product Specifications) has `01_NAVIGATION_SPECIFICATION.md` complete at v1.0 awaiting final approval and `02_HOMEPAGE_SPECIFICATION.md` fully drafted awaiting review (specs `03`–`11` do not begin until `01`'s approval lands), and specs `07`/`10` will need the payment-provider and courier/notification decisions resolved before they can be developed in detail. `01_NAVIGATION_SPECIFICATION.md` also surfaced a new open merchandising item — the exact Wine & Spirits mega-menu category grouping — tracked in `PROJECT_STATUS.md`. The payment provider choice (`MEDUSA_EXTENSIONS.md` #4) remains the most launch-critical open decision blocking backend Phase 1. None of these block each other.

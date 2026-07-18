@@ -1,7 +1,7 @@
 # Navigation Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Under Review
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -303,6 +303,12 @@ Each ties back to §2's business objectives — time-to-product for a Confident 
 - **Search suggestions (§15) are debounced**, not fired on every keystroke, to avoid excessive backend load and to keep the interaction feeling responsive rather than laggy under real network conditions.
 - Navigation itself is held to the platform-wide performance bar (`PRODUCT_BLUEPRINT.md` §16), with no navigation-specific relaxation of the LCP/CLS targets `02_HOMEPAGE_SPECIFICATION.md` §17 already establishes.
 
+**Maximum acceptable navigation depth.** No product may sit more than three navigational levels beneath a root branch — branch → category → subcategory — before reaching a listing or product page (e.g. Wine & Spirits → Spirits → Whisky is the maximum depth; a fourth forced level is not permitted without a logged decision revisiting this budget). This is a complexity budget in service of `EXPERIENCE_PRINCIPLES.md` #12 (Reduce Cognitive Load), not a claim that a specific click count itself drives conversion — that stronger claim is not asserted here, deliberately, since it is not something this specification's research base actually established. Facets (§13) narrow *within* a level and do not count against this depth budget, since they are applied, not navigated through.
+
+**Expected interaction latency.** Navigation interactions reuse `DESIGN_SYSTEM.md` §B10's existing motion tokens rather than inventing new timing values: opening/closing the mega menu or mobile drawer targets `motion-entrance`/`motion-exit` (200–350ms, already defined); hover/press feedback on any navigation control targets `motion-micro` (100–150ms). Search suggestions (debounced per above) should return and render within a window that still reads as instant — target under 300ms from the debounced query firing to suggestions appearing, beyond which a customer perceives lag rather than responsiveness. A full category or collection page navigation is a real page load and is held to the same LCP target `02_HOMEPAGE_SPECIFICATION.md` §17 already sets platform-wide (under 2.5 seconds at the 75th percentile on mobile) — navigation does not get a separate, looser budget for landing on a new page.
+
+**Graceful degradation, in tiers, when backend data is unavailable.** This extends §24's empty/error states with the performance-specific ordering between them: (1) serve the category tree from cache — a brief staleness (a just-added category not yet visible) is preferred over a blocking live fetch on every request, since the tree changes on a merchandising cadence, not per-request; (2) if even a cached tree is unavailable, fail to §24's hardcoded two-branch fallback (Wine & Spirits / Food Central) rather than a blank or broken menu; (3) never let a navigation-data failure block or delay rendering of the page content beneath it — the shell degrades independently of the page it sits above, the same independence principle `02_HOMEPAGE_SPECIFICATION.md` §21 already applies to homepage sections.
+
 ## 28. Future Expansion Strategy
 
 This section is the specification's direct answer to "navigation should support today's product while remaining scalable for future growth":
@@ -313,6 +319,20 @@ This section is the specification's direct answer to "navigation should support 
 - **Personalization** (facet defaults, recently-viewed shortcuts in navigation, location-aware Food Central defaults) is explicitly deferred, matching `02_HOMEPAGE_SPECIFICATION.md` §14's platform-wide personalization deferral — none of it is assumed or designed against here, and none of it is blocked by anything in this specification.
 - **Native mobile app navigation parity** is sequenced per `ROADMAP.md` Phase 8, once the web storefront's navigation patterns are proven — this document's shell/pattern decisions (not its exact HTML/ARIA implementation) are the reference for that future parity work, not something to be redesigned independently later.
 - **Multi-region/multi-currency or multi-language navigation** is out of scope — `PRODUCT_BLUEPRINT.md` §18 already assumes single-region, single-currency for v1, and this document does not design against a future it isn't yet committed to.
+
+**Demonstrating the architecture's reach, without committing to any of it.** None of the following is authorized, scoped, or planned work — `PRODUCT_BLUEPRINT.md` names none of them. They exist here only to show that this specification's mechanisms (the two-pattern model in §5, data-driven categories in §11, Collections in §12) already have an answer for plausible future growth, the same way `DESIGN_SYSTEM.md`'s "Future Theme Support" documents a capability without building it:
+
+| Possible future addition | How the existing architecture would absorb it |
+|---|---|
+| Additional product categories or spirit types | Category tree (§11) — zero navigation redesign, already the primary case this document designs for. |
+| A new service (e.g. sommelier consultation, corporate accounts) | A new top-level or account-adjacent destination, choosing between the two existing patterns per §5's logic — not a third pattern by default. |
+| Subscriptions | Most naturally an Account navigation destination (§16) for management, with a discovery-style entry point if merchandised as its own offering — a pattern choice per §5, not a new mechanism. |
+| Educational content (e.g. wine education, tasting guides) | An editorial Collection-like destination (§12), most plausibly CMS-fed once `MEDUSA_EXTENSIONS.md` #7 is approved — not a new navigation structure. |
+| Events (e.g. tastings, in-person activations) | A content-driven destination, likely footer-adjacent or a lightweight top-level entry — the same mechanism as educational content above. |
+| Corporate gifting | A specialized Collection (§12) plus a dedicated informational page — the same mechanism already serving consumer "Gifting," scaled up, not a parallel system. |
+| A genuinely new business line | The only case that would need §5's full pattern-selection decision exercised again — and, if neither existing pattern fits, a third pattern, which requires a logged `DECISION_LOG.md` entry, not a silent addition. |
+
+The pattern across every row but the last: growth is absorbed by **adding data to existing mechanisms**, not by redesigning navigation. Only a genuinely new top-level customer intent — not just a new category or content type — would ever require revisiting §5 itself.
 
 ## 29. Risks & Assumptions
 
@@ -352,7 +372,68 @@ This section is the specification's direct answer to "navigation should support 
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for all navigation implementation platform-wide, and the shell definition every other Product Specification (starting with `02_HOMEPAGE_SPECIFICATION.md`) already references rather than redefines.
+# Navigation Governance
+
+Everything above establishes *what* navigation does; this section establishes *who is allowed to change it, and how* — the direct answer to "navigation should evolve without unnecessary code changes." The organizing rule: **navigation's structure is developer-governed and changes only through a reviewed update to this specification; navigation's content is data and is merchandising/marketing-governed through the backend admin, requiring no code deploy.** Every element below is classified against that line.
+
+| Navigation element | Generated from data, or manually curated? | Who controls it | Developer involvement required? |
+|---|---|---|---|
+| Shell structure (logo, header layout, search/cart/account placement — §6, §9) | Structural, not data | Engineering, against `DESIGN_SYSTEM.md` and this specification | Yes — any change is a specification update, not a config change |
+| Two-pattern model (mega menu vs. flat list — §5, §10, §14) | Structural | Engineering/Product, per `PRODUCT_BLUEPRINT.md` §7 | Yes — introducing a third pattern requires a logged `DECISION_LOG.md` decision (§28) |
+| Category tree contents (which categories exist, their names, nesting, order — §11) | **Data-driven, fully** | Merchandising, via the Medusa admin | **No** |
+| Category *grouping rule* within the mega menu (e.g. which spirit types nest under "Spirits" — §10, §11) | Data-driven within a developer-set link budget | Merchandising proposes; the link budget itself (§10) is an engineering/architecture constraint | No, as long as the grouping stays within the existing budget; yes if the budget itself needs to change |
+| Collections — evergreen (e.g. "Sommelier's Picks" — §12) | **Data-driven, fully** | Merchandising, via the Medusa admin | **No** |
+| Collections — promotional/time-boxed (seasonal, limited-time — see Merchandising Strategy below) | **Data-driven, fully**, including automatic expiry | Marketing, via the Medusa admin, within the caps this document sets | **No**, provided the mechanism (start/end-dated Collections) is already built |
+| "New Arrivals"-style automatic collections | Fully automatic (query-generated, not curated) | No ongoing human control needed once configured | Yes, once, to configure the query; no involvement afterward |
+| Wine facets — which attribute fields exist (§13) | Schema, not data | Engineering, via the `wine-details`/`food-details` modules (`MEDUSA_EXTENSIONS.md`) | Yes — a new facet field is a module schema change |
+| Wine facets — which existing facets are surfaced/prioritized on a given category | Configuration over an existing schema | Merchandising/Product | No, once the schema itself supports the field |
+| Footer sitemap links (§8) | Auto-generated from category/collection data | Merchandising (content), Engineering (structure) | No for content; yes only if the footer's structural groupings themselves change |
+| Footer legal/compliance links (§8) | Manually curated | Legal/Compliance, with Business sign-off | Typically yes, given the compliance sensitivity of getting this wrong |
+| Breadcrumbs (§18) | Fully automatic, derived from category hierarchy | No manual control — a direct function of §11's data | No |
+| Search entry point behavior (§15) | Structural | Engineering | Yes — this is shell behavior, not content |
+| Account/cart navigation structure (§16, §17) | Structural | Engineering | Yes |
+| Accessibility/keyboard mechanics (§21, §22) | Structural | Engineering | Yes — never a content-team lever |
+
+**Why this table exists:** without an explicit answer to "who can change this without a developer," navigation risk defaults toward one of two failure modes — either merchandising/marketing routes every small content change through engineering (slowing the business down for no structural reason), or content changes bypass this specification entirely (letting navigation drift out of the disciplined, research-grounded shape defined above). This table is how both are avoided at once.
+
+# Merchandising Strategy
+
+Navigation must support merchandising — featured collections, seasonal campaigns, limited-time promotions, gifting occasions, editorial destinations, new arrivals, premium selections — **without compromising the usability and restraint principles this document is built on** (§1, `EXPERIENCE_PRINCIPLES.md` #3 Premium Through Discipline). The mechanism for this is not new: it is Collections (§12), used under a stricter set of rules than a permanent, evergreen Collection needs.
+
+**The core rule: promotional content is an optional layer, never permanent structural navigation.** Concretely:
+
+- **Promotional/campaign Collections surface only in the mega menu's curated strip (§10) or a clearly-bounded "Featured" entry point** — never as new formal-taxonomy columns (§11), and never by displacing an existing category. The formal taxonomy is permanent; the promotional layer sits beside it, never inside it.
+- **A hard cap on simultaneously-featured promotional entries** — no more than 3–4 at any time, the same discipline §10 already applies to the mega menu's link budget. A merchandising team wanting to feature a fifth item retires one of the current four; the cap is not negotiable per-campaign, because an uncapped promotional layer is exactly how a restrained mega menu (§10) erodes into a cluttered one over time.
+- **Every promotional Collection carries a start and end date, enforced by data.** A seasonal or limited-time entry disappears from navigation automatically when it expires — this is a governance point (see the table above: no developer or manual cleanup step required) as much as a merchandising one, and it is the direct mechanism that prevents a stale "Valentine's Gifting" entry from still being live in July.
+- **No fake urgency.** A countdown, a "only X left," or any other artificial scarcity device applied to a promotional navigation entry is explicitly against `EXPERIENCE_PRINCIPLES.md` #15 (Build Relationships, Not Just Transactions) and is not sanctioned by this specification — a time-boxed promotion may say when it ends; it may not manufacture pressure beyond that fact.
+- **Mapped examples**, none of which require a new mechanism beyond Collections (§12) and the rules above:
+  - *Featured collections, premium selections* (e.g. "Sommelier's Picks") — an evergreen, non-expiring Collection; merchandising-curated.
+  - *Seasonal campaigns, limited-time promotions* — a start/end-dated Collection under the cap above.
+  - *Gifting occasions* — the existing "Gifting" Collection already named throughout `INFORMATION_ARCHITECTURE.md`; may run evergreen or seasonally spun (e.g. a Valentine's-specific gifting entry) within the same rules.
+  - *New arrivals* — the one case that is fully automatic rather than curated (a query-generated Collection, e.g. "products added in the last N days") — no ongoing merchandising action required once configured, per the Governance table above.
+  - *Editorial destinations* — content-led, most plausibly CMS-fed once `MEDUSA_EXTENSIONS.md` #7 (Sanity) is approved; not built now, and named here only to confirm it fits the same promotional-layer treatment rather than requiring a new navigation mechanism when it arrives.
+- **Visual treatment is `DESIGN_SYSTEM.md`'s responsibility, not this document's** — but the architectural point stands regardless of visual execution: a promotional entry must always be structurally distinguishable from permanent taxonomy, so removing one on expiry never leaves a gap, broken link, or orphaned page (§19, §26) behind it.
+
+# Navigation Quality Checklist
+
+Every future navigation change — a new category, a new promotional Collection, a new interaction pattern, a modification to the shell — must be able to answer **yes** to all of the following before it's considered complete, the same discipline `DESIGN_SYSTEM.md`'s own Design Quality Checklist applies to components:
+
+- [ ] **Does it reduce customer effort?** Measured against §2's business objectives and §3's customer objectives, not assumed.
+- [ ] **Does it improve discoverability?** Or does it quietly bury something a customer needs behind an extra step (§1, §7)?
+- [ ] **Does it preserve consistency?** The shell behaves identically wherever it appears (§1, §9); a change confined to one page that the shell doesn't reflect elsewhere is a red flag, not a shortcut.
+- [ ] **Does it remain accessible?** Semantic HTML, keyboard operability, and the disclosure-pattern discipline (§21, §22) hold with no exceptions carved out for the new change.
+- [ ] **Does it support mobile-first behaviour?** Designed and tested at the smallest breakpoint first (§7, §23), not shrunk down from a desktop-first design.
+- [ ] **Does it avoid unnecessary complexity?** A change that adds a navigational layer, a new pattern, or a new column without a demonstrated need is a violation of §1's restraint principle, not a neutral addition.
+- [ ] **Does it support merchandising without becoming advertising?** Checked against the Merchandising Strategy's cap, expiry, and no-fake-urgency rules above — a promotional entry that ignores any of the three has failed this check regardless of its business intent.
+- [ ] **Does it remain scalable?** Can it be added, changed, or removed as data (per the Governance table above), or does it require a code change for what should be a content decision (§28)?
+- [ ] **Does it preserve equal prominence between Wine & Spirits and Food Central?** (§2, `BUSINESS_RULES.md`) — no change may make either line read as primary and the other as an afterthought.
+- [ ] **Does it stay within the two established patterns (§5, §10, §14)?** A third pattern is never introduced silently — only through a logged `DECISION_LOG.md` decision (§28).
+
+This document is now **Version 1.0 — the authoritative Navigation Specification** for all future navigation implementation, submitted for Paul's review and approval; see the Document status note below for what "Version 1.0" means at this stage specifically.
+
+---
+
+**Document status:** Under Review (v1.0). This is the final draft — complete against all requirements set for it, including this refinement pass (Navigation Governance, Merchandising Strategy, an expanded Scalability treatment in §28, expanded Performance expectations in §27, and the Navigation Quality Checklist above) — and is now submitted for Paul's review and approval. "Version 1.0" here means *complete and frozen-ready*, not yet *approved*; per `DOCUMENTATION_GOVERNANCE.md` Section 4, status Under Review is what carries the "awaiting explicit approval" meaning, and this document does not claim Approved status until Paul confirms it. Upon approval, this specification becomes the reference for all navigation implementation platform-wide, and the shell definition every other Product Specification (starting with `02_HOMEPAGE_SPECIFICATION.md`) already references rather than redefines.
 
 ## Sources
 
