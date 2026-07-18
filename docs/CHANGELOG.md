@@ -1,11 +1,38 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.2
+**Version:** 2.4
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v21 — 2026-07-18 — `07_CHECKOUT_SPECIFICATION.md` drafted in full
+
+**Context:** With the repository reconciled (v20, below) and six specifications frozen, Paul directed Product Specifications to continue with `07_CHECKOUT_SPECIFICATION.md`. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/07_CHECKOUT_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative checkout specification, covering all 30 required sections: Checkout Philosophy, Business/Customer Objectives, Entry Points, Checkout Information Architecture (a six-step logical sequence), Guest Checkout Behaviour, Address Capture Behaviour, a **Mixed-Order Checkout Behaviour** section (one address per order in v1; the cart's two fulfillment-leg groups carried through every step; a new blocking condition for a non-Lagos address paired with a Food Central item), Delivery Method Selection, Delivery Slot Selection Behaviour, Address-Based Delivery Eligibility Enforcement, Availability Re-validation at Checkout, Pricing and Fee Calculation (completing `06_CART_SPECIFICATION.md`'s Pricing Transparency table), Payment Behaviour (provider-agnostic; cash-on-delivery flagged open), Age-Verification Backstop (hard recheck at confirmation left explicitly open), Order Review Step, Order Confirmation, Trust Signals, Empty/Invalid Checkout States, Loading States, Error States, Accessibility, Responsive Behaviour, Analytics, SEO Considerations, Backend Requirements, Performance Expectations, Future Expansion, Risks & Assumptions, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §9/§11, `BUSINESS_RULES.md`, `DELIVERY_MODEL.md`, `USER_FLOWS.md`, and all six frozen prior specifications. Grounded in limited external research (Baymard checkout-flow, guest-checkout-prominence, form-field-minimization, mobile-checkout, and order-confirmation-page research) cited inline and in a Sources section — no layouts, interfaces, or wording copied. Confirms five delivery-related business decisions already flagged by `06_CART_SPECIFICATION.md` as checkout-level dependencies, plus the payment-provider and notification-channel gaps as launch-critical.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.2) — specification status table updated: `07_CHECKOUT_SPECIFICATION.md` now **In Progress**, v0.1, full draft complete, awaiting review.
+- `docs/PROJECT_STATUS.md` (v2.3), `docs/ROADMAP.md` (v2.6) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: seven specifications now drafted (six frozen, Checkout awaiting review).
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting.
+
+## v20 — 2026-07-18 — Repository reconciliation, round two
+
+**Context:** An onboarding read at the start of this session found the working branch (`claude/medusa-repo-clone-ut5dl5`) missing `docs/AI_HANDOFF.md` and `docs/DOCUMENTATION_GOVERNANCE.md` entirely, and lagging a second session's branch (`claude/project-onboarding-status-p35u3v`) by 12 commits. Full reasoning in `DECISION_LOG.md`.
+
+**Changed:**
+
+- `claude/medusa-repo-clone-ut5dl5` fast-forwarded from `63efb10` to `78b31c4` — purely additive, no history rewritten, no squash, no force-push. Brings in `docs/AI_HANDOFF.md`, `docs/DOCUMENTATION_GOVERNANCE.md`, and specifications 01, 03, 04, 05, 06 fully drafted and frozen to v1.0, none of which previously existed on this branch.
+- A pre-reconciliation, in-progress draft of `01_NAVIGATION_SPECIFICATION.md`, produced independently on this branch earlier in the same session before the discrepancy was discovered, was confirmed fully superseded and dropped rather than merged in.
+
+**Validated post-merge (all passed):** all four frozen Phase 0 documents and all six frozen specifications unchanged; zero conflict markers in `/docs`; every markdown cross-reference resolves; every document has a status header; every specification's header status matches `docs/README.md`'s table; `docs/AI_HANDOFF.md` and `docs/DOCUMENTATION_GOVERNANCE.md` present and current; `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/DECISION_LOG.md`, and `docs/CHANGELOG.md` all synchronized.
+
+**Not changed:** no document's substantive content was altered by this reconciliation — it was a pure branch-pointer fast-forward.
 
 ## v19 — 2026-07-18 — `06_CART_SPECIFICATION.md` finalized to v1.0 and frozen
 
