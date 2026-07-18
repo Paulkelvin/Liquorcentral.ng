@@ -1,7 +1,7 @@
 # Search Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen (2026-07-18)
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -103,6 +103,8 @@ No page in the platform introduces a second, independent search mechanism outsid
 - **This platform does not assert specific wine/spirit domain synonym pairs as settled fact in this document** (e.g. whether two spirit categories are close enough to synonym or must stay distinct) — that judgment belongs to whoever owns the wine-attributes data (`PRODUCT_CATALOG.md`), not to this specification, which defines the mechanism only.
 
 ## 10. Product Ranking
+
+*See the "Ranking Philosophy" section near the end of this document for the umbrella priority order across relevance, availability, merchandising, popularity, and freshness, and the explicit rule on what may never override relevance — this section specifies the mechanics that philosophy governs.*
 
 - **Baseline relevance** follows Meilisearch's default ranking behavior — typo-distance and textual match quality first, consistent with §8's typo-tolerance requirements — which is a reasonable, evidence-backed default and is not overridden without a specific reason logged as a decision.
 - **Availability is a ranking factor, not a visibility gate** — an available Wine & Spirits or Food Central item ranks above an otherwise-equivalent unavailable one for the same query, but an unavailable item still appears, clearly labeled (§12), rather than disappearing from results entirely (§5, and consistent with `01_NAVIGATION_SPECIFICATION.md` §24's "never simply hidden" rule).
@@ -309,7 +311,86 @@ None of the above is authorized or scoped work — `PRODUCT_BLUEPRINT.md` and `M
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for all search and product-discovery implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` (entry points) and `02_HOMEPAGE_SPECIFICATION.md` (the homepage's own discovery surfaces) without redefining either.
+# Search Intent
+
+Everything above specifies *mechanisms* (facets, synonyms, ranking, boosting). This section maps those mechanisms onto named customer intents, so search behavior can be checked against real scenarios rather than only against isolated features. **Every adaptation below is achieved through mechanisms already specified elsewhere in this document — none of it introduces AI, machine learning, or personalization into Version 1.** Intent here is inferred deterministically from the query text and any facets/context already applied, never from browsing history, account data, or an inferred customer profile. If a future intent genuinely cannot be served this way, that is a trigger to consider AI-assisted discovery or personalization (§28) — it is not a reason to force a workaround into v1's deterministic model.
+
+| Customer intent | Typical signal | How search behavior adapts | Mechanism |
+|---|---|---|---|
+| Exact product lookup | A specific, well-formed product or producer name | Autocomplete prioritizes direct name matches; typo tolerance minimizes friction on a near-exact query | §7, §8, §10 |
+| Category exploration | A category/type term ("whisky," "red wine") without a specific product | Autocomplete surfaces the matching category/collection alongside any product hits, inviting a switch into browsing rather than forcing a flat product list | §7, §11, §12, `01_NAVIGATION_SPECIFICATION.md` §11–§12 |
+| Gifting | Terms like "gift," "gift set," "present" | Matches surface Gifting-tagged Collection members via the synonym/Collection mechanism already established — not a separate gifting-specific system | §9, §15 |
+| Occasion shopping | Occasion language ("birthday," "celebration") | The same Collection/synonym mechanism as gifting, generalized to any occasion tag a Collection carries | §9, §12, §15 |
+| Food pairing | A wine or dish name plus pairing language ("pairs with," "goes with") | Surfaces the "pairs with" cross-sell suggestion attached to the matched result, clearly distinguished from the result set itself | §17 |
+| Budget shopping | The Price facet/sort applied, or price-range language in the query | Served through the existing Price facet and sort (§13, §14) — search does not parse a numeric budget out of free text in v1; that is explicitly deferred to the natural-language-query work in Future Expansion (§28) | §13, §14 |
+| Premium/luxury browsing | Terms like "premium," "sommelier," or direct entry via a premium Collection | Surfaces curated, editorially-boosted Collection members (§11) — a curation signal, not a personalization one | §11, §12 |
+| Educational discovery | Descriptive, non-catalog language ("light," "fruity," "not too spicy") | Served by full-text tasting-note/ingredient matching (§5) — the mechanism that lets a customer succeed without knowing formal catalog vocabulary, directly serving `EXPERIENCE_PRINCIPLES.md` #5 (Guide Without Intimidating) | §5, §15, §16 |
+
+# Query Understanding
+
+The goal stated plainly: **a customer should be able to find products even when they don't use official catalog wording.** Every mechanism below is deterministic and already specified elsewhere in this document — query understanding in v1 is achieved through typo tolerance, synonyms, full-text matching, and standard normalization, never through a natural-language-understanding model (consistent with Search Intent's own v1 boundary, above).
+
+- **Spelling mistakes** are fully covered by §8 (Typo Tolerance) and are not re-specified here.
+- **Abbreviations** (e.g. a common shorthand for a product, brand, or attribute) are captured through the synonym dictionary (§9) as they are identified from real zero-result query logs (§18, §29) — an operational content task, not new engineering.
+- **Plural/singular forms** of the same word ("wine"/"wines," "gift"/"gifts") are treated as equivalent matches through standard query normalization (§6) — ordinary tokenization handles most common cases, with irregular forms an automated stemmer misses added to the synonym dictionary (§9) as needed.
+- **Local Nigerian terminology** — colloquial or everyday names for products, especially Food Central dishes, where a customer may reasonably use a household term rather than a formal menu name — is a required, actively-maintained category within the synonym dictionary (§9). This document does not enumerate specific terms itself; that content belongs to whoever owns the catalog and menu data (`PRODUCT_CATALOG.md`), sourced from real usage rather than assumed here.
+- **Wine terminology** — regional spelling variants, varietal names, and informal descriptors — is served by the same synonym mechanism (§9) plus full-text tasting-note matching (§5) for descriptive, non-formal language.
+- **Spirit terminology** — regional spelling variants (e.g. "whisky"/"whiskey," already named in §9) and well-known brand names resolving to their category or product — served by the same synonym and product-name matching mechanisms (§9, §10), not a spirits-specific system.
+- **Food terminology** — dish names, ingredient names, and their colloquial equivalents — served by the same synonym dictionary (§9) plus full-text ingredient search (§5, §16).
+
+Keeping query understanding entirely mechanism-based (rather than model-based) makes it deterministic, testable, and directly improvable from real zero-result data (§18) — a synonym gap is fixed by adding a synonym entry, not by retraining anything.
+
+# Ranking Philosophy
+
+This section states the priority order search ranking follows, and — more importantly — what is never allowed to override it. §10–§12 and §14 specify the mechanics; this section is the policy those mechanics implement.
+
+**Priority order:**
+
+1. **Relevance always comes first.** Textual match quality and typo-distance (§8, §10) determine whether a product is in the result set and its baseline position at all. Nothing below this line can promote an irrelevant product into relevance.
+2. **Availability** acts as a soft tie-breaker among already-relevant results (§10) — an available product ranks above an otherwise-equivalent unavailable one, but availability never removes a relevant, unavailable product from the results entirely (§5, §12).
+3. **Business merchandising (editorial boosting, §11)** may reorder *within* an already-relevant result set, bounded by the caps and time-limits already specified — it never inserts a product with no genuine relevance to the query.
+4. **Popularity** has no ranking role in v1 — no real usage data exists yet to base it on (§10). When it is introduced (§28), it is designed to be a tie-breaker among relevant results, the same tier as availability, never a relevance replacement.
+5. **Freshness** is not a silent ranking factor in v1 either — there is no general basis to prefer a newer product over an equally relevant older one. Freshness is instead exposed explicitly as the "Newest" sort option (§14), which a customer chooses deliberately, rather than an invisible thumb on the scale in the default relevance order.
+6. **Promotional boosts** are the same mechanism as business merchandising (§11) and are bound by the same rule above.
+
+**What is never allowed to override relevance — stated explicitly, not left to inference:**
+
+- No promotional, merchandising, or boosted placement may insert a product into results for a query it has no genuine relevance to (§11).
+- No business-priority or paid-style signal may outrank an exact or near-exact match on the customer's own typed query terms — the customer's literal intent always outranks the business's promotional intent for their own search.
+- Availability may deprioritize but never hides a genuinely relevant, unavailable product (§5, §10, §12).
+- Any future popularity or personalization signal (§28) is constrained, by this document, to operate as a tie-breaker among relevant results — stated now specifically so that constraint does not need to be re-derived or re-argued when that future work begins.
+
+# Operational Considerations
+
+Search must remain predictable and trustworthy as the underlying catalog changes beneath it. None of the following introduces a new backend mechanism beyond the index-freshness sync pattern already required in §26 — this section makes explicit what that sync pattern must guarantee from the customer's side, since "the index stays current" is meaningless without saying current *with respect to what*.
+
+- **Products becoming unavailable** (sold out, or a Food Central item the kitchen can no longer fulfill): reflected in the index promptly via the existing sync mechanism (§26); the product remains findable and labeled accordingly (§12), never silently removed. A result already rendered in an open browser tab may briefly show stale availability until the customer's next fetch — an accepted, reasonable tradeoff, not an oversight, consistent with the caching-tolerance precedent already established in `01_NAVIGATION_SPECIFICATION.md` §27.
+- **Price changes:** the index reflects current price at query time via the same sync mechanism; a price-sorted result set (§14) is only ever as stale as the index itself, with no separate price-specific caching layer to reason about.
+- **Promotions or boosts expiring:** reuses §11's existing start/end-date, auto-expiring mechanism — no manual cleanup step, and no separate expiry logic to specify here.
+- **Inventory changes** (restock, quantity changes): availability-driven ranking (§10) and labeling (§12) update automatically once the index reflects the new state — a restocked item's position and label correct themselves without a manual re-index trigger.
+- **Products temporarily hidden by a deliberate merchandising decision** are a distinct case from "unavailable": a hidden product is fully excluded from search results and browsing, not shown-with-a-label — hiding is an intentional visibility decision (e.g. pulling an item from sale without deleting it), not a stock-state fact, and must not be conflated with §12's "unavailable but findable" rule, which applies only to stock/kitchen-capacity states.
+- **Deleted products** are a third distinct case from both of the above: a genuinely deleted product is removed from the index promptly, so search never surfaces a result that turns out to be a broken link when clicked. "Unavailable" (still exists, not currently purchasable), "hidden" (exists, deliberately not shown), and "deleted" (no longer exists) are three different states and must not be handled as if they were one.
+
+# Search Quality Checklist
+
+Every future change to search — a new facet, a new synonym category, a new promotional boost mechanism, a ranking adjustment — must be able to answer **yes** to all of the following before it's considered complete, the same discipline `DESIGN_SYSTEM.md`'s Design Quality Checklist and `01_NAVIGATION_SPECIFICATION.md`'s Navigation Quality Checklist already apply to their own domains:
+
+- [ ] **Is relevance preserved?** Checked against the Ranking Philosophy's priority order above — nothing demotes genuine relevance below merchandising, popularity, or freshness.
+- [ ] **Is customer trust maintained?** No manipulated results, no fabricated urgency, and an honest zero-result state when one genuinely occurs (§12, §18).
+- [ ] **Are unavailable products handled correctly?** Labeled, not hidden, for genuine stock/availability states — and correctly distinguished from a deliberately hidden or genuinely deleted product (Operational Considerations, above).
+- [ ] **Are promotional boosts honest?** Capped, time-bound, relevance-scoped, and never inserting an irrelevant product (§11, Ranking Philosophy).
+- [ ] **Does search remain accessible?** WAI-ARIA combobox semantics, live-region result announcements, and full keyboard operability hold with no exceptions (§22).
+- [ ] **Is the mobile experience equal to desktop, not a reduced version of it?** Bottom-sheet filtering with an explicit apply action is a deliberate pattern choice, not a compromise (§13, §23).
+- [ ] **Does search support both catalogs equally?** Cross-catalog labeling and equal-prominence results hold for any query that plausibly spans both (§2, §5).
+- [ ] **Is performance acceptable?** Held to the same targets as the rest of the platform, with no search-specific relaxation (§27).
+- [ ] **Does the change stay within v1's deterministic, non-AI query-understanding and intent model** — or does it actually require personalization or machine learning, in which case it belongs in Future Expansion (§28), not smuggled into v1 (Search Intent, Query Understanding, above)?
+- [ ] **Does it preserve the allergen-filtering trust guarantee without exception?** (§13, §16) — this is a safety commitment, not an ordinary UX preference, and no change may weaken it.
+
+This document is now **Version 1.0 — Approved and Frozen — the authoritative Search Specification** for all future search and product-discovery implementation.
+
+---
+
+**Document status:** Approved — Frozen (v1.0, approved by Paul 2026-07-18). This is the authoritative reference for all search and product-discovery implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` (Approved — Frozen; entry points) and `02_HOMEPAGE_SPECIFICATION.md` (Under Review; the homepage's own discovery surfaces) without redefining either. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, a Frozen document may only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md` — not as a side effect of downstream specification or implementation work.
 
 ## Sources
 

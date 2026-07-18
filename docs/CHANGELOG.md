@@ -1,11 +1,31 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.6
+**Version:** 1.7
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v14 — 2026-07-18 — `03_SEARCH_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved the overall Search Specification, then requested a final refinement pass before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/03_SEARCH_SPECIFICATION.md`):**
+
+- **Search Intent** — a new unnumbered section mapping eight named customer intents (exact product lookup, category exploration, gifting, occasion shopping, food pairing, budget shopping, premium/luxury browsing, educational discovery) onto mechanisms already specified elsewhere in the document, with an explicit statement that none of it introduces AI or personalization into Version 1.
+- **Query Understanding** — a new unnumbered section covering abbreviations, spelling mistakes (cross-referencing §8), plural/singular normalization, local Nigerian terminology, and wine/spirit/food terminology — all served through typo tolerance, synonyms, and full-text matching, not a natural-language-understanding model.
+- **Ranking Philosophy** — a new unnumbered section stating the priority order (relevance first; then availability; then bounded business merchandising; popularity and freshness explicitly not silent v1 ranking factors) and, explicitly, what may never override relevance: no promotional/business/availability signal may insert an irrelevant product or outrank an exact match on the customer's own query.
+- **Operational Considerations** — a new unnumbered section specifying predictable behavior as products become unavailable, prices change, promotions expire, and inventory changes, plus a three-way distinction between "unavailable" (labeled, findable), "hidden" (a deliberate merchandising decision, fully excluded), and "deleted" (removed from the index promptly).
+- **Search Quality Checklist** — a new unnumbered closing section every future search change must satisfy, mirroring `DESIGN_SYSTEM.md`'s and `01_NAVIGATION_SPECIFICATION.md`'s own quality checklists.
+
+**Changed:**
+
+- §10 (Product Ranking) gained a one-line cross-reference to the new Ranking Philosophy section, avoiding duplicated priority-order explanation between the two.
+- Document header: **Version 0.1 → 1.0**, **Status: In Progress → Approved — Frozen**, per Paul's explicit instruction to move directly to frozen status once the refinement pass was complete.
+- `docs/README.md` (v1.6) — specification status table updated to `03_SEARCH_SPECIFICATION.md`: Approved — Frozen, v1.0.
+- `docs/PROJECT_STATUS.md` (v1.7), `docs/ROADMAP.md` (v2.0) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: `02_HOMEPAGE_SPECIFICATION.md` is now the only specification still awaiting a decision.
+- `docs/DECISION_LOG.md` — new entry recording the refinement pass and the freeze.
 
 ## v13 — 2026-07-18 — `01_NAVIGATION_SPECIFICATION.md` approved and frozen; `03_SEARCH_SPECIFICATION.md` drafted in full
 
