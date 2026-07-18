@@ -1,11 +1,25 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.0
+**Version:** 2.1
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v18 — 2026-07-18 — `06_CART_SPECIFICATION.md` drafted in full
+
+**Context:** With five specifications frozen, Paul directed Product Specifications to continue with `06_CART_SPECIFICATION.md`, the authoritative specification for the LiquorCentral shopping cart, with a deep-dive instruction for Mixed Cart Behaviour (documenting exactly how the cart behaves when Wine & Spirits and Food Central are combined, without inventing any open business rule) plus dedicated treatment of Cart Philosophy, Trust, and Future Readiness. Unlike the instruction for `05`, this one did not include a Finalization/freeze directive, so the document was drafted to v0.1/In Progress, awaiting Paul's review before any refinement-pass-then-freeze or direct-freeze decision. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/06_CART_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative shopping cart specification, covering all 30 required sections: Cart Philosophy, Business/Customer Objectives, Entry Points, Cart Information Architecture, a deep-dive **Mixed Cart Behaviour** section, Quantity Management, Price Calculations, Promotions, Delivery Eligibility, Pickup Eligibility, Availability Changes, Out-of-Stock Behaviour, a **Saved-for-Later Strategy** (new recommendation), Gift Wrapping, Cart Persistence, Estimated Delivery Messaging, Cross-selling, a **Trust Signals** section, Empty Cart Behaviour, Loading States, Error States, Accessibility, Analytics, SEO Considerations, Backend Requirements, a **Future Expansion** section (loyalty, subscriptions, saved carts, shared carts, gift registries, corporate ordering — capability only), Risks & Assumptions, a numbered **Cart Quality Checklist** (§29), and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §9/§10, `DELIVERY_MODEL.md`, `USER_FLOWS.md`, `BUSINESS_RULES.md`, and all five frozen prior specifications. Grounded in limited external research (Baymard cart-abandonment and checkout-UX research, cart-abandonment statistics, Shopify/Optimizely split-shipment documentation, persistent-cart research, ARIA live-region and screen-reader accessibility research) cited inline and in a Sources section — no layouts, interfaces, or wording copied. Key decisions: line items grouped by fulfillment leg (Wine & Spirits / Food Central) as two visually distinct groups with their own subtotals, feeding into one cart-wide total and one checkout action, per `PRODUCT_BLUEPRINT.md` §9's no-order-splitting rule; delivery messaging for each fulfillment leg is never merged into one promise; exact scheduling/slot selection is explicitly deferred to `07_CHECKOUT_SPECIFICATION.md`; five business decisions are explicitly flagged as open rather than invented (Wine & Spirits delivery mechanism, Lagos delivery-area definition, delivery-slot parameters, cash-on-delivery, hard age-recheck at order confirmation); Availability Changes (§12) and Out-of-Stock Behaviour (§13) are kept as two distinct, non-overlapping sections; Saved-for-Later (§14, cart-item-level) is kept distinct from the future "Saved carts" capability (§27, whole-cart-level); cart total/subtotal updates are announced via an ARIA live region, closing a documented screen-reader gap around cart-total changes. Confirms the "pairs with" gap as a dependency of a sixth specification, and flags Saved-for-Later as a new, not-yet-scoped backend recommendation in `MEDUSA_EXTENSIONS.md`.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.0) — specification status table updated: `06_CART_SPECIFICATION.md` now **In Progress**, v0.1, full draft complete, awaiting review.
+- `docs/PROJECT_STATUS.md` (v2.1), `docs/ROADMAP.md` (v2.4) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: six specifications now drafted (five frozen, Cart awaiting review); the "pairs with" gap now flagged by six specifications; Saved-for-Later and Cart's five delivery-related open decisions added to "Decisions awaiting Paul's approval."
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting.
 
 ## v17 — 2026-07-18 — `05_PRODUCT_DETAILS_SPECIFICATION.md` drafted in full and frozen to v1.0
 

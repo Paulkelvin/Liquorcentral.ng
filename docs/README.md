@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 1.9
+**Version:** 2.0
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -58,7 +58,7 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 | [`03_SEARCH_SPECIFICATION.md`](./specifications/03_SEARCH_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 | [`04_PRODUCT_LISTING_SPECIFICATION.md`](./specifications/04_PRODUCT_LISTING_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 | [`05_PRODUCT_DETAILS_SPECIFICATION.md`](./specifications/05_PRODUCT_DETAILS_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
-| [`06_CART_SPECIFICATION.md`](./specifications/06_CART_SPECIFICATION.md) | Not Started (placeholder) |
+| [`06_CART_SPECIFICATION.md`](./specifications/06_CART_SPECIFICATION.md) | **In Progress**, v0.1 — full draft complete, awaiting review |
 | [`07_CHECKOUT_SPECIFICATION.md`](./specifications/07_CHECKOUT_SPECIFICATION.md) | Not Started (placeholder) |
 | [`08_CUSTOMER_ACCOUNT_SPECIFICATION.md`](./specifications/08_CUSTOMER_ACCOUNT_SPECIFICATION.md) | Not Started (placeholder) |
 | [`09_FOOD_ORDERING_SPECIFICATION.md`](./specifications/09_FOOD_ORDERING_SPECIFICATION.md) | Not Started (placeholder) |
