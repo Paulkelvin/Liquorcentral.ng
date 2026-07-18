@@ -1,6 +1,9 @@
 # LiquorCentral Brand Identity — v1
 
-**Status:** Draft v1 — pending Paul's review and approval. Do not begin `DESIGN_SYSTEM.md` visual-token work or any UI design based on this document until it is approved.
+**Status:** Under Review — positioning statement (§10) finalized by Paul; remainder pending full approval. Do not begin `DESIGN_SYSTEM.md` visual-token work or any UI design based on this document until it is approved in full.
+**Version:** 1.0
+**Owner:** Brand
+**Last Updated:** 2026-07-18
 
 **Scope:** This is not a logo exercise and does not select final typefaces, a logo mark, or a component library. It defines the personality, philosophy, emotional direction, and visual foundation every future design decision — brand asset, design-system token, or storefront screen — should be checked against.
 
@@ -146,13 +149,23 @@ Tone flexes by situation, within the fixed voice traits above:
 
 ## 10. Positioning Statement
 
-**For Nigerian households and gift-givers who want premium wine, spirits, and freshly cooked food without the hassle or hesitation of an unfamiliar seller, LiquorCentral is the direct-from-us commerce platform that combines curated drink selection with made-to-order Nigerian food — because it's one accountable company, not a marketplace of strangers.**
+**Finalized by Paul (2026-07-18):**
 
-- **Reasoning:** The classic positioning-statement structure (audience, category, differentiator, reason-to-believe) forces the differentiator to be concrete rather than an aspirational adjective.
-- **Business benefit:** Gives marketing a single sentence to test every campaign or landing page against.
-- **Customer experience benefit:** The reason-to-believe (one accountable company) is the one differentiator competitors using a marketplace model genuinely cannot copy without changing their own business.
-- **Implementation impact:** Should be the test for any new marketing page's headline — does it restate or support this positioning?
-- **Risks/trade-offs:** This statement should be revisited if the no-marketplace decision in `BUSINESS_RULES.md` is ever reconsidered — it depends directly on that business fact remaining true.
+> "LiquorCentral is Nigeria's premium destination for curated wines, spirits, and complementary culinary experiences — bringing exceptional products, trusted service, and effortless commerce together in one unified brand."
+
+This supersedes the earlier draft positioning statement and resolves the reconciliation flagged against `EXPERIENCE_PRINCIPLES.md`'s Category Definition (§10a below) — the two are now written to sit alongside each other consistently: this statement names the audience and promise, the Category Definition names the market category.
+
+- **Reasoning:** Names the audience implicitly (Nigeria), the category (curated wine, spirits, and culinary experiences), and the differentiator (exceptional products, trusted service, effortless commerce, unified brand) in one sentence, in Paul's own words rather than an engineering paraphrase.
+- **Business benefit:** Gives marketing a single, owner-approved sentence to test every campaign or landing page against.
+- **Customer experience benefit:** "Trusted service" and "effortless commerce" directly reflect the trust and low-friction goals established throughout `PRODUCT_BLUEPRINT.md` and `EXPERIENCE_PRINCIPLES.md`.
+- **Implementation impact:** Should be the test for any new marketing page's headline — does it restate or support this positioning? Candidate for direct or near-direct use in About-page and hero copy.
+- **Risks/trade-offs:** Depends on the no-marketplace, one-company model in `BUSINESS_RULES.md` remaining true ("one unified brand"); revisit if that business decision ever changes.
+
+### 10a. Category Definition (from `EXPERIENCE_PRINCIPLES.md`, cross-referenced)
+
+**Finalized by Paul (2026-07-18):** "LiquorCentral operates as a Premium Lifestyle Commerce Platform, combining premium beverages and complementary Nigerian cuisine within one seamless customer experience."
+
+This is the market-category framing that pairs with the Positioning Statement above — see `EXPERIENCE_PRINCIPLES.md`'s Competitive Positioning section for its full context. Both are now finalized and consistent; no further reconciliation is needed.
 
 ## 11. Value Proposition
 

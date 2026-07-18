@@ -1,6 +1,11 @@
 # Product Catalog
 
-**Status:** Strategy confirmed; exact attribute field lists still open pending Paul/merchandising input. Expands on `PRODUCT_BLUEPRINT.md` §6 and §13.
+**Status:** Draft (strategy confirmed; exact attribute field lists still open pending Paul/merchandising input)
+**Version:** 1.0
+**Owner:** Product
+**Last Updated:** 2026-07-18
+
+Expands on `PRODUCT_BLUEPRINT.md` §6 and §13.
 
 ## Two catalogs, one Product module
 

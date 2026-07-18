@@ -1,6 +1,11 @@
 # Medusa Extensions
 
-**Status:** Identified and scoped; none yet built. This is the authoritative list of every custom Medusa extension LiquorCentral needs, and the only list that should be treated as "the plan" — if a future task considers building something not listed here, it should be added here first, following the same format.
+**Status:** Draft (identified and scoped; none yet built)
+**Version:** 1.0
+**Owner:** Engineering
+**Last Updated:** 2026-07-18
+
+This is the authoritative list of every custom Medusa extension LiquorCentral needs, and the only list that should be treated as "the plan" — if a future task considers building something not listed here, it should be added here first, following the same format.
 
 **Working rule:** every extension listed follows Medusa's documented customization patterns (custom modules, module links, workflow hooks, custom API routes, provider modules). None require modifying `medusa/` core. See `ARCHITECTURE.md` for why that constraint exists and how these mechanisms work.
 

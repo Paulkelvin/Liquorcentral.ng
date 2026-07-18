@@ -1,6 +1,11 @@
 # Brand Guidelines
 
-**Status: Placeholder — narrowed in scope now that `BRAND_IDENTITY.md` exists.** This document is the tactical execution layer: actual logo files, exact typeface selections, and a usable asset library. The strategic and emotional foundation those assets must express — vision, personality, voice, color roles, typography direction, photography direction — is now defined in `BRAND_IDENTITY.md` and should not be duplicated or re-decided here.
+**Status:** Draft (placeholder — narrowed in scope now that `BRAND_IDENTITY.md` exists)
+**Version:** 1.0
+**Owner:** Brand
+**Last Updated:** 2026-07-18
+
+This document is the tactical execution layer: actual logo files, exact typeface selections, and a usable asset library. The strategic and emotional foundation those assets must express — vision, personality, voice, color roles, typography direction, photography direction — is now defined in `BRAND_IDENTITY.md` and should not be duplicated or re-decided here.
 
 > Do not invent a logo, typefaces, or asset specifics on behalf of this document. If a decision is needed before it's made here, flag it in `PROJECT_STATUS.md` rather than assuming an answer.
 

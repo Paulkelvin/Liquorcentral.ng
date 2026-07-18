@@ -1,6 +1,9 @@
 # LiquorCentral Product Blueprint — v1
 
-**Status:** Draft v1 — pending Paul's review and approval.
+**Status:** Draft — pending Paul's review and approval.
+**Version:** 1.0
+**Owner:** Product
+**Last Updated:** 2026-07-18
 **Scope:** Product definition only. No UI, wireframes, or branding are defined here — this document defines *what* LiquorCentral is and *why* it's structured the way it is; visual design begins only after this is approved.
 
 > **Supersession notice.** Earlier research explored a multi-vendor marketplace architecture (a Vendor module, vendor staff accounts, an order-splitting workflow, per-vendor payouts). That model is **retired as of this version**. LiquorCentral is confirmed as a single company, with no vendors, no vendor onboarding, no vendor dashboard, no vendor payouts, and no marketplace commissions. Everything else from earlier research — storefront choice, search, CMS, delivery-zone mechanics, the product-attribute extension pattern, and Nigerian-market findings — still holds and is built on directly below.

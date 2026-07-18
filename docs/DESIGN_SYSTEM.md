@@ -1,6 +1,11 @@
 # Design System
 
-**Status:** Principles only. No visual tokens (specific colors, fonts, or component visuals) are defined here — those depend on `BRAND_GUIDELINES.md`, which is still a placeholder. This document captures the *rules a design system must follow*, established during the UX research phase, so that whenever visual design begins, it inherits these constraints rather than reinventing them.
+**Status:** Draft (principles only — foundational tokens not yet defined)
+**Version:** 1.0
+**Owner:** Design
+**Last Updated:** 2026-07-18
+
+No visual tokens (specific colors, fonts, or component visuals) are defined here yet — those depend on `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` being approved first (see `PROJECT_STATUS.md`). This document captures the *rules a design system must follow*, established during the UX research phase, so that whenever visual-token work begins, it inherits these constraints rather than reinventing them.
 
 ## Why principles come before visuals
 

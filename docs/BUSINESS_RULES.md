@@ -1,6 +1,11 @@
 # Business Rules
 
-**Status:** Finalized business decisions, as confirmed by Paul. These are treated as non-negotiable constraints on the product and architecture unless explicitly revisited and logged in `DECISION_LOG.md`.
+**Status:** Approved (finalized by Paul)
+**Version:** 1.0
+**Owner:** Business
+**Last Updated:** 2026-07-18
+
+These are treated as non-negotiable constraints on the product and architecture unless explicitly revisited and logged in `DECISION_LOG.md`.
 
 ## Company structure
 

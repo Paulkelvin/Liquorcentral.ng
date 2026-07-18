@@ -1,6 +1,9 @@
 # Tech Stack
 
-**Status:** Backend confirmed (already vendored in this repository). Storefront and third-party integrations recommended in earlier research; formal sign-off tracked in `PROJECT_STATUS.md`.
+**Status:** Draft (backend confirmed and vendored; storefront and third-party integrations recommended but not formally signed off — tracked in `PROJECT_STATUS.md`)
+**Version:** 1.0
+**Owner:** Engineering
+**Last Updated:** 2026-07-18
 
 ## Backend
 

@@ -1,6 +1,11 @@
 # Architecture
 
-**Status:** Reference document, based on direct research of the vendored Medusa codebase (v2.17.2). Update this file if the Medusa version changes materially or if architectural conventions used elsewhere in `/docs` change.
+**Status:** Approved (reference document)
+**Version:** 1.0
+**Owner:** Engineering
+**Last Updated:** 2026-07-18
+
+Based on direct research of the vendored Medusa codebase (v2.17.2). Update this file if the Medusa version changes materially or if architectural conventions used elsewhere in `/docs` change.
 
 ## What LiquorCentral is built on
 

@@ -1,6 +1,11 @@
 # Information Architecture
 
-**Status:** Structural decisions confirmed; specific category/collection contents still open pending merchandising input. Expands on `PRODUCT_BLUEPRINT.md` §5.
+**Status:** Draft (structure confirmed; specific category/collection contents still open pending merchandising input)
+**Version:** 1.0
+**Owner:** Product
+**Last Updated:** 2026-07-18
+
+Expands on `PRODUCT_BLUEPRINT.md` §5.
 
 ## Structure
 

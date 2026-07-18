@@ -1,6 +1,11 @@
 # User Flows
 
-**Status:** Described as step sequences only — no wireframes or screen designs. These flows exist so implementation and eventual visual design have an agreed sequence of steps to build against, independent of how each step looks.
+**Status:** Draft (step sequences only — no wireframes or screen designs)
+**Version:** 1.0
+**Owner:** Product
+**Last Updated:** 2026-07-18
+
+These flows exist so implementation and eventual visual design have an agreed sequence of steps to build against, independent of how each step looks.
 
 ## Flow 1 — First visit, age confirmation
 

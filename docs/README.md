@@ -1,5 +1,10 @@
 # LiquorCentral Documentation
 
+**Status:** Approved (in force)
+**Version:** 1.0
+**Owner:** Program
+**Last Updated:** 2026-07-18
+
 This directory is the **single source of truth** for the LiquorCentral project. It replaces chat history as the record of what has been decided, why, and what remains open.
 
 > **Rule:** if it isn't written here, it isn't decided. If a chat conversation reaches a conclusion, that conclusion must be reflected in the relevant document below (and logged in `DECISION_LOG.md`) before the work is considered done.
@@ -35,6 +40,24 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |
+
+## Document status convention
+
+Every document in `/docs` carries a metadata block directly under its title:
+
+```
+**Status:** Draft | Under Review | Approved | Superseded
+**Version:** major.minor
+**Owner:** the team/function responsible for keeping it current
+**Last Updated:** YYYY-MM-DD
+```
+
+- **Draft** — proposed, not yet reviewed.
+- **Under Review** — actively being discussed; parts may already be finalized (the document will say which).
+- **Approved** — authoritative; treat as decided unless a `DECISION_LOG.md` entry says otherwise.
+- **Superseded** — kept for history only; the document itself will say what replaced it.
+
+This lets anyone joining the project — human or AI — tell at a glance which documents are settled and which are still being shaped, without reading the whole file or asking in chat. When a document's status changes, update its header in the same change that changes the content, and log the change in `DECISION_LOG.md` if it's a material decision (not just a wording fix).
 
 ## Continuity rules (read this before doing anything)
 

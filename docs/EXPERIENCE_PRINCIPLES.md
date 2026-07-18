@@ -1,7 +1,9 @@
 # LiquorCentral Experience Principles
 
-**Version:** 1.0 (Draft)
-**Status:** Draft — pending Paul's review and approval. Like `BRAND_IDENTITY.md`, this document gates `DESIGN_SYSTEM.md` visual-token work and all UI design — every future feature, screen, interaction, animation, and workflow should be evaluated against it before being built.
+**Status:** Under Review — competitive positioning (Category Definition, below) finalized by Paul; remainder pending full approval. Like `BRAND_IDENTITY.md`, this document gates `DESIGN_SYSTEM.md` visual-token work and all UI design — every future feature, screen, interaction, animation, and workflow should be evaluated against it before being built.
+**Version:** 1.0
+**Owner:** Product
+**Last Updated:** 2026-07-18
 
 ## Relationship to other documents
 
@@ -14,7 +16,7 @@ This project now has three foundational documents that each answer a different q
 
 **A note on overlap, not contradiction:** Principles 6 (Speed Builds Trust), 8 (Mobile Is the Primary Experience), 9 (Trust Must Be Visible), and 13 (Accessibility Is Premium) cover the same ground as `PRODUCT_BLUEPRINT.md` §14–§16 (Mobile Strategy, Accessibility Principles, Performance Principles) and `DESIGN_SYSTEM.md`'s existing principles. That's expected — this document states the *customer-facing reason* those sections exist; they are not in conflict and neither should be treated as superseding the other. If a future revision to one changes the underlying position, update both in the same change.
 
-**A note on positioning, worth Paul's attention:** this document's "Premium Lifestyle Commerce Platform" framing (below) is a category description that sits alongside `BRAND_IDENTITY.md` §10's formal Positioning Statement. The two are not contradictory — this one names the *category*, that one names the *audience, differentiator, and reason-to-believe* — but they should be read together and reconciled into one consistent external description before either is used in customer-facing copy. This is flagged in `PROJECT_STATUS.md`.
+**Resolved (2026-07-18):** this document's "Premium Lifestyle Commerce Platform" framing (below) is the category description that sits alongside `BRAND_IDENTITY.md` §10's Positioning Statement — this one names the *category*, that one names the *audience, promise, and differentiator*. Both were finalized by Paul on the same date and are written to be consistent; no further reconciliation is needed. See `BRAND_IDENTITY.md` §10a for the cross-reference.
 
 ---
 
@@ -42,11 +44,9 @@ Customers should never feel overwhelmed. They should feel informed, welcomed, an
 
 LiquorCentral is not simply another online liquor store or another food delivery application.
 
-It is a **Premium Lifestyle Commerce Platform** centered around wines, spirits, and complementary Nigerian cuisine.
+**Finalized by Paul (2026-07-18):** "LiquorCentral operates as a Premium Lifestyle Commerce Platform, combining premium beverages and complementary Nigerian cuisine within one seamless customer experience."
 
-The platform combines premium beverages with freshly prepared food under one seamless shopping experience, making it easy for customers to discover, purchase, and enjoy products for everyday moments and special occasions alike.
-
-Food Central exists to complement the LiquorCentral experience rather than operate as an independent food-delivery business.
+This makes it easy for customers to discover, purchase, and enjoy products for everyday moments and special occasions alike. Food Central exists to complement the LiquorCentral experience rather than operate as an independent food-delivery business.
 
 ### Why should customers choose LiquorCentral?
 

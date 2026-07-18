@@ -1,10 +1,39 @@
 # Decision Log
 
+**Status:** Approved (living, authoritative record)
+**Version:** 1.0
+**Owner:** Program
+**Last Updated:** 2026-07-18
+
 **Purpose:** A running, append-only record of every material business or architecture decision made on this project — what was decided, why, when, and what it affects. This is the authoritative history; chat conversations are not. When a decision changes, add a new entry rather than editing an old one, so the history of *why* things changed is preserved.
 
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Document status convention adopted across `/docs`
+
+- **Decision:** Every document in `/docs` now carries a standard metadata header directly under its title: `Status` (Draft | Under Review | Approved | Superseded), `Version`, `Owner`, `Last Updated`.
+- **Reasoning:** Paul proposed this as a way for anyone joining the project to instantly see which documents are still being discussed vs. authoritative, without reading the whole file or asking in chat — a natural extension of the existing "documentation is the project's memory" discipline.
+- **Date:** 2026-07-18
+- **Impact:** All 19 files in `/docs` updated with the new header. The convention itself is documented in `README.md` → "Document status convention." Current status assignments: `BUSINESS_RULES.md`, `ARCHITECTURE.md`, `DECISION_LOG.md`, `CHANGELOG.md`, `README.md`, and `PROJECT_STATUS.md` are Approved; `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` are Under Review (partially finalized — see below); everything else is Draft.
+- **Status:** In effect.
+
+### Positioning Statement and Category Definition finalized by Paul
+
+- **Decision:** `BRAND_IDENTITY.md` §10's Positioning Statement and `EXPERIENCE_PRINCIPLES.md`'s Category Definition were both rewritten in Paul's own words: "LiquorCentral is Nigeria's premium destination for curated wines, spirits, and complementary culinary experiences — bringing exceptional products, trusted service, and effortless commerce together in one unified brand" (positioning), and "LiquorCentral operates as a Premium Lifestyle Commerce Platform, combining premium beverages and complementary Nigerian cuisine within one seamless customer experience" (category).
+- **Reasoning:** Resolves the reconciliation flagged in the prior entry below and in `PROJECT_STATUS.md` — the two statements now read consistently, one naming the audience/promise/differentiator, the other naming the market category.
+- **Date:** 2026-07-18
+- **Impact:** `BRAND_IDENTITY.md` §10 (plus new §10a cross-reference) and `EXPERIENCE_PRINCIPLES.md`'s Competitive Positioning section updated with the final text. The corresponding open item removed from `PROJECT_STATUS.md`.
+- **Status:** Final for these two statements specifically. The surrounding documents (`BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`) remain Under Review in full — see `PROJECT_STATUS.md` for the specific confirmation still needed from Paul.
+
+### Design System Foundations approach agreed (pending gate confirmation)
+
+- **Decision:** The next phase, once `BRAND_IDENTITY.md`/`EXPERIENCE_PRINCIPLES.md` approval is confirmed, is to define concrete Design System Foundations — typography scale, spacing scale, grid system, elevation/shadows, border radius, semantic color roles, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens — rather than jumping directly to page-level UI design.
+- **Reasoning:** Paul's recommendation: foundational rules, agreed once, make every subsequent component and screen consistent by construction, rather than requiring ad hoc decisions repeatedly.
+- **Date:** 2026-07-18
+- **Impact:** Documented as `ROADMAP.md` Phase 0b. `DESIGN_SYSTEM.md` is the document that will hold these foundations once written.
+- **Status:** Agreed as the plan. Not yet started — blocked on the Phase 0 approval-gate confirmation noted in `PROJECT_STATUS.md`.
 
 ### Experience Principles v1.0 drafted
 

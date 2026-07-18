@@ -1,6 +1,9 @@
 # API Decisions
 
-**Status:** Initial scoping based on the confirmed single-company model. No API routes have been implemented yet.
+**Status:** Draft (initial scoping based on the confirmed single-company model; no API routes implemented yet)
+**Version:** 1.0
+**Owner:** Engineering
+**Last Updated:** 2026-07-18
 
 ## Principle
 

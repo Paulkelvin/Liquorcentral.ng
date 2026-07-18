@@ -1,6 +1,11 @@
 # Delivery Model
 
-**Status:** Strategy confirmed; specific slot/geo-zone configuration and payment/logistics providers still open. Expands on `PRODUCT_BLUEPRINT.md` §10.
+**Status:** Draft (strategy confirmed; specific slot/geo-zone configuration and payment/logistics providers still open)
+**Version:** 1.0
+**Owner:** Operations
+**Last Updated:** 2026-07-18
+
+Expands on `PRODUCT_BLUEPRINT.md` §10.
 
 ## Two fulfillment models, one checkout
 
