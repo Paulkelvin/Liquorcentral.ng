@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.5
+**Version:** 2.6
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v23 — 2026-07-18 — `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` drafted in full
+
+**Context:** With seven specifications frozen, Paul directed Product Specifications to continue with `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`, naming an extensive coverage list and explicitly excluding loyalty, wishlists, reviews, subscriptions, personalization, social login, and AI features unless already approved elsewhere. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/08_CUSTOMER_ACCOUNT_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative customer account specification, covering all 30 required sections: Account Philosophy, Business/Customer Objectives, Entry Points, Account Information Architecture, Account Creation Behaviour, Guest-to-Account Conversion, Login & Logout Behaviour, Password Reset Behaviour, Email Verification Behaviour, Profile Management, Saved Addresses, Order History, Order Details, Reordering Behaviour, Saved Items (relationship to `06_CART_SPECIFICATION.md`'s Saved-for-Later), Notification Preferences, Privacy & Security, Account Deletion & Deactivation, Trust Considerations, Customer Decision States (reusing the exact five-state taxonomy from `06`/`07`), Empty/Loading/Error States, Accessibility, Analytics Events, SEO Considerations, Backend Requirements, Performance Expectations, a **Future Expansion & Explicitly Out of Scope** section naming every excluded feature and why, Risks & Assumptions, a closing **Account Quality Checklist**, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §4/§9, `BUSINESS_RULES.md`, `TECH_STACK.md`, and all seven frozen prior specifications. Grounded in limited external research (Nielsen Norman Group on registration/login and password reset, Baymard on accounts/self-service, order history, order returns, and address-book UX) cited inline and in a Sources section — no layouts, interfaces, or wording copied. Confirms three genuine open business/legal decisions (data-retention/NDPR specifics, account deletion-vs-deactivation policy, notification-channel choice), none resolved here.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.4) — specification status table updated: `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` now **In Progress**, v0.1, full draft complete, awaiting review.
+- `docs/PROJECT_STATUS.md` (v2.5), `docs/ROADMAP.md` (v2.8) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: eight specifications now drafted (seven frozen, Customer Account awaiting review); two new open items (data retention/NDPR, deletion/deactivation policy) added to "Decisions awaiting Paul's approval."
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting.
+
+**Not changed:** loyalty, wishlists, reviews, subscriptions, personalization, social login, and AI features remain unbuilt and unspecified anywhere in `/docs` — this draft explicitly names each as out of scope rather than silently omitting them.
 
 ## v22 — 2026-07-18 — `07_CHECKOUT_SPECIFICATION.md` finalized to v1.0 and frozen
 
