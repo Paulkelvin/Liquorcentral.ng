@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 1.3
+**Version:** 1.4
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v11 — 2026-07-18 — `01_NAVIGATION_SPECIFICATION.md` drafted in full
+
+**Context:** Product Specifications resumed per Paul's direction, following the documentation governance hardening pass. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/specifications/01_NAVIGATION_SPECIFICATION.md` (v0.1, status In Progress) — the authoritative navigation specification for the entire platform, covering all 30 required sections: Navigation Philosophy, Business Objectives, Customer Objectives, Information Architecture (with a consolidated Backend Data Requirements table), Global/Desktop/Mobile Navigation Strategy, Footer Navigation, Header Behaviour, Mega Menu Strategy, Product Category Navigation, Collection Navigation, Wine Discovery Navigation, Food Central Navigation, Search Entry Points, Account Navigation, Cart & Checkout Navigation Rules, Breadcrumb Strategy, Internal Linking Strategy, Deep Linking, Accessibility Requirements, Keyboard Navigation, Responsive Behaviour, Empty & Error Navigation States, Analytics Events, SEO Considerations, Performance Considerations, Future Expansion Strategy, Risks & Assumptions, and Acceptance Criteria. Derives from and does not contradict `PRODUCT_BLUEPRINT.md` §5/§7, `INFORMATION_ARCHITECTURE.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0. Grounded in limited external research (mega menu, mobile navigation, breadcrumb, WAI-ARIA keyboard, search-vs-navigation, luxury-ecommerce, and food-delivery-navigation sources — see the specification's own Sources section) cited for principles only; no layouts, menu wording, branding, or proprietary interactions were copied. Designs the product-category and collection navigation as data-driven (Medusa Product Category/Collection records rendered dynamically), explicitly not hardcoding the current catalog list, per Paul's instruction. Flags one new open merchandising item (exact spirit-type category grouping within the mega menu's link budget) and repeats one already-flagged backend gap (the "pairs with" product-relationship data, not yet modeled).
+
+**Changed:**
+
+- `docs/specifications/02_HOMEPAGE_SPECIFICATION.md` — status changed from In Progress to **Under Review**, per Paul's explicit instruction (the document itself was complete and awaiting approval; the status now reflects that accurately per `DOCUMENTATION_GOVERNANCE.md` Section 4's distinction between the two).
+- `docs/README.md` — Product Specifications status table updated: `01_NAVIGATION_SPECIFICATION.md` now **In Progress** (fully drafted, v0.1), `02_HOMEPAGE_SPECIFICATION.md` now **Under Review**.
+- `docs/PROJECT_STATUS.md` (v1.4) — Phase 1 status, Completed work, Work in progress, and Next recommended task all updated to reflect `01`'s full draft and both specifications' current statuses; added the new mega-menu category-grouping item to "Decisions awaiting Paul's approval."
+- `docs/ROADMAP.md` (v1.7) — Phase 0d's specification list and the "Open questions" section updated to reflect `01`'s completion and its new open item.
+- `docs/DECISION_LOG.md` — new entry recording the specification's drafting and its scope decisions.
 
 ## v10 — 2026-07-18 — Documentation governance hardening pass
 

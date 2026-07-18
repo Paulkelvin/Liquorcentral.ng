@@ -53,8 +53,8 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 
 | Specification | Status |
 |---|---|
-| [`01_NAVIGATION_SPECIFICATION.md`](./specifications/01_NAVIGATION_SPECIFICATION.md) | Not Started (placeholder) |
-| [`02_HOMEPAGE_SPECIFICATION.md`](./specifications/02_HOMEPAGE_SPECIFICATION.md) | **In Progress** — fully drafted, v0.1, awaiting review |
+| [`01_NAVIGATION_SPECIFICATION.md`](./specifications/01_NAVIGATION_SPECIFICATION.md) | **In Progress** — fully drafted, v0.1, awaiting review |
+| [`02_HOMEPAGE_SPECIFICATION.md`](./specifications/02_HOMEPAGE_SPECIFICATION.md) | **Under Review** — fully drafted, v0.1, awaiting Paul's approval |
 | [`03_SEARCH_SPECIFICATION.md`](./specifications/03_SEARCH_SPECIFICATION.md) | Not Started (placeholder) |
 | [`04_PRODUCT_LISTING_SPECIFICATION.md`](./specifications/04_PRODUCT_LISTING_SPECIFICATION.md) | Not Started (placeholder) |
 | [`05_PRODUCT_DETAILS_SPECIFICATION.md`](./specifications/05_PRODUCT_DETAILS_SPECIFICATION.md) | Not Started (placeholder) |

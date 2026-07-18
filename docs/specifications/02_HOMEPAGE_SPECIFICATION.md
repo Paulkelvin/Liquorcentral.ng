@@ -1,6 +1,6 @@
 # Homepage Specification
 
-**Status:** In Progress
+**Status:** Under Review
 **Version:** 0.1
 **Owner:** Product
 **Last Updated:** 2026-07-18
@@ -330,7 +330,7 @@ Each ties back to the business goals in §3 — specifically, time-to-first-mean
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for homepage implementation, alongside `01_NAVIGATION_SPECIFICATION.md` for the shared shell it references.
+**Document status:** Under Review (v0.1). This is the first full draft, ready for and now awaiting Paul's review — not yet approved. Upon approval, this specification becomes the reference for homepage implementation, alongside `01_NAVIGATION_SPECIFICATION.md` for the shared shell it references.
 
 ## Sources
 
