@@ -1,7 +1,7 @@
 # Delivery Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen
+**Version:** 1.0
 **Owner:** Operations
 **Last Updated:** 2026-07-18
 
@@ -81,6 +81,8 @@ Every customer additionally needs: to know a delivery status is genuinely curren
 
 ## 8. Pickup Workflow (Operational)
 
+**Pickup is a deliberate parity option, not a fallback for a customer without delivery access** — restating `DELIVERY_MODEL.md`'s and `PRODUCT_BLUEPRINT.md` §10's explicit requirement directly: pickup exists because it is often faster and always simpler operationally, not because it is a lesser alternative to delivery.
+
 - **Pickup is Food Central's exclusive-to-date pickup option** — restating `05_PRODUCT_DETAILS_SPECIFICATION.md` §21 and `06_CART_SPECIFICATION.md` §11's finding directly: pickup is not assumed for Wine & Spirits anywhere in `/docs`, and this document does not invent it.
 - **Pickup carries equal operational care to delivery**, not just equal visual weight (already established at checkout, `07_CHECKOUT_SPECIFICATION.md` §9) — a ready-time estimate is honored the same way a delivery window is (§1), and a customer arriving at the stated ready time is not kept waiting as a matter of routine.
 - **Pickup confirmation at handoff is a plain identity check** (e.g., order number and name) — sufficient for an ordinary pickup, with the same age-verification question (§17) applying if the order contains Wine & Spirits items being picked up in a mixed order.
@@ -99,6 +101,8 @@ Every customer additionally needs: to know a delivery status is genuinely curren
 - **Wine & Spirits uses its own equivalent progression**, specified here for the first time since `09_FOOD_ORDERING_SPECIFICATION.md` explicitly deferred nationwide dispatch status to this document: Order Placed → Dispatched → In Transit → Delivered. No stage is skipped or shown out of order, mirroring `09` §7's identical rule for the same reason — a skipped stage misrepresents the operational reality it exists to communicate honestly.
 - **A delivery window is shown as an honest range, never a single misleadingly precise time**, unless the fulfillment model genuinely supports precision (e.g., Food Central's same-day slot) — restating `DELIVERY_MODEL.md`'s explicit finding that vague promises underperform explicit ones, applied here as the general rule governing how any window, precise or ranged, is communicated: whichever precision is genuinely true is what's shown, never rounded toward false confidence.
 - **A status is only shown once it is genuinely true** — restating §1 directly: "Dispatched" is not shown before an order has genuinely left the warehouse; "Out for Delivery" is not shown before a rider has genuinely collected the order.
+- **A transition moves forward only — a status is never silently reverted to an earlier stage.** If a genuine operational reversal occurs (e.g., a dispatched order returned to the warehouse), this is communicated explicitly as its own honest event (§13, §18), not by quietly resetting the status display as if the later stage had never happened.
+- **Every status transition is timestamped internally**, even though this document does not specify a customer-facing exact-timestamp display beyond the window/estimate already covered above — the timestamp exists so that §23's analytics and any future support investigation have an accurate record of when each stage genuinely occurred.
 
 ## 11. Delivery Tracking Expectations
 
@@ -151,6 +155,8 @@ Every customer additionally needs: to know a delivery status is genuinely curren
 
 ## 18. Customer Communication
 
+**Governing principle: a delivery message exists to remove uncertainty, never to create it.** Every message named below is judged against whether a customer who reads it knows more, and worries less, than before — restating `EXPERIENCE_PRINCIPLES.md` #1 (Confidence Before Complexity) applied specifically to the moments a customer cannot see what's happening themselves.
+
 - **Proactive status messaging is the primary communication mechanism this document relies on** — restating `DELIVERY_MODEL.md`'s "Delivery communication" section directly: proactive updates (via WhatsApp and/or SMS) are recommended over relying solely on an in-app status page, particularly given the addressing-ambiguity challenge already named in the Nigerian delivery context (§12).
 - **A message is sent at each meaningful status transition** (§10): order confirmed (already specified by `07_CHECKOUT_SPECIFICATION.md` §17), dispatched/out for delivery, arriving soon where genuinely known, delivered/completed, and any failure, reschedule, or cancellation (§13, §14) — each message states plainly what happened, never a generic or ambiguous notice.
 - **The exact notification channel (WhatsApp Business API, SMS, or both) remains an open business decision** (`MEDUSA_EXTENSIONS.md` #5), already flagged by `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` §16 and `09_FOOD_ORDERING_SPECIFICATION.md` §12 — this document specifies that proactive communication exists and what it must say, not which channel carries it.
@@ -182,6 +188,7 @@ This document reuses the same five-state taxonomy already established in `06_CAR
 - **Delivery status changes are announced to assistive technology via a live region as they occur**, reusing the identical mechanism already established in `06_CART_SPECIFICATION.md` §23, `07_CHECKOUT_SPECIFICATION.md` §22, and `09_FOOD_ORDERING_SPECIFICATION.md` §21 — a status updating visually from "Dispatched" to "In Transit" is not silently invisible to a screen-reader user.
 - **No delivery notice, status, or urgency signal is conveyed by color alone** — an icon or explicit text always accompanies a color cue, the same never-color-alone rule already established platform-wide.
 - **Every interactive control in this document's scope** (a reschedule action, a cancellation request, a "contact support" link) **meets the 44×44px touch-target minimum** (`DESIGN_SYSTEM.md` §B11) and is fully keyboard-operable.
+- **Focus is placed on the relevant status or resolution message after a reschedule, cancellation, or recovery action completes** (§14, Delivery Recovery, below) — reusing the identical focus-management discipline already established in `07_CHECKOUT_SPECIFICATION.md` §22 and `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` §22 for their own post-action moments, so a screen-reader user is never left on a stale part of the page after taking action.
 
 ## 22. Delivery Operations Considerations
 
@@ -281,6 +288,9 @@ Every future change to delivery operations or the customer delivery experience �
 - [ ] **Is the customer decision-state vocabulary reused, not reinvented?** (§19)
 - [ ] **Does an address or delivery ambiguity get resolved through honest, direct communication**, never an automated assumption? (§12, §18)
 - [ ] **Does it avoid any manufactured urgency or pressure** in delivery communication? (§18)
+- [ ] **Does rider conduct and every delivery touchpoint reflect a single, professional, accountable company**, never a disconnected third-party experience? (Delivery Trust & Professionalism)
+- [ ] **Does the customer know what to expect during the wait, without needing to ask?** (Customer Expectations During Delivery)
+- [ ] **Does an interruption preserve as much of the customer's delivery progress as is still genuinely valid?** (Delivery Recovery)
 
 ## 30. Acceptance Criteria
 
@@ -296,10 +306,60 @@ Every future change to delivery operations or the customer delivery experience �
 - [ ] Every delivery status change is announced to assistive technology via a live region, not only shown visually.
 - [ ] Every interactive delivery-related control (reschedule, cancel, contact support) is fully keyboard-operable and meets the 44×44px touch-target minimum.
 - [ ] All analytics events listed in §23 fire correctly and exactly once per corresponding operational event.
+- [ ] A delivery status transition moves forward only — never silently reverted to an earlier stage without an explicit, honest explanation.
+- [ ] An interrupted delivery (a failed attempt, an unreachable rider contact, a network failure during status update) preserves the customer's order and progress wherever technically possible, per Delivery Recovery, and never leaves a customer uncertain whether their order is still coming.
+
+## Delivery Intent
+
+Delivery is reached by every customer type named in §3, but the *intent* a customer brings to the post-order delivery experience narrows to a small number of recognizable patterns. Naming them here does not introduce personalization or a new mechanism — it confirms that the sections already specified serve each of these intents, mirroring the same "Intent" pattern already established in `07_CHECKOUT_SPECIFICATION.md`'s Checkout Intent and `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Intent:
+
+| Intent | What the customer wants | Where this document already serves it |
+|---|---|---|
+| Reliable arrival | Know the order will genuinely arrive within the window or stage progression stated, without needing to check repeatedly. | §1's honesty commitment, §10's status progression, §11's tracking. |
+| Self-collection | Skip delivery entirely and collect the order on their own schedule. | §8 Pickup Workflow, treated with equal operational care to delivery. |
+| Mixed-order clarity | Understand how a wine-and-food order's two legs will actually reach them, independently. | §15 Mixed Wine & Food Delivery Handling. |
+| Plan adjustment | Change a delivery time or cancel an order after placing it, without losing what's already confirmed. | §14 Delivery Rescheduling & Cancellation. |
+| Recovery | Get back on track after a missed delivery, an address problem, or an interrupted status update, with minimal re-explanation. | Delivery Recovery, below. |
+
+No new mechanism is introduced by this section, and no AI or personalization is implied — it is a mapping of existing behavior onto recognizable customer intent, not a new capability.
+
+## Delivery Trust & Professionalism
+
+*Extends §1 (Delivery Philosophy) and §2 (Business Objectives) — this section names the trust and conduct standard every delivery interaction is held to, connecting `PRODUCT_BLUEPRINT.md` §11's "sold and delivered by us directly" claim and `EXPERIENCE_PRINCIPLES.md`'s premium-through-discipline principle directly to the physical delivery moment, rather than leaving that connection implicit.*
+
+- **A rider or pickup-counter interaction is, to the customer, the single most concrete proof the "sold and delivered by us directly" claim is genuinely true** — restating `PRODUCT_BLUEPRINT.md` §11 directly: every other trust signal on this platform is written or displayed; delivery is the one moment it is embodied by a real person representing the company.
+- **Landmark-first addressing is a deliberate design choice reflecting how customers actually communicate location in this market — not a limitation the platform tolerates or a workaround it routes around.** Restating `07_CHECKOUT_SPECIFICATION.md` §7's and this document's own §12's finding as a matter of principle, not just mechanics: treating a landmark-based address as first-class, rather than as a degraded case of a "proper" postal address, is itself a trust signal specific to the Nigerian context this platform operates in.
+- **Exact rider conduct standards (uniform, identification, professional courtesy) are an operational/training matter**, not specified behaviorally by this document beyond the standing requirement that every delivery interaction reflect a single, accountable, premium company (§1, §2) — this document does not invent a conduct policy, only the principle any such policy must serve.
+- **This section does not introduce a rating or review mechanism for individual riders** — consistent with `05_PRODUCT_DETAILS_SPECIFICATION.md`'s Reviews Strategy confirming no review system exists in v1; trust here is built through consistent, honest operational behavior (§1, §10, §18), not a feedback score.
+
+## Customer Expectations During Delivery
+
+*Extends §1 (Delivery Philosophy) and §18 (Customer Communication) — mirrors `09_FOOD_ORDERING_SPECIFICATION.md`'s "Customer Expectations During Preparation" section, applied here to the delivery-and-pickup waiting period specifically, the stretch of a customer's journey where they again have nothing to actively do but wait.*
+
+- **Once an order is confirmed, the customer knows what to expect and when, without needing to ask** — the same direct implementation of `EXPERIENCE_PRINCIPLES.md` #1 (Confidence Before Complexity) that `09_FOOD_ORDERING_SPECIFICATION.md` §17 already applies to the preparation wait, applied here to the delivery/pickup wait that follows it.
+- **The status progression (§10) is the primary mechanism for managing this expectation** — a customer who can see "Dispatched" or "Out for Delivery" knows their order is genuinely moving, reducing the anxiety and support burden an absence of visible progress creates.
+- **A delivery window or ready-time estimate, once given, is not silently revised without explanation** — restating §1 and §18 directly: if a genuine operational reason shifts an estimate, the customer is told plainly, never left to notice a stale estimate on their own.
+- **No fabricated urgency or artificial scarcity is introduced during this waiting period** — restating §18's identical rule, consistent with `EXPERIENCE_PRINCIPLES.md` #15 and every prior specification's treatment of the same waiting-period discipline.
+
+## Delivery Recovery
+
+*Extends §13 (Failed Delivery & Customer-Unavailable Scenarios), §14 (Delivery Rescheduling & Cancellation), and §20 (Empty, Loading & Error States) — governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery, `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`'s Account Recovery, and `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Recovery sections, adapted here to post-order delivery specifically.*
+
+The governing principle: **an interrupted delivery preserves as much of the customer's order and progress as is still genuinely valid, and clearly communicates the one part that had to change — it never silently discards more than the interrupting event actually requires.**
+
+| Scenario | Delivery behaviour | How customer progress is preserved |
+|---|---|---|
+| A delivery attempt fails (§13) | The order is not cancelled or silently retried — the customer is contacted (§18) and offered a clear next step (a follow-up attempt, rescheduling per §14). | The order itself, and everything already confirmed about it, remains intact; only the failed attempt is addressed. |
+| An address is genuinely ambiguous and the rider cannot proceed (§12) | Direct customer contact (§18) resolves it in place, rather than the delivery being abandoned or marked failed prematurely. | The delivery continues once clarified; no re-confirmation of unrelated order details is required. |
+| A mixed order's one leg fails while the other succeeds (§15) | Each leg is recovered independently — a failed Food Central delivery does not reopen or affect the already-completed Wine & Spirits leg, or vice versa. | The successful leg's completion stands; only the affected leg requires further action. |
+| A status update fails to load or arrive (§20) | The last known-good status remains visible, honestly labeled as potentially not current, rather than showing a blank or broken view. | The customer is never left with no information at all, even when the freshest information is temporarily unavailable. |
+| A customer reschedules or cancels (§14) | The action is confirmed back explicitly; any portion of the order unaffected by the change (e.g., the other leg of a mixed order) proceeds without re-confirmation. | Only the specifically changed portion of the order requires the customer's renewed attention. |
+
+**Nothing in this section authorizes silently discarding a customer's order or delivery progress for implementation convenience.** Where a scenario cannot be resolved automatically (an address that remains unreachable, a slot that genuinely cannot be honored), this document is honest that it cannot, rather than inventing a resolution mechanism that has not actually been decided (§28).
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for delivery-operations implementation, alongside `06_CART_SPECIFICATION.md` §5/§6, `07_CHECKOUT_SPECIFICATION.md` §7–§13 (whose pre-order mechanics it builds on without redefining), and `09_FOOD_ORDERING_SPECIFICATION.md` §7–§13 (whose customer-facing food-ordering mechanics it extends operationally), and `11_ADMIN_WORKFLOWS_SPECIFICATION.md` (not yet drafted, which will own the internal/staff-facing side of order and delivery management this document does not specify).
+**Document status:** Approved — Frozen (v1.0). This is now the authoritative reference for all delivery-operations implementation platform-wide, integrating directly with `06_CART_SPECIFICATION.md` §5/§6, `07_CHECKOUT_SPECIFICATION.md` §7–§13 (whose pre-order mechanics it builds on without redefining), and `09_FOOD_ORDERING_SPECIFICATION.md` §7–§13 (whose customer-facing food-ordering mechanics it extends operationally) without redefining any of them. `11_ADMIN_WORKFLOWS_SPECIFICATION.md` (not yet drafted) will own the internal/staff-facing side of order and delivery management this document does not specify. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.
 
 ## Sources
 

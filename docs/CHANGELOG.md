@@ -1,11 +1,39 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.0
+**Version:** 3.1
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v28 — 2026-07-18 — `10_DELIVERY_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved `10_DELIVERY_SPECIFICATION.md`, then requested a final refinement pass — a full review against all four frozen Phase 0 documents and all nine frozen prior specifications, plus meaningful refinements in named areas — before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/10_DELIVERY_SPECIFICATION.md`):**
+
+- **Delivery Intent** — a table mapping five recognizable customer intents (reliable arrival, self-collection, mixed-order clarity, plan adjustment, recovery) onto mechanisms already specified elsewhere in the document, mirroring `07_CHECKOUT_SPECIFICATION.md`'s Checkout Intent and `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Intent pattern.
+- **Delivery Trust & Professionalism** — names a rider or pickup interaction as the single most concrete proof of `PRODUCT_BLUEPRINT.md` §11's "sold and delivered by us directly" claim; names landmark-first addressing as a deliberate trust-building design choice, not a tolerated limitation; confirms no rider rating/review mechanism is introduced.
+- **Customer Expectations During Delivery** — mirrors `09_FOOD_ORDERING_SPECIFICATION.md`'s "Customer Expectations During Preparation," applied to the delivery/pickup waiting period: the status progression as the primary expectation-management mechanism, no silent estimate revision, no fabricated urgency.
+- **Delivery Recovery** — five named scenarios (a failed delivery attempt, an unresolved address ambiguity, a mixed order's one leg failing while the other succeeds, a stale/failed status update, a reschedule or cancellation) governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery, `07_CHECKOUT_SPECIFICATION.md`'s Checkout Recovery, `08_CUSTOMER_ACCOUNT_SPECIFICATION.md`'s Account Recovery, and `09_FOOD_ORDERING_SPECIFICATION.md`'s Food Ordering Recovery sections.
+
+**Changed (within the same document):**
+
+- §8 (Pickup Workflow) — new opening framing: pickup is a deliberate parity option, not a fallback.
+- §10 (Delivery Status Progression) — two new bullets: transitions move forward only, never silently reverted; every transition is timestamped internally.
+- §18 (Customer Communication) — new opening governing-principle framing: a delivery message exists to remove uncertainty, never to create it.
+- §21 (Accessibility) — new bullet on focus management after a reschedule, cancellation, or recovery action.
+- §29 (Delivery Quality Checklist) — three new checks; §30 (Acceptance Criteria) — two new checks. No previously-flagged open operational decision was resolved or silently assumed.
+- Header changed to **Version 1.0, Status: Approved — Frozen**.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v2.9) — specification status table updated: `10_DELIVERY_SPECIFICATION.md` now **Approved — Frozen**, v1.0.
+- `docs/PROJECT_STATUS.md` (v3.0), `docs/ROADMAP.md` (v3.3) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: all ten drafted specifications now frozen at v1.0; the "Delivery operations" grouping in Decisions Awaiting Approval is unchanged, since none of its items were resolved by this pass.
+- `docs/DECISION_LOG.md` — new entry recording the refinement and freeze.
+
+**Not changed:** no previously-flagged open operational or business decision (Wine & Spirits' delivery mechanism, the Lagos delivery-area definition, the delivery-fee schedule, the failed-delivery-attempt policy, the cancellation-cutoff policy, doorstep age verification) was resolved by this pass — all remain explicitly open.
 
 ## v27 — 2026-07-18 — `10_DELIVERY_SPECIFICATION.md` drafted in full
 
