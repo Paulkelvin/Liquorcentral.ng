@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 1.1
+**Version:** 1.2
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -13,15 +13,14 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 
 > This roadmap supersedes the marketplace-oriented rollout considered in earlier research (which included vendor onboarding and payout phases). Those phases are removed entirely — see `PRODUCT_BLUEPRINT.md` supersession notice.
 
-## Phase 0 — Brand & design foundation
+## Phase 0 — Brand & design foundation ✅ Complete
 
-- `BRAND_IDENTITY.md` v1 drafted — vision, personality, voice, color-usage hierarchy, and visual/typography/photography principles for the four already-approved brand colors. Positioning statement finalized by Paul; remainder **awaiting full approval.**
-- `EXPERIENCE_PRINCIPLES.md` v1.0 drafted — 15 principles defining how customers should experience every screen and interaction, plus a product vision and competitive positioning. Category definition finalized by Paul; remainder **awaiting full approval.**
-- Any UI design (pages, components, layouts) is explicitly blocked until both approvals land — this is a hard gate, not a soft sequencing preference.
+- `BRAND_IDENTITY.md` v1 — vision, personality, voice, color-usage hierarchy, and visual/typography/photography principles for the four already-approved brand colors. **Approved in full by Paul, 2026-07-18.**
+- `EXPERIENCE_PRINCIPLES.md` v1.0 — 15 principles defining how customers should experience every screen and interaction, plus a product vision and competitive positioning. **Approved in full by Paul, 2026-07-18.**
 
-### Phase 0b — Design System Foundations (agreed approach, per Paul's guidance)
+### Phase 0b — Design System Foundations — Draft v1, one open item
 
-Once Phase 0's two approvals land, the next step is **foundational rules, not page layouts** — deliberately not jumping straight to designing buttons, cards, or screens. `DESIGN_SYSTEM.md` should be elevated from principles-only to concrete, agreed foundations covering:
+`DESIGN_SYSTEM.md` has been elevated from principles-only to concrete, agreed foundations — **foundational rules, not page layouts**, deliberately not jumping straight to designing buttons, cards, or screens. Covers:
 
 - **Typography scale** — the specific size/weight/line-height steps implementing `BRAND_IDENTITY.md` §14's direction.
 - **Spacing scale** — the specific numeric steps implementing `BRAND_IDENTITY.md` §20's white-space philosophy.
@@ -36,6 +35,9 @@ Once Phase 0's two approvals land, the next step is **foundational rules, not pa
 - **Accessibility tokens** — minimum contrast ratios (already computed for the brand colors), minimum touch-target size, focus-ring specification — the concrete, testable expression of `BRAND_IDENTITY.md` §22 and `EXPERIENCE_PRINCIPLES.md` principle 13.
 
 Every item above is a foundational rule every future component and screen will draw from — not a page design. Building actual UI after these are agreed should require far fewer ad hoc decisions, since every component follows the same language.
+
+**Status:** All of the above is drafted in `DESIGN_SYSTEM.md` Part B. One open item remains: five new functional colors proposed to complete the color-role system (a neutral grayscale plus distinct danger/warning/info colors) — see `DESIGN_SYSTEM.md` §B6 and `PROJECT_STATUS.md`. Everything else in Phase 0b can be treated as settled; actual UI component/screen design should wait only on that one item.
+
 - This phase can run in parallel with Phase 1's backend work below; it blocks visual/frontend work specifically, not backend/architecture work.
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end

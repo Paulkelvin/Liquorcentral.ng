@@ -11,6 +11,22 @@
 
 ---
 
+### Design System Foundations v1 drafted (`DESIGN_SYSTEM.md` Part B)
+
+- **Decision:** `DESIGN_SYSTEM.md` restructured into Part A (Principles, already approved) and Part B (Foundations v1, new): concrete typography scale, spacing scale, grid system, elevation/shadows, border radius, semantic color roles, motion timing, breakpoints, icon sizing, form behaviors, and accessibility tokens.
+- **Reasoning:** Direct continuation of the agreed Design System Foundations approach (previous entry below), now with actual proposed values rather than a plan to make them.
+- **Date:** 2026-07-18
+- **Impact:** `DESIGN_SYSTEM.md` rewritten (v2.0). One new item introduced and flagged for approval: five functional colors not among the four originally approved brand colors — a neutral grayscale (`color-text`/`color-text-muted`/`color-border`) plus distinct `color-danger`, `color-warning`, `color-info`, and `color-focus-ring` colors, needed because the four approved brand colors don't safely cover neutral text/border use or distinguishable warning/danger/info states without either failing WCAG contrast or overloading an existing role's meaning (e.g. reusing Primary Red for both "buy now" and "error"). **The four originally approved brand colors are unchanged** — this proposes additions, not modifications. See `DESIGN_SYSTEM.md` §B6 for full reasoning and proposed hex values.
+- **Status:** Draft. Everything in Part B except §B6's five new colors can be treated as settled; §B6 awaits Paul's confirmation or adjustment before shipping in UI.
+
+### Brand Identity and Experience Principles approved in full
+
+- **Decision:** Paul confirmed both `BRAND_IDENTITY.md` v1 and `EXPERIENCE_PRINCIPLES.md` v1.0 as approved in full, lifting the Phase 0 gate on Design System/UI work.
+- **Reasoning:** Following the finalized positioning statement/category definition and the Design System Foundations recommendation, Paul confirmed (via direct question) that this constituted full approval of both documents rather than a partial/in-progress review.
+- **Date:** 2026-07-18
+- **Impact:** Both documents' status headers updated to Approved. `PROJECT_STATUS.md` and `ROADMAP.md` Phase 0 updated to reflect completion. Cleared the way for `DESIGN_SYSTEM.md` Part B (next entry above/below, chronologically the next thing built).
+- **Status:** Final.
+
 ### Document status convention adopted across `/docs`
 
 - **Decision:** Every document in `/docs` now carries a standard metadata header directly under its title: `Status` (Draft | Under Review | Approved | Superseded), `Version`, `Owner`, `Last Updated`.

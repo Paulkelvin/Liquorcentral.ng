@@ -1,6 +1,6 @@
 # LiquorCentral Brand Identity — v1
 
-**Status:** Under Review — positioning statement (§10) finalized by Paul; remainder pending full approval. Do not begin `DESIGN_SYSTEM.md` visual-token work or any UI design based on this document until it is approved in full.
+**Status:** Approved (2026-07-18)
 **Version:** 1.0
 **Owner:** Brand
 **Last Updated:** 2026-07-18

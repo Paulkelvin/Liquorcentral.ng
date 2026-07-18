@@ -1,9 +1,11 @@
 # LiquorCentral Experience Principles
 
-**Status:** Under Review — competitive positioning (Category Definition, below) finalized by Paul; remainder pending full approval. Like `BRAND_IDENTITY.md`, this document gates `DESIGN_SYSTEM.md` visual-token work and all UI design — every future feature, screen, interaction, animation, and workflow should be evaluated against it before being built.
+**Status:** Approved (2026-07-18)
 **Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
+
+Every future feature, screen, interaction, animation, and workflow should be evaluated against this document.
 
 ## Relationship to other documents
 
