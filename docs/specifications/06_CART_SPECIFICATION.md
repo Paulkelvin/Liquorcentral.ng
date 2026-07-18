@@ -1,7 +1,7 @@
 # Cart Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -82,6 +82,15 @@ This is the specification's most consequential section, directly implementing th
 
 None of these decisions block this document's own scope — the cart's job is to present the mixed-order structure clearly and honestly regardless of how each of these resolves; none of the resolutions would require restructuring the two-group model itself.
 
+**Avoiding fulfillment confusion — concrete mechanisms.** The two-group structure (§5) is the primary device, but four supporting mechanisms keep it legible rather than merely present:
+
+- **Distinct group labeling and iconography** — each group's heading names its own catalog and delivery model explicitly (e.g., "Wine & Spirits — Nationwide Delivery," "Food Central — Lagos Delivery & Pickup"), never a generic "Group 1 / Group 2" or unlabeled visual separation alone.
+- **No shared or averaged copy** — no sentence in the cart ever describes "your order's" delivery as a single statement; every delivery-related sentence names the specific group it describes (§17).
+- **A short, optional explainer for why the cart is split** — a single, low-emphasis disclosure (reusing the disclosure pattern already established in `01_NAVIGATION_SPECIFICATION.md` §22, not a new interaction pattern) available near the two-group layout, for a customer who wants to understand why one order shows two delivery sections, rather than assuming every customer already knows LiquorCentral is one company serving two catalogs.
+- **Every notice in a mixed-fulfillment context is scoped to its own group** — using the Customer Decision States classification (see below), a warning about Food Central's Lagos-only delivery is never rendered in a way that could be misread as applying to the Wine & Spirits group in the same cart, and vice versa.
+
+**Future operational expansion.** The two-fulfillment-group model is deliberately not hardcoded to exactly two groups. If a future business line or service with its own distinct fulfillment model is ever added (§27), the same grouping mechanism — one visually distinct group per fulfillment model, each with its own subtotal and delivery messaging, all still resolving to one cart and one checkout — extends without requiring a structural redesign. This is a capability statement about the architecture chosen here, not a commitment to any specific future business line; nothing in `PRODUCT_BLUEPRINT.md` or `ROADMAP.md` authorizes a third fulfillment model today.
+
 ## 7. Quantity Management
 
 - **A numeric stepper per line item**, reusing `05_PRODUCT_DETAILS_SPECIFICATION.md` §17's exact control pattern and touch-target requirements (`DESIGN_SYSTEM.md` §B11) — the cart does not introduce a second quantity-control pattern.
@@ -94,6 +103,8 @@ None of these decisions block this document's own scope — the cart's job is to
 - **A subtotal per line item, a subtotal per fulfillment-leg group (§5), and one cart-wide total.**
 - **The cart states plainly what it can and cannot calculate yet**: item subtotals and the cart-wide item total are fully known and shown; delivery fees and any tax are calculated at checkout, where a real address and (for Food Central) a chosen delivery/pickup option exist to calculate them against — the cart says so explicitly rather than presenting an incomplete total as if it were final. Current research is specific that this exact gap — hidden costs appearing only at the final checkout step — is among the most cited reasons for abandonment; stating the gap honestly in the cart, rather than concealing it, is the direct mitigation.
 - **Price shown per line item matches the price shown on the product detail page or listing card it was added from** (`05_PRODUCT_DETAILS_SPECIFICATION.md` §8) — if the underlying price has changed since the item was added, the cart shows the current price with a clear notice (§19), never a silently stale one.
+
+*See Pricing Transparency (below) for a consolidated view of every cart amount and its confirmed/estimated status.*
 
 ## 9. Promotions
 
@@ -174,6 +185,8 @@ Every trust mechanism the cart must honor, stated explicitly — **customers sho
 - **Age-restricted products**: a lightweight, non-intrusive reminder on Wine & Spirits line items that the order will be age-verified — the same reminder-not-a-second-gate treatment already established in `05_PRODUCT_DETAILS_SPECIFICATION.md` §19, not a new mechanism, and not a resolution of the still-open hard-recheck-at-confirmation question (§6).
 - **No trust signal here is used to create urgency or pressure** — restated from §9, because the cart is the page where a customer is closest to committing, and is therefore the highest-stakes place for this rule to hold without exception.
 
+*See Customer Decision States (below) for how every notice in this section is classified — informational, warning, blocking, or recoverable error — and what customer action each implies.*
+
 ## 20. Empty Cart Behaviour
 
 - **An empty cart shows a clear, honest message and a path back into browsing** (a link to the homepage or a primary category, `01_NAVIGATION_SPECIFICATION.md` §11) — never a blank page.
@@ -192,6 +205,8 @@ Every trust mechanism the cart must honor, stated explicitly — **customers sho
 - **A failed quantity update or removal offers a clear retry action** without discarding the rest of the cart's state.
 - **No blank white space or broken layout is an acceptable failure mode for any part of the cart** — the same standard already set platform-wide.
 
+*See Cart Recovery (below) for the full consolidated behavior expected across every recovery scenario, not just update failures — expired sessions, discontinued/hidden products, inventory changes, and network interruptions are all treated with the same intent-preserving discipline as the failures above.*
+
 ## 23. Accessibility
 
 - **The quantity stepper (§7) uses the same accessible number-input pattern already established** in `05_PRODUCT_DETAILS_SPECIFICATION.md` §25 — proper semantics, a visible associated label, no bare unlabeled buttons.
@@ -200,6 +215,12 @@ Every trust mechanism the cart must honor, stated explicitly — **customers sho
 - **The cart preview drawer** (`01_NAVIGATION_SPECIFICATION.md` §17) follows the same disclosure-pattern focus management (trap while open, return focus to trigger on close) already established for every other disclosure panel on the platform.
 - **No availability, price-change, or trust notice (§19) is conveyed by color alone** — text-labeled in every case, the same platform-wide rule applied here.
 - **All contrast, focus-state, and touch-target requirements follow `DESIGN_SYSTEM.md` §B11 exactly**, with no cart-specific exception.
+- **Keyboard navigation** — the entire cart is operable by keyboard alone: tab order follows the visual and logical reading order per line item (image/name → price → quantity stepper → remove action), no keyboard trap exists anywhere in the cart or its preview drawer, and "Proceed to Checkout" is reachable and activatable with Enter or Space like any other primary action on the platform.
+- **Focus management** — focus is never lost or silently returned to the top of the page after a cart action. Removing a line item moves focus to a sensible next target (the next line item, or an updated cart summary if none remain); adding gift wrap (§15) or saving an item for later (§14) confirms focus in a way that verifies the action succeeded, rather than leaving an assistive-technology user uncertain whether their action registered.
+- **Screen reader announcements extend beyond totals** — every notice classified under Customer Decision States (below) and Trust Signals (§19) — a price change, an availability change, a quantity auto-adjustment, a blocking condition — is announced through the same polite live-region mechanism already specified for cart totals, not left as a visual-only banner a screen reader user could miss entirely.
+- **Touch targets on dense, repeated controls** — the quantity stepper's increment/decrement buttons, the remove action, and the gift-wrap toggle are each individually held to the 44×44px minimum (`DESIGN_SYSTEM.md` §B11), called out specifically here because these are the cart's most frequently repeated interactive elements and the ones most likely to be shrunk to fit a dense mobile layout — exactly the wrong place to make that trade-off, given cart abandonment is already measurably higher on mobile (§29).
+- **Error announcements use the same live-region mechanism** — a failed quantity update or removal (§22) is announced audibly at the moment it fails, with its retry action immediately reachable by keyboard, not only indicated by a visual error color (which would also violate the no-color-alone rule above).
+- **Dynamic updates never require a full re-scan** — because cart content can change without a page navigation (quantity, removal, price, saved-for-later), every such change is announced specifically enough (naming the affected product and what changed) that an assistive-technology user does not have to re-read the entire cart to discover what happened.
 
 ## 24. Analytics
 
@@ -278,6 +299,11 @@ Every future change to the cart — a new line-item state, a new trust notice, a
 - [ ] **Does it support both business lines equally**, representing Wine & Spirits' and Food Central's genuinely different operational realities without forcing one model onto the other (§6)?
 - [ ] **Does it stay within v1's scope**, correctly deferring loyalty, subscriptions, saved carts, shared carts, gift registries, and corporate ordering to §27 rather than smuggling any of them in early?
 - [ ] **Does it avoid inventing a business decision** (§6, §28) that hasn't actually been made, instead of flagging it explicitly?
+- [ ] **Is pricing clarity maintained?** Confirmed amounts, per-group subtotals, and estimated/unknown charges (Pricing Transparency) remain clearly distinguishable, never presented with false precision.
+- [ ] **Is fulfillment clarity maintained?** Every mixed-cart delivery statement (§6) is scoped to its own group, never merged, averaged, or ambiguous about which catalog it describes.
+- [ ] **Is operational transparency maintained?** Every constraint — delivery eligibility, stock limits, scheduling expectations — is communicated as early as it can genuinely be, never withheld until checkout.
+- [ ] **Does it preserve customer intent under recovery conditions?** A technical failure, expired session, or system-driven change (Cart Recovery) preserves as much of the customer's original intent as reasonably possible, and clearly explains what had to change.
+- [ ] **Is the customer genuinely ready for checkout when they leave the cart?** No unresolved surprise (§1) is left for `07_CHECKOUT_SPECIFICATION.md` to spring on the customer instead.
 
 ## 30. Acceptance Criteria
 
@@ -297,9 +323,60 @@ Every future change to the cart — a new line-item state, a new trust notice, a
 - [ ] All analytics events listed in §24 fire correctly and exactly once per corresponding user action.
 - [ ] No business decision named as open in §6/§28 is silently assumed or resolved by this document or its implementation.
 
+## Customer Decision States
+
+Every message, notice, or condition the cart presents falls into one of five states. Naming them explicitly gives every future cart change (§29) a shared vocabulary for what kind of communication it is introducing, and prevents different severities from visually blurring together.
+
+| State | Definition | Why it appears | When it appears | Customer impact | Expected customer action |
+|---|---|---|---|---|---|
+| **Informational** | A neutral fact the customer should know, with no decision attached. | The cart has something true and relevant to state, not a change or a risk. | Continuously, wherever relevant (e.g., "Delivery fees are calculated at checkout," §8; "Food Central delivers to Lagos only," §6/§10). | None — nothing changed, nothing is at risk. | None required; informs, doesn't prompt. |
+| **Recommendation** | An optional suggestion the customer can accept or ignore with no consequence. | The cart has a genuinely relevant, non-manufactured suggestion (§9). | E.g., a single-catalog cross-sell pairing suggestion (§18). | None if ignored. | Optional: accept (add the suggestion) or ignore. |
+| **Warning** | A real change or risk the customer should notice, but does not block proceeding. | Something in the cart changed since the customer last saw it, or a genuine risk exists that hasn't yet been confirmed against real data. | A price change (§8, §19), a quantity auto-adjustment (§13), a known-address delivery mismatch (§6), an age-verification reminder (§19). | The customer's original assumption may no longer hold; they should notice before proceeding. | Review the specific change; proceeding is still allowed, since nothing here is unresolvable in the cart itself. |
+| **Blocking condition** | A state that must be resolved before checkout can proceed. | The cart contains something that is not genuinely actionable at checkout as-is. | A line item with zero purchasable quantity remaining (§12, §13) still present in the cart; an entirely empty cart (§20, where "Proceed to Checkout" has nothing to act on). | The customer cannot proceed until the condition is resolved. | Remove or resolve the specific line item (or, for an empty cart, add something first). |
+| **Recoverable error** | A technical failure with a clear retry path. | An update or network call to the backend did not succeed. | A failed quantity update or removal (§22), a temporary network interruption (see Cart Recovery below). | Temporary — the affected line item or action did not complete. | Retry the specific action; the rest of the cart remains usable in the meantime (§22). |
+
+**Every state above always leaves the customer with a clear next step** — informational and recommendation states need none; warning, blocking, and recoverable-error states each name exactly what the customer can do, consistent with §1's governing rule that the cart never surprises without also explaining. No state in this cart is ever presented without at least one of: an explanation, a resolution path, or an explicit confirmation that no action is needed.
+
+## Pricing Transparency
+
+*Expands on §8 (Price Calculations), §9 (Promotions), and §15 (Gift Wrapping) — this section is the single place a customer, or a future contributor, can see at a glance which cart amounts are confirmed and which are not yet known.*
+
+| Amount | Status | Shown where | When it becomes final |
+|---|---|---|---|
+| Line item price | **Confirmed** | Per line item (§5) | At add-to-cart, re-confirmed on every cart view (§8); a change is always surfaced with a notice (§19), never silent. |
+| Gift Wrap fee | **Confirmed** | As its own distinct line within the relevant group (§15) | Immediately — it is a fixed, priced add-on, not an estimate. |
+| Promotional/discount adjustment | **Confirmed, if already applied at the product level** | Shown alongside the original price it discounts (§9) | Carried through from the product page or listing card unchanged; no new discount is invented at the cart stage. |
+| Fulfillment-group subtotal | **Confirmed** | Beneath each group (§5) | The sum of that group's confirmed line item and add-on prices; always accurate as of the current cart view. |
+| Cart-wide item total | **Confirmed** | At the cart level (§8) | The sum of all confirmed amounts above; this is the one total the cart can state as final today. |
+| Delivery fee | **Unknown / estimated** | Stated explicitly as "calculated at checkout" (§8) — never shown as ₦0, blank, or omitted silently | Only once a real delivery address (and, for Food Central, a chosen delivery or pickup option) exists — that data does not exist in the cart (§6, §10). |
+| Tax | **Unknown / estimated** | Same treatment as delivery fee | Same dependency as delivery fee. |
+| Grand order total | **Not shown as a single final figure in the cart** | The cart shows the confirmed item total plus an explicit "+ delivery & tax, calculated at checkout" statement, never a number that looks final but isn't. | At checkout, once delivery fee and tax are both known. |
+
+**The governing rule is simple and absolute: nothing in the cart is ever presented with more certainty than the cart actually has.** A confirmed amount is shown as a number; an amount that depends on data the cart doesn't have yet is shown as a clearly labeled dependency, never as a placeholder that could be mistaken for a real figure. This is the direct cart-level implementation of §1's "nothing changes silently" commitment, applied specifically to money rather than availability or delivery timing.
+
+## Cart Recovery
+
+*Documents how the cart behaves when something interrupts the customer's session or the customer's original intent can no longer be fulfilled exactly as expressed — extending §12 (Availability Changes), §13 (Out-of-Stock Behaviour), §16 (Cart Persistence), and §22 (Error States) into one consolidated recovery discipline.*
+
+The governing principle: **the cart preserves as much of the customer's expressed intent as is still genuinely valid, and clearly communicates the one part that had to change — it never discards more of the cart than the triggering event actually requires.**
+
+| Scenario | Cart behaviour | How customer intent is preserved |
+|---|---|---|
+| Expired guest session | Once the persistence window genuinely elapses (§16; exact duration an operational parameter, not fixed here), the cart is honestly shown as expired — never a silent, unexplained empty cart indistinguishable from one the customer emptied themselves. | Preserved up to the point of genuine expiry; nothing to recover once the window has truly closed, but the customer is told what happened rather than left to guess. |
+| Product removed by the customer | No recovery needed — this is intentional. | Saved-for-Later (§14) is offered at the point of removal as a deliberate alternative to permanent loss, for a customer who meant "not now" rather than "never." |
+| Product discontinued | Labeled in place, never silently dropped (§12). | The customer sees exactly what happened and decides whether to remove it; a related-product suggestion may appear only through the same restrained, editorial mechanism already governing cross-sell content (§18) — never manufactured specifically for this moment. |
+| Product hidden | Same in-place labeling as discontinued from the customer's point of view (§12) — the unavailable/hidden/discontinued distinction is a backend and merchandising concept (`04_PRODUCT_LISTING_SPECIFICATION.md`'s Operational Behaviour), not one the cart exposes differently to the customer. | Same as discontinued. |
+| Inventory fell below requested quantity | Auto-adjusts down to the maximum currently available, with a visible explanatory notice (§13, §19). | The item is kept, not removed, at the largest quantity still genuinely honest. |
+| System-driven quantity adjustment | Same as above. | The customer's originally requested quantity is never silently forgotten — the notice states what changed and why (§19), so the customer can decide whether to look for the item elsewhere or accept the adjustment. |
+| Price update since add-to-cart | Current price shown with a clear notice (§8, §19). | The customer's intent to buy the item is preserved; only the price display updates, never a silent charge at a different amount later. |
+| Failed update (quantity or removal) | A clear, specific retry action is offered; the rest of the cart's state is untouched (§22). | The attempted change remains visibly pending/retryable rather than silently reverting with no indication anything was attempted. |
+| Temporary network interruption | The cart shows its last-known-good state rather than clearing itself; where feasible, the failed action retries automatically before falling back to a manual retry prompt (§22). | Cart persistence (§16) means a reconnect or refresh restores the true server-side state regardless — a network blip is never treated as equivalent to the customer emptying their cart. |
+
+**Nothing in this section authorizes silently discarding a customer's cart for operational convenience.** Where a scenario above cannot be resolved automatically (e.g., true session expiry), the cart is honest about what happened rather than presenting an unexplained empty state.
+
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for all cart implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` (cart shell/preview) and `05_PRODUCT_DETAILS_SPECIFICATION.md` (add-to-cart origin) without redefining either, and setting the boundary `07_CHECKOUT_SPECIFICATION.md` (not yet drafted) must respect and extend.
+**Document status:** Approved — Frozen (v1.0). This is now the authoritative reference for all cart implementation platform-wide, integrating directly with `01_NAVIGATION_SPECIFICATION.md` (cart shell/preview) and `05_PRODUCT_DETAILS_SPECIFICATION.md` (add-to-cart origin) without redefining either, and setting the boundary `07_CHECKOUT_SPECIFICATION.md` (not yet drafted) must respect and extend. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.
 
 ## Sources
 

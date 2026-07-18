@@ -1,11 +1,34 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.1
+**Version:** 2.2
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v19 — 2026-07-18 — `06_CART_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved `06_CART_SPECIFICATION.md` in principle, then requested a final refinement pass before freezing v1.0 — explicitly no redesign and no section removal. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/06_CART_SPECIFICATION.md`):**
+
+- **Customer Decision States** — a new unnumbered section classifying every cart message into five types (informational, recommendation, warning, blocking condition, recoverable error), each with a table entry for why it appears, when it appears, customer impact, and expected customer action.
+- **Pricing Transparency** — a new unnumbered section (expanding on §8, §9, §15) consolidating every cart amount — line item price, Gift Wrap fee, promotional adjustment, fulfillment-group subtotal, cart-wide item total, delivery fee, tax, grand order total — into one table distinguishing confirmed amounts from estimated/unknown ones.
+- **Cart Recovery** — a new unnumbered section (extending §12, §13, §16, §22) documenting expected behaviour across nine named scenarios: expired guest sessions, customer-removed products, discontinued products, hidden products, inventory shortfalls, system-driven quantity adjustments, price updates, failed updates, and temporary network interruptions — governed by an explicit intent-preservation principle.
+
+**Changed:**
+
+- §6 (Mixed Cart Behaviour) expanded in place with an "Avoiding fulfillment confusion — concrete mechanisms" subsection (distinct group labeling, no shared/averaged copy, an optional disclosure explainer, per-group-scoped notices) and a Future Operational Expansion note confirming the two-group model generalizes to a hypothetical future fulfillment leg without requiring redesign.
+- §23 (Accessibility) expanded in place with six new bullets: keyboard navigation, focus management, screen-reader coverage extended beyond cart totals, per-control touch targets on the quantity stepper/remove/gift-wrap controls, error announcements via the same live-region mechanism, and a requirement that dynamic updates never require a full re-scan.
+- §29 (Cart Quality Checklist) expanded with five new checks: pricing clarity, fulfillment clarity, operational transparency, recovery behaviour, and readiness for checkout.
+- §8, §19, and §22 each gained a one-line cross-reference to their corresponding new section, avoiding duplicated content.
+- Document header: **Version 0.1 → 1.0**, **Status: In Progress → Approved — Frozen**, per Paul's explicit instruction to freeze once the refinement pass was complete.
+- `docs/README.md` (v2.1) — specification status table updated to `06_CART_SPECIFICATION.md`: Approved — Frozen, v1.0.
+- `docs/PROJECT_STATUS.md` (v2.2), `docs/ROADMAP.md` (v2.5) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: six specifications now frozen; `07_CHECKOUT_SPECIFICATION.md` named as the natural next candidate, not yet begun.
+- `docs/DECISION_LOG.md` — new entry recording the refinement pass and the freeze.
+
+**Not changed:** no new external research was added for this pass — Customer Decision States, Pricing Transparency, Cart Recovery, and the expanded Accessibility and Quality Checklist sections extend principles already established in `06_CART_SPECIFICATION.md` and its previously cited research base.
 
 ## v18 — 2026-07-18 — `06_CART_SPECIFICATION.md` drafted in full
 
