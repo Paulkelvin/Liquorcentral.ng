@@ -1,7 +1,7 @@
 # Checkout Specification
 
-**Status:** In Progress
-**Version:** 0.1
+**Status:** Approved — Frozen (2026-07-18)
+**Version:** 1.0
 **Owner:** Product
 **Last Updated:** 2026-07-18
 
@@ -143,6 +143,8 @@ Applies to Food Central only — Wine & Spirits' nationwide delivery uses standa
 
 ## 16. Order Review Step
 
+**Review exists to build confidence, not to introduce a new decision.** Every fact shown here was already decided in an earlier step (§5–§14); this step's only job is to let the customer verify that everything is correct before the one action that cannot be undone — placing the order. A review step that surfaces new information or a new choice at this point would itself be a violation of §1's "no new surprise" philosophy, not a safeguard against one.
+
 - **A complete, final view of the entire order before submission** — every line item (grouped by fulfillment leg, per §8), the confirmed delivery method and slot/pickup choice per group, the delivery address, the payment method selected, and the now-fully-confirmed total (§13) — presented together, in one place, before the customer commits.
 - **Nothing in this step is new information the customer hasn't already seen or decided** — its purpose is confirmation and a last chance to catch a mistake, not a new decision point. Current research finds that displaying the complete order and confirming successful payment gives customers confidence their order will be fulfilled correctly, and that this reassurance function matters as much post-decision as it does pre-decision (Baymard Institute, cited below, discussing the equivalent confirmation-page function — the same principle applies one step earlier, before submission).
 - **Any change made from this step (e.g., editing the address) returns the customer to the relevant earlier step and back to an updated Review & Confirm afterward** — never a silent in-place edit that skips re-confirmation of what changed.
@@ -167,6 +169,7 @@ Every trust mechanism checkout must honor, extending `06_CART_SPECIFICATION.md` 
 - **Delivery/pickup expectation clarity**: each fulfillment group's confirmed outcome (§8, §16, §17) is stated plainly, never merged or vague.
 - **No fabricated urgency or scarcity at any checkout step** — restated from `06_CART_SPECIFICATION.md` §9 and §19, and if anything more critical here than in the cart: checkout is the point of maximum commitment pressure, and `EXPERIENCE_PRINCIPLES.md` #15 (Build Relationships, Not Just Transactions) explicitly rules out manipulative urgency devices regardless of how close a customer is to completing a purchase.
 - **Age-restriction and Lagos-only scope are never discovered for the first time at checkout** (§8, §15) — both were already communicated earlier in the journey (homepage, cart); checkout restates rather than introduces them, preserving the "no surprise" philosophy (§1).
+- **A payment that is pending, not yet confirmed, is itself a trust moment** — the customer is told plainly that a brief wait is normal for the payment method chosen (see Payment State Behaviour, below), rather than being left to wonder whether anything is happening. Reassurance during a wait is as much a trust signal as reassurance after success.
 
 ## 19. Empty/Invalid Checkout States
 
@@ -189,6 +192,8 @@ Every trust mechanism checkout must honor, extending `06_CART_SPECIFICATION.md` 
 - **A backend or network failure during order placement, after payment has been authorized, is the single highest-stakes error state in this document** — the customer must never be left uncertain whether they were charged; this requires the order-placement and payment-confirmation logic to be transactionally reliable (§26), with a clear, honest status shown even in a genuine failure case, rather than an ambiguous blank result.
 - **No blank white space or broken layout is an acceptable failure mode for any checkout step** — the same standard already set platform-wide.
 
+*See Payment State Behaviour and Checkout Recovery (both below) for the full consolidated treatment of payment-specific states and session/network interruptions — this section covers the general error-handling discipline every step follows; those sections extend it to checkout's two highest-stakes interruption categories specifically.*
+
 ## 22. Accessibility
 
 - **Every form field in Address Capture (§7) and Payment (§14) follows `DESIGN_SYSTEM.md` §B9 and §B11 exactly** — visible labels, blur-triggered validation, plain-language errors identifying the specific field, no checkout-specific exception.
@@ -198,6 +203,8 @@ Every trust mechanism checkout must honor, extending `06_CART_SPECIFICATION.md` 
 - **Focus management**: moving between steps (§5) moves focus to the new step's primary heading or first field, never leaving focus on a control that no longer exists on screen.
 - **No error, warning, or trust notice (§18, §21) is conveyed by color alone** — the same platform-wide rule, applied with particular emphasis to payment errors and the address/eligibility blocking condition (§19), where a customer must not be left guessing what specifically is wrong.
 - **The blocking-condition resolution options (§8, §19)** are each a distinct, individually labeled, keyboard-operable action — never a single ambiguous "fix it" control.
+- **Focus returns predictably after an external payment redirect** — a customer returning from a bank/USSD/card provider's own page (Payment State Behaviour, below) has their focus placed on the resulting payment-state message, not left on whatever control happened to have focus before the redirect, and not silently reset to the top of the page.
+- **Every payment-state change (pending, failed, cancelled, expired) is announced via the same polite live-region mechanism already established for cart totals in `06_CART_SPECIFICATION.md` §23** — a screen-reader user waiting on a pending payment is not left to poll the page manually to discover the outcome.
 
 ## 23. Responsive Behaviour
 
@@ -273,6 +280,7 @@ None of the above is authorized or scoped work — `PRODUCT_BLUEPRINT.md` and `M
 - **The notification channel for order confirmation is undecided** (`MEDUSA_EXTENSIONS.md` #5) — §17's confirmation-notification requirement is specified independent of channel, but the actual customer experience of receiving (or not receiving) a timely confirmation depends entirely on this decision.
 - **The address/eligibility blocking condition (§8, §11) is a new, specific interaction this document introduces** — it did not exist as a named concept before this specification, since the cart could only state the rule informally without a real address to check. It should be treated as a priority implementation detail, not a minor edge case, given how directly it protects the mixed-order trust discipline this entire document is built around.
 - **The delivery-slot module and its capacity-enforcement workflow hook are not yet built** (`MEDUSA_EXTENSIONS.md` #3) — §10's behavioral requirements assume this module exists; its absence is a backend dependency, not a specification gap.
+- **The most severe risk this document guards against — a customer left uncertain whether they were charged after a backend or network failure — is now fully specified** (Checkout Recovery, below), not merely flagged; implementation must treat order placement and payment confirmation as one transactionally reliable unit, per §26, for that specification to hold in practice.
 
 **Assumptions:**
 
@@ -298,10 +306,85 @@ None of the above is authorized or scoped work — `PRODUCT_BLUEPRINT.md` and `M
 - [ ] Account creation, if offered, is offered only after order confirmation, never as a precondition to completing the order.
 - [ ] All analytics events listed in §24 fire correctly and exactly once per corresponding user action.
 - [ ] No business decision named as open in §14, §15, §29 (payment provider, cash-on-delivery, hard age-recheck, delivery mechanism, Lagos-area definition, slot parameters) is silently assumed or resolved by this document or its implementation.
+- [ ] A cancelled payment attempt (e.g., an abandoned external payment page) returns the customer to the payment step exactly as it was, without being shown as an error.
+- [ ] A pending payment (bank transfer/USSD) is shown as its own distinct state, never indistinguishable from success or failure, with an explanation that a wait is expected.
+- [ ] A customer returning from an external payment redirect has focus placed on the resulting payment-state message, and that message is announced via an ARIA live region.
+- [ ] Every notice shown at checkout can be classified under the Customer Decision States taxonomy (informational, warning, blocking condition, or recoverable error) with a clear expected customer action.
+
+## Checkout Intent
+
+Checkout is reached by every customer type named in §3, but the *intent* a customer brings to checkout itself narrows to a small number of recognizable patterns. Naming them here does not introduce personalization or a new mechanism — it confirms that the sections already specified serve each of these intents, mirroring the same "Intent" pattern already established in `03_SEARCH_SPECIFICATION.md` and `04_PRODUCT_LISTING_SPECIFICATION.md`'s own refinement passes:
+
+| Intent | What the customer wants | Where this document already serves it |
+|---|---|---|
+| Fast completion | Get through checkout in as few steps as possible, with nothing unexpected. | §5's minimal step sequence, §6's guest-checkout default, §7's minimum-necessary field set. |
+| Careful review | Double-check everything — items, address, delivery, total — before committing. | §16 Order Review Step exists specifically for this intent; nothing in §5 forces a customer past it faster than they want to go. |
+| Mixed-order resolution | Understand and resolve how a mixed Wine & Spirits + Food Central order is actually going to be fulfilled. | §8's Mixed-Order Checkout Behaviour and its blocking-condition mechanism. |
+| Recovery | Return to a checkout that was interrupted (a closed tab, a failed payment, an expired session) and pick up where it left off with minimal re-entry. | Checkout Recovery, below. |
+
+No new mechanism is introduced by this section, and no AI or personalization is implied — it is a mapping of existing behavior onto recognizable customer intent, not a new capability.
+
+## Customer Decision States
+
+This document does not define a new decision-state taxonomy — it reuses `06_CART_SPECIFICATION.md`'s five states (informational, recommendation, warning, blocking condition, recoverable error) exactly, instantiated with checkout's own triggers, so the two documents share one vocabulary rather than two similar-but-different ones:
+
+| State | Checkout-specific trigger | Customer impact | Expected customer action |
+|---|---|---|---|
+| **Informational** | E.g., "Delivery fees are calculated based on your address" (§13) before the address is entered. | None — nothing changed, nothing is at risk. | None required. |
+| **Recommendation** | Not currently used at checkout — no cross-sell or optional suggestion is introduced at this stage, consistent with §18's no-fabricated-urgency rule and the platform-wide restraint principle. | N/A | N/A |
+| **Warning** | A price or availability change discovered at final re-validation (§12) that does not block proceeding once acknowledged. | The customer's original assumption may no longer hold; they should notice before confirming (§16). | Review the specific change; proceeding is still allowed. |
+| **Blocking condition** | The address/eligibility conflict (§8, §11); an item that became fully unavailable at final re-validation (§12); a delivery slot that filled before submission (§10, §21). | The customer cannot proceed until the condition is resolved. | Resolve the specific condition via the named options (§8, §19). |
+| **Recoverable error** | A failed payment (§14, §21, Payment State Behaviour below); a network interruption during submission (Checkout Recovery, below). | Temporary — the affected step did not complete. | Retry; other completed steps are preserved. |
+
+Naming these explicitly closes a gap the first draft of this document left implicit: every notice checkout shows now has a shared, checkable vocabulary with the cart's, rather than checkout inventing its own severity language.
+
+## Payment State Behaviour
+
+Payment Behaviour (§14) specifies the payment step's baseline requirements; this section specifies the distinct states a payment attempt can occupy — a genuine gap in the first draft, since local payment methods (bank transfer, USSD — `MEDUSA_EXTENSIONS.md` #4) commonly involve an asynchronous confirmation step rather than an instant response, unlike a simple card charge.
+
+- **Pending**: the customer has submitted payment (e.g., initiated a bank transfer or a USSD code) but confirmation has not yet been received. The order is held, not placed, while pending — the customer sees an explicit "payment pending" state, never a state indistinguishable from success or failure. This state may persist longer than a card payment does, and the customer is told a brief wait is expected for the method chosen, so it does not read as a stall.
+- **Failed**: payment was declined or could not be completed. The customer returns to the payment step (§14, §21) with a specific reason where the provider supplies one, and an immediate retry — no other completed checkout information is discarded.
+- **Cancelled**: the customer abandons a payment step (e.g., closes an external payment page) before completing it. Checkout returns to the payment step exactly as it was before the attempt, with previously entered information intact — a cancelled attempt is not shown as an error, since nothing went wrong; the customer simply did not complete it.
+- **Expired**: a pending payment (above) that never resolves within a genuinely reasonable window. The order is not silently left pending indefinitely; the customer is told the attempt expired and is offered a fresh attempt, with the same information intact.
+- **Retry**: available from failed, cancelled, and expired states alike — a single, clear action that returns the customer to payment method selection without re-entering address or delivery information already confirmed (§7, §9, §10).
+- **This section does not assume which payment methods are ultimately integrated** (§14, §29) — pending/failed/cancelled/expired are behavioral states any payment method can occupy, specified so the eventual payment-provider integration has a clear contract to implement against, not a gap discovered only once that integration begins.
+
+## Checkout Recovery
+
+*Extends §19 (Empty/Invalid Checkout States) and §21 (Error States) — governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery section, applied here to checkout specifically, not restated from it.*
+
+The governing principle: **an interrupted checkout preserves as much of the customer's progress as is still genuinely valid, and clearly communicates the one part that had to be redone — it never silently discards more than the interrupting event actually requires.**
+
+| Scenario | Checkout behaviour | How customer progress is preserved |
+|---|---|---|
+| Browser closed or navigated away mid-checkout | The cart (`06_CART_SPECIFICATION.md` §16) persists exactly as it did before checkout began; address, delivery, and payment-method selections made during the abandoned attempt are not guaranteed to persist unless the customer is logged in (§7). | The customer never loses their cart contents — only in-progress checkout entries not yet confirmed, and only for a guest. |
+| Session or cart expires mid-checkout | Treated identically to `06_CART_SPECIFICATION.md`'s own expired-session behaviour — the customer is told honestly what happened, never shown a silent, unexplained failure. | Nothing to recover once the window has genuinely closed; the customer is told, not left guessing. |
+| Payment redirects to an external page and the customer returns | Checkout resumes at the correct payment state (Payment State Behaviour, above) based on the outcome the provider reports — pending, failed, or cancelled — never left on a stale or ambiguous screen. | Every step completed before the redirect (address, delivery selection) remains intact on return. |
+| Network interruption during final submission | The customer is never left uncertain whether the order was placed or payment was charged (§21) — the interface shows a clear, honest status once connectivity is confirmed, and does not allow a second submission that could result in a duplicate order or charge. | The single highest-stakes scenario this document specifies for — resolved by requiring order placement and payment confirmation to be transactionally reliable (§26), not merely well-intentioned UI behavior. |
+| A blocking condition (§8, §11, §12) is resolved and the customer proceeds | The resolution carries forward cleanly into Review & Confirm (§16) — no re-entry of information unaffected by the resolution. | Only the specific item or field involved in the conflict requires the customer's attention. |
+
+**Nothing in this section authorizes silently discarding checkout progress for implementation convenience.** Where a scenario cannot be resolved automatically, checkout is honest about what happened rather than presenting an unexplained empty or broken state.
+
+## Checkout Quality Checklist
+
+Every future change to checkout — a new step, a new trust notice, a new payment state, a layout adjustment — must be able to answer **yes** to all of the following before it's considered complete, the same discipline every prior frozen specification already applies to its own domain:
+
+- [ ] **Does it confirm what the cart already prepared, rather than introduce a new surprise?** Checked against §1.
+- [ ] **Is mixed-order delivery messaging unambiguous through every step**, including Review & Confirm and Order Confirmation? (§8)
+- [ ] **Is the address/eligibility blocking condition handled explicitly**, with named resolution options, never a silent drop or re-route? (§8, §11)
+- [ ] **Is pricing fully transparent and complete before payment is requested?** (§13, §18)
+- [ ] **Does every payment state — pending, failed, cancelled, expired — have a clear, honest customer-facing treatment?** (Payment State Behaviour)
+- [ ] **Does an interruption preserve as much customer progress as genuinely possible?** (Checkout Recovery)
+- [ ] **Does it preserve trust over a friction-reduction shortcut?** A faster interaction that removes an honest disclosure is not an improvement by this document's standard.
+- [ ] **Does it remain accessible?** Form fields, step transitions, touch targets, and focus management all meet §22's requirements with no exceptions.
+- [ ] **Does it perform well on mobile**, the default test condition per §23, not an afterthought?
+- [ ] **Does it avoid inventing a business decision** (§9, §14, §15, §29) that hasn't actually been made, instead of flagging it explicitly?
+- [ ] **Does it stay within v1's scope**, correctly deferring saved payment methods, split/partial payments, a hard age-recheck, and multi-address checkout to §28 rather than smuggling any of them in early?
+- [ ] **Is the customer never left uncertain whether their order was placed or their payment was charged?** The single non-negotiable standard this document holds above all others (§21, Checkout Recovery).
 
 ---
 
-**Document status:** In Progress (v0.1). This is the first full draft — ready for review, not yet approved. Upon approval, this specification becomes the reference for checkout implementation, alongside `06_CART_SPECIFICATION.md` (which it extends) and `01_NAVIGATION_SPECIFICATION.md` §17 (whose rules it operates within).
+**Document status:** Approved — Frozen (v1.0). This is now the authoritative reference for all checkout implementation platform-wide, integrating directly with `06_CART_SPECIFICATION.md` (which it extends and completes) and `01_NAVIGATION_SPECIFICATION.md` §17 (whose rules it operates within) without redefining either. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, it may now only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md`.
 
 ## Sources
 

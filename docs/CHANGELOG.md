@@ -1,11 +1,38 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 2.4
+**Version:** 2.5
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v22 — 2026-07-18 — `07_CHECKOUT_SPECIFICATION.md` finalized to v1.0 and frozen
+
+**Context:** Paul approved `07_CHECKOUT_SPECIFICATION.md`, then requested a final refinement pass — a full review against all four frozen Phase 0 documents and all six frozen prior specifications, plus meaningful refinements in named areas — before freezing v1.0. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/specifications/07_CHECKOUT_SPECIFICATION.md`):**
+
+- **Checkout Intent** — a new unnumbered section mapping four named customer intents (Fast Completion, Careful Review, Mixed-Order Resolution, Recovery) onto mechanisms already specified elsewhere in the document, explicitly without introducing AI or personalization.
+- **Customer Decision States** — a new unnumbered section that reuses `06_CART_SPECIFICATION.md`'s exact five-state taxonomy (informational, recommendation, warning, blocking condition, recoverable error), instantiated with checkout-specific triggers, rather than inventing a parallel vocabulary.
+- **Payment State Behaviour** — a new unnumbered section specifying pending, failed, cancelled, expired, and retry as distinct, provider-agnostic payment states — closing a genuine gap the first draft left unaddressed for asynchronous local payment methods (bank transfer, USSD).
+- **Checkout Recovery** — a new unnumbered section (five named scenarios: browser closed mid-checkout, session/cart expiry, payment-redirect return, network interruption during final submission, blocking-condition resolution), governed by the same intent-preservation principle already established in `06_CART_SPECIFICATION.md`'s Cart Recovery section.
+- **Checkout Quality Checklist** — a new unnumbered closing section every future checkout change must satisfy, mirroring every other frozen specification's own closing checklist.
+
+**Changed:**
+
+- §16 (Order Review Step) gained an opening framing: review builds confidence, introduces no new decision.
+- §18 (Trust Signals) gained a bullet on pending-payment reassurance, cross-referencing Payment State Behaviour.
+- §21 (Error States) gained a cross-reference to Payment State Behaviour and Checkout Recovery.
+- §22 (Accessibility) gained two bullets: focus return after an external payment redirect, and live-region announcements for payment-state changes.
+- §29 (Risks & Assumptions) updated to note the backend-failure-after-payment risk is now fully specified (Checkout Recovery), without removing any still-open business decision.
+- §30 (Acceptance Criteria) gained four new checks reflecting the new sections.
+- Document header: **Version 0.1 → 1.0**, **Status: In Progress → Approved — Frozen**, per Paul's explicit instruction to freeze once the refinement pass was complete.
+- `docs/README.md` (v2.3) — specification status table updated to `07_CHECKOUT_SPECIFICATION.md`: Approved — Frozen, v1.0.
+- `docs/PROJECT_STATUS.md` (v2.4), `docs/ROADMAP.md` (v2.7) — Phase 1 status, Completed work, Work in progress, and Next recommended task updated: seven specifications now frozen; `08_CUSTOMER_ACCOUNT_SPECIFICATION.md` named as the natural next candidate, not yet begun and not to start without Paul's explicit approval.
+- `docs/DECISION_LOG.md` — new entry recording the refinement pass and the freeze.
+
+**Not changed:** Mixed-Order Checkout Behaviour (§8) was reviewed directly against `06_CART_SPECIFICATION.md`'s frozen text and confirmed already consistent — no content change required. A standalone "Operational Behaviour" section was deliberately not added, since its substance is fully covered by Payment State Behaviour and Checkout Recovery together, and a separate section under that name would have collided with the different, already-established meaning "Operational Behaviour" carries in `04_PRODUCT_LISTING_SPECIFICATION.md` and `06_CART_SPECIFICATION.md`.
 
 ## v21 — 2026-07-18 — `07_CHECKOUT_SPECIFICATION.md` drafted in full
 
