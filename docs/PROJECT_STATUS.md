@@ -5,9 +5,9 @@
 
 ## Current phase
 
-**Brand Identity — v1 drafted, awaiting Paul's review.**
+**Brand Identity & Experience Principles — both v1 drafted, awaiting Paul's review.**
 
-The project has moved through: (1) initial Medusa architecture research, (2) technology/marketplace research (since partially superseded — see below), (3) UX and product research, (4) establishing `/docs` as the project's permanent, versioned source of truth, and (5) drafting the Brand Identity foundation. No implementation code, UI design, wireframes, or mockups have been produced at any point so far — this has been, deliberately, research and definition work only. **Do not proceed into `DESIGN_SYSTEM.md` visual-token work or any UI design until `BRAND_IDENTITY.md` is approved** — this is an explicit gate, not just a sequencing preference.
+The project has moved through: (1) initial Medusa architecture research, (2) technology/marketplace research (since partially superseded — see below), (3) UX and product research, (4) establishing `/docs` as the project's permanent, versioned source of truth, (5) drafting the Brand Identity foundation, and (6) drafting the Experience Principles that define how customers should experience the product. No implementation code, UI design, wireframes, or mockups have been produced at any point so far — this has been, deliberately, research and definition work only. **Do not proceed into `DESIGN_SYSTEM.md` visual-token work or any UI design until both `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` are approved** — this is an explicit gate, not just a sequencing preference.
 
 ## Completed work
 
@@ -20,18 +20,19 @@ The project has moved through: (1) initial Medusa architecture research, (2) tec
 - Full `/docs` documentation system established (see `README.md` for the index).
 - **`BRAND_IDENTITY.md` v1 drafted** — vision, mission, values, personality, voice/tone, emotional and perception goals, brand story, positioning, value proposition, and visual/color/typography/photography/motion/iconography/accessibility principles for the four already-approved brand colors (Primary Red `#EC2D07`, Green `#1A9902`, Gold `#CFCA43`, Off White `#F3F5F0`). Includes a computed WCAG contrast analysis of all four colors — notably, **gold fails contrast against the off-white base at every text size** and should be reserved for dark-ground/accent use only (see `BRAND_IDENTITY.md` §13).
 - `BRAND_GUIDELINES.md` reconciled with `BRAND_IDENTITY.md` — the two now have distinct, non-overlapping responsibilities (identity/strategy vs. tactical asset execution); see either document's "Relationship" section.
+- **`EXPERIENCE_PRINCIPLES.md` v1.0 drafted** — 15 experience principles (Confidence Before Complexity, Simplicity Before Features, Premium Through Discipline, Photography Sells First, Guide Without Intimidating, Speed Builds Trust, and more) plus a product vision, competitive positioning ("Premium Lifestyle Commerce Platform"), and a single success-metric question every design decision should be checked against. Explicitly complements, not duplicates, `BRAND_IDENTITY.md` — see its own "Relationship to other documents" section.
 
 ## Work in progress
 
-None currently active. The immediate next step is Paul's review of `BRAND_IDENTITY.md` (see below) before `DESIGN_SYSTEM.md` visual-token work or any UI design begins.
+None currently active. The immediate next step is Paul's review of both `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` (see below) before `DESIGN_SYSTEM.md` visual-token work or any UI design begins.
 
 ## Next recommended task
 
-**Paul reviews and approves `BRAND_IDENTITY.md` v1.** In parallel (not blocked by brand review), Paul should also resolve the `PRODUCT_BLUEPRINT.md` open questions below — in particular the payment-provider decision, which blocks the start of `ROADMAP.md` Phase 1 regardless of brand approval status.
+**Paul reviews and approves `BRAND_IDENTITY.md` v1 and `EXPERIENCE_PRINCIPLES.md` v1.0.** In parallel (not blocked by either review), Paul should also resolve the `PRODUCT_BLUEPRINT.md` open questions below — in particular the payment-provider decision, which blocks the start of `ROADMAP.md` Phase 1 regardless of brand/experience approval status.
 
 ## Blockers
 
-- **`DESIGN_SYSTEM.md` visual-token work and all UI design are explicitly blocked** until `BRAND_IDENTITY.md` is approved — this was a direct instruction, not an inferred sequencing choice.
+- **`DESIGN_SYSTEM.md` visual-token work and all UI design are explicitly blocked** until both `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` are approved — this was a direct instruction, not an inferred sequencing choice.
 - **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1.
 - **A separate session was mid-edit on an `AI_HANDOFF.md` file (and updates to this document, `DECISION_LOG.md`, `CHANGELOG.md`, and the root `README.md`) when it hit its usage limit.** That work was never committed or pushed — this repository's history has no trace of it, and it should be treated as lost unless recovered from that other session directly. No `AI_HANDOFF.md` exists in this repository as of this update. Flagging so it isn't silently forgotten or assumed to exist.
 - No other hard blockers — architecture and product-catalog work can proceed in parallel with the open questions below, as long as nothing below is assumed in their place.
@@ -69,8 +70,12 @@ Grouped by document, so each can be resolved in context:
 - Formal approval of `BRAND_IDENTITY.md` v1 in full — this is the explicit gate before `DESIGN_SYSTEM.md` visual-token work or any UI design begins.
 - Specifically worth Paul's attention: the recommended color-usage hierarchy and the stance that gold is reserved for dark-ground/accent use only (§13), the visual philosophy of "color-forward premium" rather than muted-minimalist premium (§12), and the draft brand story (§9), which is explicitly flagged as directional rather than final.
 
+**Experience (`EXPERIENCE_PRINCIPLES.md`):**
+- Formal approval of `EXPERIENCE_PRINCIPLES.md` v1.0 in full — the second half of the gate before `DESIGN_SYSTEM.md`/UI work begins.
+- **Reconcile the "Premium Lifestyle Commerce Platform" category framing (`EXPERIENCE_PRINCIPLES.md`, Competitive Positioning) with the formal Positioning Statement already drafted in `BRAND_IDENTITY.md` §10.** The two aren't contradictory but describe the same thing from different angles (category vs. audience/differentiator) and should be reconciled into one consistent external-facing description before either is used in customer-facing copy.
+
 **Brand execution (`BRAND_GUIDELINES.md`, blocked on the above):**
-- Logo, exact typeface selection, exact color tokens, icon set, and physical/operational branding (rider uniforms, packaging, receipts) — none of this should be started until `BRAND_IDENTITY.md` is approved.
+- Logo, exact typeface selection, exact color tokens, icon set, and physical/operational branding (rider uniforms, packaging, receipts) — none of this should be started until `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` are approved.
 
 ## How to use this section
 

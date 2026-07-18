@@ -11,7 +11,8 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 ## Phase 0 — Brand & design foundation
 
 - `BRAND_IDENTITY.md` v1 drafted — vision, personality, voice, color-usage hierarchy, and visual/typography/photography principles for the four already-approved brand colors. **Awaiting Paul's approval.**
-- `DESIGN_SYSTEM.md` visual-token work (actual color tokens, typeface selection, component specs) and any UI design are explicitly blocked until that approval lands — this is a hard gate, not a soft sequencing preference.
+- `EXPERIENCE_PRINCIPLES.md` v1.0 drafted — 15 principles defining how customers should experience every screen and interaction, plus a product vision and competitive positioning. **Awaiting Paul's approval.**
+- `DESIGN_SYSTEM.md` visual-token work (actual color tokens, typeface selection, component specs) and any UI design are explicitly blocked until both approvals land — this is a hard gate, not a soft sequencing preference.
 - This phase can run in parallel with Phase 1's backend work below; it blocks visual/frontend work specifically, not backend/architecture work.
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end
@@ -65,4 +66,4 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 
 ## Open questions blocking Phase 0 and Phase 1
 
-See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: `BRAND_IDENTITY.md` approval is the gate on all visual/frontend work (Phase 0 onward), and the payment provider choice (`MEDUSA_EXTENSIONS.md` #4) is the most launch-critical open decision blocking backend Phase 1. Neither blocks the other.
+See `PROJECT_STATUS.md` for the current, consolidated list. As of this version: `BRAND_IDENTITY.md` and `EXPERIENCE_PRINCIPLES.md` approval together gate all visual/frontend work (Phase 0 onward), and the payment provider choice (`MEDUSA_EXTENSIONS.md` #4) is the most launch-critical open decision blocking backend Phase 1. None of these block each other.

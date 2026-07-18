@@ -6,6 +6,14 @@
 
 ---
 
+### Experience Principles v1.0 drafted
+
+- **Decision:** `EXPERIENCE_PRINCIPLES.md` created as a third foundational document, distinct from `BRAND_IDENTITY.md`: 15 principles governing how customers should experience every screen, feature, and interaction (e.g. Confidence Before Complexity, Simplicity Before Features, Premium Through Discipline, Guide Without Intimidating, Accessibility Is Premium), plus a product vision, a "Premium Lifestyle Commerce Platform" competitive-positioning frame, and a single success-metric test for design decisions.
+- **Reasoning:** Paul supplied this document directly to establish the qualitative UX bar every future feature/screen/interaction/workflow must be evaluated against, complementing (not duplicating) `BRAND_IDENTITY.md`'s identity/personality focus and `PRODUCT_BLUEPRINT.md`'s strategic-decision focus.
+- **Date:** 2026-07-18
+- **Impact:** New `docs/EXPERIENCE_PRINCIPLES.md`. Added to the `DESIGN_SYSTEM.md`/UI approval gate alongside `BRAND_IDENTITY.md` in `PROJECT_STATUS.md` and `ROADMAP.md` Phase 0. Flagged one open reconciliation: this document's "Premium Lifestyle Commerce Platform" category framing and `BRAND_IDENTITY.md` §10's formal Positioning Statement describe the same thing from different angles and should be reconciled into one consistent external description before either is used in customer-facing copy.
+- **Status:** Drafted — awaiting Paul's approval. Not yet a final decision.
+
 ### Brand Identity v1 drafted, with four brand colors approved as fixed inputs
 
 - **Decision:** `BRAND_IDENTITY.md` v1 created as the strategic/emotional brand foundation (vision, mission, values, personality, voice, tone, positioning, and visual/color/typography/photography/motion principles). Four brand colors — Primary Red `#EC2D07`, Green `#1A9902`, Gold `#CFCA43`, Off White `#F3F5F0` — are confirmed as approved and fixed; this document defines how they're used, not what they are. `BRAND_GUIDELINES.md` is reconciled to a narrower, non-overlapping scope: tactical asset execution (logo, exact typefaces, exact color tokens) built on top of `BRAND_IDENTITY.md`, rather than duplicating it.
