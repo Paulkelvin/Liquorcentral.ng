@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.3
+**Version:** 4.4
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v41 — 2026-07-19 — `TIER_B_DELIVERY_SLOT_MODULE.md` finalized to v1.0 — Approved
+
+**Context:** Paul directed a genuine architectural review-and-finalize pass on `TIER_B_DELIVERY_SLOT_MODULE.md` against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `MODULE_INVENTORY.md`, `MEDUSA_EXTENSIONS.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `DELIVERY_MODEL.md`, all relevant Approved specifications, and the three existing Approved Tier B modules. Full reasoning in `DECISION_LOG.md`.
+
+**Changed (within `docs/implementation-planning/TIER_B_DELIVERY_SLOT_MODULE.md`):**
+
+- §0 (Module Selection Verification): corrected an inaccurate Tier-placement claim — the payment/notification provider modules are genuine Tier B candidates per `IMPLEMENTATION_PLANNING.md` §4/§6, not Tier D alone; delivery-slot still proceeds first per §6 point 2's explicit sequencing within Tier B.
+- §2 (Business Justification): corrected a misattributed quotation — "the one real gap in an otherwise fully native fulfillment story" is `MEDUSA_EXTENSIONS.md` #3's framing, not `PRODUCT_BLUEPRINT.md` §10's.
+- §12 (Integration with Checkout): corrected an ambiguous section citation — `07_CHECKOUT_SPECIFICATION.md`'s Customer Decision States table is a separate, unnumbered appendix, not a subsection of numbered §21.
+- Document header changed to Version 1.0, Status: Approved.
+
+**Not changed:** no missing responsibility, non-responsibility, ownership clarification, or integration point was found; no existing section was rewritten beyond the three corrections above; no table, field, endpoint, or code was introduced. Two architectural questions remain open, not resolved: the pickup-slot mechanism boundary (§5, §19) and the kitchen-capacity-vs-rider-capacity reconciliation question (§6, §18).
+
+**Also updated:** `docs/README.md`, `docs/implementation-planning/MODULE_INVENTORY.md` (→ v1.6), `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/AI_HANDOFF.md` — all now reflect the Delivery-Slot Module as Approved (four of four Tier B documents drafted so far now Approved).
 
 ## v40 — 2026-07-19 — `TIER_B_DELIVERY_SLOT_MODULE.md` drafted at v1.0 — Draft
 
