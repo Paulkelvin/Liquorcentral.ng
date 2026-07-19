@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.1
+**Version:** 3.2
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -18,8 +18,9 @@ Anyone — human or AI — picking up this project should read, in this order:
 3. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this next.
 4. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
 5. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
-6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below.
-7. Everything else, as relevant to the task at hand (see the map below).
+6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below. All 11 are now Approved — Frozen.
+7. **`IMPLEMENTATION_PLANNING.md`** — the master governing document for Phase 2 (Implementation Planning), now that Phase 1's specifications are complete. Read this before any implementation-planning document is drafted.
+8. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
@@ -43,6 +44,7 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) | What design principles govern the interface (not yet: what it looks like)? |
 | [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What are the exact logo/type/asset specs? *(placeholder — narrower scope now that `BRAND_IDENTITY.md` exists)* |
 | [`specifications/`](./specifications/) | What exactly should each product surface do, in enough behavioral detail to design, build, and test it? See below. |
+| [`IMPLEMENTATION_PLANNING.md`](./IMPLEMENTATION_PLANNING.md) | What is Phase 2, what implementation-planning documents will it produce, in what order, and what must be true before development begins? |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |
@@ -66,6 +68,10 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 | [`11_ADMIN_WORKFLOWS_SPECIFICATION.md`](./specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 
 All 11 planned specifications are now **Approved — Frozen** at v1.0 — Phase 1 — Product Specifications is complete. Each was sequenced only on Paul's explicit direction, and each was drafted, reviewed, and frozen in two passes rather than invented ahead of approval — see `PROJECT_STATUS.md` for what comes next.
+
+## Implementation Planning (`/docs/IMPLEMENTATION_PLANNING.md`)
+
+With Phase 1 complete, **Phase 2 — Implementation Planning** translates the 11 frozen specifications into concrete, reviewable implementation plans — data-model planning, API contract planning, integration planning, and testing planning — before any code is written. `IMPLEMENTATION_PLANNING.md` is the master governing document for this phase: its purpose and scope, the complete hierarchy of implementation documents it will produce, their dependencies and creation order, the approval workflow, versioning, engineering philosophy, and the exit criteria that must be true before development begins. No implementation-planning document itself has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction.
 
 ## Document status convention
 

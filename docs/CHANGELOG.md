@@ -1,11 +1,30 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.3
+**Version:** 3.4
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v31 — 2026-07-18 — Second branch reconciliation; `IMPLEMENTATION_PLANNING.md` created as Phase 2's governing document
+
+**Context:** A session working on `claude/project-onboarding-status-p35u3v` found it had fallen behind `claude/medusa-repo-clone-ut5dl5` (which had, in the interim, independently drafted and frozen specifications `07`–`11`, including its own version of `07_CHECKOUT_SPECIFICATION.md`). Confirmed as a pure fast-forward before merging, per `DOCUMENTATION_GOVERNANCE.md` §8's "reconcile, don't recreate" rule. Paul then directed creation of `docs/IMPLEMENTATION_PLANNING.md` as the master governing document for Phase 2. Full reasoning in `DECISION_LOG.md`.
+
+**Changed (branch reconciliation):**
+
+- `claude/project-onboarding-status-p35u3v` fast-forward-merged to `claude/medusa-repo-clone-ut5dl5`'s tip (commit `d73d6d4`) and pushed — no history rewritten, nothing squashed, every commit from both lines preserved. A redundant, uncommitted local draft of `07_CHECKOUT_SPECIFICATION.md` was stashed rather than committed, since an already-reviewed, frozen version already existed on the branch being merged in.
+- `docs/AI_HANDOFF.md` (v3.2) — corrected: it had not been updated by the session that drafted specs `07`–`11`, and still described Phase 1 as underway with only the homepage spec drafted. Rewritten against the actual current state (Phase 1 complete, all 11 specifications frozen, Phase 2 governing document approved).
+
+**Added:**
+
+- `docs/IMPLEMENTATION_PLANNING.md` (v1.0, status Approved) — the master governing document for Phase 2 (Implementation Planning), not an implementation document itself: no API design, database schema, component design, or code appears anywhere in it. Defines the purpose and scope of Phase 2; an Engineering Philosophy (specification-driven, Medusa-native first, one module per plan, open business decisions inherited not re-litigated, plan for testability, smallest sufficient plan); a six-tier hierarchy of implementation documents (A — Foundational Reconciliation, B — Module Data Planning, C — API Contract Planning, D — Integration Planning, E — Testing & Acceptance Planning, F — Rollout Sequencing); each tier's dependencies and creation order; an Approval Workflow reusing Phase 1's exact two-stage pattern; Versioning and Document Lifecycle sections confirming Phase 2 inherits Phase 1's conventions unchanged; a per-surface/per-module Exit Criteria section gating when actual development may begin; and a closing Quality Checklist. Explicitly begins no Tier A–F document itself.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.2) — added `IMPLEMENTATION_PLANNING.md` to the reading order and document map; added a new "Implementation Planning" section summarizing Phase 2.
+- `docs/PROJECT_STATUS.md` (v3.3), `docs/ROADMAP.md` (v3.6) — current phase, Completed work, Work in progress, and Next recommended task updated to reflect the second reconciliation and the new governing document; `ROADMAP.md` gained a new "Phase 0f — Implementation Planning" section and an expanded naming note disambiguating Paul's "Phase 2" from `ROADMAP.md`'s own numbered "Phase 2 — Product data foundation."
+- `docs/DECISION_LOG.md` — two new entries: the second branch reconciliation, and `IMPLEMENTATION_PLANNING.md`'s creation.
 
 ## v30 — 2026-07-18 — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` finalized to v1.0 and frozen — Phase 1 complete
 

@@ -1,11 +1,11 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 3.5
+**Version:** 3.6
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
-> **Naming note:** this document uses "Phase 1" for the **backend foundation** track (Medusa/Postgres/payment/Wine & Spirits end-to-end — see below). Paul's Product Specification work is tracked separately below as **"Phase 0d — Product Specifications"**, since it is a documentation/behavior-definition track that runs on the frontend-track side, parallel to (not sequenced after) backend Phase 1. This avoids two unrelated efforts sharing the same phase number.
+> **Naming note:** this document uses "Phase 1" for the **backend foundation** track (Medusa/Postgres/payment/Wine & Spirits end-to-end — see below). Paul's Product Specification work is tracked separately below as **"Phase 0d — Product Specifications"**, since it is a documentation/behavior-definition track that runs on the frontend-track side, parallel to (not sequenced after) backend Phase 1. This avoids two unrelated efforts sharing the same phase number. For the same reason, the implementation-planning work Paul calls **"Phase 2"** in `IMPLEMENTATION_PLANNING.md` is tracked below as **"Phase 0f — Implementation Planning"** — it is the documentation/frontend-track's next step after Phase 0d/0e, distinct from this document's own numbered "Phase 2 — Product data foundation" further down. Both names are correct in their own context; this note exists so the two are never confused.
 
 Based on the confirmed no-marketplace, single-company model.
 
@@ -72,6 +72,12 @@ Infrastructure work on `/docs` itself, not the product — necessary once an aud
 - **Documentation governance hardening** — `docs/DOCUMENTATION_GOVERNANCE.md` created as the governing standard (hierarchy, lifecycle statuses, change rules, cross-reference rules, versioning rules, AI/human contributor rules, workflow, quality checklist, audit process), followed by a full `/docs` audit against that standard, fixing every inconsistency found.
 
 The documentation architecture is now considered stable. This phase exists in the roadmap so future sessions can see why Phase 0d paused briefly and what unblocked it — it is not expected to recur as a scheduled phase, only as an occasional future audit per `DOCUMENTATION_GOVERNANCE.md` Section 12.
+
+### Phase 0f — Implementation Planning (Paul's "Phase 2") — Governing document approved; no tier begun
+
+With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1.0, Approved, 2026-07-18) was created as the master governing document for this phase — translating the frozen specifications into concrete implementation plans (data-model planning, API contract planning, integration planning, testing planning) before any code is written. It defines a six-tier hierarchy (A — Foundational Reconciliation, B — Module Data Planning, C — API Contract Planning, D — Integration Planning, E — Testing & Acceptance Planning, F — Rollout Sequencing), each tier's dependencies and creation order, an Approval Workflow reusing Phase 1's (Product Specifications') exact draft-then-refine-or-freeze pattern, and Exit Criteria that must be true per surface/module before actual development begins. See `docs/IMPLEMENTATION_PLANNING.md` for the full governing standard.
+
+No Tier A–F document has been drafted yet. Per `IMPLEMENTATION_PLANNING.md` §7 and `DOCUMENTATION_GOVERNANCE.md` §5/§8, none begins without Paul's explicit direction — the same sequencing discipline that governed Phase 0d's 11 specifications. Can run in parallel with Phase 0c and this document's own backend Phase 1, per the same logic already established for Phase 0d.
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 
