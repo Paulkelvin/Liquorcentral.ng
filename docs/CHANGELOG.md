@@ -1,11 +1,33 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.4
+**Version:** 5.5
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v52 — 2026-07-19 — Milestone 8: Homepage (`02_HOMEPAGE_SPECIFICATION.md`)
+
+**Context:** With Navigation (Milestone 7) complete, Paul directed Homepage as the next individual specification — the primary entry point, with no external blocking dependencies unlike Search (Meilisearch) or Checkout (payment provider). **A new project-wide requirement took effect mid-milestone: every UI-changing milestone's completion report must include real browser screenshots of every significant state**, not just automated-check output — now standing practice, logged in `docs/AI_HANDOFF.md` §11 rule 12. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/modules/home/components/age-gate/{index.tsx,constants.ts}` — the site-wide Age Verification Gate (§8.2), mounted in the shared `(main)` layout. Built on Headless UI's `Dialog` with a deliberately no-op `onClose` so `Escape`/outside-click cannot silently bypass a legal gate — only the two explicit confirm/decline actions can close it.
+- `storefront/src/modules/home/components/{hero,curated-collections,food-central-spotlight,trust-delivery-band,returning-customer-strip}` — the remaining §7 homepage sections. Hero and Trust & Delivery Band copy is Paul's own already-finalized `BRAND_IDENTITY.md` text (§10 Positioning Statement, §11 Value Proposition, §8.7/§13's required trust statements), not invented. Curated Collections and Food Central Spotlight both correctly render their §19 empty states today (no Collections or products of either catalog have ever been seeded) — reusing `NotTakingOrders` from Milestone 7 rather than a second empty-state implementation.
+- `storefront/src/modules/home/components/age-gate/__tests__/age-gate.test.tsx` — 5 new Jest/RTL tests, including one specifically asserting `Escape` does not close the gate.
+
+**Changed:**
+
+- `storefront/src/app/[countryCode]/(main)/page.tsx` — replaced the vendored "Ecommerce Starter Template" placeholder homepage entirely with the §7 section list; "Wine & Food, Connected" (§8.6) is deliberately absent per §19, since its "pairs with" backend relationship doesn't exist yet.
+- `storefront/src/app/[countryCode]/(main)/layout.tsx` — mounts the Age Verification Gate site-wide, reading the incoming request's cookie to avoid a flash of the gate on return visits.
+- `storefront/src/modules/layout/components/mega-menu/index.tsx` — **a genuine layout bug found only by a real screenshot, not by `tsc`, ESLint, Jest, or axe-core (all of which passed with the bug present)**: the panel's `absolute inset-x-0` resolved against the narrow trigger wrapper (which also carried `position: relative`) instead of the full-width header, squeezing all three mega-menu columns into a ~110px box with overlapping text. Fixed by removing `relative` from the trigger wrapper; re-screenshotted and confirmed correct.
+
+**A second genuine bug, found through real end-to-end testing (confirm the gate, then reload):** a cookie-name constant re-exported from the `"use client"` `AgeGate` module resolved to `undefined` when imported by the server-rendered `(main)` layout — Next.js replaces a client module's exports with reference stubs for React Server Components serialization, which don't resolve plain data the same way. The gate reappeared on every reload despite the verification cookie being set correctly. Fixed by moving the constant to a boundary-free `constants.ts` file both the server layout and the client component import directly.
+
+**Not changed, and explicitly out of scope:** `03_SEARCH_SPECIFICATION.md`'s own implementation; the "pairs with" relationship; navigation/homepage analytics events (§18, §25 — no analytics infrastructure exists anywhere in this project); a mobile accordion footer (§8.9 — Milestone 7's own component, flagged via Milestone 8's real mobile screenshots but not fixed here). The shared `Button` component's primary-variant contrast issue (documented since Milestone 7, confirmed systemic) remains unaltered — a Design-System-level concern, not this milestone's to resolve unilaterally. No planning document's substance was altered.
+
+**Also updated:** `storefront/README.md` (new "Milestone 8" section, including the visual-validation findings above). `docs/PROJECT_STATUS.md` (→ v5.3), `docs/ROADMAP.md` (→ v5.6), `docs/AI_HANDOFF.md` (→ v4.8, new §11 rule 12 on the standing visual-validation requirement), `docs/DECISION_LOG.md` (new entry).
 
 ## v51 — 2026-07-19 — Milestone 7: Navigation (`01_NAVIGATION_SPECIFICATION.md`)
 

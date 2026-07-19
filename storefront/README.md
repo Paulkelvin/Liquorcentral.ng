@@ -131,15 +131,48 @@ Restructured from two ad hoc columns (Categories/Collections) into §8's five na
 
 Product detail breadcrumbs could not be live-tested end to end — no product has ever been seeded in this catalog (field-list decisions are still open, per `docs/PROJECT_STATUS.md`). The code path mirrors the already-verified category/collection breadcrumb pattern exactly and is covered by the same `tsc`/build pass, but has not been exercised against a real product.
 
+## Milestone 8 — Homepage (`02_HOMEPAGE_SPECIFICATION.md`)
+
+Implements the Frozen v1.0 specification's own section list (§7) on top of Milestone 7's shell: the Age Verification Gate, Hero, Curated Collections, Food Central Spotlight, Trust & Delivery Band, and Returning Customer Strip. "Wine & Food, Connected" (§8.6) is deliberately absent — its "pairs with" backend relationship doesn't exist yet, and §19 is explicit that with no pairing content configured, the section doesn't render.
+
+### Age Verification Gate (`src/modules/home/components/age-gate`)
+
+§8.2's highest-risk accessibility surface, mounted in the shared `(main)` layout (not just the homepage) so it's genuinely site-wide per §24's assumed default. Built on Headless UI's `Dialog`, but with `onClose` deliberately a no-op — `Escape` and an outside click normally dismiss a `Dialog`, and §8.2 is explicit that "`Escape` does not silently bypass a legal gate." Only the two explicit actions (confirm/decline) can close it. Decline shows a plain "age restricted" message in place of the confirm/decline buttons — §8.2 itself flags the exact declined-visitor policy (exit entirely vs. a non-alcohol-only mode) as an open business decision this specification doesn't resolve, so this is the minimal, non-inventive interpretation: no page content is ever revealed after decline, and nothing about a "non-alcohol mode" is invented.
+
+A genuine bug was found and fixed here, not just in UI polish: a plain string constant (the cookie name) was re-exported from the `"use client"` `AgeGate` module for the server-rendered layout to read. This resolved to `undefined` at runtime despite compiling cleanly — Next.js replaces a client module's exports with client-reference stubs for React Server Components serialization, which only work for components, not plain data crossing the boundary. Real end-to-end testing (confirm, then reload) caught this; the fix is a boundary-free `constants.ts` file both the server layout and the client component import from directly.
+
+### Hero, Trust & Delivery Band (`src/modules/home/components/{hero,trust-delivery-band}`)
+
+Copy in both is Paul's own already-finalized text, not invented: the Hero's headline/subhead are `BRAND_IDENTITY.md` §10's Positioning Statement and §11's Value Proposition (both explicitly flagged there as candidates for "direct or near-direct use in hero copy"); the Trust & Delivery Band's four statements are §8.7/§13's own required content, verbatim.
+
+### Curated Collections, Food Central Spotlight (`src/modules/home/components/{curated-collections,food-central-spotlight}`)
+
+No Collections and no products of either catalog have ever been seeded in this project (field-list decisions are still open, `docs/PROJECT_STATUS.md`), so both sections always render their §19 empty states today: Curated Collections falls back to a plain "Shop Wine & Spirits" link; Food Central Spotlight reuses the exact `NotTakingOrders` component `01_NAVIGATION_SPECIFICATION.md`'s Food Central destinations already use, not a second implementation. Both fallback paths are real, data-driven code, not placeholders — a shelf or menu item appears automatically the moment real data exists. Food Central Spotlight filters products by `+food_details.*` presence (`PRODUCT_CATALOG.md`'s actual mechanism for distinguishing the two catalogs — module-link presence, not a Product Category), consistent with Milestone 7's own decision not to model Food Central as a category.
+
+### Returning Customer Strip (`src/modules/home/components/returning-customer-strip`)
+
+§8.8: renders only for a logged-in customer with prior orders, entirely absent otherwise (not an empty state). `retrieveCustomer()` already fetches `*orders`; a type cast was needed since `StoreCustomer`'s static type doesn't declare that linked field, the same gap Milestone 7's `product.categories` fix hit.
+
+### A genuine layout bug found only by screenshot, not by any automated check
+
+`MegaMenu`'s panel used `absolute inset-x-0`, intended to span the full header width — but the `Popover` wrapper around the trigger button also carried `position: relative`, becoming a *nearer* positioned ancestor than the header. `inset-x-0` resolved against that narrow trigger wrapper instead, squeezing all three columns into a ~110px box with overlapping, unreadable text. `tsc`, `eslint`, Jest, and axe-core all passed with this bug present — none of them render layout geometry. A real screenshot of the open mega menu caught it immediately; the fix removes `relative` from the trigger wrapper so `inset-x-0` resolves against the header (already `position: relative`, full page width) instead. Re-screenshotted and confirmed correct after the fix — see the Visual Validation section of the Milestone 8 completion report for both the broken and fixed screenshots.
+
+### Validated with real execution, not just static analysis
+
+- `tsc --noEmit`, `next lint`, `next build` (real backend running), and the full Jest suite (31 tests across 8 suites — 5 new, including 5 for the age gate covering the Escape-does-not-close requirement specifically) all clean.
+- **axe-core against every page already covered in Milestone 7, plus the homepage in both its gated and verified states**: zero new violations. The only finding is the same pre-existing, systemic `Button` primary-variant contrast issue already documented in Milestone 7 (now also visible on the Hero's and Food Central Spotlight's own CTAs, which reuse that same component styling) — not a new issue, not altered here.
+- **Real Playwright end-to-end verification of the age gate's full lifecycle**: shown on first visit; `Escape` confirmed not to close it; confirming sets a real cookie and closes it; **reloading the page correctly keeps it closed** (the exact case that caught the cross-boundary constant bug above); declining shows the restricted message with no confirm/decline actions left to press.
+- **Full visual validation with real browser screenshots** — see the completion report for this milestone. One genuine layout bug (above) was found this way and does not appear in any other check performed.
+
 ## What's deliberately not here yet
 
-- **Any LiquorCentral branding beyond shared chrome and design tokens** — the Homepage's own hero content ("Ecommerce Starter Template", "Powered by Medusa and Next.js", a GitHub CTA) is still the vendored template's placeholder, deliberately untouched — that is `02_HOMEPAGE_SPECIFICATION.md`'s own future implementation, not this milestone's.
 - **`03_SEARCH_SPECIFICATION.md`'s own implementation** — ranking, typo tolerance, synonyms, facets, search-within-category, product-line labeling — all Meilisearch-backed and still pending formal approval; `/search` today is a minimal native bridge only.
-- **The "pairs with" cross-catalog relationship** (§13, §14, §19) — the underlying data model doesn't exist yet (`MEDUSA_EXTENSIONS.md`'s own open item); no cross-link UI was built or invented here.
-- **Faceted-URL canonicalization** (§26) and **navigation analytics events** (§25) — no facets exist yet to canonicalize, and no analytics infrastructure exists anywhere in this project yet to wire events into.
-- **Merchandising promotional-Collection caps/expiry enforcement** (Merchandising Strategy section) — no Collections have been created yet; the mega menu already renders whatever Collections exist (data-driven, §12), but no cap/expiry logic was built ahead of real data to enforce it against.
+- **The "pairs with" cross-catalog relationship** (§8.6, §13, §14, §19) — the underlying data model doesn't exist yet (`MEDUSA_EXTENSIONS.md`'s own open item); no cross-link UI was built or invented here, and the Homepage's own "Wine & Food, Connected" section is correctly absent rather than faked.
+- **Faceted-URL canonicalization** (§26) and **navigation/homepage analytics events** (§18, §25) — no facets exist yet to canonicalize, and no analytics infrastructure exists anywhere in this project yet to wire events into.
+- **Merchandising promotional-Collection caps/expiry enforcement** (Merchandising Strategy section) — no Collections have been created yet; the mega menu and Curated Collections already render whatever Collections exist (data-driven, §12), but no cap/expiry logic was built ahead of real data to enforce it against.
 - **A real payment provider** — the storefront's checkout flow exists (from the starter) but has nothing to connect to yet; `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md`'s provider choice remains an open business decision.
 - **Any product/catalog data** — no products have been seeded; pages render correctly with empty results.
 - **Delivery-slot selection UI** — the backend's `delivery-slot` module (Milestone 4) has no storefront-facing UI yet; `07_CHECKOUT_SPECIFICATION.md`'s calendar-grid slot picker is unbuilt.
 - **A real display typeface** — `font-display` is a generic system-serif stack; `BRAND_GUIDELINES.md` has not yet selected one.
-- **The color-contrast issues found and left unfixed** — see "Validated with real execution" above (vendored "Sort by" control; the `Button` primary variant's white-on-`#EC2D07` contrast, now confirmed systemic).
+- **The color-contrast issues found and left unfixed** — see "Validated with real execution" above (vendored "Sort by" control; the `Button` primary variant's white-on-`#EC2D07` contrast, confirmed systemic since Milestone 7).
+- **A mobile accordion footer** (§8.9's "collapsible/accordion groupings to avoid an excessively long scroll") — Milestone 7 built a static, always-expanded footer identical on mobile and desktop; not revisited in this milestone since it's Navigation's own component, not Homepage's, but worth flagging given real mobile screenshots in this milestone's completion report show the long-scroll consequence directly.

@@ -49,7 +49,15 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
   }
 
   return (
-    <Popover className="h-full flex relative" as="div">
+    // Deliberately NOT `relative` here — the panel's `absolute inset-x-0`
+    // needs to resolve against the full-width `<header>` (already
+    // `position: relative`, src/modules/layout/templates/nav/index.tsx),
+    // not this narrow trigger wrapper. A `relative` class here would
+    // create a nearer positioning context sized to the trigger's own
+    // width, squeezing the panel down to "Wine & Spirits" button width
+    // instead of the full header — a real bug this project's screenshot
+    // validation caught (columns rendered overlapping in a ~110px box).
+    <Popover className="h-full flex" as="div">
       {({ open, close }) => (
         <div
           className="h-full flex"
