@@ -1,11 +1,35 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.6
+**Version:** 3.7
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v34 — 2026-07-18 — `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` finalized to v1.0 — Approved; `MODULE_INVENTORY.md` created
+
+**Context:** Paul approved `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, then directed a refinement pass against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen specifications before finalizing — explicitly no rewriting of existing sections, no implementation detail, no database or API design. He also recommended a standing Tier B module inventory. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`):**
+
+- **Integration with Navigation** — a new unnumbered section (positioned after the existing numbered sections, consistent with the append-only refinement pattern established throughout Phase 1) closing a genuine cross-reference gap: `01_NAVIGATION_SPECIFICATION.md` §13/§14/§19 also depends on this module, for cross-linking/wayfinding rather than a displayed pairing suggestion — a distinction now made explicit.
+- A clarifying Dependencies bullet noting a formal `MEDUSA_EXTENSIONS.md` entry for the module remains outstanding, deferred to Tier C or a future data-model document, not created by this finalization.
+- A light forward cross-reference added to §1, and one Acceptance Criteria bullet corrected to reference the full set of integration sections including the new one.
+
+**Changed:**
+
+- Document header: **Status: Draft → Approved** (per Paul's explicit instruction, "Approved" rather than "Frozen"). No existing numbered section (§1–§22) was rewritten.
+- `docs/README.md` (v3.5) — Implementation Planning table updated: Tier B document now Approved; new `MODULE_INVENTORY.md` row added.
+
+**Added (new document):**
+
+- `docs/implementation-planning/MODULE_INVENTORY.md` (v1.0, status Approved, living) — per Paul's explicit recommendation, a single-page index of every module/integration/capability identified anywhere in `/docs`: ten native Medusa modules, five custom modules, two provider modules, two third-party integrations, and thirteen not-yet-scoped items, each tagged by type, status, dependencies, and launch-criticality, with a closing "Answering the standing questions" section directly addressing which modules exist, which are native/custom/extension, which depend on others, which are optional, and which are launch-critical. Not a Tier B document itself — a living index of them, to be updated in the same change as any future module-level document.
+
+**Changed (tracking documents):**
+
+- `docs/PROJECT_STATUS.md` (v3.6), `docs/ROADMAP.md` (v3.9) — current phase, Completed work, Work in progress, Next recommended task, and Decisions awaiting Paul's approval updated to reflect the finalization, the two newly-recorded (not resolved) dependencies, and the new module inventory.
+- `docs/DECISION_LOG.md` — new entry recording the finalization and the module inventory's creation.
 
 ## v33 — 2026-07-18 — First Tier B document drafted: Product Relationship Module
 

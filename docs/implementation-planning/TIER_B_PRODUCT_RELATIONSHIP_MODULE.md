@@ -1,6 +1,6 @@
 # Tier B — Product Relationship Module
 
-**Status:** Draft
+**Status:** Approved
 **Version:** 1.0
 **Owner:** Program / Engineering
 **Last Updated:** 2026-07-18
@@ -13,7 +13,7 @@ This document is a Tier B (Module Data Planning) deliverable, per `IMPLEMENTATIO
 
 ## 1. Why This Module Exists
 
-Six frozen Product Specifications — `01_NAVIGATION_SPECIFICATION.md`, `02_HOMEPAGE_SPECIFICATION.md`, `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, and `06_CART_SPECIFICATION.md` — each independently name a requirement to represent that a specific product is curated as meaningfully associated with another specific product, most consequentially across catalog lines (a wine paired with a dish). `09_FOOD_ORDERING_SPECIFICATION.md` reuses the identical mechanism rather than inventing a second one. No prior document defines what holds this association, how it is represented, or who governs it — `PRODUCT_CATALOG.md`'s only mention of it is a narrower, single-directional field proposal that predates every specification now depending on it (§4).
+Six frozen Product Specifications — `01_NAVIGATION_SPECIFICATION.md`, `02_HOMEPAGE_SPECIFICATION.md`, `03_SEARCH_SPECIFICATION.md`, `04_PRODUCT_LISTING_SPECIFICATION.md`, `05_PRODUCT_DETAILS_SPECIFICATION.md`, and `06_CART_SPECIFICATION.md` — each independently name a requirement to represent that a specific product is curated as meaningfully associated with another specific product, most consequentially across catalog lines (a wine paired with a dish). `09_FOOD_ORDERING_SPECIFICATION.md` reuses the identical mechanism rather than inventing a second one. No prior document defines what holds this association, how it is represented, or who governs it — `PRODUCT_CATALOG.md`'s only mention of it is a narrower, single-directional field proposal that predates every specification now depending on it (§4). *(Navigation's own dependency, distinct in kind from the other five, is treated separately — see Integration with Navigation, below.)*
 
 This module exists to close that gap: a single, general mechanism for representing curated product-to-product relationships, built once, referenced consistently by every surface that needs it, rather than reinvented per-surface or bolted onto an unrelated module.
 
@@ -125,6 +125,7 @@ Nothing in this section is built now — it documents the *capability* this modu
 - **Soft dependency on the wine-details and food-details attribute modules' field lists being finalized** — not blocking (a pairing can reference a product regardless of that product's attribute completeness), but curation quality improves once structured attributes (e.g., tasting notes, spice level) are available to inform *why* a pairing makes sense.
 - **Depends on a future implementation-planning or Admin-Workflows-adjacent document to define the staff curation workflow** (§7, §15) — a dependency this document creates and names, not one it resolves.
 - **Depends on Paul's explicit confirmation that this module proceeds into further Tier B/C planning** — per `IMPLEMENTATION_PLANNING.md` §2 principle 4, this document does not assume approval; it documents the architecture so that confirmation, when given, has something concrete to approve.
+- **Depends on a future `MEDUSA_EXTENSIONS.md` entry formally registering this module**, numbered alongside the platform's other custom modules, once Tier C or a data-model follow-on document is ready to specify it concretely — this document's approval is the architectural basis for that entry, not the entry itself; `MEDUSA_EXTENSIONS.md` remains unmodified by this document, per `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §4's original recommendation that the correction happen when this module's planning work reaches that point, not before.
 
 ## 21. Quality Checklist
 
@@ -146,11 +147,19 @@ Every future addition to this module's planning — a new relationship kind, a n
 - [ ] No relationship data from this module ever influences search relevance or ranking order.
 - [ ] No surface introduces a pricing, discount, or promotional mechanism through this module — a pairing is never itself an offer.
 - [ ] Related Products (`05_PRODUCT_DETAILS_SPECIFICATION.md` §15) and Cross-selling/Gift Wrap (`05` §16, `06` §15) remain entirely unaffected by, and unduplicated within, this module.
-- [ ] No surface beyond those named in §9–§14 depends on this module without a corresponding update to this document.
+- [ ] No surface beyond those named in the Integration sections above (§8–§15 and Integration with Navigation) depends on this module without a corresponding update to this document.
 - [ ] Checkout (`07_CHECKOUT_SPECIFICATION.md`) continues to have zero dependency on this module unless a future business decision changes that.
 - [ ] The module's conceptual shape (§5) accommodates a second relationship kind or a third catalog being added later without requiring this document to be rewritten, only extended.
 - [ ] This document introduces no database table, field, or API endpoint definition anywhere within it.
 
 ---
 
-**Document status:** Draft (v1.0). This is the first full draft of the Product Relationship Module's architectural plan — ready for review, not yet approved. Per `IMPLEMENTATION_PLANNING.md` §7, it may proceed to a refinement pass or a direct approval once Paul reviews it, following the same two-stage pattern Product Specifications used. Upon approval, this document becomes the architectural reference Tier C (API Contract Planning) and Tier B's eventual data-model follow-on must build against without contradicting.
+## Integration with Navigation
+
+Added during review for cross-reference completeness: `01_NAVIGATION_SPECIFICATION.md` references this relationship in three places — its Wine Discovery Navigation (§13), Food Central Navigation (§14), and Deep Linking (§19) sections, and its own consolidated Backend Data Requirements table names "'pairs with' cross-links" explicitly, flagging the same not-yet-modeled gap `02_HOMEPAGE_SPECIFICATION.md` first surfaced. Navigation's dependency is distinct in kind from §9–§14's: those sections consume this module to **display a specific curated pairing suggestion**; Navigation instead uses the same underlying relationship data to inform **cross-linking and wayfinding** — for example, a wine category page offering a wayfinding link into Food Central grounded in a real curated pairing, rather than an arbitrary or unrelated cross-link. This is the same data (§3), consumed for a different purpose (discovery/wayfinding rather than a merchandising suggestion), and is subject to the identical rules already established: it must resolve live from Product data (§8), must never surface a pairing to an unavailable/hidden/discontinued product (§8), and must never be used to fabricate a cross-link that isn't genuinely curated (§17).
+
+No new module responsibility is created by this section — it is a completeness correction, not a scope change. `01_NAVIGATION_SPECIFICATION.md` itself remains untouched by this document.
+
+---
+
+**Document status:** Approved (v1.0). This is the architectural reference for the Product Relationship Module, reviewed against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen Product Specifications, with one completeness correction added (Integration with Navigation, above) and no existing section rewritten. Per `DOCUMENTATION_GOVERNANCE.md` §5, it may now only be modified in response to an explicit new business or architecture decision, logged in `DECISION_LOG.md`. It is the architectural reference Tier C (API Contract Planning) and any future data-model follow-on document must build against without contradicting.
