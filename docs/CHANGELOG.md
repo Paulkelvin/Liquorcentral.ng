@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.5
+**Version:** 4.6
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v43 — 2026-07-19 — `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` finalized to v1.0 — Approved
+
+**Context:** Paul directed a genuine architectural review-and-finalize pass on `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `MODULE_INVENTORY.md`, `MEDUSA_EXTENSIONS.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `TECH_STACK.md`, `API_DECISIONS.md`, all relevant Approved specifications, and all four existing Approved Tier B modules. Full reasoning in `DECISION_LOG.md`.
+
+**Changed (within `docs/implementation-planning/TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md`):**
+
+- §0 (Module Selection Verification): corrected a stale self-referential status claim describing `TIER_A_FOUNDATIONAL_RECONCILIATION.md` Row 4 as "Scoped, not built" without acknowledging this document's own drafting had already updated it to "Drafted."
+- §8 (Provider Abstraction Responsibilities): corrected a reversed-order misquotation of `MEDUSA_EXTENSIONS.md` #4's Technical Impact bullet.
+- §14 (Integration with Order Management): corrected a principle misattributed jointly to `PRODUCT_BLUEPRINT.md` §9 and `07_CHECKOUT_SPECIFICATION.md` §21 — attributed to `07`'s §21 alone.
+- §4, §10, and §23 (Quality Checklist): corrected three incorrect self-references citing "§18" (CMS & Merchandising, unrelated) to §19 (Operational Assumptions).
+- Document header changed to Version 1.0, Status: Approved.
+
+**Not changed:** no missing responsibility, non-responsibility, ownership ambiguity, incorrect dependency relationship, incorrect integration point, or architectural boundary violation was found. Dependency count (`07` only) reconfirmed unchanged. One newly-discovered documentation gap remains recorded, not resolved: `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §11 names a staff refund workflow without naming this module as its underlying mechanism.
+
+**Also updated:** `docs/README.md`, `docs/implementation-planning/MODULE_INVENTORY.md` (→ v1.8), `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md` (Row 4 → "Architecture Approved," → v1.5), `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/AI_HANDOFF.md` — all now reflect the Local Payment Provider Module as Approved (five of five Tier B documents drafted so far now Approved).
 
 ## v42 — 2026-07-19 — `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` drafted at v1.0 — Draft
 

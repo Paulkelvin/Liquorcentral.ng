@@ -1,7 +1,7 @@
 # Tier B Module Inventory
 
 **Status:** Approved (living, always current)
-**Version:** 1.7
+**Version:** 1.8
 **Owner:** Program / Engineering
 **Last Updated:** 2026-07-19
 
@@ -50,7 +50,7 @@ Source: `ARCHITECTURE.md`'s Data Model table, cross-checked against all 11 froze
 
 | Module | Type | Status | Depends On | Launch-Critical? | Depended On By |
 |---|---|---|---|---|---|
-| Local payment provider | Provider Module | **Drafted** (`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` v1.0 — Draft); provider choice + COD policy open | Payment | **Yes — the project's sole launch-blocking open decision** | `07` |
+| Local payment provider | Provider Module | **Architecture Approved** (`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` v1.0); provider choice + COD policy open | Payment | **Yes — the project's sole launch-blocking open decision** | `07` |
 | Notification provider (customer-facing) | Provider Module | Scoped (`MEDUSA_EXTENSIONS.md` #5); channel choice open | Order, Fulfillment | Operationally important — not confirmed launch-blocking by any document | `08`,`09`,`10` |
 
 ## Integrations (third-party services, not Medusa modules)
