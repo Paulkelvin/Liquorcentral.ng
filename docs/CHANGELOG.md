@@ -1,11 +1,30 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.9
+**Version:** 4.0
 **Owner:** Program
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v37 — 2026-07-19 — Third Tier B document drafted: Food Attributes Module
+
+**Context:** Paul directed the third Tier B module, first requiring a re-verification that `food-details` remains the highest-priority remaining candidate against the six standing selection criteria, explicitly not assuming the existing baseline was correct. Full selection reasoning, the corrected dependency count, and the drafting decisions are in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md` (v1.0, status Draft) — the architecture of the `food-details` module (`MEDUSA_EXTENSIONS.md` #2). Re-verification confirmed `food-details` as the correct next module per `IMPLEMENTATION_PLANNING.md` §6's explicit ordering, and found its dependency count had been undercounted: **seven frozen specifications depend on it** (`01`,`02`,`03`,`04`,`05`,`09`,`11`), not the five previously recorded — `01_NAVIGATION_SPECIFICATION.md`'s Backend Data Requirements table and `02_HOMEPAGE_SPECIFICATION.md`'s Food Central Spotlight both genuinely depend on it for prep-time/availability data. Defines why the module exists (the corrected count); business justification, naming an allergen-data error as a customer-safety failure, not merely a trust/accuracy one; responsibilities and explicit non-responsibilities; a dedicated section stating the five-way distinction between attributes, presentation, operational status, inventory, and customer-facing facts (per direct instruction) — most consequentially, that this module never holds Food Central's live availability-state flag, a separate, native, not-yet-built mechanism; attribute categories, including a newly discovered field-list gap (portion/serving-size, required by `05_PRODUCT_DETAILS_SPECIFICATION.md` §11 but absent from `PRODUCT_CATALOG.md`'s proposed list); scope (safety-critical fields held to a stricter completeness standard than ordinary attributes; product-vs-variant granularity confirmed as a non-issue for this module); a four-way ownership split (engineering / Paul's field-list approval / staff data entry / the still-open allergen-accuracy-ownership decision); integration points with Product, Navigation, **Homepage** (a genuine, confirmed integration — unlike `wine-details`, for which Homepage was confirmed as a non-dependency), Search, Listing, Product Details, and Admin Workflows; a consolidated non-integrations section; CMS responsibilities; an elevated, consolidated statement of the already-flagged allergen-accuracy-ownership gap; future extensibility; risks; dependencies; a Quality Checklist; and architecture-level Acceptance Criteria. No table, field type, endpoint, or UI component appears anywhere — verified directly.
+
+**Changed (bookkeeping correction, `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md`, v1.1 → v1.2):**
+
+- §6 and §14's `food-details` dependency lists corrected from `03,04,05,09,11` to `01,02,03,04,05,09,11` — `01_NAVIGATION_SPECIFICATION.md` and `02_HOMEPAGE_SPECIFICATION.md` both genuinely depend on this module. A non-substantive consistency correction, not a new architectural finding, per `DOCUMENTATION_GOVERNANCE.md` §6.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.8) — Implementation Planning table updated: Tier B food-attributes document now listed as Draft.
+- `docs/implementation-planning/MODULE_INVENTORY.md` (v1.2 → v1.3) — `food-details` row updated to "Draft architecture"; dependency list corrected to `01`,`02`,`03`,`04`,`05`,`09`,`11`; two new not-yet-scoped rows added (food attribute data-accuracy/verification ownership; the portion/serving-size field-list gap).
+- `docs/PROJECT_STATUS.md` (v3.8 → v3.9), `docs/ROADMAP.md` (v4.1 → v4.2) — current phase, Completed work, Work in progress, Next recommended task, and Decisions awaiting Paul's approval updated to reflect the draft, the corrected dependency count, and the newly-discovered field-list gap.
+- `docs/DECISION_LOG.md` — new entry recording the re-verification, the corrected count, and the document's drafting.
 
 ## v36 — 2026-07-18 — `TIER_B_WINE_ATTRIBUTES_MODULE.md` finalized to v1.0 — Approved
 

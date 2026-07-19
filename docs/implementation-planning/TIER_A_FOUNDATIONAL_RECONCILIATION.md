@@ -1,9 +1,9 @@
 # Tier A — Foundational Reconciliation
 
 **Status:** Approved
-**Version:** 1.1
+**Version:** 1.2
 **Owner:** Program / Engineering
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 This document is the first Tier A deliverable defined by `IMPLEMENTATION_PLANNING.md` §4/§6. Its objective is **not** to design or implement anything — it reconciles every existing technical planning document against the now-complete Phase 0 (brand/experience/design foundation) and Phase 1 (all 11 frozen Product Specifications), so that Tier B–F implementation-planning work starts from one accurate, agreed baseline rather than from documents written before the specifications existed. No Frozen document was changed. No API was designed. No database was designed. No code was written.
 
@@ -77,7 +77,7 @@ The sections below break the same underlying finding into the specific categorie
 | **"Pairs with" product-relationship module** | **Absent entirely** — not listed as extension #1–#7. `PRODUCT_CATALOG.md` mentions it only as a narrower wine-side field (§4's conflict). | `01`, `02`, `03`, `04`, `05`, `06` (six specifications) | **Highest** — the single most-referenced missing piece of backend infrastructure across all of Phase 1 |
 | **Saved-for-Later mechanism** | **Absent entirely.** A new recommendation `06_CART_SPECIFICATION.md` §14/§26 introduced, explicitly flagged there as "not a pre-approved feature." | `06` (and referenced as confirmed cart-level, not account-level, by `08` §"Saved Items note") | Medium — genuinely new, requires Paul's confirmation it's in scope for v1 before Tier B plans it |
 | Wine attributes module (`wine-details`) | Scoped (`MEDUSA_EXTENSIONS.md` #1) but not built; field list not finalized | `01`, `03`, `04`, `05`, `11` | Already tracked — no new finding, restated for completeness of the baseline (§14). *(Corrected 2026-07-18 per `TIER_B_WINE_ATTRIBUTES_MODULE.md`'s more granular review: `01`'s Wine Discovery Navigation §13 genuinely depends on this module; `09_FOOD_ORDERING_SPECIFICATION.md` depends on the symmetrical `food-details` module instead, not this one — a bookkeeping correction, not a new architectural finding.)* |
-| Food attributes module (`food-details`) | Scoped (`MEDUSA_EXTENSIONS.md` #2) but not built; field list not finalized, allergen-accuracy ownership open | `03`, `04`, `05`, `09`, `11` | Already tracked |
+| Food attributes module (`food-details`) | Scoped (`MEDUSA_EXTENSIONS.md` #2) but not built; field list not finalized, allergen-accuracy ownership open | `01`, `02`, `03`, `04`, `05`, `09`, `11` | *(Corrected 2026-07-19 per `TIER_B_FOOD_ATTRIBUTES_MODULE.md`'s more granular review: `01_NAVIGATION_SPECIFICATION.md`'s Backend Data Requirements table and `02_HOMEPAGE_SPECIFICATION.md`'s Food Central Spotlight both genuinely depend on this module for prep-time/availability data — a bookkeeping correction, not a new architectural finding.)* |
 | Delivery-slot scheduling module | Scoped (`MEDUSA_EXTENSIONS.md` #3) but not built; operational parameters open | `06`, `07`, `09`, `10` | Already tracked |
 
 ### 7. Missing Integrations
@@ -149,7 +149,7 @@ This table is the artifact every Tier B–F document should reference as its sta
 | # | Item | Type | Status | Blocking open decision | Depended on by |
 |---|---|---|---|---|---|
 | 1 | `wine-details` module | Module | Scoped, not built | Field list (`PRODUCT_CATALOG.md`) | `01`,`03`,`04`,`05`,`11` |
-| 2 | `food-details` module | Module | Scoped, not built | Field list + allergen-accuracy ownership | `03`,`04`,`05`,`09`,`11` |
+| 2 | `food-details` module | Module | Scoped, not built | Field list + allergen-accuracy ownership | `01`,`02`,`03`,`04`,`05`,`09`,`11` |
 | 3 | Delivery-slot module | Module + workflow hook | Scoped, not built | Slot length/cutoff/capacity parameters | `06`,`07`,`09`,`10` |
 | 4 | Local payment provider | Provider module | Scoped, not built | Provider choice; COD policy; now also needs pending/failed/cancelled/expired/retry state support | `07` |
 | 5 | Notification provider (customer-facing) | Provider module | Scoped, not built | Channel choice (WhatsApp/SMS) | `08`,`09`,`10` |
@@ -191,4 +191,4 @@ Per `IMPLEMENTATION_PLANNING.md` §6, Tier B (Module Data Planning) is the natur
 
 ---
 
-**Document status:** Approved (v1.1). This is the definitive implementation baseline every Tier B–F document should reference. Per `DOCUMENTATION_GOVERNANCE.md` §5, substantive changes to this document's findings require reflecting a genuine new discovery or decision, logged in `DECISION_LOG.md`, not a silent edit. **v1.1 bookkeeping correction (2026-07-18):** `wine-details`' dependency list in §6 and §14 was corrected from `03,04,05,09,11` to `01,03,04,05,11`, per `TIER_B_WINE_ATTRIBUTES_MODULE.md`'s more granular review — `09_FOOD_ORDERING_SPECIFICATION.md` depends on the symmetrical `food-details` module, not this one, and `01_NAVIGATION_SPECIFICATION.md`'s Wine Discovery Navigation genuinely depends on it. No finding's substance changed; logged in `DECISION_LOG.md` per `DOCUMENTATION_GOVERNANCE.md` §6.
+**Document status:** Approved (v1.2). This is the definitive implementation baseline every Tier B–F document should reference. Per `DOCUMENTATION_GOVERNANCE.md` §5, substantive changes to this document's findings require reflecting a genuine new discovery or decision, logged in `DECISION_LOG.md`, not a silent edit. **v1.1 bookkeeping correction (2026-07-18):** `wine-details`' dependency list in §6 and §14 was corrected from `03,04,05,09,11` to `01,03,04,05,11`, per `TIER_B_WINE_ATTRIBUTES_MODULE.md`'s more granular review — `09_FOOD_ORDERING_SPECIFICATION.md` depends on the symmetrical `food-details` module, not this one, and `01_NAVIGATION_SPECIFICATION.md`'s Wine Discovery Navigation genuinely depends on it. No finding's substance changed; logged in `DECISION_LOG.md` per `DOCUMENTATION_GOVERNANCE.md` §6. **v1.2 bookkeeping correction (2026-07-19):** `food-details`' dependency list in §6 and §14 was corrected from `03,04,05,09,11` to `01,02,03,04,05,09,11`, per `TIER_B_FOOD_ATTRIBUTES_MODULE.md`'s more granular review — `01_NAVIGATION_SPECIFICATION.md`'s Backend Data Requirements table and `02_HOMEPAGE_SPECIFICATION.md`'s Food Central Spotlight (and its own Backend Data Requirements table) both genuinely depend on this module for prep-time/availability data. No finding's substance changed; logged in `DECISION_LOG.md` per `DOCUMENTATION_GOVERNANCE.md` §6.

@@ -1,9 +1,9 @@
 # Tier B Module Inventory
 
 **Status:** Approved (living, always current)
-**Version:** 1.2
+**Version:** 1.3
 **Owner:** Program / Engineering
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 This is the single-page index of every module, integration, and backend capability identified anywhere in `/docs` — native Medusa modules, custom modules, third-party integrations, and not-yet-scoped operational needs. It exists to answer, at a glance, the questions that matter most as Tier B accumulates documents and development eventually begins: which modules exist, which are native vs. custom vs. an extension/integration, which depend on others, which are optional, and which are launch-critical.
 
@@ -41,7 +41,7 @@ Source: `ARCHITECTURE.md`'s Data Model table, cross-checked against all 11 froze
 | Module | Type | Status | Depends On | Launch-Critical? | Depended On By |
 |---|---|---|---|---|---|
 | `wine-details` (wine attributes) | Custom Module | **Architecture Approved** (`TIER_B_WINE_ATTRIBUTES_MODULE.md` v1.0); field list still open | Product | Yes | `01`,`03`,`04`,`05`,`11` |
-| `food-details` (food attributes) | Custom Module | Scoped (`MEDUSA_EXTENSIONS.md` #2); field list + allergen-accuracy ownership open | Product | Yes | `03`,`04`,`05`,`09`,`11` |
+| `food-details` (food attributes) | Custom Module | **Draft architecture** (`TIER_B_FOOD_ATTRIBUTES_MODULE.md` v1.0, awaiting review); field list + allergen-accuracy ownership open | Product | Yes | `01`,`02`,`03`,`04`,`05`,`09`,`11` |
 | Delivery-slot scheduling | Custom Module + workflow hook | Scoped (`MEDUSA_EXTENSIONS.md` #3); operational parameters open | Fulfillment, Cart/Order | Yes (for Food Central same-day/scheduled delivery specifically) | `06`,`07`,`09`,`10` |
 | **Product Relationship Module** ("pairs with") | Custom Module | **Architecture Approved** (`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` v1.0) | Product | Operationally important — high architectural priority, not a hard blocker to a first transaction | `01`,`02`,`03`,`04`,`05`,`06`,`09` |
 | Saved-for-Later | Custom Module | Not Yet Scoped — new recommendation, not yet in `MEDUSA_EXTENSIONS.md` | Cart | Optional | `06` |
@@ -81,6 +81,8 @@ Identified by `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §6–§13; none is resolv
 | Doorstep age re-verification | Business decision | Order/Fulfillment | Operationally important, compliance-adjacent | `10` |
 | Wine attribute data accuracy/verification ownership | Operational responsibility, not yet assigned | `wine-details` module | Operationally important (trust/accuracy, not safety-critical the way food allergen data is) | `TIER_B_WINE_ATTRIBUTES_MODULE.md` §16/§19 |
 | Wine attribute product-vs-variant granularity | Data-modeling question, not yet decided | `wine-details` module, field-list decision | Operationally important — affects how bottle size and similar facts are eventually modeled | `TIER_B_WINE_ATTRIBUTES_MODULE.md` §6/§18/§19 |
+| Food attribute data accuracy/verification ownership (allergen safety) | Operational responsibility, not yet assigned | `food-details` module | **Higher severity than any other not-yet-scoped item in this table** — a customer-safety matter, not only a trust/accuracy one, per `09_FOOD_ORDERING_SPECIFICATION.md` §2 | `MEDUSA_EXTENSIONS.md` #2, restated in `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §8/§18/§20 |
+| Food attribute field-list gap: portion/serving-size | Data-modeling gap, not yet decided | `food-details` module, field-list decision | Operationally important — `05_PRODUCT_DETAILS_SPECIFICATION.md` §11 requires it; `PRODUCT_CATALOG.md`'s proposed field list does not currently name it | `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §6/§20/§21 |
 
 ---
 
@@ -88,7 +90,7 @@ Identified by `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §6–§13; none is resolv
 
 - **Which modules exist?** Ten native Medusa modules (table above), fully available today with zero custom work.
 - **Which are Medusa-native?** Product, Pricing, Inventory, Cart/Order, Customer, Payment, Fulfillment, Promotion, Tax, Auth.
-- **Which are custom?** `wine-details` and the Product Relationship Module (both architecture approved), `food-details`, delivery-slot scheduling, and Saved-for-Later (not yet scoped).
+- **Which are custom?** `wine-details` and the Product Relationship Module (both architecture approved), `food-details` (architecture drafted, awaiting review), delivery-slot scheduling, and Saved-for-Later (not yet scoped).
 - **Which are extensions/integrations?** The local payment provider and notification provider (Medusa provider-interface modules), plus Meilisearch and Sanity (external service integrations).
 - **Which depend on others?** Every custom module and integration is native-dependent (see "Depends On" columns) — none is a freestanding system; the Product Relationship Module depends only on Product, the simplest dependency footprint of any custom module identified so far.
 - **Which are optional?** Promotion (unused today), Sanity, Saved-for-Later, Gift Wrap, reports/analytics aggregation.

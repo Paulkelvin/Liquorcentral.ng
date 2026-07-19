@@ -1,9 +1,9 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.7
+**Version:** 3.8
 **Owner:** Program
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 This directory is the **single source of truth** for the LiquorCentral project. It replaces chat history as the record of what has been decided, why, and what remains open.
 
@@ -77,10 +77,11 @@ Actual Tier A–F documents live in `/docs/implementation-planning/`, parallel t
 
 | Document | Tier | Status |
 |---|---|---|
-| [`TIER_A_FOUNDATIONAL_RECONCILIATION.md`](./implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md) | A — Foundational Reconciliation | **Approved**, v1.0 |
+| [`TIER_A_FOUNDATIONAL_RECONCILIATION.md`](./implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md) | A — Foundational Reconciliation | **Approved**, v1.2 |
 | [`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`](./implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md) | B — Module Data Planning | **Approved**, v1.0 |
 | [`TIER_B_WINE_ATTRIBUTES_MODULE.md`](./implementation-planning/TIER_B_WINE_ATTRIBUTES_MODULE.md) | B — Module Data Planning | **Approved**, v1.0 |
-| [`MODULE_INVENTORY.md`](./implementation-planning/MODULE_INVENTORY.md) | Living index, not a tier document | **Approved** (living, always current) |
+| [`TIER_B_FOOD_ATTRIBUTES_MODULE.md`](./implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md) | B — Module Data Planning | **Draft**, v1.0 — awaiting Paul's review |
+| [`MODULE_INVENTORY.md`](./implementation-planning/MODULE_INVENTORY.md) | Living index, not a tier document | **Approved** (living, always current), v1.3 |
 
 No further Tier B–F document has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction. `MODULE_INVENTORY.md` is the single-page index of every module identified so far — which are native, custom, an extension/integration, launch-critical, or optional — updated in the same change as any future Tier B document.
 
