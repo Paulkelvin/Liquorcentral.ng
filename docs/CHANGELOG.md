@@ -1,11 +1,35 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.0
+**Version:** 4.1
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v38 — 2026-07-19 — `TIER_B_FOOD_ATTRIBUTES_MODULE.md` finalized to v1.0 — Approved
+
+**Context:** Paul directed a genuine architectural review-and-finalize pass on `TIER_B_FOOD_ATTRIBUTES_MODULE.md` against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, `TIER_B_WINE_ATTRIBUTES_MODULE.md`, `MODULE_INVENTORY.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `PRODUCT_CATALOG.md`, `MEDUSA_EXTENSIONS.md`, `DELIVERY_MODEL.md`, and all 11 frozen specifications, using the same methodology already applied to both prior Tier B documents. Full reasoning in `DECISION_LOG.md`.
+
+**Added (within `docs/implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md`):**
+
+- A new, unnumbered **Integration with Food Ordering** section — closing a genuine missing-integration-point gap: `09_FOOD_ORDERING_SPECIFICATION.md`, this module's single most consequential consuming specification, had no dedicated integration section despite every one of its six sibling dependents (`01`,`02`,`03`,`04`,`05`,`11`) having one. Mirrors the identical append-only precedent `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`'s own "Integration with Navigation" fix established.
+- §4 (Explicit Non-Responsibilities) — a new bullet stating this module does not determine or hold product pricing, mirroring `wine-details`' equivalent explicit statement, which this document's first draft had omitted.
+- §9 (Integration with Product Module) — a new bullet naming `PRODUCT_CATALOG.md`'s own proposal that dietary-flag values may optionally be mirrored, one-way, into native Product Tags for storefront filter-chip efficiency, with this module remaining the sole source of truth.
+
+**Changed (within `docs/implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md`):**
+
+- Five cross-reference corrections: three citations within §6 and one within §8 incorrectly pointed to §18 (Data Accuracy & Verification Ownership) for the field-list-not-finalized open item, which is actually named in §8 and §21 — corrected in place. One Quality Checklist citation corrected from §12 (Search) to §9 (Product Module integration), where the Attributes/Presentation/Operational-Status boundary is actually drawn.
+- One reference to a nonexistent section (§27) removed from §6.
+- §21 (Dependencies) — the closing bullet, which stated the document "remains Draft... rather than Approved," updated to reflect the new Approved status.
+- Document header: **Status: Draft → Approved**. No existing section was rewritten.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.9) — Implementation Planning table updated: Tier B food-attributes document now Approved.
+- `docs/implementation-planning/MODULE_INVENTORY.md` (v1.4) — `food-details` row updated to "Architecture Approved."
+- `docs/PROJECT_STATUS.md` (v4.0), `docs/ROADMAP.md` (v4.3) — current phase, Completed work, Work in progress, Next recommended task, and Tier A/B findings updated to reflect the finalization; two open dependencies (field list, allergen-accuracy ownership) restated as still open, not resolved.
+- `docs/DECISION_LOG.md` — new entry recording the review findings and the finalization.
 
 ## v37 — 2026-07-19 — Third Tier B document drafted: Food Attributes Module
 
