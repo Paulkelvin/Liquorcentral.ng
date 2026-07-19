@@ -1,11 +1,25 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.5
+**Version:** 3.6
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v33 — 2026-07-18 — First Tier B document drafted: Product Relationship Module
+
+**Context:** Paul directed Tier B (Module Data Planning) to begin with Tier A's highest-priority finding — the "pairs with" product-relationship module, depended on by six frozen specifications with no existing `MEDUSA_EXTENSIONS.md` entry — explicitly as a purely architectural document: no database design, no API specification, no code. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` (v1.0, status Draft) — defines why the module exists, its business justification, responsibilities, explicit non-responsibilities (does not replace Related Products, does not influence search ranking, does not compute algorithmic recommendations, does not set pricing, does not determine availability), relationship types (one required kind for v1: cross-catalog pairing, with the concept of "kind" left open for future extension), supported catalogs, ownership (module shape is engineering's, curated content is merchandising's), and integration points with all nine consuming/adjacent surfaces named in the governing instruction — Product Module, Search, Homepage, Product Details, Cart, Checkout (confirmed as having **zero** dependency), Food Ordering (confirmed as pure reuse of the existing homepage/PDP pairing moment), and Admin Workflows (confirmed as having **no staff curation workflow specified anywhere yet** — a named, unresolved dependency). Also covers CMS responsibilities, merchandising responsibilities, future extensibility, risks, dependencies, a Quality Checklist, and architecture-level Acceptance Criteria. Contains no table, field, endpoint, or code anywhere — verified directly. Corrects, by reference rather than by editing, the conflict `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §4 identified between `PRODUCT_CATALOG.md`'s narrow wine-side-field framing and the general module six specifications actually require.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.4) — Implementation Planning table updated to include the new Tier B document.
+- `docs/PROJECT_STATUS.md` (v3.5), `docs/ROADMAP.md` (v3.8) — current phase, Completed work, Work in progress, Next recommended task, and Decisions awaiting Paul's approval updated to reflect the draft and its one new open dependency (the staff curation workflow).
+- `docs/DECISION_LOG.md` — new entry recording the document's drafting and its findings.
 
 ## v32 — 2026-07-18 — Tier A — Foundational Reconciliation complete
 

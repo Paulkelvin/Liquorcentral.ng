@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.3
+**Version:** 3.4
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -78,8 +78,9 @@ Actual Tier A–F documents live in `/docs/implementation-planning/`, parallel t
 | Document | Tier | Status |
 |---|---|---|
 | [`TIER_A_FOUNDATIONAL_RECONCILIATION.md`](./implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md) | A — Foundational Reconciliation | **Approved**, v1.0 |
+| [`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`](./implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md) | B — Module Data Planning | **Draft**, v1.0, awaiting review |
 
-No Tier B–F document has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction.
+No further Tier B–F document has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction.
 
 ## Document status convention
 
