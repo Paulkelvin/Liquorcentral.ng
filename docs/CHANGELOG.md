@@ -1,11 +1,34 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.5
+**Version:** 5.6
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v53 — 2026-07-19 — Milestone 9: Product Listing (`04_PRODUCT_LISTING_SPECIFICATION.md`)
+
+**Context:** With Homepage (Milestone 8) complete, and under Paul's standing autonomous-continuation authorization, Product Listing was chosen as the next milestone — unblocked, and the natural destination of links already built by Navigation's mega menu and Homepage's Food Central Spotlight. The standing visual-validation requirement (in force since Milestone 8) applied here too; since this project has never seeded a single catalog product, temporary QA-only products were created via the Admin API for screenshot purposes and fully deleted afterward. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/modules/products/components/product-preview/quick-add-button.tsx` — the card's quick-add sibling control (§9): catalog-weighted visual weight (Food Central primary/full-width, Wine & Spirits secondary text-link), single-variant auto-resolution with a "Select options" fallback for multi-variant products, inline "Adding…"/"Added ✓" confirmation, and reuse of the existing `CartDropdown`'s item-count auto-open for persistent confirmation rather than a second mechanism.
+- `storefront/src/modules/store/components/load-more/index.tsx` — replaces the vendored classic page-number `Pagination` component (deleted, zero remaining references) with §13's "Load More" pattern: URL-reflected cumulative page count, a real keyboard-operable button, and a polite live-region announcement of newly-loaded results.
+
+**Changed:**
+
+- `storefront/src/modules/products/components/product-preview/index.tsx` — rewritten around the Product Card Information Hierarchy: at most one of a promotional badge or catalog-specific supporting fact (today, only ever Food Central's prep-time fact — no promotional-badge mechanism exists yet), an always-shown "Sold out" availability label separate from that one-fact cap, and quick-add moved outside the card's one real link (previously the entire card, including where quick-add would go, was one `<a>`).
+- `storefront/src/lib/data/products.ts` — `listProductsWithSort` gained a `cumulative` mode for Load More's URL semantics; **a genuine latent bug fixed**: `listProducts`' `fields` query parameter was silently replacing, not extending, the function's default field set, meaning any caller requesting extra fields (Food Central Spotlight, built in Milestone 8) had been silently losing pricing/variant data since that milestone shipped. Now merges additively.
+- `storefront/src/modules/store/templates/paginated-products.tsx` — rewritten for cumulative Load More fetching and a real §21 empty state (`EmptyState`, reused from Phase 0c) with a sibling-category fallback link, replacing the vendored classic-pagination markup.
+- `storefront/src/modules/store/components/refinement-list/sort-products/index.tsx` — "Featured" added as the default sort option (§11); documented in-code as an honest no-op fallthrough, since no merchandising-rank field exists to sort by.
+- `storefront/src/modules/products/components/thumbnail/index.tsx` and every call site (product cards, cart, order history, account) — added a real `alt` prop and passed actual product/item titles, replacing the hard-coded generic `alt="Thumbnail"` (§24/§111).
+
+**Removed:** `storefront/src/modules/store/components/pagination/index.tsx` — the vendored classic page-number pagination component, fully superseded by Load More.
+
+**Not changed, and explicitly out of scope:** Filtering/facets (§10 — same Meilisearch-approval gate as Search); the "pairs with" cross-sell; a real promotional-badge mechanism and a real "Featured" merchandising order (both need Paul's attribute-field-list approval); navigation/homepage/listing analytics events (no analytics infrastructure exists yet). The pre-existing, systemic `Button` primary-variant contrast issue and the vendored "Sort by"/price-text contrast issue (documented since Milestone 7) remain unaltered. No planning document's substance was altered.
+
+**Also updated:** `storefront/README.md` (new "Milestone 9" section, including the visual-validation findings and the temporary-QA-data methodology). `docs/PROJECT_STATUS.md` (→ v5.4), `docs/ROADMAP.md` (→ v5.7), `docs/AI_HANDOFF.md` (→ v5.0), `docs/DECISION_LOG.md` (new entry, → v2.6).
 
 ## v52 — 2026-07-19 — Milestone 8: Homepage (`02_HOMEPAGE_SPECIFICATION.md`)
 

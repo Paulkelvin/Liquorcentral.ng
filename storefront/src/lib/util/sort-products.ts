@@ -46,5 +46,9 @@ export function sortProducts(
     })
   }
 
+  // "featured" (04_PRODUCT_LISTING_SPECIFICATION.md §11) intentionally
+  // falls through to no sort here — see sort-products/index.tsx's own
+  // comment on why no merchandising-rank field exists yet to sort by.
+
   return sortedProducts
 }

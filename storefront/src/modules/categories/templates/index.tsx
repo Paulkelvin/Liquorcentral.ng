@@ -24,7 +24,7 @@ export default function CategoryTemplate({
   optionValueIds?: OptionValueIds
 }) {
   const pageNumber = page ? parseInt(page) : 1
-  const sort = sortBy || "created_at"
+  const sort = sortBy || "featured"
 
   if (!category || !countryCode) notFound()
 
@@ -99,6 +99,7 @@ export default function CategoryTemplate({
             categoryId={category.id}
             countryCode={countryCode}
             optionValueIds={optionValueIds}
+            emptyStateFallbackHref="/categories"
           />
         </Suspense>
       </div>

@@ -22,7 +22,7 @@ export default function CollectionTemplate({
   optionValueIds?: OptionValueIds
 }) {
   const pageNumber = page ? parseInt(page) : 1
-  const sort = sortBy || "created_at"
+  const sort = sortBy || "featured"
 
   return (
     <>
@@ -48,6 +48,7 @@ export default function CollectionTemplate({
             collectionId={collection.id}
             countryCode={countryCode}
             optionValueIds={optionValueIds}
+            emptyStateFallbackHref="/categories"
           />
         </Suspense>
       </div>

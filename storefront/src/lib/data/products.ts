@@ -69,9 +69,19 @@ export const listProducts = async ({
           limit,
           offset,
           region_id: region?.id,
-          fields:
-            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,",
           ...queryParams,
+          // Additive, not a replacement: a caller-supplied `fields` (e.g.
+          // FoodCentralSpotlight's "+food_details.*") used to silently
+          // override this default and drop pricing/variant data from the
+          // response, which broke `getProductPrice` for any caller that
+          // asked for extra fields. Every caller gets the base field set
+          // plus whatever extra fields it asked for.
+          fields: [
+            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags",
+            queryParams?.fields,
+          ]
+            .filter(Boolean)
+            .join(","),
         },
         headers,
         next,
@@ -102,12 +112,24 @@ export const listProductsWithSort = async ({
   sortBy = "created_at",
   countryCode,
   optionValueIds,
+  cumulative = false,
 }: {
   page?: number
   queryParams?: ProductListQueryParams
   sortBy?: SortOptions
   countryCode: string
   optionValueIds?: OptionValueIds
+  /**
+   * 04_PRODUCT_LISTING_SPECIFICATION.md §13 — "Load More" appends to the
+   * existing grid rather than replacing one page window with another.
+   * When true, `page` means "how many pages are currently loaded," and
+   * this returns every product from the start through that many pages
+   * (re-fetched and re-sliced on every request, not cached client-side
+   * state) — so a shared/reloaded URL with `?page=3` server-renders
+   * pages 1–3 concatenated, satisfying §26's "first-loaded state must be
+   * complete, server-rendered content."
+   */
+  cumulative?: boolean
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
@@ -132,13 +154,14 @@ export const listProductsWithSort = async ({
 
   const sortedProducts = sortProducts(products, sortBy)
 
-  const pageParam = (page - 1) * limit
-
   const filteredCount = products.length
 
-  const nextPage = filteredCount > pageParam + limit ? pageParam + limit : null
+  const windowStart = cumulative ? 0 : (page - 1) * limit
+  const windowEnd = cumulative ? page * limit : page * limit
 
-  const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
+  const nextPage = filteredCount > windowEnd ? page + 1 : null
+
+  const paginatedProducts = sortedProducts.slice(windowStart, windowEnd)
 
   return {
     response: {

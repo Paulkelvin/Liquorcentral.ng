@@ -10,6 +10,14 @@ type ThumbnailProps = {
   size?: "small" | "medium" | "large" | "full" | "square"
   isFeatured?: boolean
   className?: string
+  /**
+   * 04_PRODUCT_LISTING_SPECIFICATION.md §24 / §111 — "descriptive alt
+   * text on every product image (never a generic filename)." Defaults to
+   * a still-generic fallback only for the handful of callers that
+   * genuinely have no product name in scope; every caller that does have
+   * one should pass it.
+   */
+  alt?: string
   "data-testid"?: string
 }
 
@@ -20,6 +28,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   isFeatured,
   className,
   "data-testid": dataTestid,
+  alt = "Product photo",
 }) => {
   const initialImage = thumbnail || images?.[0]?.url
 
@@ -40,7 +49,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       )}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} />
+      <ImageOrPlaceholder image={initialImage} size={size} alt={alt} />
     </Container>
   )
 }
@@ -48,11 +57,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 const ImageOrPlaceholder = ({
   image,
   size,
-}: Pick<ThumbnailProps, "size"> & { image?: string }) => {
+  alt,
+}: Pick<ThumbnailProps, "size" | "alt"> & { image?: string }) => {
   return image ? (
     <Image
       src={image}
-      alt="Thumbnail"
+      alt={alt || "Product photo"}
       className="absolute inset-0 object-cover object-center"
       draggable={false}
       quality={50}
