@@ -52,22 +52,35 @@ const Item: React.FC<AccordionItemProps> = ({
         className
       )}
     >
-      <AccordionPrimitive.Header className="px-1">
+      {/* asChild + a real <h2>, not Radix's own default <h3> — this
+          accordion is the fact sheet immediately following the page's
+          <h1> product title (05_PRODUCT_DETAILS_SPECIFICATION.md's
+          ProductInfo), so <h3> would skip a level (a genuine axe-core
+          "heading-order" violation this fixes). This component has a
+          single consumer (product-tabs/index.tsx), so this isn't a
+          platform-wide semantic change. */}
+      <AccordionPrimitive.Header asChild>
+        <h2 className="px-1">
         <div className="flex flex-col">
-          <div className="flex w-full items-center justify-between">
+          {/* The whole header row is the trigger, not just the chevron —
+              a `<button>` with only an icon child and no text/aria-label
+              has no accessible name (a real, critical axe-core
+              "button-name" violation this fixes, found scanning
+              05_PRODUCT_DETAILS_SPECIFICATION.md's fact-sheet accordion,
+              05_PRODUCT_DETAILS_SPECIFICATION.md §25). */}
+          <AccordionPrimitive.Trigger className="flex w-full items-center justify-between text-left">
             <div className="flex items-center gap-4">
               <Text className="text-ui-fg-subtle text-sm">{title}</Text>
             </div>
-            <AccordionPrimitive.Trigger>
-              {customTrigger || <MorphingTrigger />}
-            </AccordionPrimitive.Trigger>
-          </div>
+            {customTrigger || <MorphingTrigger />}
+          </AccordionPrimitive.Trigger>
           {subtitle && (
             <Text as="span" className="mt-1 text-sm">
               {subtitle}
             </Text>
           )}
         </div>
+        </h2>
       </AccordionPrimitive.Header>
       <AccordionPrimitive.Content
         forceMount={forceMountContent}
@@ -88,7 +101,9 @@ Accordion.Item = Item
 
 const MorphingTrigger = () => {
   return (
-    <div className="text-grey-90 hover:bg-grey-5 active:bg-grey-5 active:text-violet-60 focus:border-violet-60 disabled:text-grey-30 bg-transparent disabled:bg-transparent rounded-rounded group relative p-[6px]">
+    <div
+      aria-hidden="true"
+      className="text-grey-90 hover:bg-grey-5 active:bg-grey-5 active:text-violet-60 focus:border-violet-60 disabled:text-grey-30 bg-transparent disabled:bg-transparent rounded-rounded group relative p-[6px]">
       <div className="h-5 w-5">
         <span className="bg-grey-50 rounded-circle group-radix-state-open:rotate-90 absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] duration-300" />
         <span className="bg-grey-50 rounded-circle group-radix-state-open:rotate-90 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] duration-300" />

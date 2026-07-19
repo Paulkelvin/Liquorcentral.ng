@@ -18,8 +18,12 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
             {product.collection.title}
           </LocalizedClientLink>
         )}
+        {/* The product title is this page's single most important heading
+            — a genuine axe-core "page-has-heading-one" finding confirmed
+            no PDP had an <h1> at all (05_PRODUCT_DETAILS_SPECIFICATION.md
+            §25). */}
         <Heading
-          level="h2"
+          level="h1"
           className="text-3xl leading-10 text-ui-fg-base"
           data-testid="product-title"
         >

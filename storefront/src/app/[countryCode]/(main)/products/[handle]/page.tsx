@@ -80,19 +80,36 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const product = await listProducts({
     countryCode: params.countryCode,
-    queryParams: { handle, fields: "+categories.*" },
+    queryParams: { handle, fields: "+categories.*,+wine_details.*,+food_details.*" },
   }).then(({ response }) => response.products[0])
 
   if (!product) {
     notFound()
   }
 
+  // 05_PRODUCT_DETAILS_SPECIFICATION.md §27 — a descriptive, unique meta
+  // description per product, never a templated string identical across
+  // the catalog; falls back to the product's own description when no
+  // catalog-specific fact is available to summarize.
+  const catalogProduct = product as HttpTypes.StoreProduct & {
+    wine_details?: { region?: string | null; producer?: string | null } | null
+    food_details?: { prep_time_minutes?: number | null } | null
+  }
+  const description =
+    catalogProduct.wine_details?.region || catalogProduct.wine_details?.producer
+      ? `${product.title} — ${[catalogProduct.wine_details.producer, catalogProduct.wine_details.region]
+          .filter(Boolean)
+          .join(", ")}. Order from LiquorCentral.`
+      : catalogProduct.food_details?.prep_time_minutes
+      ? `${product.title} — cooked to order, ready in ~${catalogProduct.food_details.prep_time_minutes} min. Order from LiquorCentral.`
+      : `${product.title} — order from LiquorCentral.`
+
   return {
-    title: `${product.title} | Medusa Store`,
-    description: `${product.title}`,
+    title: `${product.title} | LiquorCentral`,
+    description,
     openGraph: {
-      title: `${product.title} | Medusa Store`,
-      description: `${product.title}`,
+      title: `${product.title} | LiquorCentral`,
+      description,
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   }
@@ -114,7 +131,7 @@ export default async function ProductPage(props: Props) {
     queryParams: {
       handle: params.handle,
       fields:
-        "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,+categories.*",
+        "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,+categories.*,+wine_details.*,+food_details.*",
     },
   }).then(({ response }) => response.products[0])
 

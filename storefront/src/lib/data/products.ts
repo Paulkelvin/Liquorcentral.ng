@@ -172,3 +172,27 @@ export const listProductsWithSort = async ({
     queryParams,
   }
 }
+
+/**
+ * 05_PRODUCT_DETAILS_SPECIFICATION.md §16 — Gift Wrap as a v1-appropriate,
+ * order-time add-on (`PRODUCT_CATALOG.md`'s existing recommendation: a
+ * priced line item, not a product attribute). No such product has ever
+ * been seeded in this catalog (the same standing zero-product state every
+ * prior milestone has documented), so this deliberately returns `null`
+ * today and the add-on renders nothing — the same graceful-absence
+ * discipline `02_HOMEPAGE_SPECIFICATION.md`'s Curated Collections/Food
+ * Central Spotlight already established, not a broken or placeholder
+ * feature. Looked up by the well-known handle `gift-wrap`, so creating one
+ * real product with that handle in the Admin is the only step needed to
+ * light this feature up — no code change required.
+ */
+export const getGiftWrapProduct = async (
+  countryCode: string
+): Promise<HttpTypes.StoreProduct | null> => {
+  const { response } = await listProducts({
+    countryCode,
+    queryParams: { handle: "gift-wrap", limit: 1 },
+  })
+
+  return response.products[0] ?? null
+}

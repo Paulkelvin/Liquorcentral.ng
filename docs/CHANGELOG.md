@@ -1,11 +1,35 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.7
+**Version:** 5.8
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v55 — 2026-07-19 — Milestone 11: Product Details (`05_PRODUCT_DETAILS_SPECIFICATION.md`)
+
+**Context:** With Search (Milestone 10) complete, Product Details was the confirmed next specification in Paul's approved implementation order — the natural destination of every product card built across Navigation, Homepage, Product Listing, and Search. Built under the standing autonomous-continuation authorization; visual and accessibility validation used two temporary QA-only products (one per catalog) plus a temporary `gift-wrap` product, all fully deleted via the Admin API afterward, including both temporary admin accounts (deleted via a `medusa exec` script against the User module directly, since the API layer refuses self-deletion and no second real admin credential was available — a cleaner resolution than Milestone 9's leftover account, without needing Milestone 10's cross-delete workaround). Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/modules/products/components/wine-fact-sheet/index.tsx` and `food-fact-sheet/index.tsx` — the catalog-specific structured fact sheets (§10–§13), reading `wine_details`/`food_details` directly and omitting any field genuinely absent for a given product (§23) rather than rendering an empty row.
+- `storefront/src/modules/products/components/quantity-stepper/index.tsx` — a numeric stepper (§17) with a real, associated label; capped by genuine available stock for Wine & Spirits, uncapped for Food Central. Previously entirely absent — the vendored template always added quantity 1.
+- `storefront/src/modules/products/components/gift-wrap-addon/index.tsx` and `lib/data/products.ts`'s `getGiftWrapProduct` — the Gift Wrap add-on (§16), rendering only when a real product with handle `gift-wrap` exists; otherwise correctly absent, not a placeholder.
+- `storefront/src/modules/products/components/trust-and-delivery/index.tsx` — Trust Signals, Delivery Information, and Pickup Information (§19–§21) as their own page section, stating the platform's current launch-scope delivery areas and an honest, catalog-appropriate return/age-verification statement.
+
+**Changed:**
+
+- `storefront/src/modules/products/components/image-gallery/index.tsx` — gained click-to-zoom (a Headless UI Dialog lightbox showing a plain, unmodified `<img>` so mobile pinch/double-tap works natively, §6), distinct descriptive alt text per image, and a single honest placeholder when no images are configured (§23) instead of a blank region.
+- `storefront/src/modules/products/components/product-actions/index.tsx` — gained the quantity stepper, the Gift Wrap add-on, an inline `role="status" aria-live="polite"` add-to-cart confirmation alongside the existing toast (§18, §25), and an explicit "out of stock" text reason.
+- `storefront/src/modules/products/components/product-tabs/index.tsx` and `accordion.tsx` — replaced the vendored template's generic apparel-oriented "Material/Country of origin/Weight/Dimensions" tab and its fabricated "no questions asked" refund/exchange copy (neither applicable to wine or food, and the refund claim was flatly inaccurate given the still-open alcohol-return policy) with the real fact sheets. Also fixed two genuine, newly-surfaced axe-core accessibility violations in the shared Accordion: a critical missing accessible name on the chevron-only trigger button (fixed by making the whole labeled header row the trigger), and a heading-order skip introduced by promoting the product title to `<h1>` (fixed with `asChild` + a real `<h2>`, safe since this accordion has a single consumer).
+- `storefront/src/modules/products/templates/product-info/index.tsx` — product title promoted from `<h2>` to `<h1>`, fixing a confirmed `page-has-heading-one` violation (no PDP had a top-level heading at all).
+- `storefront/src/modules/products/templates/index.tsx` — added `Product`/`Offer` JSON-LD, corrected the breadcrumb's middle segment to link to a route that actually exists (`/store` for Wine & Spirits, `/food-central` for Food Central — this codebase has no unifying "Wine & Spirits"/"Food Central" root category), and assembled the page per §5's section order.
+- `storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx` — descriptive, unique meta title/description per product (§27), no longer a templated string.
+
+**Not changed, and explicitly out of scope:** Pairing Recommendations (§14, "pairs with" — the same unscoped backend relationship four prior specifications have already flagged, now a fifth); customer reviews (§22 — none exist in v1). One already-documented, systemic Design-System-level color-contrast violation (the shared `Button` component's primary variant, first flagged in Milestone 7) was reconfirmed present via this milestone's own axe-core scan and deliberately left unaltered, per the same precedent.
+
+**Also updated:** `storefront/README.md` (new "Milestone 11" section). `docs/PROJECT_STATUS.md` (→ v5.7), `docs/AI_HANDOFF.md` (→ v5.3), `docs/DECISION_LOG.md` (new entry, → v2.9), `docs/ROADMAP.md` (→ v5.9).
 
 ## v54 — 2026-07-19 — Batch business-decision approval; Milestone 10: Search (`03_SEARCH_SPECIFICATION.md`)
 

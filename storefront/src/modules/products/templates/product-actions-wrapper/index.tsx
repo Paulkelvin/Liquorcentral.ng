@@ -1,4 +1,4 @@
-import { listProducts } from "@lib/data/products"
+import { getGiftWrapProduct, listProducts } from "@lib/data/products"
 import { HttpTypes } from "@medusajs/types"
 import ProductActions from "@modules/products/components/product-actions"
 
@@ -8,18 +8,29 @@ import ProductActions from "@modules/products/components/product-actions"
 export default async function ProductActionsWrapper({
   id,
   region,
+  countryCode,
 }: {
   id: string
   region: HttpTypes.StoreRegion
+  countryCode: string
 }) {
-  const product = await listProducts({
-    queryParams: { id: [id] },
-    regionId: region.id,
-  }).then(({ response }) => response.products[0])
+  const [product, giftWrapProduct] = await Promise.all([
+    listProducts({
+      queryParams: { id: [id], fields: "+food_details.*" },
+      regionId: region.id,
+    }).then(({ response }) => response.products[0]),
+    getGiftWrapProduct(countryCode),
+  ])
 
   if (!product) {
     return null
   }
 
-  return <ProductActions product={product} region={region} />
+  return (
+    <ProductActions
+      product={product}
+      region={region}
+      giftWrapProduct={giftWrapProduct}
+    />
+  )
 }

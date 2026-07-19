@@ -1,119 +1,55 @@
-"use client"
-
-import Back from "@modules/common/icons/back"
-import FastDelivery from "@modules/common/icons/fast-delivery"
-import Refresh from "@modules/common/icons/refresh"
-
-import Accordion from "./accordion"
 import { HttpTypes } from "@medusajs/types"
+import Accordion from "./accordion"
+import WineFactSheet, { WineDetails } from "@modules/products/components/wine-fact-sheet"
+import FoodFactSheet, { FoodDetails } from "@modules/products/components/food-fact-sheet"
+
+type ProductWithCatalogDetails = HttpTypes.StoreProduct & {
+  wine_details?: WineDetails | null
+  food_details?: FoodDetails | null
+}
 
 type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
+/**
+ * 05_PRODUCT_DETAILS_SPECIFICATION.md §5, §7, §25 — the progressively-
+ * disclosed structured fact sheet, built as an accessible disclosure
+ * pattern (Radix's Accordion primitive, already used platform-wide —
+ * genuine `aria-expanded`/keyboard support, not a re-implementation).
+ *
+ * Replaces the vendored DTC Starter's generic apparel-oriented tab
+ * ("Material" / "Country of origin" / "Weight" / "Dimensions" — none of
+ * which applies to a bottle of wine or a cooked dish) and its fabricated,
+ * inapplicable "Shipping & Returns" copy ("no questions asked" refunds,
+ * apparel exchanges) — the alcohol return policy is a genuinely open
+ * business decision (`PROJECT_STATUS.md`) this document must not invent
+ * an answer to, and Food Central's honest return story ("cooked to
+ * order") plus real delivery/pickup information now live in
+ * `trust-and-delivery`, §19–§21, as their own page section — not a
+ * fabricated apparel-store policy tab.
+ */
 const ProductTabs = ({ product }: ProductTabsProps) => {
-  const tabs = [
-    {
-      label: "Product Information",
-      component: <ProductInfoTab product={product} />,
-    },
-    {
-      label: "Shipping & Returns",
-      component: <ShippingInfoTab />,
-    },
-  ]
+  const catalogProduct = product as ProductWithCatalogDetails
+  const wineDetails = catalogProduct.wine_details
+  const foodDetails = catalogProduct.food_details
+
+  if (!wineDetails && !foodDetails) {
+    return null
+  }
 
   return (
     <div className="w-full">
-      <Accordion type="multiple">
-        {tabs.map((tab, i) => (
-          <Accordion.Item
-            key={i}
-            title={tab.label}
-            headingSize="medium"
-            value={tab.label}
-          >
-            {tab.component}
-          </Accordion.Item>
-        ))}
+      <Accordion type="multiple" defaultValue={["fact-sheet"]}>
+        <Accordion.Item
+          title={wineDetails ? "About this wine" : "Ingredients & preparation"}
+          headingSize="medium"
+          value="fact-sheet"
+        >
+          {wineDetails && <WineFactSheet details={wineDetails} />}
+          {foodDetails && <FoodFactSheet details={foodDetails} />}
+        </Accordion.Item>
       </Accordion>
-    </div>
-  )
-}
-
-const ProductInfoTab = ({ product }: ProductTabsProps) => {
-  return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-2 gap-x-8">
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <span className="font-semibold">Material</span>
-            <p>{product.material ? product.material : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Country of origin</span>
-            <p>{product.origin_country ? product.origin_country : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Type</span>
-            <p>{product.type ? product.type.value : "-"}</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <span className="font-semibold">Weight</span>
-            <p>{product.weight ? `${product.weight} g` : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Dimensions</span>
-            <p>
-              {product.length && product.width && product.height
-                ? `${product.length}L x ${product.width}W x ${product.height}H`
-                : "-"}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const ShippingInfoTab = () => {
-  return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-1 gap-y-8">
-        <div className="flex items-start gap-x-2">
-          <FastDelivery />
-          <div>
-            <span className="font-semibold">Fast delivery</span>
-            <p className="max-w-sm">
-              Your package will arrive in 3-5 business days at your pick up
-              location or in the comfort of your home.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start gap-x-2">
-          <Refresh />
-          <div>
-            <span className="font-semibold">Simple exchanges</span>
-            <p className="max-w-sm">
-              Is the fit not quite right? No worries - we&apos;ll exchange your
-              product for a new one.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start gap-x-2">
-          <Back />
-          <div>
-            <span className="font-semibold">Easy returns</span>
-            <p className="max-w-sm">
-              Just return your product and we&apos;ll refund your money. No
-              questions asked – we&apos;ll do our best to make sure your return
-              is hassle-free.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
