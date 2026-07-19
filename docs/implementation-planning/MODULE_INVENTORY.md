@@ -1,7 +1,7 @@
 # Tier B Module Inventory
 
 **Status:** Approved (living, always current)
-**Version:** 1.6
+**Version:** 1.7
 **Owner:** Program / Engineering
 **Last Updated:** 2026-07-19
 
@@ -50,7 +50,7 @@ Source: `ARCHITECTURE.md`'s Data Model table, cross-checked against all 11 froze
 
 | Module | Type | Status | Depends On | Launch-Critical? | Depended On By |
 |---|---|---|---|---|---|
-| Local payment provider | Provider Module | Scoped (`MEDUSA_EXTENSIONS.md` #4); provider choice + COD policy open | Payment | **Yes — the project's sole launch-blocking open decision** | `07` |
+| Local payment provider | Provider Module | **Drafted** (`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` v1.0 — Draft); provider choice + COD policy open | Payment | **Yes — the project's sole launch-blocking open decision** | `07` |
 | Notification provider (customer-facing) | Provider Module | Scoped (`MEDUSA_EXTENSIONS.md` #5); channel choice open | Order, Fulfillment | Operationally important — not confirmed launch-blocking by any document | `08`,`09`,`10` |
 
 ## Integrations (third-party services, not Medusa modules)
@@ -85,6 +85,7 @@ Identified by `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §6–§13; none is resolv
 | Food attribute field-list gap: portion/serving-size | Data-modeling gap, not yet decided | `food-details` module, field-list decision | Operationally important — `05_PRODUCT_DETAILS_SPECIFICATION.md` §11 requires it; `PRODUCT_CATALOG.md`'s proposed field list does not currently name it | `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §6/§20/§21 |
 | Pickup-slot mechanism boundary (whether pickup should ever be booked through the delivery-slot module's capacity-limited mechanism, or remain a simpler ready-time estimate) | Architectural clarification, not yet decided | Delivery-slot scheduling module | Operationally important — affects whether pickup gets its own capacity model later | `TIER_B_DELIVERY_SLOT_MODULE.md` §5/§19 |
 | Kitchen-capacity vs. rider/delivery-capacity reconciliation (how two distinct operational constraints combine into the single capacity figure the delivery-slot module tracks) | Operational judgment, not yet decided | Delivery-slot scheduling module | Operationally important — affects how staff set slot capacity day to day | `TIER_B_DELIVERY_SLOT_MODULE.md` §6/§18 |
+| `11_ADMIN_WORKFLOWS_SPECIFICATION.md`'s refund workflow (§11) does not name the local payment provider module as its underlying mechanism | Documentation completeness gap, not yet reflected | Local payment provider module | Operationally important — worth closing before Tier C's Admin Workflow API planning | `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` §1/§15/§21 |
 
 ---
 

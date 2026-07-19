@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.4
+**Version:** 4.5
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v42 — 2026-07-19 — `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` drafted at v1.0 — Draft
+
+**Context:** Paul directed the fifth Tier B module, the local payment provider, re-verified against the six standing selection criteria and every remaining candidate before drafting. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/implementation-planning/TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` (v1.0, Draft) — purely architectural, provider-agnostic definition of the local payment provider module: why it exists, responsibilities and explicit non-responsibilities, a payment-method/mechanism/status/refund-policy boundary section, payment lifecycle and payment-state responsibilities, provider abstraction responsibilities, scope, a two-way ownership split, its interaction with Medusa's native Payment module, integration points across Checkout/Customer Account/Order Management/Admin Workflows, a dedicated Integration with Refund Workflow (Architectural Boundary Only) section, a consolidated non-integrations section, future extensibility, risks, dependencies, a quality checklist, and acceptance criteria. No specific payment service provider is named or chosen anywhere.
+
+**Changed:**
+
+- `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md` bumped to v1.4 — Row 4 (Local payment provider) Status updated from "Scoped, not built" to "Drafted." Dependency count (`07`) confirmed unchanged — no correction required, the first Tier B module whose baseline needed none.
+- `docs/implementation-planning/MODULE_INVENTORY.md` bumped to v1.7 — Local payment provider row Status updated to match; one new not-yet-scoped row added for the newly-discovered `11_ADMIN_WORKFLOWS_SPECIFICATION.md` refund-mechanism documentation gap.
+- `docs/README.md`, `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/AI_HANDOFF.md` updated to reflect the draft's existence, the confirmed (unchanged) dependency count, and the newly-discovered documentation gap.
+
+**Not changed:** no frozen or previously-Approved document's substance was altered; `TIER_A_FOUNDATIONAL_RECONCILIATION.md` and `MODULE_INVENTORY.md` received only the status-field update described above, not a dependency-count correction.
 
 ## v41 — 2026-07-19 — `TIER_B_DELIVERY_SLOT_MODULE.md` finalized to v1.0 — Approved
 
