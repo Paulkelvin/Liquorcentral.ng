@@ -1,7 +1,7 @@
 # Project Status
 
 **Status:** Approved (living, always current)
-**Version:** 5.4
+**Version:** 5.5
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -96,26 +96,27 @@ The project has moved through: (1) initial Medusa architecture research, (2) tec
 ## Blockers
 
 - No Design System blockers remain — `DESIGN_SYSTEM.md` v2.0 is fully approved and frozen.
-- **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1, and blocks final implementation of `07_CHECKOUT_SPECIFICATION.md` §14/§26 (and its Payment State Behaviour section) and `10_DELIVERY_SPECIFICATION.md` once its turn comes.
+- ~~Payment provider is undecided~~ — **Resolved 2026-07-19: Paystack approved.** No longer blocks `ROADMAP.md` Phase 1 or `07_CHECKOUT_SPECIFICATION.md` §14/§26. See `DECISION_LOG.md`.
 - No documentation-branch blockers remain — both repository reconciliations above (2026-07-18) resolved every prior unmerged-branch situation; `docs/AI_HANDOFF.md` and `docs/DOCUMENTATION_GOVERNANCE.md` exist and are current as of this update.
-- No other hard blockers — architecture and product-catalog work can proceed in parallel with the open questions below, as long as nothing below is assumed in their place.
+- No other hard blockers — architecture and product-catalog work can proceed in parallel with the open questions below, as long as nothing below is assumed in their place. Meilisearch and the notification provider's Tier B document remain the two genuinely still-open technical gates (search ranking/facets; the notification module's own architecture) — see "Decisions awaiting Paul's approval," below.
 
 ## Decisions awaiting Paul's approval
 
 Grouped by document, so each can be resolved in context:
 
 **Business rules / delivery (`BUSINESS_RULES.md`, `DELIVERY_MODEL.md`):**
-- Whether Wine & Spirits' nationwide delivery uses an in-house fleet, a third-party courier, or both.
-- Whether cash-on-delivery is supported at all, given alcohol-specific fraud/reconciliation concerns.
-- Which local payment provider is integrated (e.g. Paystack, Flutterwave) — **launch-blocking**.
-- **The exact Nigerian VAT/tax treatment** (rate, and whether alcohol/food attract different tax rules) — newly surfaced during Milestone 1 (`backend/README.md`): a Nigeria tax region exists in the backend using Medusa's native tax mechanism, deliberately seeded with no rate, pending this decision.
-- Which delivery-update channel(s) are committed to (WhatsApp Business API and/or SMS) — has real cost/approval implications.
-- Precision needed for the Lagos delivery-area definition (postal-pattern zones vs. true radius geofencing).
+- Whether Wine & Spirits' nationwide delivery uses an in-house fleet, a third-party courier, or both. *(Still open — the launch delivery **area** is now decided, below, but the delivery **mechanism** — fleet vs. courier — is not.)*
+- ~~Whether cash-on-delivery is supported at all~~ — **Resolved 2026-07-19: no cash-on-delivery.** See `DECISION_LOG.md`.
+- ~~Which local payment provider is integrated~~ — **Resolved 2026-07-19: Paystack.** See `DECISION_LOG.md`.
+- **The exact Nigerian VAT rate** (and whether alcohol/food attract different tax rules) — still open. **Resolved in part 2026-07-19: VAT is displayed during checkout, pricing is not tax-inclusive** — but the actual rate percentage remains undecided; the seeded Nigeria tax region still carries no rate.
+- ~~Which delivery-update channel(s) are committed to~~ — **Resolved 2026-07-19: Email and WhatsApp (both mandatory), plus in-app notifications.** See `DECISION_LOG.md`.
+- ~~The Lagos delivery-area definition~~ — **Resolved 2026-07-19 at the launch-scope level: Food Central delivers within Lagos Island; Wine & Spirits delivers across all of Lagos.** Both must be configurable without a code change. The exact geofencing/precision mechanism (postal-pattern zones vs. true radius) remains an engineering decision for whichever milestone builds it, not a further business decision.
 
 **Trust & checkout (`PRODUCT_BLUEPRINT.md` §9, §11):**
-- Exact age-gate mechanics: session duration, and whether it gates the whole site or only alcohol sections.
-- Whether a hard compliance re-check happens at order confirmation, in addition to the entry pop-up.
-- The alcohol return/refund policy (subject to legal limits on alcohol returns).
+- ~~Exact age-gate mechanics~~ — **Resolved in part, 2026-07-19: for MVP, age verification is a required checkbox ("I confirm that I am 18 years or older"), architected to be replaceable by a stronger mechanism (DOB, ID, third-party) later without a major refactor.** The existing Milestone 8 site-wide gate already satisfies "before browsing, not just at checkout"; this decision supplies the exact confirmation wording/mechanism, including for checkout's own confirmation step. Session duration specifics remain unstated.
+- Whether a hard compliance re-check happens at order confirmation, in addition to the entry pop-up. *(Still open.)*
+- The alcohol return/refund policy (subject to legal limits on alcohol returns). *(Still open.)*
+- ~~Guest checkout requirements~~ — **Reaffirmed 2026-07-19: guest checkout allowed, a guest must supply everything needed to fulfil the order, and account creation is encouraged (not forced) immediately after a successful guest checkout.** Matches the pre-existing business rule; not a change.
 
 **Product data (`PRODUCT_CATALOG.md`, `MEDUSA_EXTENSIONS.md`):**
 - Final field list for the wine-attributes module.
@@ -155,8 +156,11 @@ Grouped by document, so each can be resolved in context:
 - Wine & Spirits' nationwide delivery mechanism (in-house fleet, third-party courier, or both) — shared with the identical open item already tracked under Business rules/delivery, above.
 - The failed-delivery-attempt policy, particularly for perishable Food Central orders (number of attempts, what happens after the final attempt, and whether a second same-day attempt, refund, or redelivery charge applies).
 - The delivery-cancellation cutoff and policy (a refund, a partial charge, or no cancellation at all past a given fulfillment stage).
-- The delivery-fee schedule (flat fee, distance-based, free-above-threshold, or another structure).
+- ~~The delivery-fee schedule~~ — **Resolved in part, 2026-07-19: distance-based, starting around ₦3,000, fully configurable (never hardcoded).** The exact per-distance rule set remains a later, separate decision.
 - Whether age is physically re-verified at the point of hand-off for an order containing Wine & Spirits items — related to, but distinct from, the hard-recheck-at-order-confirmation question already tracked under Trust & checkout, above.
+- **New, 2026-07-19: kitchen/store operating hours are 9:00 AM–11:00 PM initially, configurable later without a code change** — resolves part of the "Kitchen operating hours" item under Food ordering operations, below; the capacity-driven early-closure *condition* remains unscoped.
+- **New, 2026-07-19: zero stock displays "Out of Stock"; no backorders are offered** — resolves `09_FOOD_ORDERING_SPECIFICATION.md`/`04_PRODUCT_LISTING_SPECIFICATION.md`'s inventory-display question at the policy level; already consistent with how Milestone 9's card `isVariantAvailable` check treats `allow_backorder`, no code change required.
+- **New, 2026-07-19: a coupon/discount-code capability should be built (Medusa's native Promotion Module is the very likely mechanism, per `API_DECISIONS.md`'s governing principle) — no coupon should be created yet.** Not yet scoped to a specific milestone; most likely Cart or Checkout.
 
 **Admin operations (`11_ADMIN_WORKFLOWS_SPECIFICATION.md` §6, §14, §15, §18, §19, §20):**
 - Who is operationally responsible for verifying allergen/ingredient data accuracy — shared with the identical open item already tracked under Product data, above.

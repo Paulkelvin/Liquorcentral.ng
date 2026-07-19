@@ -1,7 +1,7 @@
 # AI Handoff Document — LiquorCentral.ng
 
 **Status:** Approved (living, authoritative onboarding document)
-**Version:** 5.0
+**Version:** 5.1
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -54,7 +54,7 @@
 | **PostgreSQL** | Primary relational database (via Medusa) | Medusa's own requirement; ACID-compliant and battle-tested for transactional integrity of orders, payments, and inventory. |
 | **Redis** | Caching, session storage, background jobs/event queues | Required for production Medusa (its in-memory dev mode is explicitly not production-appropriate). Keeps checkout, search, and session operations fast under load. |
 
-Payment provider and delivery-notification channel are **not yet decided** — see Section 8 and `MEDUSA_EXTENSIONS.md` #4–#5. Payment provider is **launch-blocking** for `ROADMAP.md` Phase 1.
+**Payment provider is Paystack, and notification channels are Email + WhatsApp (mandatory) + in-app** — both approved 2026-07-19, see `DECISION_LOG.md` and `MEDUSA_EXTENSIONS.md` #4–#5. Neither blocks `ROADMAP.md` Phase 1 any longer; the notification *provider module's* own Tier B architecture document remains Draft, not yet Approved.
 
 ---
 
@@ -74,6 +74,20 @@ The following are **finalized, non-negotiable** unless Paul explicitly revisits 
 - **Guest checkout** is required throughout — never force account creation to complete a purchase.
 - **Age confirmation** is required before browsing alcohol content, not just at checkout.
 - **Premium positioning.** Feel: premium, modern, elegant, fast, trustworthy, mobile-first, effortless. Every design/product decision is judged against: *does this reduce friction and increase purchase confidence?*
+
+**Approved 2026-07-19 (full detail in `DECISION_LOG.md`):**
+- **Payment provider: Paystack. No cash-on-delivery.** Build now via environment variables; test credentials to follow.
+- **Notification channels: Email, WhatsApp, in-app** — Email and WhatsApp mandatory; architecture must allow adding/removing channels later without a rewrite.
+- **Delivery areas at launch: Food Central within Lagos Island; Wine & Spirits across all of Lagos** (a launch-scope narrowing of the existing "nationwide" long-term intent, not a reversal — see `DECISION_LOG.md`'s note on the resulting `BUSINESS_RULES.md` tension). Configurable later without a code change.
+- **Delivery pricing: distance-based, starting ~₦3,000, fully configurable, never hardcoded.**
+- **Operating hours: 9:00 AM–11:00 PM initially, configurable later without a code change.**
+- **Inventory: "Out of Stock" at zero stock; no backorders.**
+- **Search: one unified result list across both catalogs, with a small catalog badge/tag per result; never split into separate result pages** — a presentation rule implementable against native search today, ahead of any future Meilisearch adoption.
+- **Age verification (MVP): a required checkbox** ("I confirm that I am 18 years or older"), architected to be replaced by a stronger mechanism later without a major refactor.
+- **Currency: NGN only** (reaffirms the existing assumption). **Tax: VAT displayed at checkout; pricing not assumed tax-inclusive.**
+- **Coupons: build the capability (native Promotion Module, very likely); do not create any coupon yet.**
+- **Loyalty: confirmed out of scope for MVP. Wishlist: long-term roadmap only, not prioritized ahead of launch-critical commerce work.**
+- **Standing process rule: engineering now continues autonomously, milestone by milestone, without stopping for approval — interrupting only for a genuine business decision, a genuine architectural conflict, or a contradiction with an Approved document.** Missing credentials/API keys are never a reason to stop.
 
 ---
 
@@ -385,6 +399,8 @@ Every future AI assistant working on this project must:
 10. **Log every material decision** in `docs/DECISION_LOG.md` (append, don't edit old entries) and keep `docs/PROJECT_STATUS.md` current in the same change.
 11. **When reconciling or merging documentation branches, merge — do not recreate.** Preserve git history, prefer the more current source for genuinely conflicting content, and only edit a document when reconciliation is actually required (a real inconsistency), not because a second version of it exists somewhere.
 12. **Any milestone changing customer-facing or admin UI must include real browser screenshots of every significant state in its completion report** (a standing requirement since Milestone 8, not a one-time ask) — desktop/mobile/tablet where behavior differs, empty/loading/error/success states, and interactive states (open/closed, expanded/collapsed, hover/focus) where meaningful. Real running-application screenshots only, never mockups or generated images. Do not consider such a milestone complete on `tsc`/lint/Jest/axe-core passing alone — Milestone 8 found two genuine bugs (a mega-menu layout bug; a React-Server-Components cross-boundary constant bug) that every one of those checks missed, and only a real screenshot/end-to-end pass caught.
+13. **Continue building autonomously, milestone by milestone, without stopping for approval** (a standing rule since 2026-07-19, see `DECISION_LOG.md`) — the default is to keep implementing the confirmed specification order (Navigation → Homepage → Search → Product Listing → Product Details → Cart → Checkout → Customer Account → Food Ordering → Delivery Tracking, unless objective architectural evidence says otherwise). Stop only for a genuine business decision, a genuine architectural conflict, or a contradiction with an Approved document — not for ordinary engineering uncertainty resolvable from Approved documentation, repository history, Medusa's own documentation, or framework convention.
+14. **Never stop for missing API keys, credentials, or production secrets.** Implement against environment variables, leave clearly-labeled placeholders, validate everything validatable without live credentials (build/type-check/lint/tests/structure), and document in the completion report exactly what could not be validated because credentials were unavailable. This applies now specifically to Paystack (payment) and WhatsApp Business API (notifications) — both approved providers with no credentials supplied yet.
 
 ---
 
@@ -406,7 +422,7 @@ Every future AI assistant working on this project must:
 
 | Field | Value |
 |---|---|
-| Document Version | 5.0 |
+| Document Version | 5.1 |
 | Last Updated | 2026-07-19 |
-| Project Phase | Phase 0 complete and frozen; Phase 1 — Product Specifications complete (all 11 frozen); Phase 2 — Implementation Planning complete and formally concluded; **Engineering — Milestones 1–9 complete (Backend Foundation, `wine-details`, `food-details`, `delivery-slot`, storefront scaffold, Phase 0c Storefront Foundation, Navigation, Homepage, Product Listing)** |
-| Next Planned Milestone | Product Details (`05_PRODUCT_DETAILS_SPECIFICATION.md`) — builds directly on Product Listing's card-to-detail-page navigation; Cart (`06_CART_SPECIFICATION.md`) follows. Search and Checkout remain blocked (Meilisearch approval; payment-provider decision, respectively) — see Section 10 |
+| Project Phase | Phase 0 complete and frozen; Phase 1 — Product Specifications complete (all 11 frozen); Phase 2 — Implementation Planning complete and formally concluded; **Engineering — Milestones 1–9 complete (Backend Foundation, `wine-details`, `food-details`, `delivery-slot`, storefront scaffold, Phase 0c Storefront Foundation, Navigation, Homepage, Product Listing); payment provider (Paystack), notification channels, delivery areas/pricing, operating hours, and several other business decisions approved 2026-07-19 — see `DECISION_LOG.md`; engineering now proceeds continuously without stopping for per-milestone approval** |
+| Next Planned Milestone | Search (`03_SEARCH_SPECIFICATION.md`) — confirmed specification order places it before Product Listing (already complete out of that nominal order); a native-search unified-list-with-catalog-badge implementation, not yet Meilisearch-backed (still unapproved). Product Details and Cart follow. Checkout is newly unblocked (Paystack approved) — see Section 10 |
