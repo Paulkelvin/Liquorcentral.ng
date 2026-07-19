@@ -1,7 +1,7 @@
 # AI Handoff Document — LiquorCentral.ng
 
 **Status:** Approved (living, authoritative onboarding document)
-**Version:** 4.3
+**Version:** 4.4
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -37,7 +37,7 @@
 
 **Business model:** One company, two product lines, no third-party vendors. All inventory (liquor, wine, and food) is company-owned. All delivery is fulfilled by company-owned riders for Food Central — not a gig-economy logistics marketplace. Customers can check out as guests, must confirm legal drinking age before browsing alcohol, and can choose between same-day delivery, scheduled delivery, or pickup depending on product line and location.
 
-**Current project phase:** **Phase 0 (Brand & Design Foundation) is complete and frozen. Phase 1 — Product Specifications is complete: all 11 specifications are Approved — Frozen at v1.0.** `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 are approved and frozen as the project's authoritative foundation. **Phase 2 (Implementation Planning) is complete and formally concluded: Tier A is Approved (v1.5); five Tier B documents — the Product Relationship Module, the Wine & Spirits Attributes Module, the Food Attributes Module, the Delivery-Slot Module, and the Local Payment Provider Module — are Approved at v1.0; and `docs/IMPLEMENTATION_READINESS_REPORT.md` (v1.0, Approved) concludes that no Tier C document is required before implementation begins.** A living `docs/implementation-planning/MODULE_INVENTORY.md` now indexes every module identified project-wide. **Per Paul's explicit instruction, implementation does not begin automatically — it awaits his explicit approval following his review of `IMPLEMENTATION_READINESS_REPORT.md`.** See Section 8 for full detail.
+**Current project phase:** **Phase 0 (Brand & Design Foundation) is complete and frozen. Phase 1 — Product Specifications is complete: all 11 specifications are Approved — Frozen at v1.0.** `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 are approved and frozen as the project's authoritative foundation. **Phase 2 (Implementation Planning) is complete and formally concluded**, per `docs/IMPLEMENTATION_READINESS_REPORT.md` (v1.0, Approved). **Paul has approved beginning the engineering phase.** Engineering proceeds in small, reviewable milestones, stopping for Paul's explicit approval after each. **Milestone 1 — Backend Foundation is complete**: a Medusa v2.17.2 backend now exists at `backend/apps/backend`, running on real PostgreSQL and Redis in production mode, with a Nigeria/NGN region and store seeded. No custom module, no custom API route, and no storefront exist yet. See Section 8 for full detail and `backend/README.md` for the engineering-side detail this document only summarizes.
 
 **Product vision:** LiquorCentral is the platform Nigerians trust to deliver a bottle of wine and a home-cooked meal with the same care — curated, fast, and confident enough to buy on impulse. Every part of the product, from search to checkout, should reduce friction and increase the customer's confidence that they are buying the right product from a legitimate, premium operator.
 
@@ -106,7 +106,10 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
 /
 ├── README.md                          Root README — points here (/docs) as the source of truth
 ├── .gitmodules                        Registers the medusa/ submodule
-├── medusa/                            Vendored medusajs/medusa v2 (git submodule) — never edited directly
+├── medusa/                            Vendored medusajs/medusa v2 (git submodule) — never edited directly, reference only
+├── backend/                           Engineering — the actual Medusa v2 application (Yarn workspaces + Turborepo)
+│   ├── README.md                      What's built, what's configured, what's deliberately deferred
+│   └── apps/backend/                  The Medusa v2.17.2 application (@dtc/backend) — see backend/README.md
 └── docs/
     ├── AI_HANDOFF.md                  This file — read first
     ├── README.md                      Documentation index, reading order, continuity rules — see Section 6
@@ -153,7 +156,7 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
         └── 11_ADMIN_WORKFLOWS_SPECIFICATION.md       Approved — Frozen, v1.0
 ```
 
-No implementation code, UI mockups, or wireframes exist anywhere in this repository yet — `/docs` and the vendored `medusa/` submodule are the entire contents besides the root README.
+**`backend/` is engineering output, not documentation** — see `backend/README.md` for what it actually contains; this file (`AI_HANDOFF.md`) only summarizes it. As of Milestone 1, `backend/` contains a running Medusa v2 backend with no custom modules, no custom API routes, and no UI/storefront work of any kind — the storefront (Next.js) has not been started.
 
 ---
 
@@ -270,16 +273,18 @@ Anyone — human or AI — picking up this project should read, in this order:
 - **Remaining-Tier-B-modules recommendation approved by Paul (2026-07-19)** — per his direct instruction not to continue drafting Tier B documents purely for completeness, a review of `IMPLEMENTATION_PLANNING.md`, `MODULE_INVENTORY.md`, `PROJECT_STATUS.md`, and all five Approved Tier B documents found neither remaining candidate module (notification provider, Saved-for-Later) confirmed launch-blocking by any existing document. Implementation Planning did not continue to a sixth Tier B document.
 - **Implementation-readiness assessment approved by Paul (2026-07-19)** — reviewed `IMPLEMENTATION_PLANNING.md`, `MODULE_INVENTORY.md`, `ROADMAP.md`, `PROJECT_STATUS.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, all five Approved Tier B documents, `ARCHITECTURE.md`, `API_DECISIONS.md`, and all 11 frozen specifications, concluding no Tier C (API Contract Planning) document is required before implementation begins — `API_DECISIONS.md` already names only two anticipated custom routes platform-wide, `IMPLEMENTATION_PLANNING.md` §10's Exit Criteria treats Tier B "and/or" Tier C as sufficient, and the Approved Tier B documents' own Integration sections already do most of what Tier C would restate.
 - **`docs/IMPLEMENTATION_READINESS_REPORT.md` created (v1.0, Approved, 2026-07-19)** — formally concludes Phase 2 — Implementation Planning and authorizes the transition into implementation. A governance record only, containing no new architecture, API design, database schema, or code. Summarizes completed planning work; explains why Tier C is intentionally not being produced; lists remaining business decisions engineering cannot resolve, grouped by urgency; classifies every planning output as Ready to implement immediately / Ready once business decisions are supplied / Deferred until after MVP; recommends an implementation order (resolving `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §13's flagged Customer-Account/Admin-Workflows sequencing gap by recommending both be built in parallel with whichever phase supplies their data); and states remaining implementation risks and mitigations. Per Paul's explicit instruction, implementation does not begin automatically — it awaits his explicit approval following this report.
+- **Engineering phase begun; Milestone 1 — Backend Foundation complete (2026-07-19)** — Paul approved beginning engineering directly against `IMPLEMENTATION_READINESS_REPORT.md`, `IMPLEMENTATION_PLANNING.md`, `ARCHITECTURE.md`, `API_DECISIONS.md`, `MODULE_INVENTORY.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen specifications, with the explicit instruction to work in small, reviewable milestones and stop for approval after each. No genuine implementation conflict was found during review. Milestone 1 scaffolded a Medusa v2.17.2 backend at `backend/apps/backend` (Yarn workspaces + Turborepo, per `TECH_STACK.md`), wired to real PostgreSQL and Redis in production mode (event bus, workflow engine, locking, and cache all Redis-backed, per `ROADMAP.md` Phase 1's explicit instruction), with a LiquorCentral-specific seed replacing the generator's generic demo data: a "LiquorCentral" store (NGN), a "LiquorCentral Storefront" sales channel, a "Nigeria" region (using Medusa's built-in placeholder payment provider, not the real local provider — that remains separate, later, Paul-gated work), and a Nigeria tax-region shell with **no rate set** (an open business/legal decision, newly recorded). No stock locations, fulfillment configuration, or product data were seeded — out of scope for backend foundation. Validated against real, running Postgres/Redis: migrations completed, an admin user was created, `tsc --noEmit` passed cleanly, `medusa build` succeeded (backend and admin dashboard), the dev server booted with all four Redis connections confirmed, `GET /health` returned `200`, admin login succeeded, and the seeded region/store/tax-region were confirmed correct via the Admin API. Full detail in `backend/README.md` and `DECISION_LOG.md`.
 - **Repository reconciliation, three times:** first and second, 2026-07-18 — two unmerged documentation branches (`claude/medusa-repo-clone-ut5dl5` and `claude/ai-handoff-docs-ufdn5t`) were merged into a single authoritative branch, preserving full git history from both; this file was recovered from the latter and rewritten against the former's more current state; then that authoritative branch (`claude/project-onboarding-status-p35u3v`) fell behind `claude/medusa-repo-clone-ut5dl5` again after a separate session continued pushing to it (drafting and freezing specifications `07`–`11`), and was fast-forward-merged back up to match. Third, 2026-07-19 — this session's own independently-drafted `IMPLEMENTATION_PLANNING.md` (commit `4106b99`) was found to have genuinely diverged from `claude/project-onboarding-status-p35u3v`, which had in the meantime carried Phase 2 forward through Tier A completion and three approved Tier B modules; reconciled via a true three-way merge (`git merge --no-ff`, no rebase/squash/history-rewrite), keeping the more-advanced lineage's current-state documents and prepending a new entry to the two append-only logs (`DECISION_LOG.md`, `CHANGELOG.md`) rather than replacing them. See `DECISION_LOG.md` for all three full entries and the provenance note at the top of this document.
 
 **In Progress**
-- None. Phase 2 — Implementation Planning is complete and formally concluded (see above). No engineering/implementation work has begun.
+- None. Milestone 1 — Backend Foundation is complete. Milestone 2 does not begin until Paul directs it.
 
 **Not Started**
-- Any implementation code, UI design, or wireframes.
 - Every Phase 2 (Implementation Planning) Tier C–F document — per `IMPLEMENTATION_READINESS_REPORT.md` (v1.0, Approved), no Tier C document is required before implementation begins, and none is currently planned as a precondition to it.
 - Component-level design work (`ROADMAP.md` Phase 0c).
-- All custom Medusa modules listed in `MEDUSA_EXTENSIONS.md`, and the search/CMS integrations.
+- The storefront (Next.js) — not scaffolded yet.
+- Every custom Medusa module listed in `MEDUSA_EXTENSIONS.md` (`wine-details`, `food-details`, delivery-slot, the local payment provider, the notification provider) — each has an Approved Tier B architecture document, but none has been implemented in code.
+- Any custom API route, any stock location/fulfillment configuration, any product catalog data, and the search/CMS integrations.
 
 **Blocked**
 - **Payment provider is undecided** — blocks the start of `ROADMAP.md` Phase 1 (backend foundation), and blocks final implementation of `07_CHECKOUT_SPECIFICATION.md`'s Payment Behaviour/Payment State Behaviour sections and `10_DELIVERY_SPECIFICATION.md` once its turn comes. This is the project's only hard, launch-critical blocker at present.
@@ -289,7 +294,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 - **The local payment provider module's provider choice, cash-on-delivery decision, and refund policy are all undecided** — recorded in `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` §4/§10/§16/§22, none resolved; blocks full implementation of `07_CHECKOUT_SPECIFICATION.md`'s payment-dependent sections once Tier C/development begins, though none blocked this document's approval.
 
 **Awaiting Paul's Approval** (full list with document references in `docs/PROJECT_STATUS.md`)
-- **Review and approval of `docs/IMPLEMENTATION_READINESS_REPORT.md` (v1.0)** — the formal conclusion of Phase 2 and the authorization gate into implementation. Nothing in Section 10 begins without it.
+- **Which engineering milestone begins next** — see Section 10; nothing begins without Paul's explicit direction.
+- **The exact Nigerian VAT/tax treatment** — newly surfaced by Milestone 1; the backend's seeded Nigeria tax region deliberately carries no rate.
 - The newly-discovered `11_ADMIN_WORKFLOWS_SPECIFICATION.md` refund-mechanism documentation gap (`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` §1/§15/§21) — a completeness recommendation, not urgent, but worth Paul's awareness.
 - A formal `MEDUSA_EXTENSIONS.md` entry for the now-approved Product Relationship Module, and its staff-facing curation workflow (`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` §20).
 - Operational responsibility for verifying wine attribute accuracy (`TIER_B_WINE_ATTRIBUTES_MODULE.md` §16/§19) — newly discovered, not resolved.
@@ -318,7 +324,7 @@ Full detail in `ROADMAP.md`. Summary:
 - **Phase 0d — Product Specifications: ✅ Complete.** All 11 specifications Approved — Frozen at v1.0.
 - **Phase 0e — Documentation governance and repository reconciliation: ✅ Complete** (three times — see `DECISION_LOG.md`).
 - **Phase 0f — Implementation Planning (Paul's "Phase 2"): ✅ Complete.** `IMPLEMENTATION_PLANNING.md` v1.0 defines the six-tier structure; `TIER_A_FOUNDATIONAL_RECONCILIATION.md` (v1.5), `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, `TIER_B_WINE_ATTRIBUTES_MODULE.md`, `TIER_B_FOOD_ATTRIBUTES_MODULE.md`, `TIER_B_DELIVERY_SLOT_MODULE.md`, and `TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` are all Approved at v1.0; `MODULE_INVENTORY.md` (v1.8) is live; `IMPLEMENTATION_READINESS_REPORT.md` (v1.0, Approved) concludes no Tier C document is required before implementation begins. Implementation does not begin automatically — it awaits Paul's explicit approval following that report.
-- **Phase 1 — Foundation (backend):** Stand up Medusa on Postgres + Redis, connect a payment provider (launch blocker), ship Wine & Spirits end to end (browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery).
+- **Phase 1 — Foundation (backend):** Stand up Medusa on Postgres + Redis — **✅ complete (Engineering Milestone 1, 2026-07-19)**, see `backend/README.md`. Remaining: install/configure the storefront, connect a payment provider (launch blocker), ship Wine & Spirits end to end (browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery) — none of these started yet.
 - **Phase 2 — Product data foundation:** wine-attributes module. *(Note: `ROADMAP.md`'s own numbered "Phase 2" is a different, backend-track phase than Paul's "Phase 2 — Implementation Planning" above — see `ROADMAP.md`'s naming note.)*
 - **Phase 3 — Food Central catalog and delivery foundation:** food-attributes module, Lagos-scoped fulfillment, ordinary (non-scheduled) ordering and pickup.
 - **Phase 4 — Delivery scheduling:** delivery-slot module for same-day/scheduled Food Central delivery.
@@ -334,16 +340,16 @@ Full detail in `ROADMAP.md`. Summary:
 
 ## 10. Immediate Next Step
 
-Phase 1 — Product Specifications is complete (all 11 frozen), and Phase 2 — Implementation Planning is complete and formally concluded: Tier A is Approved (v1.5), all five Tier B documents are Approved at v1.0, and `docs/IMPLEMENTATION_READINESS_REPORT.md` (v1.0, Approved) concludes no Tier C document is required before implementation begins:
+Planning (Phases 0–2) is complete. Engineering has begun, and **Milestone 1 — Backend Foundation is complete** (2026-07-19) — see `backend/README.md` and `DECISION_LOG.md` for full detail:
 
-1. **Paul to review and approve `docs/IMPLEMENTATION_READINESS_REPORT.md`** — the formal conclusion of Phase 2 and the sole remaining gate before engineering begins. Its §5 recommends the implementation order; its §3 lists the business decisions engineering cannot resolve on its own.
-2. **Paul to supply the business decisions `IMPLEMENTATION_READINESS_REPORT.md` §3 names, as needed for the phase engineering is working on** — most urgently the payment-provider selection and cash-on-delivery policy (`MEDUSA_EXTENSIONS.md` #4), the project's sole confirmed launch-blocking decision, independent of any module's own architectural approval.
-3. **Per Paul's explicit instruction, implementation/engineering work does not begin automatically — it awaits his explicit approval** following his review of the readiness report.
+1. **Paul to review Milestone 1 and direct Milestone 2.** Candidate next milestones, per `IMPLEMENTATION_READINESS_REPORT.md` §5's recommended order: the first custom module (`wine-details`, though its field list is still open), or the storefront scaffold (`ROADMAP.md` Phase 1's remaining bullet). Nothing begins without Paul's explicit direction.
+2. **Per Paul's explicit instruction, engineering proceeds in small, reviewable milestones, stopping for approval after each** — the same discipline that governed every prior phase of this project, now applied to code.
+3. **Paul to supply the business decisions `IMPLEMENTATION_READINESS_REPORT.md` §3 names, as needed for whichever milestone comes next** — most urgently the payment-provider selection and cash-on-delivery policy (`MEDUSA_EXTENSIONS.md` #4), the project's sole confirmed launch-blocking decision. The exact Nigerian VAT/tax rate is a newly-surfaced item (Milestone 1's seeded tax region deliberately carries none).
 4. **The newly-discovered `11_ADMIN_WORKFLOWS_SPECIFICATION.md` refund-mechanism documentation gap** (`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` §1, §15, §21) remains open, worth Paul's awareness whenever convenient.
 5. **Two architectural questions from `TIER_B_DELIVERY_SLOT_MODULE.md` remain open**, explicitly deferred to implementation time per the readiness report: the pickup-slot mechanism boundary (§5, §19); and the kitchen-capacity-vs-rider-capacity reconciliation question (§6, §18).
-6. **Phase 0c (component specification)** also awaits Paul's direction to begin, and can run in parallel with engineering once it starts.
+6. **Phase 0c (component specification)** also awaits Paul's direction to begin, and can run in parallel with engineering.
 
-No Tier C–F document begins — none was found necessary — and no further Product Specification work is needed (all 11 are frozen and modifiable only in response to a new business decision). No implementation/engineering work begins without Paul's explicit go-ahead.
+No Tier C–F document begins — none was found necessary. No further Product Specification work is needed (all 11 are frozen and modifiable only in response to a new business decision). No further engineering milestone begins without Paul's explicit go-ahead.
 
 ---
 
@@ -383,7 +389,7 @@ Every future AI assistant working on this project must:
 
 | Field | Value |
 |---|---|
-| Document Version | 4.3 |
+| Document Version | 4.4 |
 | Last Updated | 2026-07-19 |
-| Project Phase | Phase 0 complete and frozen; Phase 1 — Product Specifications complete (all 11 frozen); Phase 2 — Implementation Planning complete and formally concluded (Tier A Approved v1.5, five Tier B modules Approved, `IMPLEMENTATION_READINESS_REPORT.md` v1.0 Approved — no Tier C required) |
-| Next Planned Milestone | Paul's review and approval of `IMPLEMENTATION_READINESS_REPORT.md`, and his supplying the business decisions it names — see Section 10 |
+| Project Phase | Phase 0 complete and frozen; Phase 1 — Product Specifications complete (all 11 frozen); Phase 2 — Implementation Planning complete and formally concluded; **Engineering begun — Milestone 1 (Backend Foundation) complete** |
+| Next Planned Milestone | Paul's direction on Engineering Milestone 2 (candidates: `wine-details` module, or the storefront scaffold), and his supplying the business decisions `IMPLEMENTATION_READINESS_REPORT.md` §3 names as needed — see Section 10 |

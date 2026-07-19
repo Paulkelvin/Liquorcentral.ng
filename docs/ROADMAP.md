@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 4.8
+**Version:** 4.9
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -87,10 +87,11 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 
-- Stand up Medusa on Postgres + Redis (production-mode from day one, never launched on in-memory dev defaults).
-- Install and configure the storefront (see `TECH_STACK.md`), regions/currency/tax for Nigeria.
-- Connect a payment provider (see `MEDUSA_EXTENSIONS.md` #4 — this decision is a launch blocker, not a nice-to-have).
-- Build and ship **Wine & Spirits only** end to end: browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery.
+- ✅ **Stand up Medusa on Postgres + Redis (production-mode from day one, never launched on in-memory dev defaults)** — complete, 2026-07-19 (Engineering Milestone 1). `backend/apps/backend` is a running Medusa v2.17.2 application on real PostgreSQL and Redis (event bus, workflow engine, locking, and cache all Redis-backed). A Nigeria region and NGN-currency store are seeded; see `backend/README.md`.
+- Install and configure the storefront (see `TECH_STACK.md`) — not yet started.
+- Regions/currency/tax for Nigeria — **partially complete**: a Nigeria region (NGN) and a Nigeria tax-region shell exist (Milestone 1), but the exact VAT/tax rate is still an open business/legal decision, not yet set.
+- Connect a payment provider (see `MEDUSA_EXTENSIONS.md` #4 — this decision is a launch blocker, not a nice-to-have) — not yet started; the seeded Nigeria region currently uses Medusa's built-in placeholder payment provider only.
+- Build and ship **Wine & Spirits only** end to end: browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery — not yet started.
 - Include age verification here, not later — it's a legal gate on checkout, not an add-on.
 
 ## Phase 2 — Product data foundation

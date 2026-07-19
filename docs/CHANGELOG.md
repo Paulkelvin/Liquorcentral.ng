@@ -1,11 +1,30 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.7
+**Version:** 4.8
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
-Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v45 — 2026-07-19 — Engineering phase begun; Milestone 1 — Backend Foundation complete
+
+**Context:** Paul approved beginning the engineering phase directly against `IMPLEMENTATION_READINESS_REPORT.md`, `IMPLEMENTATION_PLANNING.md`, `ARCHITECTURE.md`, `API_DECISIONS.md`, `MODULE_INVENTORY.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen specifications, with the explicit instruction to work in small, reviewable milestones and stop for approval after each. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `backend/` — not part of `/docs`):**
+
+- A Medusa v2.17.2 backend application at `backend/apps/backend`, scaffolded via Medusa's official generator into a Yarn-workspaces + Turborepo monorepo per `TECH_STACK.md`. Wired to real PostgreSQL and Redis in production mode (event bus, workflow engine, locking, and cache modules all Redis-backed, per `ROADMAP.md` Phase 1's explicit instruction never to launch on in-memory dev defaults).
+- A LiquorCentral-specific store-level seed (`src/migration-scripts/initial-data-seed.ts`) replacing the generator's generic demo data: a "LiquorCentral" store (NGN), a "LiquorCentral Storefront" sales channel, a "Nigeria" region, and a Nigeria tax-region shell (no rate set — open decision, not invented).
+- `backend/README.md` documenting what's built, what's configured, and what's deliberately deferred to a later milestone.
+
+**Changed:**
+
+- `docs/PROJECT_STATUS.md` (→ v4.6) — "Current phase" updated to record Paul's approval to begin engineering and Milestone 1's completion; new "Completed work" entry with full detail; "Work in progress" and "Next recommended task" rewritten; a new open decision recorded (exact Nigerian VAT/tax rate, surfaced by Milestone 1).
+- `docs/ROADMAP.md` (→ v4.9) — Phase 1's bullets updated to reflect Milestone 1's actual progress (backend infrastructure ✅, region/tax partially complete, storefront/payment-provider/full buy-flow not yet started).
+
+**Not changed:** no planning document's substance was altered, no frozen document was touched, and no business or architecture decision was made or revisited by this milestone — two build-tooling issues were fixed (a Yarn Classic `workspaces`/`private` requirement, and `ts-node` hoisting) as mechanical necessities, not decisions requiring approval.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry recording Paul's approval to begin engineering and Milestone 1's scope/validation), `docs/AI_HANDOFF.md` (current-phase, project-state, roadmap, and immediate-next-step sections updated to reflect the engineering phase's start).
 
 ## v44 — 2026-07-19 — `IMPLEMENTATION_READINESS_REPORT.md` created (v1.0, Approved) — Phase 2 formally concluded
 
