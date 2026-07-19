@@ -1,0 +1,257 @@
+# Tier B — Delivery Slot Module
+
+**Status:** Draft
+**Version:** 1.0
+**Owner:** Program / Engineering
+**Last Updated:** 2026-07-19
+
+This document is a Tier B (Module Data Planning) deliverable, per `IMPLEMENTATION_PLANNING.md` §4 and §6, defining the architecture of the delivery-slot scheduling module (`MEDUSA_EXTENSIONS.md` #3) — the mechanism for bookable, capacity-limited delivery time windows that Food Central's same-day and scheduled ordering depends on. `IMPLEMENTATION_PLANNING.md` §6 explicitly sequences this module third in Tier B, immediately after `wine-details` and `food-details` (both now Approved) and before the payment and notification provider modules. A re-verification against the six standing selection criteria (§0) confirms this module remains the correct next choice, and this review surfaces a genuine correction to its recorded dependency count (§1) — the same class of finding both prior attribute-module reviews each produced.
+
+**This document is purely architectural.** It defines the module's responsibilities, ownership, boundaries, business purpose, and integration points — nothing else. **It is not a database design, not an API specification, not implementation code, and not a UI component definition.** No table is named, no field is typed, no endpoint is shaped, no component is designed. No Approved — Frozen document is modified by this document.
+
+---
+
+## 0. Module Selection Verification
+
+Before drafting, the six criteria established for prior Tier B selections were re-applied to every remaining candidate in `MODULE_INVENTORY.md` — delivery-slot scheduling, the local payment provider, the notification provider, and Saved-for-Later — rather than assuming `IMPLEMENTATION_PLANNING.md` §6's original ordering is automatically still correct.
+
+| Criterion | Delivery-slot scheduling | Next-closest candidate |
+|---|---|---|
+| Frozen specifications depending on it | **Six** — `01`, `02`, `07`, `09`, `10`, `11` (corrected; see §1) | Notification provider: three (`08`, `09`, `10`) |
+| Launch criticality | Yes — `MODULE_INVENTORY.md` marks it launch-critical for Food Central's same-day/scheduled path specifically | Local payment provider: yes, but the *business decision* (provider choice), not the architecture, is what blocks launch |
+| Architectural centrality | High — `MEDUSA_EXTENSIONS.md` #3 names it "the one real gap in an otherwise fully native fulfillment story"; no native Medusa entity models a capacity-limited time slot | Payment/notification providers: lower — both largely conform to an existing Medusa provider interface rather than introducing a new concept |
+| Dependency ordering (`IMPLEMENTATION_PLANNING.md` §6) | Named third, immediately after both attribute modules, explicitly before the payment and notification provider modules | Payment/notification: named fourth, after this module |
+| Tier A findings | Already tracked at Row 3 of the definitive baseline (`TIER_A_FOUNDATIONAL_RECONCILIATION.md` §14) — "Scoped, not built," blocked only on operational parameters (slot length/cutoff/capacity), the same kind of non-blocking open item that did not stop either attribute module from being architected | Payment: Row 4, blocked on provider choice *and* now known to need pending/failed/cancelled/expired/retry state support — a materially larger open surface |
+| Later implementation-planning work depending on it | Blocks Tier C's Cart & Checkout and Food Ordering & Delivery API contract planning directly, per `IMPLEMENTATION_PLANNING.md` §6's own sequencing logic | Payment/notification: belong to **Tier D — Integration Planning**, a distinct, later tier (`IMPLEMENTATION_PLANNING.md` §4) — drafting either now would sequence ahead of the plan, not merely choose a lower-priority module |
+
+**Conclusion: delivery-slot scheduling remains the correct next Tier B module, confirmed rather than merely repeated.** No candidate outranks it on any criterion, and the payment and notification provider modules are, in this document's own governing framework, categorized under a later tier entirely (Tier D), not a same-tier alternative choice.
+
+---
+
+## 1. Why This Module Exists
+
+**Six frozen Product Specifications depend on this module — a wider footprint than previously recorded.** `TIER_A_FOUNDATIONAL_RECONCILIATION.md` §14 (Row 3) and `MODULE_INVENTORY.md` currently record the dependent list as `06`, `07`, `09`, `10`. Verifying each specification's own stated backend dependency directly, per the same discipline `TIER_B_WINE_ATTRIBUTES_MODULE.md` and `TIER_B_FOOD_ATTRIBUTES_MODULE.md` each already applied to their own dependency counts, finds this list both over- and under-inclusive:
+
+- **`07_CHECKOUT_SPECIFICATION.md` §10, §21, §26** — the module's most direct consumer: slot selection behaviour, capacity enforcement at both selection and final submission, and the Backend Requirements table naming it explicitly.
+- **`09_FOOD_ORDERING_SPECIFICATION.md` §9, §10, §25** — same-day cutoff and scheduling mechanics restate this module's mechanism rather than redefining it; the Backend Requirements table names it as a shared dependency with `07`.
+- **`10_DELIVERY_SPECIFICATION.md` §9, §14, §25** — the post-booking operational commitment, rescheduling mechanics, and Backend Requirements table.
+- **`11_ADMIN_WORKFLOWS_SPECIFICATION.md` §13, §25** — staff configure slot length, cutoff times, and capacity as operational parameters; the Backend Requirements table names it directly.
+- **`01_NAVIGATION_SPECIFICATION.md`'s Backend Data Requirements table (§4)** — "Food Central menu structure (§14) | Available items, prep time/availability | `food-details` module (#2) + delivery-slot module (#3)." Not previously reflected in the baseline.
+- **`02_HOMEPAGE_SPECIFICATION.md` §8.5 and its Backend Data Requirements table (§9)** — "Food Central Spotlight | Available menu items, prep-time/availability, same-day cutoff | Food-attributes module (#2) + delivery-slot module (#3)." Not previously reflected in the baseline.
+
+**`06_CART_SPECIFICATION.md` does not, on inspection, carry a genuine functional dependency on this module, and is corrected out of the baseline.** Its own Backend Requirements section (§26) does not name the delivery-slot module in any row. Its behavioral sections state the opposite of a dependency directly: §6 ("Scheduling and exact slot selection happen at checkout, not in the cart... the actual slot picker is `07_CHECKOUT_SPECIFICATION.md`'s responsibility"), §10 and §11 (both defer the actual booking to checkout), and §17 ("an exact date depends on the address and, for Food Central, the slot ultimately chosen at checkout"). Cart's mentions of "delivery-slot parameters" are limited to naming an open business decision in passing prose (§6, §28) — an acknowledgment that the parameter question exists, not a consumption of the module's data. This is corrected as a swap, not merely an addition, mirroring `TIER_B_WINE_ATTRIBUTES_MODULE.md`'s own precedent of correcting a wrongly-attributed dependency rather than only adding missed ones.
+
+This document exists to hold the architecture no prior document defines: `DELIVERY_MODEL.md` and `MEDUSA_EXTENSIONS.md` #3 both correctly identify *that* this module is needed and sketch its shape in a sentence each, but neither defines its lifecycle, its capacity model, its relationship to Wine & Spirits' entirely separate delivery mechanism, or how it integrates with the six specifications that depend on it — the fourth module (after the Product Relationship Module, `wine-details`, and `food-details`) this project's Phase 2 work formalizes.
+
+## 2. Business Justification
+
+- **Directly implements `BUSINESS_RULES.md`'s core Food Central delivery rules** — same-day delivery, scheduled delivery, and pickup are each named as required capabilities; this module is the mechanism that makes same-day and scheduled delivery real, since neither can exist without a bookable, capacity-aware time concept.
+- **Directly implements `PRODUCT_BLUEPRINT.md` §10's Delivery Strategy** — "a small custom slot-scheduling module tied to kitchen prep time" is named there as the one genuine backend gap in an otherwise native fulfillment story; this document is the architectural realization of that already-approved decision.
+- **Protects the honesty principle every specification touching delivery already establishes** — `09_FOOD_ORDERING_SPECIFICATION.md` §1 ("speed is never achieved by hiding a real constraint") and `10_DELIVERY_SPECIFICATION.md` §1 ("a delivery window is a window, not a precise promise... a status is only shown once it is genuinely true") both depend on this module's capacity data being real and current — an honest cutoff or an honest "slot full" state is only possible if the underlying capacity mechanism is trustworthy.
+- **Directly implements `DELIVERY_MODEL.md`'s explicit UX finding** — vague "same-day where available" promises measurably underperform explicit cutoffs; this module is the mechanism an explicit, dynamic cutoff is built on, not merely a display choice layered on top of nothing.
+- **Serves the Confident Buyer and Guided Browser customer intents specifically for Food Central** (`09_FOOD_ORDERING_SPECIFICATION.md` §3) — both need to trust that a stated cutoff or slot is real before committing to an order, which requires the capacity data behind it to be accurate at the moment of decision, not only at the moment of booking.
+
+## 3. Responsibilities
+
+- **Represent a bookable time window for Food Central delivery or pickup, scoped to a specific date and time range** — the single concept `MEDUSA_EXTENSIONS.md` #3 names as the one real gap in Medusa's native fulfillment model.
+- **Track a capacity limit and a current booked count for each such window**, so that a booking can be accepted or rejected based on whether capacity remains, per `MEDUSA_EXTENSIONS.md` #3's explicit technical description.
+- **Enforce that capacity atomically, as part of the same transaction as order placement** — a slot's booked count is incremented, and a full slot is rejected, within the identical transactional boundary the order-placement workflow already provides, preserving Medusa's compensation/rollback guarantees exactly as `MEDUSA_EXTENSIONS.md` #3 specifies, not as a separate, looser check run before or after it.
+- **Represent same-day and scheduled delivery as the same underlying mechanism**, restating `DELIVERY_MODEL.md`'s explicit finding directly: same-day is mechanically a slot dated today with a cutoff time, not a parallel system requiring its own data model.
+- **Link to the native Fulfillment module's Shipping Options**, per `MEDUSA_EXTENSIONS.md` #3's explicit statement, so that a booked slot is coherently attached to the delivery method a customer actually selected.
+- **Remain the raw scheduling/capacity data layer only** — never the delivery status, never the kitchen's operating-hours configuration, never the rider assignment, and never the order itself. See §4 for the explicit boundaries this implies.
+
+## 4. Explicit Non-Responsibilities
+
+- **This module does not define or store kitchen operating hours, capacity-driven early-closure triggers, or general kitchen throughput.** `09_FOOD_ORDERING_SPECIFICATION.md` §22 and `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §8 both name kitchen operating-hours configuration as a distinct, not-yet-scoped operational surface (`MODULE_INVENTORY.md`'s own "Kitchen operating-hours configuration" row) — a genuinely different question ("when is the kitchen open, and when does it close early for capacity reasons") from this module's own question ("how many bookings can this specific time window still accept"). This module's slots are offered *within* whatever window kitchen-hours configuration allows; it does not define that window itself.
+- **This module does not compute Food Central's product-level availability state.** `09_FOOD_ORDERING_SPECIFICATION.md` §6's three-state model (available now / available to schedule / unavailable) is a separate, native, flag-based mechanism — this module answers "is this specific delivery/pickup window still bookable," not "is this specific dish currently orderable." The two are read together by consuming surfaces but are architecturally independent, the identical kind of adjacent-but-separate boundary `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §4/§5 already draws between attribute data and live availability state.
+- **This module does not determine the delivery status progression.** `10_DELIVERY_SPECIFICATION.md` §10 already specifies Food Central's cook-to-order status progression (Order Received → Preparing → Ready/Out for Delivery → Completed) as the Order module's own native status field/workflow — this module's booked slot informs *when* that progression is expected to occur, it does not hold or advance the progression itself.
+- **This module does not perform rider assignment or dispatch.** `10_DELIVERY_SPECIFICATION.md` §7 and `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §13 both confirm rider assignment remains a manual, staff-coordinated operational process for v1, with no dedicated software module — this module's booked slot is an input a staff member consults when assigning a rider, not a mechanism that performs the assignment.
+- **This module does not calculate or hold delivery fees.** `10_DELIVERY_SPECIFICATION.md` §16 confirms delivery fees are confirmed at checkout and are an operational/business parameter — this module's data (which slot was booked) may inform a fee calculation performed elsewhere, but this module holds no price of any kind.
+- **This module does not perform address-based delivery-eligibility enforcement.** `07_CHECKOUT_SPECIFICATION.md` §11 already establishes this as the native Fulfillment module's (Service Zone/Geo Zone) responsibility — this module offers time-slot availability only once an order is already address-eligible; it does not itself check whether an address is inside or outside Lagos.
+- **This module does not decide rescheduling or cancellation policy.** `10_DELIVERY_SPECIFICATION.md` §14 names the pre-/post-fulfillment-start cancellation distinction and leaves the exact cancellation-cutoff policy open — this module supplies the booking/rebooking mechanism (a new slot booked against an existing order), it does not decide when rescheduling or cancellation is permitted.
+- **This module does not set its own operational parameters.** Slot length, cutoff times, and capacity per slot are staff-configured operational inputs (§9, §14), restating `MEDUSA_EXTENSIONS.md` #3's explicit statement that Paul's approval is required for these parameters, not for the mechanism itself — this document does not propose, narrow, or invent any of them.
+- **This module has no application to Wine & Spirits.** See §8.
+- **This module is not a database design, an API specification, implementation code, or a UI component definition**, per this document's explicit scope. It does not resolve the operational-parameter open decisions it depends on (§18, §21).
+
+## 5. Scheduling Concepts
+
+- **Same-day and scheduled delivery are one mechanism, not two.** Restating `DELIVERY_MODEL.md`'s explicit finding directly: a same-day slot is simply a slot dated today, carrying an explicit cutoff time before which it remains bookable; a scheduled slot is dated in the future. Neither requires a data model the other doesn't already provide.
+- **A cutoff is a property of a same-day slot's own timing, not a separate mechanism layered on top of it.** Once a same-day slot's cutoff passes, that slot stops being offered as bookable for today — restating `09_FOOD_ORDERING_SPECIFICATION.md` §6's and §9's Availability Transition Behaviour framing at the slot level specifically: a dish flipping from available-now to schedulable is a product-level event; a slot's own cutoff passing is the fulfillment-level event that helps drive it, and the two are related but distinct (§4).
+- **Pickup's relationship to this mechanism is narrower than delivery's, and this document states the boundary explicitly rather than assuming symmetry.** `MEDUSA_EXTENSIONS.md` #3 describes the module as tracking "delivery/pickup time slots," while `DELIVERY_MODEL.md`'s own "What's already native" section states pickup is modeled as an ordinary Shipping Option requiring no new code. Reconciling the two: this module's architecture is *capable* of representing a capacity-limited pickup time window, should the business ever require booked pickup slots the way delivery slots are booked — but no frozen specification currently requires this. `07_CHECKOUT_SPECIFICATION.md` §9/§10, `09_FOOD_ORDERING_SPECIFICATION.md` §11, and `10_DELIVERY_SPECIFICATION.md` §8 each describe pickup's "ready-time estimate" as a simpler, honestly-estimated readiness time — closer in kind to a preparation-time estimate than to a capacity-booked reservation. **This document does not resolve which model pickup should ultimately use; it records that the question exists and that this module's shape does not foreclose either answer** (§19).
+- **A slot's date/time window is an operational parameter, not computed by this module.** Slot length and the specific windows offered on a given day are staff-set inputs (§9), consistent with the treatment every other operational parameter throughout `/docs` already receives.
+
+## 6. Capacity Concepts
+
+- **Each slot carries a capacity limit and a current booked count** — two numbers, not a computed formula. `MEDUSA_EXTENSIONS.md` #3's own Assumption is restated directly: capacity is set operationally (kitchen throughput, rider availability), never calculated automatically from anything else in the system.
+- **A slot is offered as bookable only while its booked count remains below its capacity limit.** Once a slot reaches capacity, it is no longer offered — restating the platform-wide "labeled, never silently removed" discipline at the slot level: a full slot is shown as unavailable, honestly, never simply absent from the picker with no explanation.
+- **Capacity belongs to the slot, not to any single order or product.** A slot's capacity limit reflects the kitchen's and/or rider fleet's genuine throughput for that window (an operational judgment, §18), never a per-product or per-customer allocation — this module has no concept of reserving capacity for a specific product or customer type.
+- **Kitchen capacity (how many dishes the kitchen can prepare in a window) and delivery/rider capacity (how many deliveries can be completed in a window) are, conceptually, two different constraints that may both bear on a single slot's true capacity limit** — this module does not resolve how those two constraints combine into the one capacity number it tracks; that reconciliation is an operational judgment behind the number staff enter (§18), not an architectural distinction this module's own data model needs to represent as two separate fields. This document names the distinction so it is not silently flattened without anyone noticing, without prescribing how the resulting single figure should be derived.
+- **Capacity enforcement is atomic with order placement** (§3) — a race between two customers booking the last unit of capacity in the same slot is resolved by the same locking/reservation discipline Medusa already uses elsewhere (e.g., inventory reservation), restating `MEDUSA_EXTENSIONS.md` #3's explicit Risk directly: this module does not invent a new concurrency-control mechanism.
+
+## 7. Time-Slot Lifecycle
+
+Described here at a conceptual level only — no state-machine implementation, enum, or code construct is proposed; this section names the real-world stages a slot passes through so that Tier C's eventual API planning and any future data-model work have an agreed conceptual sequence to build against.
+
+- **Offered** — a slot exists, is dated today or in the future, has not yet reached its cutoff (if same-day) or its date (if scheduled), and has capacity remaining. This is the only state in which a slot is presented to a customer as bookable (`07_CHECKOUT_SPECIFICATION.md` §10).
+- **Booked** — an order has reserved capacity within the slot, atomically with order placement (§6). A slot may hold many bookings simultaneously, up to its capacity limit; "Booked" describes the relationship between one order and one slot, not a state the slot itself exclusively occupies.
+- **At Capacity** — a slot whose booked count has reached its capacity limit. It is no longer Offered to a new customer, restating the honest, labeled-not-hidden treatment (§6); it may still hold its existing bookings.
+- **Rebooked** — a booking within a slot is moved to a different slot (`10_DELIVERY_SPECIFICATION.md` §14's rescheduling mechanism) — the original slot's booked count is decremented and the new slot's is incremented, as one coherent operation from the customer's and the order's point of view, not two independent, uncoordinated changes.
+- **Cancelled (booking-level)** — a specific booking within a slot is withdrawn (per whatever cancellation policy is eventually decided, §4, §18), freeing the capacity it held. This is distinct from the slot itself being retired.
+- **Expired** — a same-day slot whose cutoff has passed without ever being fully booked simply ceases to be offered for that day; a scheduled slot whose date has passed and was never booked behaves identically. Expiry is a natural consequence of time passing, not an error state, restating the same honest, expected-operational-reality framing `09_FOOD_ORDERING_SPECIFICATION.md` §16 already applies to ordinary menu availability changes.
+- **Fulfilled** — this module does not itself track a "fulfilled" state. Once an order's own delivery-status progression (`10_DELIVERY_SPECIFICATION.md` §10) reaches Completed, the slot's role in that specific order's story is over; the slot's own lifecycle (Offered/At Capacity/Expired) is otherwise unaffected by any single order's status, since a slot's capacity may still be shared with other, independently-progressing orders.
+
+**No stage above is ever skipped or shown out of order to a customer or to staff**, restating the same integrity principle `09_FOOD_ORDERING_SPECIFICATION.md` §7 and `10_DELIVERY_SPECIFICATION.md` §10 each already apply to their own status progressions.
+
+## 8. Scope: Food Central Only, Not Wine & Spirits
+
+- **This module applies exclusively to Food Central.** `07_CHECKOUT_SPECIFICATION.md` §10 states this directly: "Applies to Food Central only — Wine & Spirits' nationwide delivery uses standard delivery windows, not a bookable slot." `10_DELIVERY_SPECIFICATION.md` §6/§7 confirms the identical boundary from the operational side: Wine & Spirits uses a delivery *window*, not a capacity-limited, individually-bookable *slot*.
+- **This is a deliberate, already-established architectural distinction, not an oversight this document should smooth over.** Wine & Spirits' nationwide, warehouse-dispatched delivery and Food Central's same-day/scheduled, cooked-to-order delivery are genuinely different operational problems (`PRODUCT_BLUEPRINT.md` §10) — a bookable capacity-limited slot answers a question ("can the kitchen and riders handle one more order in this specific hour") that simply does not arise the same way for a nationwide courier/warehouse dispatch model.
+- **This document does not propose extending this module to Wine & Spirits.** If Wine & Spirits' delivery mechanism (still an open business decision, `PROJECT_STATUS.md`) is ever resolved in a way that introduces its own capacity-limited scheduling need, that would be a new architectural decision requiring its own review — not an assumed extension of this module's current scope.
+
+## 9. Ownership
+
+This module's governance is a three-way split, structurally similar to `wine-details`' model (`TIER_B_WINE_ATTRIBUTES_MODULE.md` §7) but with materially different content, since this module's "values" are operational parameters rather than descriptive facts:
+
+- **The module's existence, architecture, and mechanism (this document) are an engineering/architecture decision.**
+- **Operational parameters — slot length, cutoff times, and capacity per slot — are a business/operations decision requiring Paul's explicit approval**, restating `MEDUSA_EXTENSIONS.md` #3's own statement directly ("Paul's approval required: No, on the mechanism itself — but yes on operational parameters"). This document does not narrow or resolve that requirement (§18, §21).
+- **Day-to-day capacity configuration and adjustment (e.g., temporarily reducing a slot's capacity for a known kitchen constraint) is staff operational input, not a merchandising or engineering decision** — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §13 already establishes that "delivery-slot capacity is managed by staff as an operational parameter," and §12 establishes that a kitchen-capacity conflict discovered after booking is surfaced to staff as an operational alert requiring action, not an automated resolution.
+- **Kitchen operating-hours configuration is explicitly not this module's governance to define** (§4) — it is a separate, not-yet-scoped surface this module's own slot offerings must respect as an external constraint, not something this document's ownership model extends to cover.
+
+## 10. Relationship with Medusa's Native Fulfillment Flow
+
+- **This module is linked to the native Fulfillment module's Shipping Options**, restating `MEDUSA_EXTENSIONS.md` #3 directly — a booked slot is attached to the delivery or pickup Shipping Option the customer actually selected, following the identical `defineLink` pattern `ARCHITECTURE.md` establishes as the rule for every custom module on this project: new data as a new, small module, linked to an existing one, never editing the existing module's own tables.
+- **Capacity enforcement attaches to the checkout/order-placement workflow as a workflow hook**, restating `MEDUSA_EXTENSIONS.md` #3's technical description directly: the booked-count increment (or rejection, if full) happens as one step within the same workflow that places the order, preserving the workflow engine's resumable, compensable step-sequence guarantee (`ARCHITECTURE.md`'s description of `completeCartWorkflow`) rather than as a separate, uncoordinated check that could pass while the order itself later fails, or vice versa.
+- **This module reuses Medusa's existing locking/reservation mechanism** (the same one used elsewhere for inventory reservation) **rather than introducing a new concurrency-control approach**, restating `MEDUSA_EXTENSIONS.md` #3's explicit Risk/mitigation directly — a genuinely new locking mechanism, invented specifically for this module, would be exactly the kind of bespoke solution `IMPLEMENTATION_PLANNING.md` §2 principle 2 (Medusa-native first) warns against.
+- **Wine & Spirits' native delivery-window mechanism (Service Zone/Geo Zone, standard Shipping Options) is entirely untouched by this module** (§8) — the two fulfillment models remain two configurations of the same native primitives, restating `PRODUCT_BLUEPRINT.md` §10 directly, not two systems this module needs to reconcile.
+
+## 11. Integration with Cart
+
+**No functional integration exists, and none is proposed.** As established in §1's dependency correction, `06_CART_SPECIFICATION.md` explicitly and consistently defers slot selection to checkout — "the actual slot picker is `07_CHECKOUT_SPECIFICATION.md`'s responsibility" (§6) — and its own Backend Requirements section (§26) does not name this module. The cart states, informationally, that a Food Central item will require a delivery choice and shows general timing expectations (`06_CART_SPECIFICATION.md` §17), but never queries or books against this module's actual slot/capacity data. This is stated explicitly here so a future contributor does not assume a dependency the cart's own frozen specification does not describe.
+
+## 12. Integration with Checkout
+
+**This is the module's primary and most direct consumer.** `07_CHECKOUT_SPECIFICATION.md` §9 (Delivery Method Selection) and §10 (Delivery Slot Selection Behaviour) together specify the customer-facing mechanics this module's data supports:
+
+- Selecting delivery for Food Central leads directly into slot selection; selecting pickup leads to a ready-time estimate instead (§5's pickup-boundary distinction).
+- Same-day delivery is presented with an explicit, dynamic cutoff; scheduled delivery is presented as a calendar-style date-and-time selection — both consuming this module's Offered-slot data (§7).
+- **Slot capacity is checked at two distinct moments — at the point of selection, and again at final submission** (`07_CHECKOUT_SPECIFICATION.md` §10, §21) — a slot that fills between those two moments must be caught before payment is charged, requiring this module's capacity-enforcement workflow hook (§10) to run as part of the same transaction as order placement, not merely at the earlier selection step alone.
+- **A slot that fills between selection and submission is a named blocking condition** (`07_CHECKOUT_SPECIFICATION.md` §21, its Customer Decision States table) — this module's job is to make that condition detectable and honest at the moment it occurs; the customer-facing explanation and resolution path remain `07_CHECKOUT_SPECIFICATION.md`'s own responsibility.
+- This module supplies the data and the capacity-enforcement mechanism; `07_CHECKOUT_SPECIFICATION.md` §9/§10 remain the sole authority on the customer-facing sequencing, wording, and interaction pattern (a calendar-style grid, not a dropdown or scroll-wheel, per `DELIVERY_MODEL.md`) around it.
+
+## 13. Integration with Food Ordering
+
+`09_FOOD_ORDERING_SPECIFICATION.md` §9 (Same-Day Ordering Rules & Cutoff Behaviour) and §10 (Scheduling Orders) both explicitly reuse this module's mechanism rather than redefining it:
+
+- §9 restates `DELIVERY_MODEL.md`'s "same-day is a slot dated today with a cutoff" finding directly, confirming Food Central's menu-browsing experience leads into this module's existing mechanism rather than inventing a parallel one.
+- §10 states directly: "A scheduled order is confirmed against kitchen capacity at the moment of booking, using the same delivery-slot capacity-enforcement mechanism already specified in `07_CHECKOUT_SPECIFICATION.md` §10 — not a separate booking system for Food Central specifically."
+- **Kitchen operating hours and capacity-driven early closure** (`09_FOOD_ORDERING_SPECIFICATION.md` §22, Kitchen Operational Considerations) constrain which slots this module can offer as bookable in the first place — a genuinely related but architecturally separate configuration surface (§4), not this module's own data.
+- **A scheduled order's kitchen-capacity conflict discovered after booking** (`09_FOOD_ORDERING_SPECIFICATION.md` §9, `10_DELIVERY_SPECIFICATION.md` §9) is surfaced as an operational alert requiring staff action (`11_ADMIN_WORKFLOWS_SPECIFICATION.md` §19) — this module's role is limited to holding the booking data that makes such a conflict detectable; the resolution policy (renegotiating the slot) remains a genuinely open business decision (§18, `10_DELIVERY_SPECIFICATION.md` §28), not resolved by this module.
+
+## 14. Integration with Delivery
+
+`10_DELIVERY_SPECIFICATION.md` §9 (Same-Day & Scheduled Delivery Fulfillment) is this module's operational-consequence consumer — restating directly: "the customer-facing mechanics of same-day cutoffs and scheduled-slot selection are entirely `07_CHECKOUT_SPECIFICATION.md` §10's and `09_FOOD_ORDERING_SPECIFICATION.md` §9/§10's responsibility... this section specifies only what happens operationally once a slot is booked." Concretely:
+
+- **A confirmed slot becomes an operational commitment the moment it is booked** — kitchen preparation timing and rider availability are both planned against the booked slot, not an approximate timeframe, restating `10_DELIVERY_SPECIFICATION.md` §9 directly.
+- **Rescheduling reuses this module's own booking mechanism** — `10_DELIVERY_SPECIFICATION.md` §14 states directly that "a rescheduled order is, mechanically, a new slot booked against the same existing order," restating this module's Rebooked lifecycle concept (§7) rather than inventing a parallel rescheduling mechanism.
+- **Wine & Spirits' delivery windows are entirely outside this module's scope** (§8) — `10_DELIVERY_SPECIFICATION.md` §6/§7 confirm Wine & Spirits uses standard delivery windows, never a bookable slot from this module.
+- **The exact fee schedule and the failed-delivery-attempt policy** (`10_DELIVERY_SPECIFICATION.md` §16, §13) **are not this module's concern** (§4) — this module's data may inform those decisions elsewhere, but holds no fee and no attempt-count of its own.
+
+## 15. Integration with Admin Workflows
+
+`11_ADMIN_WORKFLOWS_SPECIFICATION.md` §13 (Delivery Management) already specifies the staff-facing counterpart to this module directly: "delivery-slot capacity is managed by staff as an operational parameter — slot length, cutoff times, and capacity per slot are staff-configurable." This document does not add to or redefine that workflow; it confirms this module is the underlying mechanism §13 already assumes exists. Additionally:
+
+- **`11_ADMIN_WORKFLOWS_SPECIFICATION.md` §12 (Food Order Workflow)** names a kitchen-capacity conflict discovered after booking as something staff must be alerted to and act on (§19, Notifications) — restating §13 of this document directly, this module's booking data is what makes such a conflict detectable in the first place.
+- **§19 (Notifications)** names "a delivery-slot nearing capacity" as a category of staff-facing alert this module's data must support — exact thresholds remain an operational parameter (§9), not fixed by this document.
+- **§22 (Operational Decision States)** reuses the platform-wide five-state taxonomy with a delivery-slot-specific trigger ("a delivery slot... cap nearing its limit") already named there — this module's job is to make that state detectable; the staff-facing decision-state vocabulary itself remains `11_ADMIN_WORKFLOWS_SPECIFICATION.md`'s own responsibility.
+
+## 16. Non-Integrations (Confirmed, Not Assumed)
+
+Reviewed against every frozen specification; the following have **no dependency** on this module, stated explicitly so a future contributor does not assume one that was never specified:
+
+- **Cart (`06_CART_SPECIFICATION.md`)** — see §1's dependency correction and §11 — no functional integration exists.
+- **Customer Account (`08_CUSTOMER_ACCOUNT_SPECIFICATION.md`)** — order history and reordering re-validate price and availability via native mechanisms; no section of `08` references this module.
+- **Search (`03_SEARCH_SPECIFICATION.md`)** — no facet, ranking signal, or indexed field in `03` depends on slot/capacity data; search operates at the product-discovery level, not the fulfillment-scheduling level.
+- **Product Listing (`04_PRODUCT_LISTING_SPECIFICATION.md`) and Product Details (`05_PRODUCT_DETAILS_SPECIFICATION.md`)** — both consume the separate `food-details` module and Food Central's live availability-state mechanism (`09_FOOD_ORDERING_SPECIFICATION.md` §6) for card- and page-level messaging; neither references this module's own slot/capacity data directly.
+- **`wine-details`, `food-details`, and the Product Relationship Module** — no relationship. Those hold descriptive product data and curated cross-product associations respectively; this module holds fulfillment scheduling/capacity data. The three are read independently and composed only at the presentation layer where a consuming surface happens to need more than one, never merged.
+- **Wine & Spirits' delivery mechanism, in every specification that mentions it** — see §8. This module has zero application to the nationwide, window-based Wine & Spirits fulfillment model.
+
+## 17. CMS & Merchandising Responsibilities
+
+**None.** Unlike `wine-details`, `food-details`, and the Product Relationship Module — each of which holds descriptive or curated content with at least a plausible future CMS or merchandising dimension — this module holds only operational scheduling and capacity data. No specification proposes editorial content about a delivery slot, and no merchandising curation applies to a time window's availability the way it applies to a promotional collection or a curated pairing. This is stated explicitly, rather than left silent, so a future contributor does not assume this module needs a content-governance model it has no actual use for.
+
+## 18. Operational Assumptions
+
+- **Slot capacity is set operationally (kitchen throughput, rider availability), never calculated automatically from any other system's data** — restating `MEDUSA_EXTENSIONS.md` #3's explicit Assumption directly; this module does not derive capacity from, for example, historical order volume or staffing schedules, unless and until a future decision says otherwise.
+- **The exact reconciliation of kitchen-capacity and rider/delivery-capacity constraints into the single capacity figure this module tracks (§6) is an operational judgment made by whoever sets that figure, not an architectural computation this module performs.**
+- **Kitchen operating hours, once scoped (§4, a genuinely open surface), will constrain which windows this module is asked to offer — this module assumes that constraint is supplied to it, not computed by it.**
+- **Concurrent booking correctness relies on Medusa's existing reservation/locking mechanism** (§10) — this document assumes that mechanism is adequate for this module's needs, consistent with `MEDUSA_EXTENSIONS.md` #3's own framing, and does not propose an alternative.
+- **This module assumes a single delivery-slot mechanism serves both same-day and scheduled bookings** (§5) — no separate scheduling system is assumed to exist or to be needed.
+
+## 19. Future Extensibility
+
+Nothing in this section is built now — it documents capability this module's shape already leaves room for:
+
+- **A capacity-limited pickup time slot**, symmetric to a delivery slot, should the business ever require booked pickup windows rather than a simple ready-time estimate (§5) — this module's architecture does not foreclose this, but no frozen specification currently requires it, and this document does not design it.
+- **Separately-modeled kitchen-capacity and rider-capacity constraints**, should a single reconciled capacity figure (§6) ever prove operationally insufficient — a capability observation, not a proposal, since no specification currently asks for this distinction to be data-modeled explicitly.
+- **Extension to a future business line or fulfillment model**, per `PRODUCT_BLUEPRINT.md` §17's general future-expansion framing — not authorized or scheduled by any document today, and this module's current scope remains Food Central only (§8).
+- **A dedicated rider-dispatch/route-optimization module** (`10_DELIVERY_SPECIFICATION.md` §27, `PRODUCT_BLUEPRINT.md` §17) could, in the future, consume this module's booking data as an input — a capability observation about a module explicitly out of scope today, not a dependency this document creates.
+
+## 20. Risks
+
+- **Six specifications now depend on this module with zero prior architecture, mirroring the same risk `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` §19 named for its own domain** — if a future implementation treats this module as a simple boolean "slot available/unavailable" flag rather than the capacity-tracked, lifecycle-aware mechanism this document describes, several of the six integrations above (§11–§15) would require rework.
+- **Concurrency correctness is the single highest-severity technical risk this module carries**, restating `MEDUSA_EXTENSIONS.md` #3's own explicit Risk directly — a race condition on slot capacity under concurrent bookings, if not implemented against Medusa's existing reservation mechanism (§10, §18), would produce exactly the kind of overbooked, dishonest slot state `10_DELIVERY_SPECIFICATION.md` §1's entire philosophy exists to prevent.
+- **The pickup-slot boundary (§5) is easy to blur in practice** — a future contributor could plausibly extend this module to pickup bookings by default, assuming symmetry with delivery, when no frozen specification currently requires it; this document names the risk explicitly so it is decided on purpose rather than discovered as an inconsistency later.
+- **The kitchen-hours/slot-capacity boundary (§4, §6) is a second, related risk** — treating kitchen operating-hours configuration as if it were this module's own data (rather than an external constraint this module's offerings must respect) would conflate two genuinely different not-yet-scoped surfaces, mirroring the exact kind of risk `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §20 already named for its own Attributes-vs-Operational-Status boundary.
+- **Operational parameters remain open, and this module's six dependent specifications are all, to varying degrees, waiting on them** — slot length, cutoff timing, and capacity-per-slot must be approved before any of the six integrations (§11–§15) can be fully implemented, though none is blocked from being architected in the meantime, consistent with `IMPLEMENTATION_PLANNING.md` §5's explicit permission to plan ahead of an open business decision.
+- **`MEDUSA_EXTENSIONS.md` #3 already names this as "moderate" implementation difficulty specifically because it is genuine new logic, not just data modeling** — this document does not reduce that assessed difficulty; if anything, the six-specification dependency count sharpens the cost of getting the lifecycle and concurrency model wrong.
+
+## 21. Dependencies
+
+- **Depends on the native Fulfillment module (Shipping Options, Service/Geo Zones)**, already native and unaffected by this document.
+- **Depends on Paul's explicit approval of slot length, cutoff timing, and capacity-per-slot** — an already-tracked open business decision (`PROJECT_STATUS.md`, `MEDUSA_EXTENSIONS.md` #3); this document does not propose, narrow, or invent any of them.
+- **Depends on a future decision or mechanism scoping kitchen operating-hours configuration** (§4, §18) — an already-flagged, not-yet-scoped surface (`09_FOOD_ORDERING_SPECIFICATION.md` §22, `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §8, `MODULE_INVENTORY.md`) this module's own slot offerings must eventually respect.
+- **Depends on a future decision on the failed-delivery-attempt and cancellation-cutoff policies** (`10_DELIVERY_SPECIFICATION.md` §13, §14, §28) to fully specify how this module's booking data is used when a delivery fails or a customer cancels — this module's own architecture does not require those policies to be internally complete, but full integration behavior (§14) does.
+- **Blocks Tier C's Cart & Checkout and Food Ordering & Delivery API contract planning**, per `IMPLEMENTATION_PLANNING.md` §6's own sequencing logic — both should sequence after this module's lifecycle and capacity model are approved.
+- **Recommends a bookkeeping correction to `TIER_A_FOUNDATIONAL_RECONCILIATION.md`'s §6/§14 baseline table and `MODULE_INVENTORY.md`'s delivery-slot row**, correcting the dependent-specification list from `06,07,09,10` to `01,02,07,09,10,11` (§1) — applied in this document's own tracking-document updates, following the identical precedent both prior attribute-module reviews established for their own dependency-list corrections.
+- **Depends on Paul's explicit confirmation that this module proceeds into further Tier B/C planning** — per `IMPLEMENTATION_PLANNING.md` §2 principle 4, this document does not assume approval; it documents the architecture so that confirmation, when given, has something concrete to approve.
+
+## 22. Quality Checklist
+
+Every future addition to this module's planning must be able to answer **yes** to all of the following:
+
+- [ ] **Does it treat same-day and scheduled delivery as one mechanism, never two parallel systems?** Checked against §5.
+- [ ] **Does it keep kitchen operating-hours configuration as an external constraint, never this module's own data?** Checked against §4, §6, §18.
+- [ ] **Does it keep Food Central's live product-availability state architecturally separate from this module's slot/capacity data?** Checked against §4.
+- [ ] **Does it avoid assuming pickup is booked through this same mechanism** without a specification actually requiring it? Checked against §5, §19.
+- [ ] **Does it preserve atomic capacity enforcement within the order-placement transaction**, rather than a separate, looser check? Checked against §3, §6, §10.
+- [ ] **Does it avoid inventing an answer to any open operational parameter** (slot length, cutoff, capacity) rather than recording it? Checked against §9, §18, §21.
+- [ ] **Does it stay scoped to Food Central only, never assuming Wine & Spirits applicability?** Checked against §8.
+- [ ] **Does it avoid deciding delivery-fee, failed-delivery, or cancellation policy?** Checked against §4, §14.
+- [ ] **Does it stay purely architectural**, introducing no table, field type, endpoint, or code? Checked against this document's own scope statement.
+
+## 23. Acceptance Criteria
+
+- [ ] A delivery/pickup time slot is represented as a bookable window with a capacity limit and a current booked count, never as a simple available/unavailable boolean.
+- [ ] Same-day and scheduled delivery are represented through the identical underlying mechanism, with same-day distinguished only by being dated today and carrying an active cutoff.
+- [ ] Capacity is enforced atomically as part of the same transaction as order placement, at both the point of selection and the point of final submission.
+- [ ] A slot that reaches capacity is shown as unavailable, honestly and specifically, never silently absent or indistinguishable from a slot that was never offered.
+- [ ] Kitchen operating-hours configuration, Food Central's live product-availability state, delivery status progression, rider assignment, delivery fees, and address-eligibility enforcement are each confirmed as separate mechanisms this module does not hold or compute.
+- [ ] Rescheduling an order is represented as a new slot booked against the same existing order, never a separate rescheduling data structure.
+- [ ] This module has no application to Wine & Spirits' delivery mechanism anywhere in its architecture.
+- [ ] No operational parameter (slot length, cutoff timing, capacity per slot) is finalized, assumed, or invented by this document.
+- [ ] This document introduces no database table, field type, API endpoint, or UI component definition anywhere within it.
+- [ ] The corrected dependency list (`01`,`02`,`07`,`09`,`10`,`11`) is reflected consistently in `TIER_A_FOUNDATIONAL_RECONCILIATION.md` and `MODULE_INVENTORY.md` in the same change that approves this document.
+
+---
+
+## Integration with Navigation
+
+Added during review for completeness, mirroring the identical precedent `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`'s own "Integration with Navigation" appendix and `TIER_B_FOOD_ATTRIBUTES_MODULE.md`'s own "Integration with Food Ordering" appendix established for an equivalent gap: `01_NAVIGATION_SPECIFICATION.md`'s Backend Data Requirements table (§4) names this module directly, jointly with `food-details`, as a data source for "available items, prep time/availability" within Food Central's flat menu structure (§1's dependency correction). This module's role in that dependency is narrow and specific: supplying same-day cutoff/availability timing so Navigation's Food Central menu structure can reflect whether items are currently orderable — it does not define any navigation-specific behavior itself. `01_NAVIGATION_SPECIFICATION.md` §14 remains the sole authority on how Food Central's navigation behaves; this section exists only to confirm the dependency is real and correctly scoped, not to extend this module's responsibilities.
+
+## Integration with Homepage
+
+Also added during review for completeness: `02_HOMEPAGE_SPECIFICATION.md` §8.5 (Food Central Spotlight) and its own Backend Data Requirements table (§9) name this module directly, jointly with `food-details`, as a data source: "Food Central Spotlight | Available menu items, prep-time/availability, same-day cutoff | Food-attributes module + delivery-slot module." A "spotlight" of today's available menu is meaningless without the same-day cutoff/availability timing this module supplies — the identical reasoning `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §11 already applies to its own, symmetric Homepage dependency. This module's role is limited to supplying that timing data; `02_HOMEPAGE_SPECIFICATION.md` §8.5 remains the sole authority on the Spotlight section's own layout, pacing, and presentation.
+
+---
+
+**Document status:** Draft (v1.0). This is the first architectural draft of the Delivery Slot Module, reviewed against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, `TIER_B_WINE_ATTRIBUTES_MODULE.md`, `TIER_B_FOOD_ATTRIBUTES_MODULE.md`, `MODULE_INVENTORY.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `DELIVERY_MODEL.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen Product Specifications. Surfaces one corrected dependency count (§1, six specifications rather than four — `06` corrected out, `01`/`02`/`11` added), one architectural clarification requiring an explicit decision this document does not make (the pickup-slot boundary, §5, §19), and one named-but-unresolved reconciliation question (kitchen-capacity vs. rider-capacity constraints combining into one capacity figure, §6, §18) — none of them resolved here. Per `DOCUMENTATION_GOVERNANCE.md` §5 and `IMPLEMENTATION_PLANNING.md` §7, this draft awaits Paul's explicit review before any refinement pass or freeze to Version 1.0 — Approved begins.

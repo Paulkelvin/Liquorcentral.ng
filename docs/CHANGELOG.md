@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.2
+**Version:** 4.3
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v40 — 2026-07-19 — `TIER_B_DELIVERY_SLOT_MODULE.md` drafted at v1.0 — Draft
+
+**Context:** Following the round-three repository reconciliation (below), Paul directed the fourth Tier B module, delivery-slot scheduling, re-verified against the six standing selection criteria and every remaining candidate before drafting. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/implementation-planning/TIER_B_DELIVERY_SLOT_MODULE.md` (v1.0, Draft) — purely architectural definition of the delivery-slot scheduling module: why it exists, responsibilities and explicit non-responsibilities, scheduling and capacity concepts, a conceptual time-slot lifecycle, a three-way ownership split, its relationship with Medusa's native fulfillment flow, integration points across Checkout/Food Ordering/Delivery/Admin Workflows, a confirmed non-integration with Cart, future extensibility, risks, dependencies, a quality checklist, and acceptance criteria. Two appendix sections added for completeness: Integration with Navigation, Integration with Homepage.
+
+**Changed:**
+
+- `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md` bumped to v1.3 — delivery-slot's dependency list in §6/§14 corrected from `06`,`07`,`09`,`10` to `01`,`02`,`07`,`09`,`10`,`11` (bookkeeping correction, not a new architectural finding).
+- `docs/implementation-planning/MODULE_INVENTORY.md` bumped to v1.5 — delivery-slot row's Status and Depended On By list corrected to match; two new not-yet-scoped rows added for the pickup-slot boundary and kitchen-vs-rider capacity reconciliation questions.
+- `docs/README.md`, `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/AI_HANDOFF.md` updated to reflect the draft's existence, the corrected dependency count, and the two newly-recorded open architectural questions.
+
+**Not changed:** no frozen or previously-Approved document's substance was altered; `TIER_A_FOUNDATIONAL_RECONCILIATION.md` and `MODULE_INVENTORY.md` received only the bookkeeping correction described above.
 
 ## v39 — 2026-07-19 — Repository reconciliation, round three: independent `IMPLEMENTATION_PLANNING.md` draft superseded
 
