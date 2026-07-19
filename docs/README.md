@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.2
+**Version:** 3.9
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -18,8 +18,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 3. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this next.
 4. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
 5. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
-6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. All 11 are now Approved — Frozen at v1.0; see the "Product Specifications" entry in the map below.
-7. **`IMPLEMENTATION_PLANNING.md`** — now that Phase 1 is complete, this governs Phase 2: how engineering/implementation architecture documents are organized, sequenced, owned, and approved before any code, schema, or API design is written.
+6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below. All 11 are now Approved — Frozen.
+7. **`IMPLEMENTATION_PLANNING.md`** — the master governing document for Phase 2 (Implementation Planning), now that Phase 1's specifications are complete. Read this before any implementation-planning document is drafted.
 8. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
@@ -44,8 +44,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) | What design principles govern the interface (not yet: what it looks like)? |
 | [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What are the exact logo/type/asset specs? *(placeholder — narrower scope now that `BRAND_IDENTITY.md` exists)* |
 | [`specifications/`](./specifications/) | What exactly should each product surface do, in enough behavioral detail to design, build, and test it? See below. |
+| [`IMPLEMENTATION_PLANNING.md`](./IMPLEMENTATION_PLANNING.md) | What is Phase 2, what implementation-planning documents will it produce, in what order, and what must be true before development begins? |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
-| [`IMPLEMENTATION_PLANNING.md`](./IMPLEMENTATION_PLANNING.md) | Phase 2 — how are engineering/implementation documents organized, sequenced, owned, and approved before any code is written? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |
 
@@ -69,30 +69,21 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 
 All 11 planned specifications are now **Approved — Frozen** at v1.0 — Phase 1 — Product Specifications is complete. Each was sequenced only on Paul's explicit direction, and each was drafted, reviewed, and frozen in two passes rather than invented ahead of approval — see `PROJECT_STATUS.md` for what comes next.
 
-## Implementation Planning (`/docs/implementation/`)
+## Implementation Planning (`/docs/IMPLEMENTATION_PLANNING.md`, `/docs/implementation-planning/`)
 
-Phase 2 — Implementation Planning translates the 11 frozen Product Specifications into engineering architecture: how Medusa is extended, how the storefront is structured, how each integration is wired — never what the code itself looks like. `IMPLEMENTATION_PLANNING.md` is this phase's governing document, defining the 16 required architecture documents below, their dependencies, recommended creation order, and the shared philosophy each must follow. See `IMPLEMENTATION_PLANNING.md` §6 for full detail on each.
+With Phase 1 complete, **Phase 2 — Implementation Planning** translates the 11 frozen specifications into concrete, reviewable implementation plans — data-model planning, API contract planning, integration planning, and testing planning — before any code is written. `IMPLEMENTATION_PLANNING.md` is the master governing document for this phase: its purpose and scope, the complete hierarchy of implementation documents it will produce, their dependencies and creation order, the approval workflow, versioning, engineering philosophy, and the exit criteria that must be true before development begins.
 
-| Implementation Document | Status |
-|---|---|
-| `01_SYSTEM_ARCHITECTURE.md` | Not Started |
-| `02_DATABASE_ARCHITECTURE.md` | Not Started |
-| `03_MEDUSA_ARCHITECTURE.md` | Not Started |
-| `04_API_SPECIFICATION.md` | Not Started |
-| `05_FRONTEND_ARCHITECTURE.md` | Not Started |
-| `06_COMPONENT_ARCHITECTURE.md` | Not Started |
-| `07_PAGE_ARCHITECTURE.md` | Not Started |
-| `08_SANITY_ARCHITECTURE.md` | Not Started |
-| `09_SEARCH_ARCHITECTURE.md` | Not Started |
-| `10_MEDIA_ARCHITECTURE.md` | Not Started |
-| `11_AUTHENTICATION_ARCHITECTURE.md` | Not Started |
-| `12_PAYMENT_ARCHITECTURE.md` | Not Started |
-| `13_NOTIFICATION_ARCHITECTURE.md` | Not Started |
-| `14_DEPLOYMENT_ARCHITECTURE.md` | Not Started |
-| `15_IMPLEMENTATION_SEQUENCING.md` | Not Started |
-| `16_TESTING_STRATEGY.md` | Not Started |
+Actual Tier A–F documents live in `/docs/implementation-planning/`, parallel to how `/docs/specifications/` holds Product Specifications:
 
-None of these documents exists yet, and none begins without Paul's explicit direction to start that specific one — the identical discipline that governed Product Specifications, applied one tier down.
+| Document | Tier | Status |
+|---|---|---|
+| [`TIER_A_FOUNDATIONAL_RECONCILIATION.md`](./implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md) | A — Foundational Reconciliation | **Approved**, v1.2 |
+| [`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`](./implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md) | B — Module Data Planning | **Approved**, v1.0 |
+| [`TIER_B_WINE_ATTRIBUTES_MODULE.md`](./implementation-planning/TIER_B_WINE_ATTRIBUTES_MODULE.md) | B — Module Data Planning | **Approved**, v1.0 |
+| [`TIER_B_FOOD_ATTRIBUTES_MODULE.md`](./implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md) | B — Module Data Planning | **Approved**, v1.0 |
+| [`MODULE_INVENTORY.md`](./implementation-planning/MODULE_INVENTORY.md) | Living index, not a tier document | **Approved** (living, always current), v1.4 |
+
+No further Tier B–F document has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction. `MODULE_INVENTORY.md` is the single-page index of every module identified so far — which are native, custom, an extension/integration, launch-critical, or optional — updated in the same change as any future Tier B document.
 
 ## Document status convention
 

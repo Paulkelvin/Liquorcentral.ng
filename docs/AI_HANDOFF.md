@@ -1,13 +1,13 @@
 # AI Handoff Document — LiquorCentral.ng
 
 **Status:** Approved (living, authoritative onboarding document)
-**Version:** 4.0
+**Version:** 3.8
 **Owner:** Program
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 **This is the primary onboarding document for this project.** If you are a new developer or a new AI session, read this document in full before touching code, writing content, or answering questions about the project. Do not rely on prior chat history — none is available to you, and none should be assumed to exist. This document, and the rest of `/docs`, is the single source of truth.
 
-> **Provenance note (read this once, then ignore it).** On 2026-07-18, project documentation existed on two independently-authored git branches that had diverged from a common commit and were never merged: `claude/medusa-repo-clone-ut5dl5` (which carried Phase 0 through to completion — Brand Identity, Experience Principles, Design System v2.0, and the opening of Phase 1 Product Specifications) and `claude/ai-handoff-docs-ufdn5t` (which authored this file but stopped several hours earlier, before any of that later work happened, and whose own copies of the shared documents were consequently out of date). Each branch's `PROJECT_STATUS.md` was unaware of the other branch's existence — one described this file as "lost," which was inaccurate; it was simply on an unmerged branch. Both branches have since been reconciled onto a single working branch: `claude/medusa-repo-clone-ut5dl5`'s documentation set was kept as the base (it held the latest approved work), and this file was recovered from `claude/ai-handoff-docs-ufdn5t` and rewritten against the reconciled state. Full detail is in `DECISION_LOG.md` under "Repository reconciliation: two unmerged documentation branches merged into one authoritative branch." If `/docs` ever again appears sparser than this document describes, check `git log --all` and `git branch -r` before concluding documentation is missing — history is never rewritten on this project, so nothing is ever actually lost, only possibly unmerged.
+> **Provenance note (read this once, then ignore it).** This project's documentation has been reconciled across unmerged git branches **twice**. First, on 2026-07-18, two independently-authored branches that had diverged from a common commit — `claude/medusa-repo-clone-ut5dl5` (Phase 0 through to completion, plus the opening of Phase 1) and `claude/ai-handoff-docs-ufdn5t` (which authored this file, then stopped) — were merged onto a single working branch, `claude/project-onboarding-status-p35u3v`, keeping `claude/medusa-repo-clone-ut5dl5`'s documentation set as the base and recovering this file from the other. Second, later the same day, `claude/project-onboarding-status-p35u3v` itself fell behind `claude/medusa-repo-clone-ut5dl5` again — a separate session had continued pushing to the latter, independently drafting and freezing specifications `07`–`11` — and was fast-forward-merged back up to match once discovered. Both reconciliations are logged in full in `DECISION_LOG.md`. **The lesson that now applies twice:** if `/docs` ever again appears sparser than this document describes, or a chat claims work exists that isn't visible here, check `git log --all` and `git branch -r` before concluding documentation is missing or fabricating a replacement — history is never rewritten on this project, so nothing is ever actually lost, only possibly unmerged, and it is normal for a fast-moving multi-session project to need this check more than once.
 
 ---
 
@@ -37,7 +37,7 @@
 
 **Business model:** One company, two product lines, no third-party vendors. All inventory (liquor, wine, and food) is company-owned. All delivery is fulfilled by company-owned riders for Food Central — not a gig-economy logistics marketplace. Customers can check out as guests, must confirm legal drinking age before browsing alcohol, and can choose between same-day delivery, scheduled delivery, or pickup depending on product line and location.
 
-**Current project phase:** **Phase 0 (Brand & Design Foundation) and Phase 1 (Product Specifications) are both complete and frozen. Phase 2 — Implementation Planning is now underway.** `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 are approved and frozen as the project's authoritative foundation. All 11 Product Specifications (`01_NAVIGATION_SPECIFICATION.md` through `11_ADMIN_WORKFLOWS_SPECIFICATION.md`) are Approved — Frozen at v1.0. `docs/IMPLEMENTATION_PLANNING.md` now governs how Phase 2's engineering architecture documents are organized, sequenced, and approved before any implementation code, database schema, API design, or frontend component is written. See Section 8 for full detail.
+**Current project phase:** **Phase 0 (Brand & Design Foundation) is complete and frozen. Phase 1 — Product Specifications is complete: all 11 specifications are Approved — Frozen at v1.0.** `PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`, and `DESIGN_SYSTEM.md` v2.0 are approved and frozen as the project's authoritative foundation. **Phase 2 (Implementation Planning) is underway: Tier A is complete (v1.2), and all three Tier B documents drafted so far — the Product Relationship Module, the Wine & Spirits Attributes Module, and the Food Attributes Module — are Approved at v1.0.** A living `docs/implementation-planning/MODULE_INVENTORY.md` now indexes every module identified project-wide. No Tier C–F document has been drafted. See Section 8 for full detail.
 
 **Product vision:** LiquorCentral is the platform Nigerians trust to deliver a bottle of wine and a home-cooked meal with the same care — curated, fast, and confident enough to buy on impulse. Every part of the product, from search to checkout, should reduce friction and increase the customer's confidence that they are buying the right product from a legitimate, premium operator.
 
@@ -126,26 +126,31 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
     ├── DELIVERY_MODEL.md              Delivery/pickup/scheduling strategy
     ├── USER_FLOWS.md                  Step-by-step customer journeys (no visuals)
     ├── BRAND_GUIDELINES.md            Placeholder — tactical asset execution (logo, exact tokens), narrower scope now that BRAND_IDENTITY.md exists
+    ├── IMPLEMENTATION_PLANNING.md     Master governing document for Phase 2 — Implementation Planning
     ├── ROADMAP.md                     Phased build sequence (no dates)
     ├── DECISION_LOG.md                Append-only record of every material decision
     ├── CHANGELOG.md                   Changelog of the documentation set itself
-    ├── IMPLEMENTATION_PLANNING.md      Phase 2 — governs how implementation/engineering documents are organized, sequenced, and approved
-    ├── specifications/                Phase 1 — behavior-level specs for each product surface — all 11 Approved — Frozen, v1.0
-    │   ├── 01_NAVIGATION_SPECIFICATION.md          Approved — Frozen, v1.0
-    │   ├── 02_HOMEPAGE_SPECIFICATION.md             Approved — Frozen, v1.0
-    │   ├── 03_SEARCH_SPECIFICATION.md                Approved — Frozen, v1.0
-    │   ├── 04_PRODUCT_LISTING_SPECIFICATION.md       Approved — Frozen, v1.0
-    │   ├── 05_PRODUCT_DETAILS_SPECIFICATION.md       Approved — Frozen, v1.0
-    │   ├── 06_CART_SPECIFICATION.md                  Approved — Frozen, v1.0
-    │   ├── 07_CHECKOUT_SPECIFICATION.md               Approved — Frozen, v1.0
-    │   ├── 08_CUSTOMER_ACCOUNT_SPECIFICATION.md      Approved — Frozen, v1.0
-    │   ├── 09_FOOD_ORDERING_SPECIFICATION.md         Approved — Frozen, v1.0
-    │   ├── 10_DELIVERY_SPECIFICATION.md              Approved — Frozen, v1.0
-    │   └── 11_ADMIN_WORKFLOWS_SPECIFICATION.md       Approved — Frozen, v1.0
-    └── implementation/                 Phase 2 — engineering architecture documents, per `IMPLEMENTATION_PLANNING.md` §6 — none yet created
+    ├── implementation-planning/       Phase 2 — Tier A–F implementation-planning documents
+    │   ├── TIER_A_FOUNDATIONAL_RECONCILIATION.md      Approved, v1.2 — complete
+    │   ├── TIER_B_PRODUCT_RELATIONSHIP_MODULE.md      Approved, v1.0 — first Tier B module
+    │   ├── TIER_B_WINE_ATTRIBUTES_MODULE.md           Approved, v1.0 — second Tier B module
+    │   ├── TIER_B_FOOD_ATTRIBUTES_MODULE.md           Approved, v1.0 — third Tier B module
+    │   └── MODULE_INVENTORY.md                        Approved, living, v1.4 — index of every module
+    └── specifications/                Phase 1 — behavior-level specs for each product surface (complete)
+        ├── 01_NAVIGATION_SPECIFICATION.md          Approved — Frozen, v1.0
+        ├── 02_HOMEPAGE_SPECIFICATION.md             Approved — Frozen, v1.0
+        ├── 03_SEARCH_SPECIFICATION.md                Approved — Frozen, v1.0
+        ├── 04_PRODUCT_LISTING_SPECIFICATION.md       Approved — Frozen, v1.0
+        ├── 05_PRODUCT_DETAILS_SPECIFICATION.md       Approved — Frozen, v1.0
+        ├── 06_CART_SPECIFICATION.md                  Approved — Frozen, v1.0
+        ├── 07_CHECKOUT_SPECIFICATION.md               Approved — Frozen, v1.0
+        ├── 08_CUSTOMER_ACCOUNT_SPECIFICATION.md      Approved — Frozen, v1.0
+        ├── 09_FOOD_ORDERING_SPECIFICATION.md         Approved — Frozen, v1.0
+        ├── 10_DELIVERY_SPECIFICATION.md              Approved — Frozen, v1.0
+        └── 11_ADMIN_WORKFLOWS_SPECIFICATION.md       Approved — Frozen, v1.0
 ```
 
-No implementation code, UI mockups, wireframes, database schemas, or API designs exist anywhere in this repository yet — `/docs` and the vendored `medusa/` submodule are the entire contents besides the root README. `IMPLEMENTATION_PLANNING.md` explicitly does not create any of them either — it governs *how* the documents that eventually will are organized.
+No implementation code, UI mockups, or wireframes exist anywhere in this repository yet — `/docs` and the vendored `medusa/` submodule are the entire contents besides the root README.
 
 ---
 
@@ -158,8 +163,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 3. **`docs/DOCUMENTATION_GOVERNANCE.md`** — the governing standard behind everything in step 2: the document hierarchy, lifecycle statuses, change rules, cross-reference rules, versioning rules, and the AI/human contributor rules that apply to any work on `/docs` from here on.
 4. **`docs/PROJECT_STATUS.md`** — current phase in full detail, completed/in-progress/blocked work, and every decision awaiting Paul's approval.
 5. **`docs/PRODUCT_BLUEPRINT.md`**, then **`docs/BRAND_IDENTITY.md`**, **`docs/EXPERIENCE_PRINCIPLES.md`**, and **`docs/DESIGN_SYSTEM.md`** — the four frozen Phase 0 documents; read together, they answer what LiquorCentral is, who it is, how it should feel to use, and what design foundations everything downstream builds on.
-6. **`docs/specifications/`** — behavior-level specifications for individual product surfaces, built on the four frozen documents above. All 11 are now Approved — Frozen at v1.0.
-7. **`docs/IMPLEMENTATION_PLANNING.md`** — now that Phase 1 is complete, this is the governing document for Phase 2: how engineering/implementation documents are organized, sequenced, owned, and approved before any code, schema, or API design is written.
+6. **`docs/specifications/`** — behavior-level specifications for individual product surfaces, built on the four frozen documents above. All 11 (`01`–`11`) are Approved — Frozen; read whichever ones are relevant to the task at hand.
+7. **`docs/IMPLEMENTATION_PLANNING.md`** — the master governing document for Phase 2, now that Phase 1's specifications are complete. Read this before drafting any implementation-planning document.
 8. **`docs/DECISION_LOG.md`** and **`docs/CHANGELOG.md`** — the authoritative history of what was decided and what changed, respectively. Read these when you need to understand *why* something is the way it is, or whether a document you're about to read is current.
 9. Everything else in `docs/README.md`'s document map, as relevant to the task at hand.
 
@@ -167,33 +172,35 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 ## 7. Documentation Guide and Status Summary
 
-`/docs` contains 22 top-level documents plus the 11-file `specifications/` directory (33 files total), and an as-yet-empty `implementation/` directory per `IMPLEMENTATION_PLANNING.md`. `docs/README.md` is the detailed document map with cross-links and the document-status convention; `docs/DOCUMENTATION_GOVERNANCE.md` is the governing standard behind that convention (statuses, change rules, cross-reference rules, versioning, contributor rules); this section summarizes current status by category.
+`/docs` contains 22 documents plus the 11-file `specifications/` directory (33 files total). `docs/README.md` is the detailed document map with cross-links and the document-status convention; `docs/DOCUMENTATION_GOVERNANCE.md` is the governing standard behind that convention (statuses, change rules, cross-reference rules, versioning, contributor rules); this section summarizes current status by category.
 
-### Frozen (Phase 0 output — do not modify unless a business decision changes)
+### Frozen (Phase 0 output, plus all 11 Product Specifications — do not modify unless a business decision changes)
 
 - `PRODUCT_BLUEPRINT.md` — approved and frozen, 2026-07-18.
 - `BRAND_IDENTITY.md` — approved and frozen, 2026-07-18.
 - `EXPERIENCE_PRINCIPLES.md` — approved and frozen, 2026-07-18.
 - `DESIGN_SYSTEM.md` v2.0 — approved and frozen as the authoritative design foundation, 2026-07-18.
-
-### Frozen (Phase 1 output — do not modify unless a business decision changes)
-
-- `docs/specifications/01_NAVIGATION_SPECIFICATION.md` through `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — all 11 Approved — Frozen at v1.0, 2026-07-18. Phase 1 — Product Specifications is complete.
+- `docs/specifications/01_NAVIGATION_SPECIFICATION.md` through `11_ADMIN_WORKFLOWS_SPECIFICATION.md` — all 11, Approved — Frozen at v1.0, 2026-07-18. Phase 1 — Product Specifications is complete.
 
 ### Approved (living or reference documents, not frozen)
 
 - `docs/AI_HANDOFF.md` (this file), `docs/README.md`, `docs/PROJECT_STATUS.md`, `docs/DECISION_LOG.md`, `docs/CHANGELOG.md`, `docs/DOCUMENTATION_GOVERNANCE.md` — process/governance documents, expected to keep changing as the project moves (`DOCUMENTATION_GOVERNANCE.md` less often than the others — see its own Section 12, "Future Maintenance").
-- `docs/IMPLEMENTATION_PLANNING.md` — the Phase 2 governing document, approved directly at v1.0; expected to evolve as Phase 2 documents are actually created, per its own change-management rules.
+- `docs/IMPLEMENTATION_PLANNING.md` — the master governing document for Phase 2, approved 2026-07-18. Not itself an implementation document; contains no code, API design, database schema, or component design.
+- `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md` — Tier A, approved 2026-07-18, corrected to v1.2 (2026-07-19). Reconciles every pre-existing technical planning document against the 11 frozen specifications; produces the Definitive Implementation Baseline every later Tier B–F document references. Not itself a design or implementation document.
+- `docs/implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` — the first Tier B module, approved 2026-07-18. Purely architectural definition of the "pairs with" cross-catalog relationship module — responsibilities, non-responsibilities, ownership, and integration points across nine consuming surfaces. No database, API, or code content.
+- `docs/implementation-planning/TIER_B_WINE_ATTRIBUTES_MODULE.md` — the second Tier B module, approved 2026-07-18. Purely architectural definition of the `wine-details` module — responsibilities, the Attributes-vs-Facts boundary, ownership, and integration points across Product/Navigation/Search/Listing/Product Details/Admin Workflows. No database, API, or code content.
+- `docs/implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md` — the third Tier B module, approved 2026-07-19. Purely architectural definition of the `food-details` module — responsibilities, the five-way attributes/presentation/operational-status/inventory/facts distinction, ownership, and integration points across Product/Navigation/Homepage/Search/Listing/Product Details/Admin Workflows/Food Ordering. Corrected `food-details`' dependency count (seven frozen specifications, not five) during drafting. No database, API, or code content.
+- `docs/implementation-planning/MODULE_INVENTORY.md` — living, approved 2026-07-18. Single-page index of every module/integration/capability identified anywhere in `/docs`, with type, status, dependencies, and launch-criticality.
 - `BUSINESS_RULES.md` — finalized business decisions, changes only if Paul explicitly revisits a rule.
 - `ARCHITECTURE.md` — reference document, changes only if the Medusa version or conventions change materially.
 
 ### In Progress
 
-- None. Phase 1 — Product Specifications is complete; no Phase 2 implementation document has been started yet (see `IMPLEMENTATION_PLANNING.md` §8 for the recommended creation order).
+- None. No Product Specification and no further implementation-planning document is currently in progress.
 
 ### Not Started
 
-- All 16 planned Phase 2 implementation documents (`docs/implementation/`) — see `IMPLEMENTATION_PLANNING.md` §6. None begins without Paul's explicit direction.
+- No Product Specification placeholders remain — all 11 are frozen. Beyond Tier A (Approved) and all three Tier B modules drafted so far (all Approved — see Completed, below), no further Phase 2 implementation-planning document (per `IMPLEMENTATION_PLANNING.md` §4) has been started; none begins without Paul's explicit direction to begin that specific document.
 
 ### Draft (strategy generally confirmed; specific values or formal sign-off still open)
 
@@ -225,9 +232,9 @@ Anyone — human or AI — picking up this project should read, in this order:
 | `docs/DELIVERY_MODEL.md` | Delivery/pickup/scheduling strategy for both product lines | Paul (ops decisions); engineering (mechanics) | When delivery/ops decisions change |
 | `docs/USER_FLOWS.md` | Step-by-step customer journeys (no visuals) | Product | When a flow's steps change |
 | `docs/BRAND_GUIDELINES.md` | Tactical asset execution (logo, exact typefaces/tokens, physical branding) | Paul / a designer, once engaged | Once brand execution work begins |
-| `docs/specifications/` | Behavior-level specs for each product surface | Product; per-file approval from Paul | One file at a time, only with Paul's explicit go-ahead to begin it |
+| `docs/specifications/` | Behavior-level specs for each product surface (complete, all 11 frozen) | Product; per-file approval from Paul | Only in response to a new business decision, per `DOCUMENTATION_GOVERNANCE.md` §5 |
+| `docs/IMPLEMENTATION_PLANNING.md` | Master governing document for Phase 2: hierarchy, dependencies, creation order, approval workflow, exit criteria | Program/Engineering; approved by Paul | Only in response to a new business decision, or when a real gap is found running Phase 2 (see its own Section 12) |
 | `docs/ROADMAP.md` | Phased build sequence (no dates) | Paul/engineering | When sequencing or phase scope changes |
-| `docs/IMPLEMENTATION_PLANNING.md` | Governs how Phase 2 engineering/implementation documents are organized, sequenced, owned, and approved | Engineering; approved by Paul | When Phase 2's document structure or philosophy changes |
 | `docs/DECISION_LOG.md` | Append-only record of every material decision: what, why, when, impact, status | Whoever makes/logs the decision | Every material decision — append a new entry, never edit an old one |
 | `docs/CHANGELOG.md` | Changelog of the documentation set itself (not the product) | Whoever adds/removes/restructures a document | Whenever `/docs` itself changes |
 
@@ -243,47 +250,60 @@ Anyone — human or AI — picking up this project should read, in this order:
 - `DESIGN_SYSTEM.md` v2.0 finalized and frozen as the authoritative design foundation (typography, spacing, grid, elevation, a three-tier Color Architecture, motion, breakpoints, form behaviors, accessibility tokens, Future Theme Support, Component Philosophy, Design Quality Checklist).
 - Full architecture, technology, and UX/product research completed and distilled into `ARCHITECTURE.md`, `TECH_STACK.md`, `MEDUSA_EXTENSIONS.md`, `USER_FLOWS.md`, `DELIVERY_MODEL.md`.
 - Medusa v2.17.2 vendored as a git submodule.
-- **`/docs/specifications/` completed — all 11 Product Specifications (`01_NAVIGATION_SPECIFICATION.md` through `11_ADMIN_WORKFLOWS_SPECIFICATION.md`) drafted, reviewed, and Approved — Frozen at v1.0.** Phase 1 — Product Specifications is complete.
-- **Repository reconciliation (2026-07-18):** two unmerged documentation branches (`claude/medusa-repo-clone-ut5dl5` and `claude/ai-handoff-docs-ufdn5t`) were merged into a single authoritative branch, preserving full git history from both. This file was recovered from the latter branch and rewritten against the former's more current state. See `DECISION_LOG.md` for the full entry.
-- **`docs/IMPLEMENTATION_PLANNING.md` created and approved at v1.0** — the governing document for Phase 2, defining the implementation-document hierarchy, the 16 planned Phase 2 engineering documents, their dependencies and recommended creation order, and the architecture philosophies (Medusa, Next.js, backend, frontend, database, API, search, CMS, media, authentication, payment, security, performance, accessibility, testing, deployment) every future implementation document must follow. See `DECISION_LOG.md` for the full entry.
+- **Phase 1 — Product Specifications is complete.** All 11 specifications (`01_NAVIGATION_SPECIFICATION.md` through `11_ADMIN_WORKFLOWS_SPECIFICATION.md`) are Approved — Frozen at v1.0, each drafted in full and either refined-then-frozen or drafted-and-frozen-directly per Paul's explicit instruction each time. Full content summaries for each are in `PROJECT_STATUS.md`'s Completed work section.
+- **`IMPLEMENTATION_PLANNING.md` created and approved (2026-07-18)** — the master governing document for Phase 2, defining a six-tier hierarchy of future implementation-planning documents, their dependencies, creation order, approval workflow, and exit criteria before development begins. Contains no implementation code, API design, database schema, or component design itself.
+- **Tier A — Foundational Reconciliation complete (2026-07-18)** — `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md` (v1.0, Approved) reviewed all 11 frozen specifications against every pre-existing technical planning document. Confirmed every foundational architectural assumption still valid; found no obsolete assumption; found one genuine conflict (the "pairs with" relationship's framing in `PRODUCT_CATALOG.md` vs. six specifications' treatment of it as a general module); consolidated missing-work findings into a 20-row Definitive Implementation Baseline, most notably that the "pairs with" module has no `MEDUSA_EXTENSIONS.md` entry at all despite being depended on by six specifications. Did not redesign the product, modify any Frozen document, design an API, design a database, or write code. See `PROJECT_STATUS.md` for the full findings.
+- **First Tier B module — Product Relationship Module — Approved at v1.0 (2026-07-18)** — `docs/implementation-planning/TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, a purely architectural definition (responsibilities, non-responsibilities, ownership, integration points across nine consuming surfaces, future extensibility) drafted, then reviewed against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen specifications before finalizing. One cross-reference gap found and closed (a new Integration with Navigation section); no existing section rewritten; no database, API, or code introduced anywhere. Two dependencies recorded, not resolved: the module's own staff curation workflow, and its still-outstanding `MEDUSA_EXTENSIONS.md` registration.
+- **`docs/implementation-planning/MODULE_INVENTORY.md` created (2026-07-18)**, per Paul's explicit recommendation — a living, single-page index of every module/integration/capability identified anywhere in `/docs`, answering at a glance which are native, custom, provider, or integration; which depend on others; which are optional; and which are launch-critical.
+- **Second Tier B module — Wine & Spirits Attributes Module — drafted then Approved (2026-07-18)** — `docs/implementation-planning/TIER_B_WINE_ATTRIBUTES_MODULE.md` (v1.0, status Approved), selected over the tied-on-spec-count `food-details` module via architectural centrality and `ROADMAP.md`'s own backend-phase ordering (wine-attributes is Phase 2, immediately after Wine & Spirits' Phase 1 launch; food-attributes is Phase 3). Defines the module's responsibilities, the Attributes-vs-Facts boundary against `05_PRODUCT_DETAILS_SPECIFICATION.md`, ownership (a three-way engineering/Paul/staff split), and integration points across Product, Navigation, Search, Listing, Product Details, and Admin Workflows, with Cart/Checkout/Account/Food Ordering/Delivery/Homepage confirmed as non-dependents. A finalization review pass found and fixed two ambiguous cross-references and one overstated dependency claim, added a reviews-vs-attributes boundary clarification and a product-vs-variant-granularity clarification, and corrected a stale dependency list in `TIER_A_FOUNDATIONAL_RECONCILIATION.md` (then v1.1). Two gaps recorded, not resolved: wine-attribute-accuracy verification ownership, and product-vs-variant granularity. Full selection and review reasoning in `DECISION_LOG.md`.
+- **Third Tier B module — Food Attributes Module — drafted then Approved (2026-07-19)** — `docs/implementation-planning/TIER_B_FOOD_ATTRIBUTES_MODULE.md` (v1.0, status Approved), drafted after re-verifying `food-details` remains the correct next module per `IMPLEMENTATION_PLANNING.md` §6's ordering. That re-verification found `food-details`' true dependency count had been undercounted — **seven frozen specifications (`01`,`02`,`03`,`04`,`05`,`09`,`11`), not five** — since `01_NAVIGATION_SPECIFICATION.md` and `02_HOMEPAGE_SPECIFICATION.md` both genuinely depend on it for prep-time/availability data; corrected in `TIER_A_FOUNDATIONAL_RECONCILIATION.md` (now v1.2) and `MODULE_INVENTORY.md` (now v1.4). Defines the module's responsibilities; a dedicated five-way distinction between attributes, presentation, operational status, inventory, and customer-facing facts (per direct instruction) — critically, that this module never holds Food Central's live availability-state flag, a separate mechanism; ownership (a four-way engineering/Paul-field-list/staff/allergen-accuracy-ownership split, one dimension more than wine's); and integration points across Product, Navigation, **Homepage** (a genuine dependency, unlike wine's confirmed non-dependency), Search, Listing, Product Details, Admin Workflows, and Food Ordering. A finalization review pass added a new Integration with Food Ordering section (closing a missing-integration-point gap, since `09_FOOD_ORDERING_SPECIFICATION.md` — this module's single most consequential consuming specification — had no dedicated section of its own), corrected five internal cross-references, removed a reference to a nonexistent section, and added two small clarifications (a pricing non-responsibility; an optional Product Tags mirror for dietary flags). Surfaces one newly discovered field-list gap (portion/serving-size) and elevates the already-flagged, safety-critical allergen-accuracy-ownership decision as this module's own central risk, neither resolved. Full selection and review reasoning in `DECISION_LOG.md`.
+- **Repository reconciliation, twice (2026-07-18):** first, two unmerged documentation branches (`claude/medusa-repo-clone-ut5dl5` and `claude/ai-handoff-docs-ufdn5t`) were merged into a single authoritative branch, preserving full git history from both; this file was recovered from the latter and rewritten against the former's more current state. Second, later the same day, that authoritative branch (`claude/project-onboarding-status-p35u3v`) fell behind `claude/medusa-repo-clone-ut5dl5` again after a separate session continued pushing to it (drafting and freezing specifications `07`–`11`), and was fast-forward-merged back up to match. See `DECISION_LOG.md` for both full entries and the provenance note at the top of this document.
 
 **In Progress**
-- None. Phase 2 — Implementation Planning has just begun with `IMPLEMENTATION_PLANNING.md`; no individual Phase 2 implementation document has been started.
+- None. All three Tier B documents drafted so far — the Product Relationship Module, the Wine & Spirits Attributes Module, and the Food Attributes Module — are Approved. No further Tier B document begins until Paul approves one.
 
 **Not Started**
-- Any implementation code, UI design, wireframes, database schema, or API design — `IMPLEMENTATION_PLANNING.md` explicitly does not create any of these either.
-- All 16 planned Phase 2 implementation documents (`docs/implementation/`) — see `IMPLEMENTATION_PLANNING.md` §6/§8 for what they are and the recommended order. None begins without Paul's explicit direction.
+- Any implementation code, UI design, or wireframes.
+- Every Phase 2 (Implementation Planning) Tier C–F document, and every Tier B document beyond the three drafted so far, per `IMPLEMENTATION_PLANNING.md` §4 — none begins without Paul's explicit direction to begin that specific document.
 - Component-level design work (`ROADMAP.md` Phase 0c).
 - All custom Medusa modules listed in `MEDUSA_EXTENSIONS.md`, and the search/CMS integrations.
 
 **Blocked**
-- **Payment provider is undecided** — blocks the start of `ROADMAP.md` Phase 1 (backend foundation), and blocks `12_PAYMENT_ARCHITECTURE.md` once Phase 2 documents begin. This remains the project's most launch-critical blocker.
+- **Payment provider is undecided** — blocks the start of `ROADMAP.md` Phase 1 (backend foundation), and blocks final implementation of `07_CHECKOUT_SPECIFICATION.md`'s Payment Behaviour/Payment State Behaviour sections and `10_DELIVERY_SPECIFICATION.md` once its turn comes. This is the project's only hard, launch-critical blocker at present.
+- **The wine-attributes module's field list is undecided** — blocks full implementation of five specifications' wine-related sections (`01`,`03`,`04`,`05`,`11`) once Tier C/development begins, though it did not block this document's own approval.
+- **The food-attributes module's field list, and allergen-accuracy ownership, are undecided** — blocks full implementation of seven specifications' Food Central-related sections (`01`,`02`,`03`,`04`,`05`,`09`,`11`) once Tier C/development begins; the allergen-accuracy question is safety-critical, not merely a trust/accuracy matter (`TIER_B_FOOD_ATTRIBUTES_MODULE.md` §18).
 
 **Awaiting Paul's Approval** (full list with document references in `docs/PROJECT_STATUS.md`)
+- Which Tier B module begins next — see `docs/implementation-planning/MODULE_INVENTORY.md` for the remaining candidates (delivery-slot scheduling, the local payment provider, the notification provider, Saved-for-Later); nothing begins without Paul's direction.
+- A formal `MEDUSA_EXTENSIONS.md` entry for the now-approved Product Relationship Module, and its staff-facing curation workflow (`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` §20).
+- Operational responsibility for verifying wine attribute accuracy (`TIER_B_WINE_ATTRIBUTES_MODULE.md` §16/§19) — newly discovered, not resolved.
+- Whether any wine attribute needs Product-Variant-level (not Product-level) representation (`TIER_B_WINE_ATTRIBUTES_MODULE.md` §6/§18/§19) — newly discovered, not resolved.
 - Wine & Spirits' nationwide delivery mechanism (in-house fleet vs. courier partner) and whether cash-on-delivery is offered at all.
 - Local payment provider choice (e.g. Paystack, Flutterwave) — **launch-blocking**.
 - Delivery-update channel(s) (WhatsApp Business API and/or SMS).
-- Exact age-gate mechanics (session duration; site-wide vs. alcohol-section-only) and whether a hard compliance re-check happens at order confirmation.
+- Exact age-gate mechanics (session duration; site-wide vs. alcohol-section-only) and whether a hard compliance re-check happens at order confirmation/checkout.
 - Alcohol return/refund policy.
-- Final field lists for the wine-attributes and food-attributes modules, and who owns allergen/ingredient data accuracy operationally.
-- Delivery-slot operational parameters (slot length, cutoff times, capacity).
+- Final field lists for the wine-attributes and food-attributes modules (the latter now including a newly-discovered portion/serving-size candidate, `TIER_B_FOOD_ATTRIBUTES_MODULE.md` §6), and who owns allergen/ingredient data accuracy operationally.
+- Delivery-slot operational parameters (slot length, cutoff times, capacity), scheduling horizon, and kitchen operating hours.
 - Exact curated/occasion collections for Wine & Spirits (a merchandising decision).
 - Formal sign-off on the Next.js Starter, Meilisearch, and Sanity recommendations.
-- **Media/image hosting and delivery solution (e.g. a Cloudinary-class service) — not yet named or approved anywhere in `/docs` prior to `IMPLEMENTATION_PLANNING.md` surfacing the gap.**
-- Sequencing direction for which Phase 2 implementation document to author first (recommended order in `IMPLEMENTATION_PLANNING.md` §8).
+- Data-retention/NDPR-compliance specifics, and the account deletion-vs-deactivation policy.
+- The failed-delivery-attempt policy, delivery-cancellation cutoff, delivery-fee schedule, and whether age is physically re-verified at hand-off.
+- Staff-permission granularity, audit-log retention/granularity, report definitions, and staff-facing alert thresholds.
 
 ---
 
 ## 9. Current Roadmap
 
-Full detail in `ROADMAP.md`. **Naming note, extending `ROADMAP.md`'s own:** "Phase 2" as used for Implementation Planning (`IMPLEMENTATION_PLANNING.md`) is a documentation/engineering-architecture-definition phase in the same Phase 0/0d lineage as Product Specifications — it is not the same "Phase 2" as `ROADMAP.md`'s own backend-build track below ("Phase 2 — Product data foundation"). The two numbering tracks are independent, for the identical reason `ROADMAP.md` already gives for its Phase 1 naming collision. Summary:
+Full detail in `ROADMAP.md`. Summary:
 
 - **Phase 0 — Brand & Design Foundation: ✅ Complete.** Includes Phase 0b (Design System Foundations, frozen as v2.0).
 - **Phase 0c — Component specification: Not yet started.** Next frontend-track step once Paul directs it; can run in parallel with backend Phase 1.
-- **Phase 0d — Product Specifications: ✅ Complete.** All 11 specifications drafted, reviewed, and Approved — Frozen at v1.0.
-- **Phase 2 — Implementation Planning: Underway.** `IMPLEMENTATION_PLANNING.md` approved at v1.0, governing the 16 planned Phase 2 engineering documents; none of the 16 has been started yet.
+- **Phase 0d — Product Specifications: ✅ Complete.** All 11 specifications Approved — Frozen at v1.0.
+- **Phase 0e — Documentation governance and repository reconciliation: ✅ Complete** (twice — see `DECISION_LOG.md`).
+- **Phase 0f — Implementation Planning (Paul's "Phase 2"): Tier A complete; all three drafted Tier B modules Approved.** `IMPLEMENTATION_PLANNING.md` v1.0 defines the six-tier structure; `TIER_A_FOUNDATIONAL_RECONCILIATION.md` (v1.2), `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, `TIER_B_WINE_ATTRIBUTES_MODULE.md`, and `TIER_B_FOOD_ATTRIBUTES_MODULE.md` are all Approved at v1.0; `MODULE_INVENTORY.md` (v1.4) is live; no further Tier B module begins without Paul's explicit direction.
 - **Phase 1 — Foundation (backend):** Stand up Medusa on Postgres + Redis, connect a payment provider (launch blocker), ship Wine & Spirits end to end (browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery).
-- **Phase 2 — Product data foundation:** wine-attributes module.
+- **Phase 2 — Product data foundation:** wine-attributes module. *(Note: `ROADMAP.md`'s own numbered "Phase 2" is a different, backend-track phase than Paul's "Phase 2 — Implementation Planning" above — see `ROADMAP.md`'s naming note.)*
 - **Phase 3 — Food Central catalog and delivery foundation:** food-attributes module, Lagos-scoped fulfillment, ordinary (non-scheduled) ordering and pickup.
 - **Phase 4 — Delivery scheduling:** delivery-slot module for same-day/scheduled Food Central delivery.
 - **Phase 5 — Delivery communication:** notification provider (WhatsApp/SMS) integration.
@@ -298,13 +318,14 @@ Full detail in `ROADMAP.md`. **Naming note, extending `ROADMAP.md`'s own:** "Pha
 
 ## 10. Immediate Next Step
 
-Phase 1 — Product Specifications is complete: all 11 specifications are Approved — Frozen at v1.0. `docs/IMPLEMENTATION_PLANNING.md` has been created and approved at v1.0, governing Phase 2. Next:
+Phase 1 — Product Specifications is complete (all 11 frozen), Phase 2's Tier A (Foundational Reconciliation) is complete and Approved (v1.2), and all three Tier B documents drafted so far — the Product Relationship Module, the Wine & Spirits Attributes Module, and the Food Attributes Module — are Approved at v1.0:
 
-1. **Paul to direct which of the 16 planned Phase 2 implementation documents to author first** (`IMPLEMENTATION_PLANNING.md` §6/§8 gives the required list and recommended order — `01_SYSTEM_ARCHITECTURE.md` is the natural starting point, since every other Phase 2 document depends on it). No Phase 2 implementation document begins without Paul's explicit go-ahead, mirroring the identical rule that governed Product Specifications.
-2. **Paul still needs to resolve the payment-provider decision** (`MEDUSA_EXTENSIONS.md` #4) — the project's most launch-critical open item, independent of Phase 2 documentation progress; it directly blocks `12_PAYMENT_ARCHITECTURE.md`.
-3. **A media/image-hosting solution has never been named or approved anywhere in `/docs`** — newly surfaced by `IMPLEMENTATION_PLANNING.md` while scoping `10_MEDIA_ARCHITECTURE.md`; flagged in `PROJECT_STATUS.md`, not resolved.
+1. **Per Paul's explicit instruction, no further Tier B document begins without his explicit direction** — the same placeholder-then-draft-then-approve discipline that governed all 11 Product Specifications, per `IMPLEMENTATION_PLANNING.md` §7 and `DOCUMENTATION_GOVERNANCE.md` §5/§8.
+2. **`docs/implementation-planning/MODULE_INVENTORY.md` lists every remaining not-yet-scoped candidate** for whenever Paul is ready to direct the next Tier B module (delivery-slot scheduling, the local payment provider, the notification provider, Saved-for-Later).
+3. **Paul still needs to resolve the payment-provider decision** (`MEDUSA_EXTENSIONS.md` #4) — the project's sole launch-blocking open item, independent of Phase 2's progress.
+4. **Phase 0c (component specification)** also awaits Paul's direction to begin, and can run in parallel with Phase 2.
 
-No implementation code, database schema, API design, or frontend component exists yet, and none should be written until the relevant Phase 2 document exists and is approved — see `IMPLEMENTATION_PLANNING.md` §2 (Scope) and `DOCUMENTATION_GOVERNANCE.md` Section 10 (Repository Workflow).
+Do not begin any further Tier B–F document, or any further Product Specification work (there is none left to do — all 11 are frozen and modifiable only in response to a new business decision), without Paul's explicit go-ahead.
 
 ---
 
@@ -344,7 +365,7 @@ Every future AI assistant working on this project must:
 
 | Field | Value |
 |---|---|
-| Document Version | 4.0 |
-| Last Updated | 2026-07-18 |
-| Project Phase | Phase 0 and Phase 1 (Product Specifications) both complete and frozen; Phase 2 — Implementation Planning underway (`IMPLEMENTATION_PLANNING.md` v1.0 approved; no individual Phase 2 document yet started) |
-| Next Planned Milestone | Paul's direction on which Phase 2 implementation document to author first; the payment-provider decision; the media/image-hosting decision — see Section 10 |
+| Document Version | 3.8 |
+| Last Updated | 2026-07-19 |
+| Project Phase | Phase 0 complete and frozen; Phase 1 — Product Specifications complete (all 11 frozen); Phase 2 — Implementation Planning's Tier A Approved (v1.2), all three drafted Tier B modules (Product Relationship Module, Wine & Spirits Attributes Module, Food Attributes Module) Approved |
+| Next Planned Milestone | Paul's direction on which Tier B module begins next (see `MODULE_INVENTORY.md`); the payment-provider decision — see Section 10 |
