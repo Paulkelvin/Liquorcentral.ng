@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.2
+**Version:** 3.3
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
@@ -69,9 +69,17 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 
 All 11 planned specifications are now **Approved — Frozen** at v1.0 — Phase 1 — Product Specifications is complete. Each was sequenced only on Paul's explicit direction, and each was drafted, reviewed, and frozen in two passes rather than invented ahead of approval — see `PROJECT_STATUS.md` for what comes next.
 
-## Implementation Planning (`/docs/IMPLEMENTATION_PLANNING.md`)
+## Implementation Planning (`/docs/IMPLEMENTATION_PLANNING.md`, `/docs/implementation-planning/`)
 
-With Phase 1 complete, **Phase 2 — Implementation Planning** translates the 11 frozen specifications into concrete, reviewable implementation plans — data-model planning, API contract planning, integration planning, and testing planning — before any code is written. `IMPLEMENTATION_PLANNING.md` is the master governing document for this phase: its purpose and scope, the complete hierarchy of implementation documents it will produce, their dependencies and creation order, the approval workflow, versioning, engineering philosophy, and the exit criteria that must be true before development begins. No implementation-planning document itself has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction.
+With Phase 1 complete, **Phase 2 — Implementation Planning** translates the 11 frozen specifications into concrete, reviewable implementation plans — data-model planning, API contract planning, integration planning, and testing planning — before any code is written. `IMPLEMENTATION_PLANNING.md` is the master governing document for this phase: its purpose and scope, the complete hierarchy of implementation documents it will produce, their dependencies and creation order, the approval workflow, versioning, engineering philosophy, and the exit criteria that must be true before development begins.
+
+Actual Tier A–F documents live in `/docs/implementation-planning/`, parallel to how `/docs/specifications/` holds Product Specifications:
+
+| Document | Tier | Status |
+|---|---|---|
+| [`TIER_A_FOUNDATIONAL_RECONCILIATION.md`](./implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md) | A — Foundational Reconciliation | **Approved**, v1.0 |
+
+No Tier B–F document has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction.
 
 ## Document status convention
 

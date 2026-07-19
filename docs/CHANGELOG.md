@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.4
+**Version:** 3.5
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v32 — 2026-07-18 — Tier A — Foundational Reconciliation complete
+
+**Context:** Paul directed Phase 2 to begin with Tier A (Foundational Reconciliation), per `IMPLEMENTATION_PLANNING.md` §6's recommended creation order — reconciling every existing technical planning document against the now-complete Phase 0/Phase 1 foundation before any engineering design begins. Explicitly not a design or implementation task. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/implementation-planning/` — new directory, parallel to `docs/specifications/`, holding Tier A–F implementation-planning documents.
+- `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md` (v1.0, status Approved) — reviewed all 11 frozen Product Specifications, the four frozen Phase 0 documents, `DOCUMENTATION_GOVERNANCE.md`, `IMPLEMENTATION_PLANNING.md`, and every pre-existing implementation-tier and product-tier document (`ARCHITECTURE.md`, `TECH_STACK.md`, `MEDUSA_EXTENSIONS.md`, `API_DECISIONS.md`, `PRODUCT_CATALOG.md`, `INFORMATION_ARCHITECTURE.md`, `DELIVERY_MODEL.md`, `BUSINESS_RULES.md`, `USER_FLOWS.md`, `ROADMAP.md`), plus `PROJECT_STATUS.md` and `AI_HANDOFF.md` for accuracy. Findings: every foundational architectural assumption confirmed still valid (§2); no outright-obsolete assumption found (§3); one genuine conflicting assumption (§4 — `PRODUCT_CATALOG.md` frames the "pairs with" relationship as a narrow wine-side attribute field, while six frozen specifications treat it as a general, unscoped product-relationship module); missing-work findings consolidated by category (§5–§13: missing Medusa modules, integrations, backend/frontend/CMS/search responsibilities, operational tooling, and a `ROADMAP.md` sequencing gap around `08`/`11`); and one **Definitive Implementation Baseline** table (§14, 20 rows) that every future Tier B–F document is directed to reference as its starting point. Explicitly does not redesign the product, modify any Frozen document, design an API, design a database, or write code (§15). Recommends (§16, not decides) the "pairs with" module as Tier B's first document, since it is depended on by six specifications and has no existing `MEDUSA_EXTENSIONS.md` entry at all.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.3) — new "Implementation Planning" section table indexing `TIER_A_FOUNDATIONAL_RECONCILIATION.md`.
+- `docs/PROJECT_STATUS.md` (v3.4), `docs/ROADMAP.md` (v3.7) — current phase, Completed work, Work in progress, Next recommended task, and Decisions awaiting Paul's approval updated to reflect Tier A's completion and its new findings; `ROADMAP.md`'s Phase 0f section and closing "Open questions" paragraph both updated.
+- `docs/DECISION_LOG.md` — new entry recording Tier A's completion and its full findings.
 
 ## v31 — 2026-07-18 — Second branch reconciliation; `IMPLEMENTATION_PLANNING.md` created as Phase 2's governing document
 
