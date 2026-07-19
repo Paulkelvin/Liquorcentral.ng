@@ -62,5 +62,8 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/wine-details",
     },
+    {
+      resolve: "./src/modules/food-details",
+    },
   ],
 })

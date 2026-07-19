@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 5.0
+**Version:** 5.1
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -101,7 +101,7 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 
 ## Phase 3 — Food Central catalog and delivery foundation
 
-- Build the food-attributes module (`MEDUSA_EXTENSIONS.md` #2).
+- ✅ **Build the food-attributes module (`MEDUSA_EXTENSIONS.md` #2)** — complete, 2026-07-19 (Engineering Milestone 3). `backend/apps/backend/src/modules/food-details` implements `TIER_B_FOOD_ATTRIBUTES_MODULE.md`'s Approved architecture: a custom module linked 1:1 to Product, written via the native product endpoints' `additional_data` extension (no new API route), read via Query, edited through a product-page admin widget. Deliberately not a copy of `wine-details`' shape — see `backend/apps/backend/src/modules/food-details/README.md` for the genuine differences (no product-vs-variant question; a `safety_data_verified` field; a `portion_size` field carried forward from a frozen-spec gap). The field list used is provisional, pending Paul's final approval and the still-open allergen-accuracy-ownership decision — populating real menu data with it is separate, later work, not part of this bullet. Building this surfaced a genuine Medusa constraint (one handler per native product-lifecycle hook) requiring `wine-details`' and `food-details`' hook logic to be consolidated into one shared handler (`src/workflows/hooks/`) — not an architecture decision, a mechanical necessity.
 - Configure Lagos-scoped fulfillment (Service Zone/Geo Zone) and pickup — both native, no new module required (see `DELIVERY_MODEL.md`).
 - Ship ordinary (non-scheduled) Food Central ordering and pickup before adding time-slot scheduling on top.
 

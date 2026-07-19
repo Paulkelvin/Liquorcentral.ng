@@ -17,11 +17,15 @@ export type AttachWineDetailsToProductWorkflowInput = {
 }
 
 /**
- * Runs from createProductsWorkflow.hooks.productsCreated (see
- * hooks/product-created.ts). Only creates a wine_details record — and
- * only links it — when the create request actually supplied at least one
- * wine-details value; a plain Food Central product never gets an empty
- * record.
+ * Runs from src/workflows/hooks/product-created.ts, the single shared
+ * hook handler every attribute module's "attach on create" workflow is
+ * called from (Medusa allows only one handler per native hook — this
+ * workflow originally had its own dedicated hook file until
+ * food-details' addition surfaced that constraint; see that shared
+ * file's own comment and DECISION_LOG.md). Only creates a wine_details
+ * record — and only links it — when the create request actually
+ * supplied at least one wine-details value; a plain Food Central
+ * product never gets an empty record.
  */
 export const attachWineDetailsToProductWorkflow = createWorkflow(
   "attach-wine-details-to-product",
