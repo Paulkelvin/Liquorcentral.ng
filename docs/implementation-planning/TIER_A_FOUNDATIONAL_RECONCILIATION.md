@@ -152,7 +152,7 @@ This table is the artifact every Tier B–F document should reference as its sta
 | 2 | `food-details` module | Module | Scoped, not built | Field list + allergen-accuracy ownership | `01`,`02`,`03`,`04`,`05`,`09`,`11` |
 | 3 | Delivery-slot module | Module + workflow hook | Drafted (`TIER_B_DELIVERY_SLOT_MODULE.md` v1.0 — Draft) | Slot length/cutoff/capacity parameters; pickup-slot mechanism boundary; kitchen-vs-rider capacity reconciliation | `01`,`02`,`07`,`09`,`10`,`11` |
 | 4 | Local payment provider | Provider module | Architecture Approved (`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md` v1.0) | Provider choice; COD policy; now also needs pending/failed/cancelled/expired/retry state support | `07` |
-| 5 | Notification provider (customer-facing) | Provider module | Scoped, not built | Channel choice (WhatsApp/SMS) | `08`,`09`,`10` |
+| 5 | Notification provider (customer-facing) | Provider module | Drafted (`TIER_B_NOTIFICATION_PROVIDER_MODULE.md` v1.0 — Draft) | Channel choice (WhatsApp/SMS) | `07`,`08`,`09`,`10` |
 | 6 | Meilisearch integration | Integration | Recommended, not approved | Formal sign-off; depends on #1/#2 field lists | `01`,`03`,`04` |
 | 7 | Sanity CMS integration | Integration | Recommended, low urgency | Formal sign-off (not urgent) | Editorial content generally |
 | 8 | **"Pairs with" product-relationship module** | **Module — not yet scoped in `MEDUSA_EXTENSIONS.md` at all** | **Missing** | Needs a `MEDUSA_EXTENSIONS.md` entry; `PRODUCT_CATALOG.md`'s conflicting field-level framing needs correcting in the same change (§4) | `01`,`02`,`03`,`04`,`05`,`06` |
