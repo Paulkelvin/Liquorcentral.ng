@@ -26,6 +26,11 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* Skip-to-content link (DESIGN_SYSTEM.md §B11 / WCAG 2.4.1) —
+          visually hidden until keyboard-focused. */}
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <Nav />
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart} />
@@ -38,7 +43,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
           shippingOptions={shippingOptions}
         />
       )}
-      {props.children}
+      <main id="main-content">{props.children}</main>
       <Footer />
     </>
   )

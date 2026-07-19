@@ -80,13 +80,21 @@ const CartDropdown = ({
       onMouseLeave={close}
     >
       <Popover className="relative h-full">
-        <PopoverButton className="h-full">
-          <LocalizedClientLink
-            className="hover:text-ui-fg-base"
-            href="/cart"
-            data-testid="nav-cart-link"
-          >{`Cart (${totalItems})`}</LocalizedClientLink>
-        </PopoverButton>
+        {/* `as={LocalizedClientLink}` — rendering PopoverButton as a
+            <button> wrapping a nested <a> is two interactive elements in
+            one control, a genuine WCAG violation (nested-interactive)
+            screen readers can't reliably announce. Rendering the link
+            itself as the PopoverButton keeps exactly one interactive
+            element, still carrying the aria-expanded state Headless UI
+            injects (valid on a link, unlike a bare <span>). The
+            dropdown's open/close is driven by the wrapping div's hover
+            handlers, not a click here, so no interaction is lost. */}
+        <PopoverButton
+          as={LocalizedClientLink}
+          href="/cart"
+          className="h-full inline-flex items-center hover:text-interactive"
+          data-testid="nav-cart-link"
+        >{`Cart (${totalItems})`}</PopoverButton>
         <Transition
           show={cartDropdownOpen}
           as={Fragment}

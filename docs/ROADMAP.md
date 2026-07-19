@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 5.3
+**Version:** 5.4
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -42,9 +42,9 @@ Every item above is a foundational rule every future component and screen will d
 
 - This phase can run in parallel with Phase 1's backend work below; it blocked visual/frontend work specifically, not backend/architecture work — that block is now lifted.
 
-### Phase 0c — Component specification — Not yet started
+### Phase 0c — Storefront Foundation — ✅ Complete (Engineering Milestone 6, 2026-07-19)
 
-The next frontend-track step: specifying actual components (buttons, cards, forms, navigation) against `DESIGN_SYSTEM.md` v2.0, each checked against its Design Quality Checklist and referencing only Tier 3 semantic tokens. Has not begun; awaits Paul's direction to start. Can run in parallel with Phase 1's backend work.
+The full `DESIGN_SYSTEM.md` §B token system (color, typography, spacing, grid/breakpoints, elevation, radius, motion) implemented as CSS custom properties + Tailwind extensions in `storefront/`; the shared UI primitive library every existing account/checkout/cart component already uses retokenized to match (not duplicated); error-boundary, empty-state, toast, and form-foundation infrastructure added; Navigation/Footer shells retokenized (layout only — no `01_NAVIGATION_SPECIFICATION.md` behavior); a Jest + React Testing Library foundation stood up. See `storefront/README.md`'s own "Phase 0c" section for full detail, including two genuine WCAG violations found and fixed via real axe-core testing against the live, backend-connected storefront. Individual specification implementation (Homepage, Navigation, Search, Product Listing, Product Details, Cart, Checkout) is the next frontend-track step, each building on this foundation — none begun yet.
 
 ### Phase 0d — Product Specifications — ✅ Complete
 

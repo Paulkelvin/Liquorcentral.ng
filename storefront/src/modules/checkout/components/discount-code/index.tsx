@@ -116,7 +116,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                     <Text className="flex gap-x-1 items-baseline txt-small-plus w-4/5 pr-1">
                       <span className="truncate" data-testid="discount-code">
                         <Badge
-                          color={promotion.is_automatic ? "green" : "grey"}
+                          color={promotion.is_automatic ? "success" : "neutral"}
                         >
                           {promotion.code}
                         </Badge>{" "}

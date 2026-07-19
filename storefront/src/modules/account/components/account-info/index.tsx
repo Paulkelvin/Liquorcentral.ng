@@ -81,7 +81,7 @@ const AccountInfo = ({
           )}
           data-testid="success-message"
         >
-          <Badge className="p-2 my-4" color="green">
+          <Badge className="p-2 my-4" color="success">
             <span>{label} updated succesfully</span>
           </Badge>
         </Disclosure.Panel>
@@ -100,7 +100,7 @@ const AccountInfo = ({
           )}
           data-testid="error-message"
         >
-          <Badge className="p-2 my-4" color="red">
+          <Badge className="p-2 my-4" color="danger">
             <span>{errorMessage}</span>
           </Badge>
         </Disclosure.Panel>

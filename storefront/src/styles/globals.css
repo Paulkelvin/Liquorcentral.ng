@@ -2,6 +2,132 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/**
+ * LiquorCentral Design System tokens (DESIGN_SYSTEM.md §B6 Color
+ * Architecture). Every value a component ever uses comes from the Tier 3
+ * semantic tokens below — never Tier 1/2 directly, never a raw hex.
+ * tailwind.config.js's `colors` extension references these variables, so
+ * Tailwind utility classes (bg-primary, text-text-primary, etc.) and any
+ * raw CSS both draw from the same single source. Swapping a future theme
+ * (dark mode, seasonal, accessibility) means changing only this block —
+ * see DESIGN_SYSTEM.md's "Future Theme Support" section.
+ */
+:root {
+  /* Tier 1 — Brand Colors (fixed, unchanged; BRAND_IDENTITY.md) */
+  --brand-red: #ec2d07;
+  --brand-green: #1a9902;
+  --brand-gold: #cfca43;
+  --brand-off-white: #f3f5f0;
+
+  /* Tier 2 — Functional UI Colors (independent of brand palette) */
+  --functional-warning: #b45309;
+  --functional-danger: #b3261e;
+  --functional-information: #2b6cb0;
+
+  /* Neutral System — a warm-neutral grayscale, not a cold gray */
+  --ink-900: #1a1a1a;
+  --ink-700: #46443f;
+  --ink-500: #706c63;
+  --ink-300: #b8b4aa;
+  --ink-200: #d8d5cc;
+  --ink-100: #eceae3;
+  --ink-900-50: rgba(26, 26, 26, 0.5);
+
+  /* Surface Elevated — a distinct value from the page's own Off White */
+  --surface-elevated: #ffffff;
+
+  /* Tier 3 — Semantic Design Tokens (the only vocabulary components use) */
+  --color-primary: var(--brand-red);
+  --color-secondary: var(--brand-green);
+  --color-accent: var(--brand-gold);
+  --color-surface: var(--brand-off-white);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-background: var(--brand-off-white);
+  --color-text-primary: var(--ink-900);
+  --color-text-secondary: var(--ink-700);
+  --color-text-muted: var(--ink-500);
+  --color-border: var(--ink-300);
+  --color-divider: var(--ink-200);
+  --color-focus: var(--ink-900);
+  --color-interactive: var(--brand-green);
+  --color-disabled-text: var(--ink-500);
+  --color-disabled-surface: var(--ink-100);
+  --color-success: var(--brand-green);
+  --color-warning: var(--functional-warning);
+  --color-danger: var(--functional-danger);
+  --color-information: var(--functional-information);
+  --color-overlay: var(--ink-900-50);
+
+  /*
+   * Interactive state layer (DESIGN_SYSTEM.md "Interactive States"): hover
+   * = base color + 8% black, active = base color + 16% black — a
+   * mechanism applied uniformly to whichever base color is in use, not a
+   * fixed hex per state. color-mix() means these stay correct
+   * automatically if --color-primary/--color-secondary/--color-interactive
+   * are ever remapped under a future theme, with no component changes.
+   */
+  --color-primary-hover: color-mix(in srgb, var(--color-primary) 92%, black);
+  --color-primary-active: color-mix(in srgb, var(--color-primary) 84%, black);
+  --color-secondary-hover: color-mix(in srgb, var(--color-secondary) 92%, black);
+  --color-secondary-active: color-mix(in srgb, var(--color-secondary) 84%, black);
+  --color-interactive-hover: color-mix(in srgb, var(--color-interactive) 92%, black);
+  --color-interactive-active: color-mix(in srgb, var(--color-interactive) 84%, black);
+
+  /*
+   * Tint backgrounds (e.g. status badges) — a light wash of a state color
+   * over the surface, not the full-strength color as a fill. Precomputed
+   * via color-mix() rather than Tailwind's opacity-modifier syntax, since
+   * that modifier can't reliably decompose a CSS custom property's color
+   * channels at build time.
+   */
+  --color-success-tint: color-mix(in srgb, var(--color-success) 12%, white);
+  --color-danger-tint: color-mix(in srgb, var(--color-danger) 12%, white);
+  --color-warning-tint: color-mix(in srgb, var(--color-warning) 12%, white);
+  --color-information-tint: color-mix(in srgb, var(--color-information) 12%, white);
+}
+
+/**
+ * Accessibility foundation (DESIGN_SYSTEM.md §B11 / EXPERIENCE_PRINCIPLES.md
+ * #13). Applies platform-wide, not per-component.
+ */
+
+/* Visible focus indicator, never removed without a replacement. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Skip-to-content link — hidden until focused, per WCAG 2.4.1. */
+.skip-link {
+  position: absolute;
+  left: 0;
+  top: -100%;
+  z-index: 100;
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  background-color: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-focus);
+  border-radius: 8px;
+}
+
+.skip-link:focus {
+  top: var(--space-2, 0.5rem);
+  left: var(--space-2, 0.5rem);
+}
+
+/* prefers-reduced-motion (DESIGN_SYSTEM.md §B10) — respected platform-wide,
+   not opted into per animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @layer utilities {
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
@@ -50,8 +176,21 @@
 }
 
 @layer components {
+  /* Vendored DTC Starter container (1440px) — untouched; existing
+     account/cart/checkout pages use this. */
   .content-container {
     @apply max-w-[1440px] w-full mx-auto px-6;
+  }
+
+  /*
+   * LiquorCentral Design System container (DESIGN_SYSTEM.md §B3): max
+   * content width 1280px, centered, with the grid's own responsive
+   * margins (16px mobile, 24px tablet, 32px desktop). New shared layout
+   * components (Nav shell, Footer shell, and future page specifications)
+   * use this, not .content-container.
+   */
+  .ds-container {
+    @apply max-w-content w-full mx-auto px-4 md:px-6 lg:px-8;
   }
 
   .contrast-btn {

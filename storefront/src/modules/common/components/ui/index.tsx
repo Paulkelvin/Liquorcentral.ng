@@ -15,15 +15,44 @@ import {
 // Re-export clsx as clx for compatibility
 export { clsx as clx }
 
+/**
+ * Shared UI primitives (Phase 0c — Storefront Foundation). Every class here
+ * resolves through the LiquorCentral Design System's Tier 3 semantic tokens
+ * (DESIGN_SYSTEM.md §B6 — see tailwind.config.js/globals.css), never a raw
+ * Tailwind color/gray value — the same discipline that document's
+ * "Component Philosophy" section requires. These are the primitives every
+ * future specification implementation (Homepage, Navigation, Product
+ * Listing, etc.) composes from; none of them encode page-specific behavior.
+ */
+
 // Text Component
 type TextProps = HTMLAttributes<HTMLParagraphElement> & {
   as?: "p" | "span" | "div"
+  size?: "caption" | "body" | "body-lg"
+  muted?: boolean
+}
+
+const textSizeClass: Record<NonNullable<TextProps["size"]>, string> = {
+  caption: "text-caption",
+  body: "text-body",
+  "body-lg": "text-body-lg",
 }
 
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(
-  ({ className, as: Component = "p", children, ...props }, ref) => {
+  (
+    { className, as: Component = "p", size = "body", muted, children, ...props },
+    ref
+  ) => {
     return (
-      <Component ref={ref} className={clsx("text-base", className)} {...props}>
+      <Component
+        ref={ref}
+        className={clsx(
+          textSizeClass[size],
+          muted ? "text-text-muted" : "text-text-primary",
+          className
+        )}
+        {...props}
+      >
         {children}
       </Component>
     )
@@ -33,19 +62,26 @@ Text.displayName = "Text"
 
 // Heading Component
 type HeadingProps = HTMLAttributes<HTMLHeadingElement> & {
-  level?: "h1" | "h2" | "h3"
+  level?: "h1" | "h2" | "h3" | "h4"
+  display?: boolean
+}
+
+const headingSizeByLevel: Record<NonNullable<HeadingProps["level"]>, string> = {
+  h1: "text-heading-1",
+  h2: "text-heading-2",
+  h3: "text-heading-3",
+  h4: "text-heading-4",
 }
 
 export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ className, level: Component = "h2", children, ...props }, ref) => {
+  ({ className, level: Component = "h2", display = false, children, ...props }, ref) => {
     return (
       <Component
         ref={ref}
         className={clsx(
-          "font-semibold",
-          Component === "h1" && "text-3xl",
-          Component === "h2" && "text-2xl",
-          Component === "h3" && "text-xl",
+          "font-bold text-text-primary",
+          headingSizeByLevel[Component],
+          display && "font-display",
           className
         )}
         {...props}
@@ -82,19 +118,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={clsx(
-          "inline-flex gap-2 items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-          variant === "primary" && "bg-black text-white hover:bg-gray-800",
+          "inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-colors duration-standard ease-in-out",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
+          "disabled:pointer-events-none disabled:opacity-50 disabled:bg-disabled-surface disabled:text-disabled",
+          variant === "primary" && "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
           variant === "secondary" &&
-            "bg-white text-black border border-gray-200 hover:bg-gray-50",
-          variant === "transparent" && "bg-transparent hover:bg-gray-100",
-          size === "small" && "h-8 px-3 text-sm",
-          size === "medium" && "h-10 px-4",
-          size === "large" && "h-12 px-6 text-lg",
+            "bg-surface-elevated text-text-primary border border-border hover:bg-ink-100",
+          variant === "transparent" &&
+            "bg-transparent text-interactive hover:bg-ink-100",
+          // Minimum 44x44px touch target (DESIGN_SYSTEM.md §B11), regardless
+          // of visual size — "small" keeps a smaller visual footprint via
+          // padding/font-size, but never drops below 44px min-height.
+          size === "small" && "min-h-[44px] px-3 text-caption",
+          size === "medium" && "min-h-[44px] px-4 text-body",
+          size === "large" && "min-h-[48px] px-6 text-body-lg",
           className
         )}
         {...props}
       >
-        {isLoading ? "Loading..." : children}
+        {isLoading ? "Loading…" : children}
       </button>
     )
   }
@@ -102,14 +144,20 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 // Container Component
-type ContainerProps = HTMLAttributes<HTMLDivElement>
+type ContainerProps = HTMLAttributes<HTMLDivElement> & {
+  elevated?: boolean
+}
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
-  ({ className, children, ...props }, ref) => {
+  ({ className, elevated = true, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={clsx("bg-white rounded-lg p-4", className)}
+        className={clsx(
+          "rounded-radius-md p-4",
+          elevated ? "bg-surface-elevated shadow-elevation-1" : "bg-surface",
+          className
+        )}
         {...props}
       >
         {children}
@@ -121,22 +169,24 @@ Container.displayName = "Container"
 
 // Badge Component
 type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
-  color?: "green" | "red" | "blue" | "orange" | "grey" | "purple"
+  color?: "success" | "danger" | "information" | "warning" | "neutral" | "accent"
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, color = "grey", children, ...props }, ref) => {
+  ({ className, color = "neutral", children, ...props }, ref) => {
     return (
       <span
         ref={ref}
         className={clsx(
-          "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
-          color === "green" && "bg-green-100 text-green-700",
-          color === "red" && "bg-red-100 text-red-700",
-          color === "blue" && "bg-blue-100 text-blue-700",
-          color === "orange" && "bg-orange-100 text-orange-700",
-          color === "grey" && "bg-gray-100 text-gray-700",
-          color === "purple" && "bg-purple-100 text-purple-700",
+          "inline-flex items-center rounded-radius-full px-2 py-1 text-caption font-medium",
+          color === "success" && "bg-success-tint text-success",
+          color === "danger" && "bg-danger-tint text-danger",
+          color === "information" && "bg-information-tint text-information",
+          color === "warning" && "bg-warning-tint text-warning",
+          color === "neutral" && "bg-ink-100 text-text-secondary",
+          // Accent (Gold) is a premium marker only — always on a dark
+          // ground, per DESIGN_SYSTEM.md's explicit Gold Usage rule.
+          color === "accent" && "bg-ink-900 text-accent",
           className
         )}
         {...props}
@@ -157,7 +207,7 @@ export const IconBadge = forwardRef<HTMLSpanElement, IconBadgeProps>(
       <span
         ref={ref}
         className={clsx(
-          "inline-flex items-center justify-center rounded-full bg-gray-100 p-1",
+          "inline-flex items-center justify-center rounded-radius-full bg-ink-100 p-1 text-text-secondary",
           className
         )}
         {...props}
@@ -170,7 +220,9 @@ export const IconBadge = forwardRef<HTMLSpanElement, IconBadgeProps>(
 IconBadge.displayName = "IconBadge"
 
 // IconButton Component
-type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  "aria-label": string
+}
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ className, children, ...props }, ref) => {
@@ -178,7 +230,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       <button
         ref={ref}
         className={clsx(
-          "inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2",
+          "inline-flex items-center justify-center rounded-radius-md min-h-[44px] min-w-[44px] p-2 text-text-primary",
+          "hover:bg-ink-100 transition-colors duration-micro ease-out",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
           className
         )}
         {...props}
@@ -198,7 +252,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
     return (
       <label
         ref={ref}
-        className={clsx("text-sm font-medium", className)}
+        className={clsx("text-caption font-medium text-text-secondary", className)}
         {...props}
       >
         {children}
@@ -209,23 +263,41 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
 Label.displayName = "Label"
 
 // Input Component
+//
+// Labels are always visible above the field, never placeholder-only
+// (DESIGN_SYSTEM.md §B9) — the `label` prop renders one, it is never
+// substituted with a placeholder as the only affordance.
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
+  error?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, ...props }, ref) => {
+  ({ className, label, error, id, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1">
-        {label && <Label>{label}</Label>}
+        {label && <Label htmlFor={id}>{label}</Label>}
         <input
           ref={ref}
+          id={id}
+          aria-invalid={!!error}
+          aria-describedby={error && id ? `${id}-error` : undefined}
           className={clsx(
-            "flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "flex min-h-[44px] w-full rounded-radius-sm border bg-surface-elevated px-3 py-2 text-body text-text-primary placeholder:text-text-muted",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
+            "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-disabled-surface",
+            error ? "border-danger" : "border-border",
             className
           )}
           {...props}
         />
+        {/* Errors appear directly below the field, in plain language
+            (DESIGN_SYSTEM.md §B9) — never a generic "invalid input". */}
+        {error && (
+          <p id={id ? `${id}-error` : undefined} role="alert" className="text-caption text-danger">
+            {error}
+          </p>
+        )}
       </div>
     )
   }
@@ -240,7 +312,7 @@ const TableRoot = forwardRef<HTMLTableElement, TableProps>(
     return (
       <table
         ref={ref}
-        className={clsx("w-full caption-bottom text-sm", className)}
+        className={clsx("w-full caption-bottom text-body", className)}
         {...props}
       >
         {children}
@@ -257,7 +329,7 @@ const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
     return (
       <thead
         ref={ref}
-        className={clsx("[&_tr]:border-b", className)}
+        className={clsx("[&_tr]:border-b [&_tr]:border-divider", className)}
         {...props}
       >
         {children}
@@ -292,7 +364,7 @@ const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
       <tr
         ref={ref}
         className={clsx(
-          "border-b transition-colors hover:bg-gray-50",
+          "border-b border-divider transition-colors hover:bg-ink-100",
           className
         )}
         {...props}
@@ -312,7 +384,7 @@ const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
       <th
         ref={ref}
         className={clsx(
-          "h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0",
+          "h-12 px-4 text-left align-middle font-medium text-text-secondary [&:has([role=checkbox])]:pr-0",
           className
         )}
         {...props}
@@ -384,7 +456,7 @@ const RadioGroupItem = forwardRef<HTMLInputElement, RadioGroupItemProps>(
           type="radio"
           id={id}
           className={clsx(
-            "h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-900",
+            "h-4 w-4 border-border text-primary focus-visible:ring-2 focus-visible:ring-focus",
             className
           )}
           {...props}
@@ -414,7 +486,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           type="checkbox"
           id={id}
           className={clsx(
-            "h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900",
+            "h-4 w-4 rounded-radius-sm border-border text-primary focus-visible:ring-2 focus-visible:ring-focus",
             className
           )}
           {...props}

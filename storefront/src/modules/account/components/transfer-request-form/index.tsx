@@ -71,6 +71,7 @@ export default function TransferRequestForm() {
           <IconButton
             className="h-fit"
             onClick={() => setShowSuccess(false)}
+            aria-label="Dismiss"
           >
             <XCircleSolid className="w-4 h-4 text-neutral-500" />
           </IconButton>

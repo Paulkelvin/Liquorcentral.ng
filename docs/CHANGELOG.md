@@ -1,11 +1,33 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.2
+**Version:** 5.3
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v50 — 2026-07-19 — Milestone 6: Phase 0c — Storefront Foundation
+
+**Context:** Paul directed Phase 0c — Storefront Foundation: the reusable infrastructure (design tokens, layout shells, shared primitives, error/empty/toast/form infrastructure, testing) every future specification implementation sits on top of, explicitly not Homepage/Navigation/Search/Product Listing/Product Details/Cart/Checkout behavior itself. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/tailwind.config.js`, `storefront/src/styles/globals.css` — the full `DESIGN_SYSTEM.md` §B token system (three-tier color architecture, 7-step typography scale, elevation, radius, motion timing, `sm` breakpoint correction) as CSS custom properties + Tailwind extensions, additive to the vendored Medusa UI preset tokens (nothing removed, nothing broke).
+- `storefront/src/modules/common/components/{empty-state,toast,form-field}`, `storefront/src/lib/hooks/use-blur-validation.ts` — new shared infrastructure: a generic empty-state shell, an `aria-live` toast provider/hook, and the canonical label/control/error form composition implementing `DESIGN_SYSTEM.md` §B9's "validate on blur" rule.
+- `storefront/src/app/[countryCode]/error.tsx`, `storefront/src/app/global-error.tsx` — Next.js App Router error-boundary convention, previously entirely absent.
+- `storefront/jest.config.js`, `storefront/jest.setup.js`, `storefront/.env.test` — a Jest + React Testing Library foundation (`next/jest`); 17 tests across 5 suites covering every new primitive.
+
+**Changed:**
+
+- `storefront/src/modules/common/components/ui/index.tsx` — retokenized in place (not duplicated): this file was already the vendored template's de facto shared component library (`Text`, `Heading`, `Button`, `Container`, `Badge`, `Input`, etc.), used by 20+ existing account/checkout/cart components, all of which now render with LiquorCentral tokens automatically with no behavior change. `Button`/`IconButton`/`Input` now enforce a 44×44px minimum touch target (`DESIGN_SYSTEM.md` §B11).
+- `storefront/src/modules/layout/templates/{nav,footer}/index.tsx`, `(checkout)/layout.tsx` — retokenized; "Medusa Store" branding corrected to "LiquorCentral"; the vendored "Powered by Medusa & Next.js" CTA and GitHub/Docs/Source-code footer links removed (marketing content for the wrong product); `medusa-cta` component and its icon files deleted as now-unused. No `01_NAVIGATION_SPECIFICATION.md` behavior (mega menu, category tree, search) added.
+- `storefront/src/app/layout.tsx`, `(main)/layout.tsx`, `(checkout)/layout.tsx` — a genuine pre-existing bug fixed: the root layout wrapped every page in its own `<main>`, and `(main)/layout.tsx` didn't render one at all, leaving zero or two `<main>` landmarks depending on route. Fixed to exactly one `<main id="main-content">` per page, paired with a new skip-to-content link in each route group.
+- `storefront/src/modules/layout/components/cart-dropdown/index.tsx` — **two genuine, pre-existing WCAG violations found and fixed via real axe-core testing** against the live, backend-connected storefront (not just markup review): a `<button>` (Headless UI's `PopoverButton`) wrapping a nested `<a>` (`nested-interactive`, serious), then — after an intermediate fix attempt — an invalid `aria-expanded` on a bare `<span>` (`aria-allowed-attr`, critical). Resolved by rendering `PopoverButton` `as={LocalizedClientLink}` directly, keeping exactly one interactive element while preserving the `aria-expanded` state Headless UI injects. Homepage/Store/Cart pages all now score zero axe violations for WCAG 2A/2AA on shell chrome.
+
+**Not changed, and explicitly out of scope:** no Homepage/Navigation/Search/Product Listing/Product Details/Cart/Checkout *behavior* was implemented anywhere — the Homepage's own vendored hero placeholder ("Ecommerce Starter Template") is deliberately untouched. One further axe-core finding (a color-contrast failure on the vendored Store listing page's "Sort by" control) was found and deliberately **not** fixed, since it lives in Product Listing behavior outside this milestone's scope — recorded in `storefront/README.md` for `04_PRODUCT_LISTING_SPECIFICATION.md`'s future implementation. No specific display typeface was chosen (`font-display` is a generic system-serif stack; `BRAND_GUIDELINES.md` has not yet selected one). No planning document's substance was altered.
+
+**Also updated:** `docs/PROJECT_STATUS.md` (→ v5.1), `docs/ROADMAP.md` (→ v5.4) — Phase 0c marked ✅ complete. `docs/DECISION_LOG.md` (new entry with full reasoning and validation detail). `storefront/README.md` (new "Phase 0c" section).
 
 ## v49 — 2026-07-19 — Milestone 5: storefront scaffold stood up
 
