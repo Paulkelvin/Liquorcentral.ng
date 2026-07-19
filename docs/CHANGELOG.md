@@ -1,11 +1,33 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 4.8
+**Version:** 4.9
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v46 — 2026-07-19 — Milestone 2: `wine-details` module implemented
+
+**Context:** Paul directed Milestone 2 — implementing the Approved `TIER_B_WINE_ATTRIBUTES_MODULE.md` architecture in code, per a stated precedence order of governing documents. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `backend/` — not part of `/docs`):**
+
+- `backend/apps/backend/src/modules/wine-details/` — a custom Medusa module (data model, service, migration) holding structured Wine & Spirits attributes (vintage, ABV, producer, region, bottle size, tasting notes, serving temperature), linked 1:1 to Product via `src/links/product-wine-details.ts`. Includes its own `README.md`.
+- `backend/apps/backend/src/workflows/wine-details/` — four steps, two workflows, and two hook registrations (`createProductsWorkflow.hooks.productsCreated`, `updateProductsWorkflow.hooks.productsUpdated`) that create/update/delete the linked record based on the native product endpoints' `additional_data` payload — no new API route.
+- `backend/apps/backend/src/api/middlewares.ts` — a zod `additionalDataValidator` for the wine-details fields.
+- `backend/apps/backend/src/admin/widgets/wine-details-widget.tsx` and `src/admin/lib/sdk.ts` — a product-detail-page admin widget for entering these fields.
+- 10 unit tests (`src/workflows/wine-details/__tests__/helpers.unit.spec.ts`) and 6 module-integration tests (`src/modules/wine-details/__tests__/service.spec.ts`, run against a real, isolated temporary database).
+
+**Changed:**
+
+- `docs/PROJECT_STATUS.md` (→ v4.7) — new "Completed work" entry for Milestone 2; "Work in progress" and "Next recommended task" updated to point at Milestone 3.
+- `docs/ROADMAP.md` (→ v5.0) — Phase 2's wine-attributes-module bullet marked ✅ complete.
+- `docs/implementation-planning/MODULE_INVENTORY.md` (→ v1.9) — `wine-details` row updated to reflect implementation, not only Approved architecture.
+
+**Not changed:** no planning document's substance was altered, `TIER_B_WINE_ATTRIBUTES_MODULE.md` was not modified (its architecture is exactly what was implemented), and no business decision was made — the field list used is explicitly provisional, matching `PRODUCT_CATALOG.md`'s own "proposed, not finalized" list, not a resolution of that open decision.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry with full reasoning, the one genuine bug found and fixed during live verification, and validation detail), `backend/README.md` (updated file tree and "what's configured"/"what's deliberately not here yet" sections).
 
 ## v45 — 2026-07-19 — Engineering phase begun; Milestone 1 — Backend Foundation complete
 

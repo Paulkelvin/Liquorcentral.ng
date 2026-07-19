@@ -14,18 +14,26 @@ backend/
     └── backend/           The Medusa v2 application (@dtc/backend)
         ├── medusa-config.ts
         ├── src/
-        │   ├── admin/       Admin dashboard extensions (widgets, routes) — empty, no custom UI yet
-        │   ├── api/         Custom API routes — empty, none built yet (API_DECISIONS.md anticipates two, at most)
-        │   ├── modules/     Custom modules (wine-details, food-details, etc.) — empty, not built yet
-        │   ├── workflows/   Custom workflow steps/hooks — empty, not built yet
+        │   ├── admin/
+        │   │   ├── lib/sdk.ts               Shared Admin JS SDK client
+        │   │   └── widgets/wine-details-widget.tsx   Product-page widget (Milestone 2)
+        │   ├── api/
+        │   │   └── middlewares.ts           additionalDataValidator for wine-details fields — no custom route
+        │   ├── modules/
+        │   │   └── wine-details/            Milestone 2 — see its own README.md
+        │   ├── workflows/
+        │   │   └── wine-details/            Steps + workflows + hooks wiring wine-details into product create/update
+        │   ├── links/
+        │   │   └── product-wine-details.ts  1:1 Product <> WineDetails link
         │   ├── subscribers/ Event subscribers — empty, not built yet
         │   ├── jobs/        Scheduled jobs — empty, not built yet
         │   └── migration-scripts/
         │       └── initial-data-seed.ts   Store-level foundation seed (see below)
-        └── .env.template    Copy to .env and fill in for local development
+        ├── .env.template       Copy to .env and fill in for local development
+        └── .env.test.template  Copy to .env.test — used by module/integration tests only
 ```
 
-No custom module has been built yet — `src/modules`, `src/api`, `src/workflows` are empty. This milestone is backend infrastructure only, per `docs/ROADMAP.md` Phase 1's "stand up Medusa on Postgres + Redis" bullet.
+`food-details`, delivery-slot, the local payment provider, and the notification provider are not built yet — only `wine-details` (Milestone 2). See `docs/PROJECT_STATUS.md` for current milestone status.
 
 ## What's configured
 
@@ -38,6 +46,7 @@ No custom module has been built yet — `src/modules`, `src/api`, `src/workflows
   - One region, "Nigeria" (country `ng`, currency `ngn`), using Medusa's built-in `pp_system_default` payment provider as a placeholder. This is **not** the local Nigerian payment provider `MEDUSA_EXTENSIONS.md` #4 describes — that is separate, later work gated on Paul's provider decision (see `docs/implementation-planning/TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md`).
   - One tax region, Nigeria, using Medusa's native system tax provider — deliberately **no tax rate set**. The exact VAT/tax treatment is an open business/legal decision (`docs/PROJECT_STATUS.md`), not something to invent here.
   - Deliberately **no** stock locations, fulfillment sets, shipping options, or demo products — those depend on `DELIVERY_MODEL.md` and the wine-details/food-details modules and belong to later milestones, not backend foundation.
+- **`wine-details` module (Milestone 2)** — structured Wine & Spirits attribute data, linked 1:1 to Product. See `src/modules/wine-details/README.md` for what it is, what it deliberately isn't, and its known open items (the field list is provisional, not Paul-approved). No new API route: reads happen via Medusa's Query system (`fields=+wine_details.*`), writes happen via `POST /admin/products`/`POST /admin/products/:id`'s native `additional_data` extension, both validated end-to-end against a real running server (create, update, clear-to-delete, and re-create all confirmed working, including that a product with no wine-details values never gets an empty record).
 
 ## Local development
 
@@ -63,13 +72,23 @@ npx medusa build && npx medusa start
 
 `GET /health` returns `200` once the server is up. Admin login is `POST /auth/user/emailpass` with the email/password from the `medusa user` step above.
 
+### Running tests
+
+```bash
+cp .env.test.template .env.test   # fill in DB_USERNAME/DB_PASSWORD — used only
+                                   # to create/drop temporary test databases,
+                                   # separate from .env's persistent dev DB
+yarn test:unit                    # pure logic, no DB (src/**/__tests__/*.unit.spec.ts)
+yarn test:integration:modules     # real, isolated test DB per module (src/modules/*/__tests__)
+```
+
 ## What's deliberately not here yet
 
 Per `docs/IMPLEMENTATION_READINESS_REPORT.md`'s readiness classification — these are separate, later milestones, not omissions:
 
 - The storefront (Next.js) — a later milestone.
-- Any custom module (`wine-details`, `food-details`, delivery-slot, the local payment provider, the notification provider) — each has an Approved Tier B architecture document in `docs/implementation-planning/`, but none has been implemented in code yet.
-- Any custom API route.
+- `food-details`, delivery-slot, the local payment provider, the notification provider — each has an Approved Tier B architecture document in `docs/implementation-planning/`, but none has been implemented in code yet (only `wine-details` has, Milestone 2).
+- Any custom API route (still true after Milestone 2 — `wine-details` needed none; see its own README).
 - Stock locations, fulfillment configuration, and shipping options for Wine & Spirits (nationwide) and Food Central (Lagos-only) — depends on `DELIVERY_MODEL.md` and the delivery-slot module.
 - A real payment provider connection — blocked on Paul's provider decision, the project's sole confirmed launch-blocking open item.
-- Any product catalog data — Wine & Spirits and Food Central listings are populated once the attribute modules exist.
+- Any real product catalog data — Wine & Spirits and Food Central listings are populated once merchandising/catalog work begins; Milestone 2 only validated the mechanism with disposable test products, all deleted afterward.

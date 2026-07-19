@@ -57,5 +57,10 @@ module.exports = defineConfig({
         redisUrl: process.env.CACHE_REDIS_URL,
       },
     },
+    // Custom modules (MEDUSA_EXTENSIONS.md) — each a small module linked
+    // 1:1 to Product via defineLink, never a core change (ARCHITECTURE.md).
+    {
+      resolve: "./src/modules/wine-details",
+    },
   ],
 })

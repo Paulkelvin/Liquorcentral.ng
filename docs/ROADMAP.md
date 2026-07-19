@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 4.9
+**Version:** 5.0
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -96,7 +96,7 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 
 ## Phase 2 — Product data foundation
 
-- Build the wine-attributes module (`MEDUSA_EXTENSIONS.md` #1) and its admin editing widget.
+- ✅ **Build the wine-attributes module (`MEDUSA_EXTENSIONS.md` #1) and its admin editing widget** — complete, 2026-07-19 (Engineering Milestone 2). `backend/apps/backend/src/modules/wine-details` implements `TIER_B_WINE_ATTRIBUTES_MODULE.md`'s Approved architecture: a custom module linked 1:1 to Product, written via the native product endpoints' `additional_data` extension (no new API route), read via Query, edited through a product-page admin widget. The field list used is provisional (drawn from `PRODUCT_CATALOG.md`'s explicitly "proposed" list), pending Paul's final approval — populating real catalog data with it is separate, later work, not part of this bullet. See `backend/apps/backend/src/modules/wine-details/README.md`.
 - This must happen before search (Phase 6) — indexing a still-changing schema wastes rework.
 
 ## Phase 3 — Food Central catalog and delivery foundation
