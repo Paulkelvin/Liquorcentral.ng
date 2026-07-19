@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 5.4
+**Version:** 5.5
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -44,7 +44,7 @@ Every item above is a foundational rule every future component and screen will d
 
 ### Phase 0c — Storefront Foundation — ✅ Complete (Engineering Milestone 6, 2026-07-19)
 
-The full `DESIGN_SYSTEM.md` §B token system (color, typography, spacing, grid/breakpoints, elevation, radius, motion) implemented as CSS custom properties + Tailwind extensions in `storefront/`; the shared UI primitive library every existing account/checkout/cart component already uses retokenized to match (not duplicated); error-boundary, empty-state, toast, and form-foundation infrastructure added; Navigation/Footer shells retokenized (layout only — no `01_NAVIGATION_SPECIFICATION.md` behavior); a Jest + React Testing Library foundation stood up. See `storefront/README.md`'s own "Phase 0c" section for full detail, including two genuine WCAG violations found and fixed via real axe-core testing against the live, backend-connected storefront. Individual specification implementation (Homepage, Navigation, Search, Product Listing, Product Details, Cart, Checkout) is the next frontend-track step, each building on this foundation — none begun yet.
+The full `DESIGN_SYSTEM.md` §B token system (color, typography, spacing, grid/breakpoints, elevation, radius, motion) implemented as CSS custom properties + Tailwind extensions in `storefront/`; the shared UI primitive library every existing account/checkout/cart component already uses retokenized to match (not duplicated); error-boundary, empty-state, toast, and form-foundation infrastructure added; Navigation/Footer shells retokenized (layout only — no `01_NAVIGATION_SPECIFICATION.md` behavior); a Jest + React Testing Library foundation stood up. See `storefront/README.md`'s own "Phase 0c" section for full detail, including two genuine WCAG violations found and fixed via real axe-core testing against the live, backend-connected storefront. Individual specification implementation (Homepage, Navigation, Search, Product Listing, Product Details, Cart, Checkout) is the next frontend-track step, each building on this foundation. **`01_NAVIGATION_SPECIFICATION.md` is the first, complete as of Engineering Milestone 7** (2026-07-19, ✅ Complete) — the mega menu, Food Central dropdown, mobile drawer/wayfinding strip, header search field (bridging to a minimal native-search page, not `03_SEARCH_SPECIFICATION.md`'s own future Meilisearch implementation), breadcrumbs, and the footer's five content groups. See `storefront/README.md`'s own "Milestone 7" section for full detail, including a genuine hover-menu race-condition bug found and fixed via real Playwright automation, and three accessibility findings from real axe-core testing (one fixed, two pre-existing/systemic and deliberately left for their proper owners). The remaining six specifications (Homepage, Search, Product Listing, Product Details, Cart, Checkout) are not yet begun — the next one is again Paul's call.
 
 ### Phase 0d — Product Specifications — ✅ Complete
 

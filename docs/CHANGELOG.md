@@ -1,11 +1,41 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.3
+**Version:** 5.4
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v51 — 2026-07-19 — Milestone 7: Navigation (`01_NAVIGATION_SPECIFICATION.md`)
+
+**Context:** With every remaining backend track (payment provider, notification provider, Food Central/Wine & Spirits fulfillment) confirmed blocked on an open business decision, and Phase 0c (Storefront Foundation) complete, Paul directed the first individual specification implementation on top of it: Navigation, chosen because it's the shared shell every other specification's page sits inside. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `backend/apps/backend/` and `storefront/` — not part of `/docs`):**
+
+- `backend/apps/backend/src/migration-scripts/navigation-category-seed.ts` — an idempotent script seeding the provisional Product Category tree §11 itself proposes as a non-final default (a "Spirits" parent plus Wines/Champagne/Beer/Gift Sets/Accessories as top-level entries) — the project had zero categories before this milestone. Food Central is deliberately not seeded as a category (§11/§14 treat it as a hardcoded structural branch, not category data).
+- `storefront/src/modules/layout/components/{mega-menu,food-central-menu,mobile-nav-drawer,mobile-wayfinding-strip,search-field}` — the Wine & Spirits mega menu (§10, data-driven), the Food Central dropdown (§14, deliberately not data-driven), the mobile drawer (§7.3, replacing Phase 0c's placeholder `SideMenu`), the persistent mobile wayfinding strip (§7.2), and the header search field (§15, a real always-visible desktop input + one-tap mobile affordance).
+- `storefront/src/lib/util/mega-menu.ts` (`groupCategoriesForMegaMenu`) — a pure, content-agnostic function distributing whatever top-level categories exist round-robin across mega-menu columns, since §11 is explicit the exact grouping is a merchandising decision, not an engineering one.
+- `storefront/src/lib/hooks/use-hover-intent-open.ts` — fixes a genuine flash-open-then-close bug found with a real Playwright click (not by inspection): synthetically clicking a Headless UI `Popover` trigger on `mouseenter` (needed since Popover exposes no imperative `open()`) races a real click on the same element. Fixed with a short, cancellable hover-intent delay.
+- `storefront/src/modules/common/components/breadcrumbs` — one reusable component (real `<nav aria-label="Breadcrumb">`, `aria-current="location"`, `BreadcrumbList` JSON-LD) wired into category, collection, and product detail pages (§18, §26).
+- `storefront/src/app/[countryCode]/(main)/{search,food-central,food-central/scheduled,food-central/pickup,about,support,legal}` — a minimal native-search bridge page (§15, explicitly not `03_SEARCH_SPECIFICATION.md`'s Meilisearch-backed implementation); three Food Central placeholder destinations (§14/§24 — must never be a dead end); three footer placeholder pages for Company/Support/Legal (real pages, no invented brand/legal copy).
+
+**Changed:**
+
+- `storefront/src/modules/layout/templates/nav/index.tsx` — replaced the Phase 0c placeholder shell (logo + region/locale menu + Account/Cart only) with the mega menu, Food Central dropdown, search field, and mobile wayfinding strip.
+- `storefront/src/modules/layout/templates/footer/index.tsx` — restructured from two ad hoc columns (Categories/Collections) into §8's five named groups (Shop, Food Central, Collections, Company, Support/Legal).
+- `storefront/src/modules/categories/templates/index.tsx`, `collections/templates/index.tsx`, `products/templates/index.tsx` — wired in `Breadcrumbs`, replacing an ad hoc, non-semantic parent-chain rendering in the category template. Product detail's `listProducts` fields query gained `+categories.*` (never previously fetched).
+- `storefront/src/modules/common/components/interactive-link/index.tsx` — **a genuine, newly-surfaced WCAG contrast violation found and fixed via real axe-core testing**: the vendored component (used for a category's in-page children sub-navigation, §11) used the old `text-ui-fg-interactive` preset color at 3.35:1 contrast; retokenized to the new `text-interactive` semantic token.
+- `storefront/src/modules/layout/components/side-menu/` — deleted; fully superseded by `MobileNavDrawer`, which carries its region/language-selector functionality forward unchanged.
+
+**Found via real axe-core/Playwright testing and deliberately *not* fixed (pre-existing, out of scope):**
+
+- `text-ui-fg-muted` on the vendored "Sort by" control — the same violation already documented in `storefront/README.md` since Phase 0c, confirmed still present, still Product Listing's own future scope.
+- White text on the shared `Button` component's `bg-primary` (#EC2D07) primary variant, measured at 4.24:1 against the required 4.5:1 — newly discovered by this milestone, but confirmed **systemic** (present on the pre-existing Cart page too, independent of any navigation change), not introduced here. A Design-System-level concern (one of `BRAND_IDENTITY.md`'s four fixed brand colors) — recorded, not altered, since neither is this milestone's decision to make.
+
+**Not changed, and explicitly out of scope:** `03_SEARCH_SPECIFICATION.md`'s own ranking/typo-tolerance/synonyms/facets (Meilisearch, still pending formal approval); the "pairs with" cross-catalog relationship (§13/§14/§19 — the data model doesn't exist yet); faceted-URL canonicalization (§26 — no facets exist yet); navigation analytics events (§25 — no analytics infrastructure exists anywhere in this project); merchandising promotional-Collection cap/expiry enforcement (no Collections exist yet to enforce it against). No planning document's substance was altered.
+
+**Also updated:** `storefront/README.md` (new "Milestone 7 — Navigation" section, `.env.local` created locally for build/lint validation, gitignored, not committed). `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/AI_HANDOFF.md`, `docs/DECISION_LOG.md`. `docs/implementation-planning/MODULE_INVENTORY.md` was not touched — it tracks backend modules/integrations only, and Navigation introduced neither.
 
 ## v50 — 2026-07-19 — Milestone 6: Phase 0c — Storefront Foundation
 

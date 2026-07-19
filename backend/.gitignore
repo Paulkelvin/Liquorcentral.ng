@@ -56,3 +56,7 @@ yarn-error.log*
 ehthumbs.db
 Thumbs.db
 **/.DS_Store
+
+# Local Redis snapshot artifact (created when redis-server is run ad hoc
+# from this directory during development, e.g. after a service restart)
+dump.rdb

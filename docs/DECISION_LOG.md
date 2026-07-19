@@ -1,13 +1,27 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 2.3
+**Version:** 2.4
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 **Purpose:** A running, append-only record of every material business or architecture decision made on this project — what was decided, why, when, and what it affects. This is the authoritative history; chat conversations are not. When a decision changes, add a new entry rather than editing an old one, so the history of *why* things changed is preserved.
 
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
+
+---
+
+### Engineering Milestone 7: Navigation (`01_NAVIGATION_SPECIFICATION.md`)
+
+- **Decision:** With Phase 0c complete and every remaining backend track (payment provider, notification provider, Food Central/Wine & Spirits fulfillment) confirmed blocked on an open business decision, Paul was asked to choose which of the seven frozen specifications (Homepage, Navigation, Search, Product Listing, Product Details, Cart, Checkout) should be implemented next, since `docs/AI_HANDOFF.md` §10 is explicit that none has architectural precedence over another. Paul chose Navigation, on the reasoning that it's the shared shell every other specification's page sits inside.
+- **Reasoning:** Building Navigation first means every subsequent specification's implementation (Homepage, Product Listing, etc.) gets a real header/mega menu/breadcrumb/footer to sit inside from the start, rather than a placeholder shell that would need retrofitting later.
+- **Date:** 2026-07-19
+- **Impact:** Implemented §5–§26's own behavior on top of Phase 0c's shell — see `storefront/README.md`'s "Milestone 7" section for full detail. Two decisions worth recording explicitly:
+  1. **The project had zero Product Categories before this milestone** — no catalog data has ever been seeded, and the field-list decisions blocking real catalog population remain open. §11 itself supplies "a reasonable default grouping (not a final decision)" for exactly this situation; `backend/apps/backend/src/migration-scripts/navigation-category-seed.ts` seeds that default, idempotently, so the mega menu has real data to render and §30's "adding a category requires zero code change" acceptance criterion is actually testable. Every category remains freely renamable/regroupable/deletable by Paul or staff with zero code change, per the specification's own Governance table — this is not a merchandising decision being made by engineering, it's the mechanism being proven against the specification's own supplied placeholder.
+  2. **A genuine, real bug was found via actual Playwright automation, not by inspection**: `Popover`'s hover-to-open behavior (needed for §10's "opens on hover, with a click/tap fallback") required synthetically clicking the trigger on `mouseenter`, since Headless UI exposes no imperative `open()`. An un-delayed synthetic click raced a real click on the same trigger — the browser always fires `mouseenter` moments before `click` — producing a flash-open-then-immediately-close bug confirmed with an automated click before any fix, then re-confirmed fixed with the same click plus a genuine hover-and-wait sequence and a hover-then-leave-before-delay sequence. `storefront/src/lib/hooks/use-hover-intent-open.ts` is the fix, covered by 5 unit tests.
+  Real axe-core testing against six live, backend-connected pages (home, a parent category, a leaf category, Food Central, search, about) found and fixed one genuine violation newly surfaced by this milestone (`InteractiveLink`'s old `text-ui-fg-interactive` token, 3.35:1 contrast, used for §11's in-page category sub-navigation — retokenized to `text-interactive`), confirmed one pre-existing violation already documented since Phase 0c ("Sort by," Product Listing's own future scope, left untouched), and discovered one new but **systemic, pre-existing** violation — the shared `Button` component's primary variant (white text on `#EC2D07`) measures 4.24:1 against the required 4.5:1, confirmed present on the pre-existing Cart page too, independent of anything this milestone touched. This is a Design-System-level finding (one of `BRAND_IDENTITY.md`'s four fixed brand colors), recorded for whoever owns that document/component, not altered unilaterally here.
+  `docs/PROJECT_STATUS.md`, `docs/ROADMAP.md`, `docs/AI_HANDOFF.md`, and `docs/CHANGELOG.md` (v51) updated to reflect completion; `storefront/README.md` gained a full "Milestone 7" section. `docs/implementation-planning/MODULE_INVENTORY.md` was not touched — it tracks backend modules/integrations only.
+- **Status:** Final for Milestone 7. No Frozen specification and no previously-Approved planning document was modified. `03_SEARCH_SPECIFICATION.md`'s own implementation, the "pairs with" relationship, faceted-URL canonicalization, navigation analytics events, and merchandising promotional-Collection cap/expiry enforcement were all deliberately not built — see `storefront/README.md`'s "What's deliberately not here yet" for the exact boundary on each. The payment provider, notification provider, and Food Central/Wine & Spirits fulfillment tracks remain exactly as blocked as Milestone 6 left them. The next unblocked step is either another individual specification's implementation (Paul's call, same as this one) or Paul supplying one of the business decisions still blocking the backend tracks.
 
 ---
 

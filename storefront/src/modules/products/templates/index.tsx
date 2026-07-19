@@ -7,6 +7,7 @@ import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
+import Breadcrumbs from "@modules/common/components/breadcrumbs"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 
@@ -29,8 +30,20 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
+  const category = product.categories?.[0]
+
   return (
     <>
+      <Breadcrumbs
+        segments={[
+          { label: "Home", href: "/" },
+          { label: "Wine & Spirits", href: "/categories" },
+          ...(category
+            ? [{ label: category.name, href: `/categories/${category.handle}` }]
+            : []),
+          { label: product.title },
+        ]}
+      />
       <div
         className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
         data-testid="product-container"

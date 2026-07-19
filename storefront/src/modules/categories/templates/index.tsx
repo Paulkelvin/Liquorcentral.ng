@@ -6,7 +6,7 @@ import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-g
 import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Breadcrumbs from "@modules/common/components/breadcrumbs"
 import { HttpTypes } from "@medusajs/types"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 
@@ -39,11 +39,26 @@ export default function CategoryTemplate({
 
   getParents(category)
 
+  const breadcrumbSegments = [
+    { label: "Home", href: "/" },
+    { label: "Wine & Spirits", href: "/categories" },
+    ...parents
+      .slice()
+      .reverse()
+      .map((parent) => ({
+        label: parent.name,
+        href: `/categories/${parent.handle}`,
+      })),
+    { label: category.name },
+  ]
+
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
-      data-testid="category-container"
-    >
+    <>
+      <Breadcrumbs segments={breadcrumbSegments} />
+      <div
+        className="flex flex-col small:flex-row small:items-start py-6 content-container"
+        data-testid="category-container"
+      >
       <RefinementList
         sortBy={sort}
         data-testid="sort-by-container"
@@ -51,19 +66,6 @@ export default function CategoryTemplate({
       />
       <div className="w-full">
         <div className="flex flex-row mb-8 text-2xl-semi gap-4">
-          {parents &&
-            parents.map((parent) => (
-              <span key={parent.id} className="text-ui-fg-subtle">
-                <LocalizedClientLink
-                  className="mr-4 hover:text-black"
-                  href={`/categories/${parent.handle}`}
-                  data-testid="sort-by-link"
-                >
-                  {parent.name}
-                </LocalizedClientLink>
-                /
-              </span>
-            ))}
           <h1 data-testid="category-page-title">{category.name}</h1>
         </div>
         {category.description && (
@@ -100,6 +102,7 @@ export default function CategoryTemplate({
           />
         </Suspense>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
