@@ -1,11 +1,34 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.1
+**Version:** 5.2
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v49 — 2026-07-19 — Milestone 5: storefront scaffold stood up
+
+**Context:** Continuing Paul's autonomous-continuation authorization from Milestone 4. Milestones 5 (local payment provider) and 6 (notification provider), in the original priority order, were both found blocked on genuine open business decisions (provider choice; a still-Draft Tier B document) — recorded in `DECISION_LOG.md`'s Milestone 4 entry. Paul confirmed proceeding to the storefront scaffold instead, per `IMPLEMENTATION_READINESS_REPORT.md` §5's explicit "begin now" authorization for Wine & Spirits' browse-through-checkout track.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/` — Medusa's official DTC Starter Next.js app (`apps/storefront` extracted from `github.com/medusajs/dtc-starter`), wired to the real backend: a real Nigeria region (`NEXT_PUBLIC_DEFAULT_REGION=ng`), and a real publishable API key created via the Admin API and scoped to the "LiquorCentral Storefront" sales channel Milestone 1 seeded. Includes its own `README.md`.
+- `@medusajs/js-sdk`, `@medusajs/icons`, `@medusajs/types` pinned to `2.17.2` (matching the backend exactly); `eslint` bumped to `8.57.1` to satisfy `eslint-config-next`'s actual peer requirement.
+
+**Changed (mechanical type/lint fixes in the vendored template, no business logic touched):**
+
+- `src/lib/data/cart.ts` — `setAddresses`' dynamically-built address objects cast through `unknown` rather than `any`; three `catch (e: any)` blocks narrowed to `catch (e)` with an `instanceof Error` check; two placeholder (upstream-commented-out) gift-card functions' unused params prefixed with `_`.
+- `src/modules/checkout/components/shipping/index.tsx` — prop type widened to `StoreCartShippingOptionWithServiceZone` (the type the endpoint actually returns); `formatAddress` narrowed to the minimal structural type it actually reads.
+- `src/modules/common/components/line-item-price/index.tsx`, `line-item-unit-price/index.tsx` — `total`/`original_total` defaulted to `0` when `undefined`.
+- `src/modules/layout/components/country-select/index.tsx` — `CountryOption` fields widened to optional, with a guard.
+- `src/modules/layout/components/language-select/index.tsx` — two now-unnecessary `@ts-ignore` comments removed.
+
+**Corrected mid-flight, not a repeat mistake left uncorrected:** the first clone was `medusajs/nextjs-starter-medusa`, which displays its own deprecation notice pointing to `medusajs/dtc-starter` — discovered before any tracking-document update referenced it, so no doc ever recorded the wrong repository; the deprecated clone was discarded and replaced before this entry was written.
+
+**Not changed:** no LiquorCentral branding, color, typography, or custom component was applied — the starter's own default UI runs as-is. No planning document's substance was altered.
+
+**Also updated:** `docs/PROJECT_STATUS.md` (→ v5.0), `docs/ROADMAP.md` (→ v5.3) — Phase 1's storefront bullet marked ✅ complete. `docs/DECISION_LOG.md` (new entry with the deprecated-repo discovery and full validation detail).
 
 ## v48 — 2026-07-19 — Milestone 4: `delivery-slot` module implemented
 
