@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.7
+**Version:** 3.8
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v35 — 2026-07-18 — Second Tier B document drafted: Wine & Spirits Attributes Module
+
+**Context:** Paul directed the second Tier B module to be selected using six explicit criteria (spec-count dependency, blocking effect on other implementation-planning work, launch criticality, architectural centrality, Tier A gaps, and `IMPLEMENTATION_PLANNING.md`'s own dependency ordering) rather than chosen alphabetically or arbitrarily, then drafted to the same structure, quality, and depth as `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`. Full selection reasoning and drafting decisions in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/implementation-planning/TIER_B_WINE_ATTRIBUTES_MODULE.md` (v1.0, status Draft) — the architecture of the `wine-details` module (`MEDUSA_EXTENSIONS.md` #1). Selected over `food-details` (tied on spec-count) via architectural centrality and dependency ordering: `ROADMAP.md`'s backend build sequence places wine-attributes (Phase 2) immediately after Wine & Spirits' end-to-end launch (Phase 1) and before food-attributes (Phase 3); it also blocks the most subsequent Phase 2 work (Meilisearch facet design, and the Search/Listing/Product-Details API contracts). Defines why the module exists (five specifications depend on it — `01`,`03`,`04`,`05`,`11` — with `09_FOOD_ORDERING_SPECIFICATION.md` explicitly confirmed as a non-dependent, consuming the symmetrical `food-details` module instead), business justification, responsibilities, explicit non-responsibilities (does not own presentation — the Attributes/Facts boundary `05_PRODUCT_DETAILS_SPECIFICATION.md` §12/§13 already draws; does not hold the "pairs with" relationship, confirming `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`'s prior correction; does not rank search results; does not determine availability/pricing; does not hold Food Central data), conceptual attribute categories (no field finalized), scope across the whole Wine & Spirits catalog, a three-way ownership split (engineering/Paul's field-list approval/staff data entry), integration points with Product, Navigation (the varietal/style navigation layer's actual data source), Search, Listing, Product Details, and Admin Workflows, a consolidated non-integrations section (Cart, Checkout, Account, Food Ordering, Delivery, Homepage all confirmed zero dependency), CMS responsibilities, a newly-discovered documentation gap (no assigned wine-attribute-accuracy verification ownership), future extensibility, risks, dependencies, a Quality Checklist, and architecture-level Acceptance Criteria. No table, field type, endpoint, or UI component appears anywhere — verified directly. Contains no database design, API specification, implementation code, or UI component definition, per direct instruction.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.6) — Implementation Planning table updated to include the new Tier B document.
+- `docs/implementation-planning/MODULE_INVENTORY.md` (v1.1) — `wine-details` row updated to "Architecture Drafted"; dependency list corrected to `01`,`03`,`04`,`05`,`11`; new row added for the wine-attribute-accuracy-ownership gap.
+- `docs/PROJECT_STATUS.md` (v3.7), `docs/ROADMAP.md` (v4.0) — current phase, Completed work, Work in progress, Next recommended task, and Decisions awaiting Paul's approval updated to reflect the draft and its newly-discovered dependency.
+- `docs/DECISION_LOG.md` — new entry recording the selection reasoning and the document's drafting.
 
 ## v34 — 2026-07-18 — `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` finalized to v1.0 — Approved; `MODULE_INVENTORY.md` created
 
