@@ -1,11 +1,35 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.0
+**Version:** 5.1
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v48 — 2026-07-19 — Milestone 4: `delivery-slot` module implemented
+
+**Context:** Paul directed autonomous continuation of implementation through the remaining launch-critical backend milestones, per the Approved `IMPLEMENTATION_READINESS_REPORT.md` and the exact architecture in `TIER_B_DELIVERY_SLOT_MODULE.md`. Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `backend/` — not part of `/docs`):**
+
+- `backend/apps/backend/src/modules/delivery-slot/` — a custom Medusa module (data model, service, migration) holding a bookable time window (`starts_at`/`ends_at`/`cutoff_at`) and two operational numbers (`capacity`/`booked_count`), linked to Fulfillment's Shipping Option via `src/links/delivery-slot-shipping-option.ts` (many slots to one option, not 1:1). Includes its own `README.md`, naming the deliberately-absent pickup/delivery discriminator field and a residual compensation-gap limitation.
+- `backend/apps/backend/src/workflows/delivery-slot/lib/capacity.ts` — `bookDeliverySlotCapacity`/`releaseDeliverySlotCapacity`, the atomic check-and-increment/decrement, wrapped in Medusa's own `ILockingModule.execute()` (the `locking-redis` provider this project already runs in production mode) — no new concurrency-control mechanism invented.
+- `backend/apps/backend/src/workflows/delivery-slot/lib/extract-delivery-slot-id.ts` — reads a booked slot's ID off the cart's shipping method's native `data` JSON field (the same extension point any fulfillment provider uses), rather than a new Cart module field.
+- `backend/apps/backend/src/workflows/delivery-slot/steps/book-delivery-slot-capacity.ts` — a `createStep` wrapper around the same capacity logic, for ordinary workflow composition.
+- `backend/apps/backend/src/workflows/hooks/complete-cart-validate.ts` — wires atomic capacity enforcement into Medusa's native `completeCartWorkflow` via its `validate` hook, registered with both an invoke **and** a compensate function, so a later cart-completion step's failure automatically releases the capacity this hook booked.
+- 6 new unit tests, 6 new module-integration tests, and 3 real, Redis-backed concurrency tests (two-of-one-capacity, three-of-eight-concurrent-burst, and release-then-rebook scenarios) validating TIER_B §20's single highest-severity named risk directly against this environment's actual Postgres and Redis, not a mock.
+
+**Changed:**
+
+- `backend/apps/backend/medusa-config.ts` — `delivery_slot` registered as a module.
+- `docs/PROJECT_STATUS.md` (→ v4.9) — new Milestone 4 narrative; local payment provider and notification provider status distinguished (former Approved-and-pending, latter still Draft).
+- `docs/ROADMAP.md` (→ v5.2) — Phase 4's delivery-slot-module bullet marked ✅ complete.
+- `docs/implementation-planning/MODULE_INVENTORY.md` — delivery-slot row updated to reflect implementation, not only Approved architecture.
+
+**Not changed:** no planning document's substance was altered, `TIER_B_DELIVERY_SLOT_MODULE.md` was not modified, and no business decision was made — slot length, cutoff timing, and capacity-per-slot values remain exactly as open as `TIER_B` left them; the pickup-slot boundary and kitchen-capacity-vs-rider-capacity reconciliation questions remain unresolved.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry with full reasoning for the `validate`-hook-over-`beforePaymentAuthorization` choice and the compensable-hook-handler finding), `backend/README.md` (updated file tree and "what's configured"/"what's deliberately not here yet" sections).
 
 ## v47 — 2026-07-19 — Milestone 3: `food-details` module implemented
 

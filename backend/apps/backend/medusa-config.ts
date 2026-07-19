@@ -65,5 +65,12 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/food-details",
     },
+    // Delivery-slot scheduling module (TIER_B_DELIVERY_SLOT_MODULE.md) —
+    // linked to Fulfillment's Shipping Option via defineLink, not 1:1
+    // (many slots per shipping option); Food Central only, no application
+    // to Wine & Spirits (§8).
+    {
+      resolve: "./src/modules/delivery-slot",
+    },
   ],
 })

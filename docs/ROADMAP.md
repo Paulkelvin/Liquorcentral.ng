@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 5.1
+**Version:** 5.2
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -107,7 +107,7 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 
 ## Phase 4 — Delivery scheduling
 
-- Build the delivery-slot module (`MEDUSA_EXTENSIONS.md` #3) for same-day and scheduled Food Central delivery — the highest-complexity fulfillment feature, deliberately sequenced after the basics are proven.
+- ✅ **Build the delivery-slot module (`MEDUSA_EXTENSIONS.md` #3)** — complete, 2026-07-19 (Engineering Milestone 4). `backend/apps/backend/src/modules/delivery-slot` implements `TIER_B_DELIVERY_SLOT_MODULE.md`'s Approved architecture: a bookable time-window model (`starts_at`/`ends_at`/`cutoff_at`/`capacity`/`booked_count`), linked to Fulfillment's Shipping Option via `defineLink`, with capacity enforced atomically inside Medusa's native `completeCartWorkflow` via its `validate` hook — reusing the platform's existing Redis-backed Locking Module rather than inventing new concurrency control. Real, Redis-backed concurrency tests (not mocked) confirm the atomic check-and-increment holds under concurrent bookings. See `backend/apps/backend/src/modules/delivery-slot/README.md` for the pickup-boundary non-decision and the residual compensation-gap limitation it names honestly.
 
 ## Phase 5 — Delivery communication
 
