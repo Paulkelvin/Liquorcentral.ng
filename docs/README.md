@@ -1,9 +1,9 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 3.1
+**Version:** 3.2
 **Owner:** Program
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 This directory is the **single source of truth** for the LiquorCentral project. It replaces chat history as the record of what has been decided, why, and what remains open.
 
@@ -18,8 +18,9 @@ Anyone — human or AI — picking up this project should read, in this order:
 3. **`PROJECT_STATUS.md`** — current phase, what's done, what's in progress, what's next, what's blocked, and what's awaiting Paul's approval. Always read this next.
 4. **`PRODUCT_BLUEPRINT.md`** — the product's reason for existing: vision, positioning, philosophy, and the 18 strategic pillars every other document is downstream of.
 5. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
-6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below.
-7. Everything else, as relevant to the task at hand (see the map below).
+6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. All 11 are now Approved — Frozen at v1.0; see the "Product Specifications" entry in the map below.
+7. **`IMPLEMENTATION_PLANNING.md`** — now that Phase 1 is complete, this governs Phase 2: how engineering/implementation architecture documents are organized, sequenced, owned, and approved before any code, schema, or API design is written.
+8. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
@@ -44,6 +45,7 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What are the exact logo/type/asset specs? *(placeholder — narrower scope now that `BRAND_IDENTITY.md` exists)* |
 | [`specifications/`](./specifications/) | What exactly should each product surface do, in enough behavioral detail to design, build, and test it? See below. |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
+| [`IMPLEMENTATION_PLANNING.md`](./IMPLEMENTATION_PLANNING.md) | Phase 2 — how are engineering/implementation documents organized, sequenced, owned, and approved before any code is written? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |
 
@@ -66,6 +68,31 @@ Phase 0 (`PRODUCT_BLUEPRINT.md`, `BRAND_IDENTITY.md`, `EXPERIENCE_PRINCIPLES.md`
 | [`11_ADMIN_WORKFLOWS_SPECIFICATION.md`](./specifications/11_ADMIN_WORKFLOWS_SPECIFICATION.md) | **Approved — Frozen**, v1.0 |
 
 All 11 planned specifications are now **Approved — Frozen** at v1.0 — Phase 1 — Product Specifications is complete. Each was sequenced only on Paul's explicit direction, and each was drafted, reviewed, and frozen in two passes rather than invented ahead of approval — see `PROJECT_STATUS.md` for what comes next.
+
+## Implementation Planning (`/docs/implementation/`)
+
+Phase 2 — Implementation Planning translates the 11 frozen Product Specifications into engineering architecture: how Medusa is extended, how the storefront is structured, how each integration is wired — never what the code itself looks like. `IMPLEMENTATION_PLANNING.md` is this phase's governing document, defining the 16 required architecture documents below, their dependencies, recommended creation order, and the shared philosophy each must follow. See `IMPLEMENTATION_PLANNING.md` §6 for full detail on each.
+
+| Implementation Document | Status |
+|---|---|
+| `01_SYSTEM_ARCHITECTURE.md` | Not Started |
+| `02_DATABASE_ARCHITECTURE.md` | Not Started |
+| `03_MEDUSA_ARCHITECTURE.md` | Not Started |
+| `04_API_SPECIFICATION.md` | Not Started |
+| `05_FRONTEND_ARCHITECTURE.md` | Not Started |
+| `06_COMPONENT_ARCHITECTURE.md` | Not Started |
+| `07_PAGE_ARCHITECTURE.md` | Not Started |
+| `08_SANITY_ARCHITECTURE.md` | Not Started |
+| `09_SEARCH_ARCHITECTURE.md` | Not Started |
+| `10_MEDIA_ARCHITECTURE.md` | Not Started |
+| `11_AUTHENTICATION_ARCHITECTURE.md` | Not Started |
+| `12_PAYMENT_ARCHITECTURE.md` | Not Started |
+| `13_NOTIFICATION_ARCHITECTURE.md` | Not Started |
+| `14_DEPLOYMENT_ARCHITECTURE.md` | Not Started |
+| `15_IMPLEMENTATION_SEQUENCING.md` | Not Started |
+| `16_TESTING_STRATEGY.md` | Not Started |
+
+None of these documents exists yet, and none begins without Paul's explicit direction to start that specific one — the identical discipline that governed Product Specifications, applied one tier down.
 
 ## Document status convention
 

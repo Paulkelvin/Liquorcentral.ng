@@ -1,11 +1,28 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.3
+**Version:** 3.4
 **Owner:** Program
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v31 — 2026-07-19 — `IMPLEMENTATION_PLANNING.md` created and approved at v1.0 — Phase 2 begun
+
+**Context:** With Phase 1 — Product Specifications complete, Paul directed the creation of `docs/IMPLEMENTATION_PLANNING.md` as the governing document for Phase 2 — Implementation Planning, specifying 34 required sections and a proposed 16-document Phase 2 roadmap, while inviting a stronger structure if one existed. Full reasoning in `DECISION_LOG.md`.
+
+**Added:**
+
+- `docs/IMPLEMENTATION_PLANNING.md` (v1.0, status Approved) — the governing document for Phase 2, covering all 34 required sections: purpose, scope, Phase 2 objectives, relationship to Phase 0/1 (with a naming note distinguishing this "Phase 2" from `ROADMAP.md`'s own internal "Phase 2"), an implementation-document hierarchy, all 16 required Phase 2 documents (each with Purpose/Scope/Dependencies/Deliverables/Required approvals/Frozen-or-Living), their dependency map, recommended creation order, ownership, approval workflow, versioning rules, change management, cross-reference rules, sixteen architecture philosophies (Medusa, Next.js, backend, frontend, database, API, search, CMS, media, authentication, payment, security, performance, accessibility, testing, deployment), coding standards, risks, a quality checklist, acceptance criteria, and exit criteria for Phase 2. Contains no implementation code, database schema, API design, frontend components, or wireframes, per direct instruction. Renames two of the sixteen proposed document names with reasoning stated (`10_MEDIA_ARCHITECTURE.md`, not `10_CLOUDINARY_ARCHITECTURE.md`; `15_IMPLEMENTATION_SEQUENCING.md`, not `15_DEVELOPMENT_ROADMAP.md`, to avoid colliding with `ROADMAP.md`) and proposes a new `docs/implementation/` subdirectory mirroring `docs/specifications/`. Surfaces two genuinely new open decisions (a media-hosting provider, a hosting/infrastructure provider), neither previously named anywhere in `/docs`.
+
+**Changed:**
+
+- `docs/AI_HANDOFF.md` (v4.0) — found substantially stale during this round's required review (still describing Phase 1 as "underway," listing all 11 specifications as placeholders, naming `01_NAVIGATION_SPECIFICATION.md` as the immediate next step). Refreshed: Executive Summary phase line, repository structure, documentation reading order, documentation guide and status summary, current project state, roadmap summary (with a naming note matching `ROADMAP.md`'s own), immediate next step, and versioning table all now reflect Phase 1's completion and Phase 2's start. A bookkeeping correction to an out-of-date living document, not a new decision.
+- `docs/README.md` (v3.2) — added `IMPLEMENTATION_PLANNING.md` to the reading order and document map; added a new "Implementation Planning" section listing all 16 planned documents as Not Started, mirroring the existing "Product Specifications" section's format.
+- `docs/PROJECT_STATUS.md` (v3.3), `docs/ROADMAP.md` (v3.6) — Current phase, Completed work, Work in progress, and Next recommended task all updated to reflect Phase 2's start; a new "Implementation planning" grouping added to Decisions Awaiting Approval; `ROADMAP.md` adds a new "Phase 0f — Implementation Planning" subsection (numbered to avoid colliding with its own existing "Phase 2 — Product data foundation" backend milestone).
+- `docs/DECISION_LOG.md` — new entry recording the document's creation and the two naming decisions.
+
+**Not changed:** no frozen Phase 0 or Phase 1 document was modified. No implementation code, database schema, API design, frontend component, or wireframe was created — `IMPLEMENTATION_PLANNING.md` explicitly excludes all of them from its own scope.
 
 ## v30 — 2026-07-18 — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` finalized to v1.0 and frozen — Phase 1 complete
 
