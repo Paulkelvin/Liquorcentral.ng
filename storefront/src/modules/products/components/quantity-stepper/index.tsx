@@ -13,17 +13,26 @@ export default function QuantityStepper({
   quantity,
   onChange,
   max,
+  min = 1,
   disabled,
 }: {
   quantity: number
   onChange: (quantity: number) => void
   /** Genuine available stock (Wine & Spirits only, §17); omit for Food Central. */
   max?: number
+  /**
+   * 06_CART_SPECIFICATION.md §7 — "reducing a line item's quantity to zero
+   * removes it," an immediate action, not a blocking dialog. The cart
+   * passes `min={0}` so the decrement button reaches zero (the caller
+   * treats that as a removal); every other surface (add-to-cart on the
+   * PDP) keeps the default floor of 1, where zero has no meaning.
+   */
+  min?: number
   disabled?: boolean
 }) {
   const inputId = useId()
   const clamp = (value: number) => {
-    const floor = Math.max(1, value)
+    const floor = Math.max(min, value)
     return max != null ? Math.min(floor, max) : floor
   }
 
@@ -34,7 +43,7 @@ export default function QuantityStepper({
         <button
           type="button"
           aria-label="Decrease quantity"
-          disabled={disabled || quantity <= 1}
+          disabled={disabled || quantity <= min}
           onClick={() => onChange(clamp(quantity - 1))}
           className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-radius-sm border border-border text-text-primary hover:bg-ink-100 disabled:pointer-events-none disabled:opacity-50"
         >
@@ -44,11 +53,11 @@ export default function QuantityStepper({
           id={inputId}
           type="number"
           inputMode="numeric"
-          min={1}
+          min={min}
           max={max}
           value={quantity}
           disabled={disabled}
-          onChange={(event) => onChange(clamp(Number(event.target.value) || 1))}
+          onChange={(event) => onChange(clamp(Number(event.target.value) || min))}
           className="h-11 w-16 rounded-radius-sm border border-border bg-surface-elevated text-center text-body text-text-primary"
         />
         <button

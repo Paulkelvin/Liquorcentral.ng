@@ -196,3 +196,40 @@ export const getGiftWrapProduct = async (
 
   return response.products[0] ?? null
 }
+
+/**
+ * 06_CART_SPECIFICATION.md §7, §13 — re-validating a Wine & Spirits line
+ * item's genuine available stock at cart view. `StoreProductVariant`'s
+ * `inventory_quantity` is a computed field the Store API only resolves
+ * when queried through `/store/products` with a `*variants` expansion
+ * present alongside it (confirmed by direct testing) — the cart module's
+ * own `items.variant` expansion never populates it, regardless of the
+ * field string requested, because the cart route doesn't run the same
+ * inventory-decoration step the products route does. This looks the
+ * value up the same way the PDP already does (`listProducts`) rather than
+ * inventing a new decoration path on the cart itself.
+ */
+export const getVariantInventoryMap = async (
+  productIds: string[],
+  countryCode: string
+): Promise<Record<string, number>> => {
+  const ids = Array.from(new Set(productIds))
+  if (!ids.length) {
+    return {}
+  }
+
+  const { response } = await listProducts({
+    countryCode,
+    queryParams: { id: ids, limit: ids.length },
+  })
+
+  const map: Record<string, number> = {}
+  for (const product of response.products) {
+    for (const variant of product.variants ?? []) {
+      if (variant.id && typeof variant.inventory_quantity === "number") {
+        map[variant.id] = variant.inventory_quantity
+      }
+    }
+  }
+  return map
+}

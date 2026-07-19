@@ -137,7 +137,7 @@ export async function addToCart({
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
+  return await sdk.store.cart
     .createLineItem(
       cart.id,
       {
@@ -147,12 +147,59 @@ export async function addToCart({
       {},
       headers
     )
-    .then(async () => {
+    .then(async ({ cart: updatedCart }) => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
 
       const fulfillmentCacheTag = await getCacheTag("fulfillment")
       revalidateTag(fulfillmentCacheTag)
+
+      // §15 — the caller (e.g. add-to-cart-with-gift-wrap) needs this
+      // line item's id to link a paired gift-wrap line via metadata.
+      return updatedCart.items?.find((item) => item.variant_id === variantId)
+    })
+    .catch(medusaError)
+}
+
+/**
+ * 06_CART_SPECIFICATION.md §15 — Gift Wrap is editable in the cart, not
+ * only at add-to-cart. Added as its own line item, tagged via metadata
+ * with the product line it wraps (`gift_wrap_for`) since Medusa's cart
+ * has no native "line item add-on" relationship — see
+ * `lib/util/cart-fulfillment.ts`'s `splitGiftWrapLines`, which reads this
+ * same metadata key to pair it back up for display.
+ */
+export async function addGiftWrapToLineItem({
+  giftWrapVariantId,
+  forLineItemId,
+}: {
+  giftWrapVariantId: string
+  forLineItemId: string
+}) {
+  const cartId = await getCartId()
+
+  if (!cartId) {
+    throw new Error("Missing cart ID when adding gift wrap")
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  await sdk.store.cart
+    .createLineItem(
+      cartId,
+      {
+        variant_id: giftWrapVariantId,
+        quantity: 1,
+        metadata: { gift_wrap_for: forLineItemId },
+      },
+      {},
+      headers
+    )
+    .then(async () => {
+      const cartCacheTag = await getCacheTag("carts")
+      revalidateTag(cartCacheTag)
     })
     .catch(medusaError)
 }

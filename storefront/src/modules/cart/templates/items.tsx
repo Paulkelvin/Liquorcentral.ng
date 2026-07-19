@@ -1,55 +1,100 @@
 import repeat from "@lib/util/repeat"
 import { HttpTypes } from "@medusajs/types"
-import { Heading, Table } from "@modules/common/components/ui"
+import { Heading } from "@modules/common/components/ui"
+import { MapPin, TruckFast } from "@medusajs/icons"
 
-import Item from "@modules/cart/components/item"
+import FulfillmentGroup from "@modules/cart/components/fulfillment-group"
 import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
+import {
+  getAvailableStock,
+  groupSubtotal,
+  isFoodCentralItem,
+  splitGiftWrapLines,
+} from "@lib/util/cart-fulfillment"
 
 type ItemsTemplateProps = {
   cart?: HttpTypes.StoreCart
+  giftWrap?: { variantId: string; price: number }
+  /** §7, §13 — Wine & Spirits line item id -> genuine available stock (already merged server-side). */
+  stockByVariantId?: Record<string, number>
 }
 
-const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
+const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps) => {
   const items = cart?.items
-  return (
-    <div>
-      <div className="pb-3 flex items-center">
-        <Heading className="text-[2rem] leading-[2.75rem]">Cart</Heading>
+
+  if (!items) {
+    return (
+      <div>
+        <div className="pb-3 flex items-center">
+          <Heading level="h1" className="text-[2rem] leading-[2.75rem]">
+            Cart
+          </Heading>
+        </div>
+        {repeat(3).map((i) => (
+          <SkeletonLineItem key={i} />
+        ))}
       </div>
-      <Table>
-        <Table.Header className="border-t-0">
-          <Table.Row className="text-ui-fg-subtle txt-medium-plus">
-            <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
-            <Table.HeaderCell>Quantity</Table.HeaderCell>
-            <Table.HeaderCell className="hidden small:table-cell">
-              Price
-            </Table.HeaderCell>
-            <Table.HeaderCell className="!pr-0 text-right">
-              Total
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {items
-            ? items
-                .sort((a, b) => {
-                  return (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
-                })
-                .map((item) => {
-                  return (
-                    <Item
-                      key={item.id}
-                      item={item}
-                      currencyCode={cart?.currency_code}
-                    />
-                  )
-                })
-            : repeat(5).map((i) => {
-                return <SkeletonLineItem key={i} />
-              })}
-        </Table.Body>
-      </Table>
+    )
+  }
+
+  const { productLines, giftWrapByParent } = splitGiftWrapLines(items)
+  const wineLines = productLines.filter((item) => !isFoodCentralItem(item))
+  const foodLines = productLines.filter((item) => isFoodCentralItem(item))
+
+  const getMaxQuantity = (item: HttpTypes.StoreCartLineItem) => {
+    const knownQuantity = item.variant_id ? stockByVariantId?.[item.variant_id] : undefined
+    return getAvailableStock(item, knownQuantity)
+  }
+
+  const isItemUnavailable = (item: HttpTypes.StoreCartLineItem) => {
+    if (isFoodCentralItem(item)) {
+      return false
+    }
+    const max = getMaxQuantity(item)
+    return max === 0
+  }
+
+  return (
+    <div className="flex flex-col gap-y-8">
+      <div className="pb-1 flex items-center justify-between">
+        <Heading level="h1" className="text-[2rem] leading-[2.75rem]">
+          Cart
+        </Heading>
+        {wineLines.length > 0 && foodLines.length > 0 && (
+          <details className="text-small-regular text-ui-fg-subtle">
+            <summary className="cursor-pointer select-none">Why is my cart split?</summary>
+            <p className="mt-2 max-w-sm">
+              LiquorCentral is one company serving two catalogs with different delivery
+              models — Wine &amp; Spirits and Food Central are grouped separately so each
+              one&apos;s delivery promise stays clear, but everything still checks out together
+              as one order.
+            </p>
+          </details>
+        )}
+      </div>
+
+      <FulfillmentGroup
+        title="Wine & Spirits"
+        icon={<TruckFast className="mt-1 shrink-0 text-ui-fg-subtle" aria-hidden="true" />}
+        deliveryMessage="Delivered across all of Lagos."
+        items={wineLines}
+        giftWrapByParent={giftWrapByParent}
+        giftWrap={giftWrap}
+        currencyCode={cart.currency_code}
+        subtotal={groupSubtotal(wineLines, giftWrapByParent)}
+        getMaxQuantity={getMaxQuantity}
+        isItemUnavailable={isItemUnavailable}
+      />
+
+      <FulfillmentGroup
+        title="Food Central"
+        icon={<MapPin className="mt-1 shrink-0 text-ui-fg-subtle" aria-hidden="true" />}
+        deliveryMessage="Delivered within Lagos Island — same-day, scheduled, or pickup, chosen at checkout."
+        items={foodLines}
+        giftWrapByParent={giftWrapByParent}
+        currencyCode={cart.currency_code}
+        subtotal={groupSubtotal(foodLines, giftWrapByParent)}
+      />
     </div>
   )
 }

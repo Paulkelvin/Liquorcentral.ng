@@ -1,6 +1,6 @@
 "use client"
 
-import { addToCart } from "@lib/data/cart"
+import { addGiftWrapToLineItem, addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Text } from "@modules/common/components/ui"
@@ -159,18 +159,20 @@ export default function ProductActions({
     setConfirmation(null)
 
     try {
-      await addToCart({
+      const addedLineItem = await addToCart({
         variantId: selectedVariant.id,
         quantity,
         countryCode,
       })
 
       const giftWrapVariantId = giftWrapProduct?.variants?.[0]?.id
-      if (giftWrapSelected && giftWrapVariantId) {
-        await addToCart({
-          variantId: giftWrapVariantId,
-          quantity: 1,
-          countryCode,
+      if (giftWrapSelected && giftWrapVariantId && addedLineItem) {
+        // §15 — metadata-linked to the product line it wraps, the same
+        // convention the cart's own gift-wrap toggle uses, so a wrap
+        // added here is recognized and grouped identically either way.
+        await addGiftWrapToLineItem({
+          giftWrapVariantId,
+          forLineItemId: addedLineItem.id,
         })
       }
 

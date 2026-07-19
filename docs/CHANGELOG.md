@@ -1,11 +1,38 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.8
+**Version:** 5.9
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v56 — 2026-07-19 — Milestone 12: Cart (`06_CART_SPECIFICATION.md`)
+
+**Context:** With Product Details (Milestone 11) complete, Cart was the confirmed next specification in Paul's approved implementation order — the natural destination of every add-to-cart action built across Product Listing and Product Details. Built under the standing autonomous-continuation authorization; this session's environment started from a completely fresh database (zero products), so visual and accessibility validation used one low-stock QA wine product, one QA food product, and a temporary `gift-wrap` product, all created via the Admin API and fully deleted afterward, including the temporary admin account (deleted via a `medusa exec` script against the User module directly, the same workaround Milestone 11 established). Full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/lib/util/cart-fulfillment.ts` — the core fulfillment-leg grouping/stock/subtotal utility: `isFoodCentralItem` (the same `food_details` presence check every prior specification's implementation already established), `splitGiftWrapLines` (separates a metadata-linked gift-wrap line from its parent product line), `isStockManaged`/`getAvailableStock` (never defaults an unknown stock count to zero), and `groupSubtotal`.
+- `storefront/src/modules/cart/components/fulfillment-group/index.tsx` — renders one fulfillment-leg group (heading, delivery messaging, item table, subtotal); returns nothing when the group has no items.
+- `storefront/src/lib/data/products.ts`'s `getVariantInventoryMap` — a small batch `/store/products?id[]=...` lookup used to get each Wine & Spirits line item's genuine available stock, since the cart module's own field expansion never populates `inventory_quantity` (confirmed by direct testing).
+- `storefront/src/lib/data/cart.ts`'s `addGiftWrapToLineItem` — adds a gift-wrap line item tagged with `{ gift_wrap_for: <parentLineItemId> }` metadata, the mechanism `splitGiftWrapLines` reads back.
+- `storefront/src/lib/util/__tests__/cart-fulfillment.test.ts` — 14 new unit tests covering the grouping/stock/subtotal utilities.
+
+**Changed:**
+
+- `storefront/src/modules/cart/components/item/index.tsx` — rewritten: replaces the vendored `CartItemSelect`/hardcoded-10 quantity dropdown with the shared `QuantityStepper` (Milestone 11), capped by real stock for Wine & Spirits; adds a per-item Gift Wrap checkbox for Wine & Spirits lines; fixes the remove action's accessible name; adds an in-place "Currently unavailable" notice.
+- `storefront/src/modules/products/components/quantity-stepper/index.tsx` — gained an optional `min` prop (default `1`, unchanged for the PDP); the cart passes `min={0}` so decrementing to zero triggers an immediate removal (§7), rather than duplicating the component.
+- `storefront/src/modules/products/components/product-actions/index.tsx` and `lib/data/cart.ts`'s `addToCart` — the PDP's own add-to-cart-with-gift-wrap flow now tags the wrap with the same `gift_wrap_for` metadata as the cart's own toggle (previously two independent, non-interoperable code paths); `addToCart` now returns the created line item so its id is available to link against.
+- `storefront/src/modules/common/components/cart-totals/index.tsx` — delivery fee and tax now state "Calculated at checkout" explicitly instead of a literal, misleading ₦0 (§8/Pricing Transparency), with an explicit "+ delivery & tax, calculated at checkout" caveat on the item total; wrapped in `role="status" aria-live="polite"` (§23).
+- `storefront/src/modules/common/components/delete-button/index.tsx` — gained an `aria-label` prop for icon-only usages with no visible text children.
+- `storefront/src/modules/cart/templates/items.tsx`, `index.tsx` — rewritten to assemble two `FulfillmentGroup` instances (Wine & Spirits, Food Central) instead of one flat table; added a native `<details>` "Why is my cart split?" disclosure for mixed carts, a top-level `<h1>`, and a stock/price-notice banner.
+- `storefront/src/app/[countryCode]/(main)/cart/page.tsx` — rewritten: expanded `retrieveCart` fields for grouping/stock/gift-wrap; added `robots: { index: false }` (§25); implemented server-side stock re-validation (§12/§13) that auto-adjusts a line item down with a visible notice when genuine stock has fallen below what's in the cart, or labels it unavailable in place (never removes it) at zero stock — calling the Medusa SDK directly rather than the cache-tag-revalidating `updateLineItem` helper, since Next.js forbids `revalidateTag` during a page's render (confirmed by direct testing — it throws).
+- `storefront/src/modules/cart/components/cart-item-select/index.tsx` — deleted; no longer used once `Item` was rewritten to use `QuantityStepper`.
+
+**Not changed, and explicitly out of scope:** Saved-for-Later (§14 — a new, not-yet-approved recommendation requiring backend scoping); cart-level cross-selling (§18 — the same unscoped "pairs with" gap six prior specifications have already flagged); a price-change-since-added notice (§8/§19 — deliberately not implemented without real catalog data to validate the comparison against, flagged for a future pass). One already-documented, systemic Design-System-level color-contrast violation (the shared `Button`/`text-ui-fg-interactive` tokens, first flagged in Milestone 7) was reconfirmed present via this milestone's own axe-core scan and deliberately left unaltered, per the same precedent.
+
+**Also updated:** `storefront/README.md` (new "Milestone 12" section). `docs/PROJECT_STATUS.md` (→ v5.8), `docs/AI_HANDOFF.md` (→ v5.4), `docs/DECISION_LOG.md` (new entry, → v3.0), `docs/ROADMAP.md` (→ v6.0).
 
 ## v55 — 2026-07-19 — Milestone 11: Product Details (`05_PRODUCT_DETAILS_SPECIFICATION.md`)
 
