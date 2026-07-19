@@ -1,7 +1,7 @@
 # LiquorCentral Documentation
 
 **Status:** Approved (in force)
-**Version:** 4.3
+**Version:** 4.4
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -20,7 +20,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 5. **`BRAND_IDENTITY.md`**, **`EXPERIENCE_PRINCIPLES.md`**, and **`DESIGN_SYSTEM.md`** — who LiquorCentral is, how customers should experience using it, and the design foundations everything downstream builds on. These four documents (with `PRODUCT_BLUEPRINT.md`) are **frozen as Phase 0's authoritative output** — do not modify them unless a business decision changes (see `PROJECT_STATUS.md`).
 6. **`specifications/`** — behavior-level specifications for individual product surfaces, built on top of the four frozen documents. See the "Product Specifications" entry in the map below. All 11 are now Approved — Frozen.
 7. **`IMPLEMENTATION_PLANNING.md`** — the master governing document for Phase 2 (Implementation Planning), now that Phase 1's specifications are complete. Read this before any implementation-planning document is drafted.
-8. Everything else, as relevant to the task at hand (see the map below).
+8. **`IMPLEMENTATION_READINESS_REPORT.md`** — the formal conclusion of Phase 2 and the authorization gate into implementation. Read this before beginning any engineering work.
+9. Everything else, as relevant to the task at hand (see the map below).
 
 ## Document map
 
@@ -45,6 +46,7 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What are the exact logo/type/asset specs? *(placeholder — narrower scope now that `BRAND_IDENTITY.md` exists)* |
 | [`specifications/`](./specifications/) | What exactly should each product surface do, in enough behavioral detail to design, build, and test it? See below. |
 | [`IMPLEMENTATION_PLANNING.md`](./IMPLEMENTATION_PLANNING.md) | What is Phase 2, what implementation-planning documents will it produce, in what order, and what must be true before development begins? |
+| [`IMPLEMENTATION_READINESS_REPORT.md`](./IMPLEMENTATION_READINESS_REPORT.md) | Is planning complete, why is Tier C intentionally not produced, and what's left before engineering can start? |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |
@@ -85,7 +87,9 @@ Actual Tier A–F documents live in `/docs/implementation-planning/`, parallel t
 | [`TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md`](./implementation-planning/TIER_B_LOCAL_PAYMENT_PROVIDER_MODULE.md) | B — Module Data Planning | **Approved**, v1.0 |
 | [`MODULE_INVENTORY.md`](./implementation-planning/MODULE_INVENTORY.md) | Living index, not a tier document | **Approved** (living, always current), v1.8 |
 
-**Five Tier B modules are now Approved** — the Product Relationship Module, the Wine & Spirits Attributes Module, the Food Attributes Module, the Delivery-Slot Module, and the Local Payment Provider Module. No further Tier B–F document has been drafted yet — per the same placeholder-then-draft-then-approve discipline that governed Product Specifications, none begins without Paul's explicit direction. `MODULE_INVENTORY.md` is the single-page index of every module identified so far — which are native, custom, an extension/integration, launch-critical, or optional — updated in the same change as any future Tier B document.
+**Five Tier B modules are now Approved** — the Product Relationship Module, the Wine & Spirits Attributes Module, the Food Attributes Module, the Delivery-Slot Module, and the Local Payment Provider Module. `MODULE_INVENTORY.md` is the single-page index of every module identified so far — which are native, custom, an extension/integration, launch-critical, or optional — updated in the same change as any future Tier B document.
+
+**Phase 2 is now formally concluded.** An implementation-readiness assessment found no Tier C (API Contract Planning) document is required before implementation begins — see [`IMPLEMENTATION_READINESS_REPORT.md`](./IMPLEMENTATION_READINESS_REPORT.md) (v1.0, Approved) for the full reasoning, the remaining business decisions, the implementation-readiness classification, and the recommended build order. No Tier C–F document has been drafted, and none is currently planned as a precondition to implementation. Per Paul's explicit instruction, actual engineering work does not begin until he gives explicit approval following this report.
 
 ## Document status convention
 
