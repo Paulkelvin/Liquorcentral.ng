@@ -14,12 +14,14 @@ type RefinementListProps = {
   sortBy: SortOptions
   search?: boolean
   hideOptionsPicker?: boolean
+  defaultSortLabel?: string
   "data-testid"?: string
 }
 
 const RefinementList = ({
   sortBy,
   hideOptionsPicker = false,
+  defaultSortLabel,
   "data-testid": dataTestId,
 }: RefinementListProps) => {
   const router = useRouter()
@@ -68,6 +70,7 @@ const RefinementList = ({
       <SortProducts
         sortBy={sortBy}
         setQueryParams={setQueryParams}
+        defaultSortLabel={defaultSortLabel}
         data-testid={dataTestId}
       />
       {!hideOptionsPicker && (

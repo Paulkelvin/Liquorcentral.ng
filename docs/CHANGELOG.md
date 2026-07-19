@@ -1,11 +1,32 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.6
+**Version:** 5.7
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v54 — 2026-07-19 — Batch business-decision approval; Milestone 10: Search (`03_SEARCH_SPECIFICATION.md`)
+
+**Context:** Paul supplied a large batch of previously-open business decisions in one direction — payment provider (Paystack, no COD), notification channels (Email/WhatsApp/in-app), launch delivery areas and pricing, operating hours, inventory policy, unified search with catalog badges, MVP checkbox age verification, guest checkout reaffirmed, currency/tax display, coupon capability, loyalty/wishlist scope — together with a confirmed specification implementation order and a standing instruction to keep building continuously without stopping for per-milestone approval. Full reasoning in `DECISION_LOG.md`'s two new entries (the decision batch, and Milestone 10 itself).
+
+**Documentation-only changes** (no code): `docs/DECISION_LOG.md` (new entry recording the full batch), `docs/PROJECT_STATUS.md` (Blockers and Decisions-awaiting-approval sections struck through where resolved, → v5.5), `docs/AI_HANDOFF.md` (Section 3, Section 11 new rules 13–14, versioning table, → v5.1), `docs/ROADMAP.md` (payment/notification blocker bullets, → v5.8).
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- No new components — Milestone 10 (Search) reuses Product Listing's existing card/sort/Load-More/empty-state infrastructure entirely.
+
+**Changed:**
+
+- `storefront/src/app/[countryCode]/(main)/search/page.tsx` — rewritten from a flat, uncapped 24-product list into a real results page: `RefinementList` (sort), `PaginatedProducts` (Load More, catalog badges), a distinct pre-query state (§19) separate from a genuine zero-result state (§18), and an honest two-tier zero-result recovery (no fabricated "did you mean," which needs Meilisearch's real typo-distance data).
+- `storefront/src/modules/products/components/product-preview/index.tsx` — gained a `showCatalogBadge` prop: on search results only, the card's existing one-fact slot (Milestone 9) carries a "Food Central"/"Wine & Spirits" identity badge instead of Food Central's prep-time fact — the new cross-catalog-labeling business requirement, implemented without a second card design.
+- `storefront/src/modules/store/templates/paginated-products.tsx` — gained `query` (mapped to the Store API's native `q` parameter), `showCatalogBadge`, `itemNoun`, and empty-state copy override props, plus a `role="status"` result-count live region (§22) — all additive, category/collection listings unaffected.
+- `storefront/src/modules/store/components/refinement-list/sort-products/index.tsx` (and `refinement-list/index.tsx`) — gained a `defaultSortLabel` prop so the identical no-op "featured" sort value reads "Featured" on listings and "Relevance" on search (§14), without a second sort mechanism.
+
+**Not changed, and explicitly out of scope:** Meilisearch-backed typo tolerance, synonyms, autocomplete, editorial boosting, and faceted search results (§7, §8, §9, §11, §13 — Meilisearch remains unapproved); search-within-category (§4, §15/§16); the "pairs with" cross-sell (§17, unbuilt data model). No planning document's substance was altered.
+
+**Also updated:** `storefront/README.md` (new "Milestone 10" section, including the visual-validation findings and the cross-catalog-badge proof methodology). `docs/PROJECT_STATUS.md` (→ v5.6), `docs/AI_HANDOFF.md` (→ v5.2), `docs/DECISION_LOG.md` (new entry, → v2.8).
 
 ## v53 — 2026-07-19 — Milestone 9: Product Listing (`04_PRODUCT_LISTING_SPECIFICATION.md`)
 

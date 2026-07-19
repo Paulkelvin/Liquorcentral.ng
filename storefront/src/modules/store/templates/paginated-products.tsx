@@ -16,6 +16,7 @@ type PaginatedProductsParams = {
   id?: string[]
   order?: string
   fields?: string
+  q?: string
 }
 
 /**
@@ -24,6 +25,11 @@ type PaginatedProductsParams = {
  * (reflected in the URL), and every render returns every product from
  * the start through that many pages (`listProductsWithSort`'s
  * `cumulative` mode), so the grid never loses previously-shown items.
+ *
+ * Also reused, unmodified, by `03_SEARCH_SPECIFICATION.md`'s search
+ * results page (`query` param below) — the same card, sort, Load More,
+ * and empty-state infrastructure spans both, per Product Listing §9's
+ * own "the same card hierarchy holds... across search results" rule.
  */
 export default async function PaginatedProducts({
   sortBy,
@@ -31,19 +37,34 @@ export default async function PaginatedProducts({
   collectionId,
   categoryId,
   productsIds,
+  query,
+  showCatalogBadge,
   countryCode,
   optionValueIds,
   emptyStateFallbackHref,
+  emptyStateTitle = "Nothing available right now",
+  emptyStateDescription = "Check back soon, or browse another category.",
+  emptyStateActionLabel = "Shop Wine & Spirits",
+  itemNoun = "product",
 }: {
   sortBy?: SortOptions
   page: number
   collectionId?: string
   categoryId?: string
   productsIds?: string[]
+  /** 03_SEARCH_SPECIFICATION.md §5 — a unified, unscoped full-text query. */
+  query?: string
+  /** §5/new cross-catalog-labeling decision — see product-preview's own comment. */
+  showCatalogBadge?: boolean
   countryCode: string
   optionValueIds?: OptionValueIds
   /** §21 — "nothing available right now" links to a sibling category/collection. */
   emptyStateFallbackHref?: string
+  emptyStateTitle?: string
+  emptyStateDescription?: string
+  emptyStateActionLabel?: string
+  /** "product" (listings) vs. "result" (search) — §22's announced count wording. */
+  itemNoun?: string
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -68,6 +89,10 @@ export default async function PaginatedProducts({
     queryParams["id"] = productsIds
   }
 
+  if (query) {
+    queryParams["q"] = query
+  }
+
   if (sortBy === "created_at") {
     queryParams["order"] = "created_at"
   }
@@ -90,20 +115,20 @@ export default async function PaginatedProducts({
   })
 
   if (count === 0) {
-    // §21 — a genuinely empty category/collection, distinct from a
-    // facet-induced zero-result set (no facets are applied by this
-    // route yet — see storefront/README.md's Milestone 9 section).
+    // §21 (listings) / §18 (search) — a genuinely empty result set,
+    // distinct from a facet-induced zero-result set (no facets are
+    // applied by this route yet — see storefront/README.md).
     return (
       <EmptyState
-        title="Nothing available right now"
-        description="Check back soon, or browse another category."
+        title={emptyStateTitle}
+        description={emptyStateDescription}
         action={
           emptyStateFallbackHref ? (
             <LocalizedClientLink
               href={emptyStateFallbackHref}
               className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active px-4 py-2 text-body"
             >
-              Shop Wine &amp; Spirits
+              {emptyStateActionLabel}
             </LocalizedClientLink>
           ) : undefined
         }
@@ -114,18 +139,31 @@ export default async function PaginatedProducts({
   const previousCount = Math.min((page - 1) * PRODUCT_LIMIT, count)
   const newlyLoadedCount = page > 1 ? products.length - previousCount : 0
   const hasMore = count > products.length
+  const countLabel = `${count} ${itemNoun}${count === 1 ? "" : "s"}`
 
   return (
     <>
+      {/* §22/§6 — result count announced to assistive technology once the
+          query resolves. A full page navigation's live region is not
+          guaranteed to be announced on *first* paint by every screen
+          reader (a documented ARIA limitation, not a bug) — Load More's
+          own live region (below) reliably announces subsequent changes. */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {countLabel}
+      </div>
       <ul
         className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
         data-testid="products-list"
-        aria-label={`${count} product${count === 1 ? "" : "s"}`}
+        aria-label={countLabel}
       >
         {products.map((p) => {
           return (
             <li key={p.id}>
-              <ProductPreview product={p} region={region} />
+              <ProductPreview
+                product={p}
+                region={region}
+                showCatalogBadge={showCatalogBadge}
+              />
             </li>
           )
         })}

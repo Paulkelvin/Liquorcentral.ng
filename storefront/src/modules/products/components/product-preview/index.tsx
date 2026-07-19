@@ -34,10 +34,22 @@ function isVariantAvailable(variant: InventoryVariant) {
 export default async function ProductPreview({
   product,
   isFeatured,
+  showCatalogBadge,
   region: _region,
 }: {
   product: HttpTypes.StoreProduct
   isFeatured?: boolean
+  /**
+   * 03_SEARCH_SPECIFICATION.md's new cross-catalog-labeling requirement
+   * (a unified result list spans both catalogs, so each card needs its
+   * own "Food Central" / "Wine & Spirits" identity marker) — `true` only
+   * on search results, where a mixed list makes catalog identity genuinely
+   * ambiguous without it. Category/collection listings never pass this:
+   * the surrounding page context already makes the catalog unambiguous
+   * there, and showing a redundant badge on every card would violate
+   * §9's own restraint principle.
+   */
+  showCatalogBadge?: boolean
   region: HttpTypes.StoreRegion
 }) {
   const { cheapestPrice } = getProductPrice({
@@ -56,12 +68,17 @@ export default async function ProductPreview({
    * surfaces Food Central's prep-time fact. A Wine & Spirits card leaves
    * it empty, matching §9's own expectation that "this slot is more often
    * left empty than used" for that catalog rather than inventing a badge
-   * with nothing genuine behind it.
+   * with nothing genuine behind it. On search results (`showCatalogBadge`),
+   * the same one slot instead carries the catalog-identity badge — still
+   * at most one occupant, never both at once.
    */
-  const catalogFact =
-    isFoodCentral && catalogProduct.food_details?.prep_time_minutes
-      ? `~${catalogProduct.food_details.prep_time_minutes} min prep`
-      : null
+  const catalogFact = showCatalogBadge
+    ? isFoodCentral
+      ? "Food Central"
+      : "Wine & Spirits"
+    : isFoodCentral && catalogProduct.food_details?.prep_time_minutes
+    ? `~${catalogProduct.food_details.prep_time_minutes} min prep`
+    : null
 
   const variants = (product.variants ?? []) as InventoryVariant[]
   const isUnavailable =
@@ -89,7 +106,11 @@ export default async function ProductPreview({
                 as="span"
                 size="caption"
                 muted
-                data-testid="product-catalog-fact"
+                data-testid={
+                  showCatalogBadge
+                    ? "product-catalog-badge"
+                    : "product-catalog-fact"
+                }
               >
                 {catalogFact}
               </Text>

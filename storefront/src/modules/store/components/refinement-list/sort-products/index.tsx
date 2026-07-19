@@ -7,6 +7,16 @@ export type SortOptions = "featured" | "price_asc" | "price_desc" | "created_at"
 type SortProductsProps = {
   sortBy: SortOptions
   setQueryParams: (name: string, value: string) => void
+  /**
+   * 03_SEARCH_SPECIFICATION.md §14 — search's default sort is labeled
+   * "Relevance," distinct from 04_PRODUCT_LISTING_SPECIFICATION.md §11's
+   * "Featured" default for category/collection listings, even though both
+   * share the exact same underlying "featured" value and the same honest
+   * no-op fallthrough (see the comment below) — only the label a customer
+   * reads changes per context, since "Featured" would be a misleading
+   * word to show on a search-results page.
+   */
+  defaultSortLabel?: string
   "data-testid"?: string
 }
 
@@ -21,11 +31,15 @@ type SortProductsProps = {
  * just the API's own natural/default order — see `sortProducts`' own
  * comment. It is still the correct *default selection*, matching §11's
  * explicit rule that Featured (not Newest) is what a listing opens on.
+ * `03_SEARCH_SPECIFICATION.md` §10's own "Relevance" default is the
+ * identical honest no-op, absent real Meilisearch-backed ranking — see
+ * `defaultSortLabel` above for why the two contexts show different words
+ * for the same value/behavior.
  */
-const sortOptions = [
+const buildSortOptions = (defaultLabel: string) => [
   {
     value: "featured",
-    label: "Featured",
+    label: defaultLabel,
   },
   {
     value: "created_at",
@@ -45,6 +59,7 @@ const SortProducts = ({
   "data-testid": dataTestId,
   sortBy,
   setQueryParams,
+  defaultSortLabel = "Featured",
 }: SortProductsProps) => {
   const handleChange = (value: string) => {
     setQueryParams("sortBy", value as SortOptions)
@@ -53,7 +68,7 @@ const SortProducts = ({
   return (
     <FilterRadioGroup
       title="Sort by"
-      items={sortOptions}
+      items={buildSortOptions(defaultSortLabel)}
       value={sortBy}
       handleChange={handleChange}
       data-testid={dataTestId}
