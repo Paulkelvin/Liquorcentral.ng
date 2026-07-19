@@ -1,6 +1,6 @@
 # Tier B — Wine & Spirits Attributes Module
 
-**Status:** Draft
+**Status:** Approved
 **Version:** 1.0
 **Owner:** Program / Engineering
 **Last Updated:** 2026-07-18
@@ -34,7 +34,8 @@ This module exists to hold that architecture — the second attribute module (al
 ## 4. Explicit Non-Responsibilities
 
 - **This module does not define how attributes are presented to a customer.** `05_PRODUCT_DETAILS_SPECIFICATION.md` already draws a deliberate, named distinction between **Product Attributes** (§12 — the data model, this module's exact responsibility) and **Product Facts** (§13 — the structured, plain-language presentation layer built from that data). This module owns the former only; how a fact is worded, grouped, or progressively disclosed on a page is presentation work this document does not touch.
-- **This module does not hold the "pairs with" relationship.** `PRODUCT_CATALOG.md`'s original proposal listed "pairs with" among wine attributes; `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` has since established, as an approved architectural decision, that cross-catalog pairing is a general, separate module, not a field on this one. This document does not reopen that decision — it confirms and depends on it (§8, §17).
+- **This module does not hold the "pairs with" relationship.** `PRODUCT_CATALOG.md`'s original proposal listed "pairs with" among wine attributes; `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` has since established, as an approved architectural decision, that cross-catalog pairing is a general, separate module, not a field on this one. This document does not reopen that decision — it confirms it and remains consistent with it (§8).
+- **This module does not hold customer or expert reviews, ratings, or scores.** Tasting notes (§5) are editorial/producer-sourced descriptive facts, curated the same way any other attribute is; they are not customer-generated content and are not a review system. `05_PRODUCT_DETAILS_SPECIFICATION.md` §22 (Reviews Strategy) already confirms no review system of any kind exists in v1 — this module does not blur that boundary by treating a tasting note as if it were a rating.
 - **This module does not perform search ranking, relevance scoring, or facet-value computation.** `03_SEARCH_SPECIFICATION.md`'s Ranking Philosophy remains the sole authority on relevance; this module supplies raw attribute values that Search's own indexing and faceting logic consumes, exactly as `03_SEARCH_SPECIFICATION.md` §26 already anticipates.
 - **This module does not determine availability, stock, or pricing.** Inventory, availability state, and price remain the native Product, Inventory, and Pricing modules' responsibility (§8) — this module holds descriptive facts about a product, never whether or for how much it can be bought.
 - **This module does not hold Food Central data of any kind.** `food-details` (`MEDUSA_EXTENSIONS.md` #2) is a separate, symmetrical module for exactly the same architectural reason `PRODUCT_CATALOG.md` already gives: a wine has no spice level, a dish has no vintage. This document does not propose merging the two.
@@ -56,6 +57,7 @@ These categories are a conceptual organizing device for this document only — t
 - **This module covers the entire Wine & Spirits catalog** — wine, champagne, whisky, cognac, vodka, gin, rum, tequila, liqueurs, and any future spirit type `01_NAVIGATION_SPECIFICATION.md` §28's scalable category architecture accommodates — not wine specifically. `MEDUSA_EXTENSIONS.md` #1 already scopes it this way ("structured wine/spirit attributes").
 - **Not every attribute applies to every sub-type**, per §3's tolerance-for-inapplicability principle — a whisky's "vintage" concept differs from a wine's, and some spirit types (e.g., gin) may have little meaningful region/vintage narrative at all. This document does not resolve which specific attributes apply to which sub-types; it establishes that the module's architecture must not assume uniform applicability across the whole catalog.
 - **Bottle size and comparable physical-format facts** are within this module's scope as identity-adjacent data (§5), distinct from Pricing's own quantity-based pricing mechanics (native, §8).
+- **This document assumes attribute data varies at the Product level, not the Product Variant level**, consistent with `MEDUSA_EXTENSIONS.md` #1's existing 1:1-module-to-Product linkage. Whether any specific attribute genuinely needs variant-level representation — bottle size being the most likely candidate, since Medusa natively models size/format differences as variants of one product — is a data-modeling question this document does not resolve; it is named here so it is addressed deliberately when the field list is finalized, not discovered as a surprise during that work (§18).
 
 ## 7. Ownership
 
@@ -63,7 +65,7 @@ This module's governance is a three-way split, distinct from the two-way (engine
 
 - **The module's existence, architecture, and mechanism (this document) are an engineering/architecture decision.**
 - **The exact field list is a business/merchandising decision requiring Paul's explicit approval** — `MEDUSA_EXTENSIONS.md` #1 already states this ("Paul's approval required: Yes — final field list"); this document does not narrow or resolve that requirement, only reaffirms it (§19).
-- **Day-to-day attribute *values* for a specific product are staff data entry, not merchandising curation** — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §6 already establishes that staff "enter structured data into defined fields, not free-text descriptions standing in for structured facts." This is a meaningfully different governance model from the Product Relationship Module's editorial curation (§17) — attribute values are intended to be factual and verifiable, not a matter of editorial judgment.
+- **Day-to-day attribute *values* for a specific product are staff data entry, not merchandising curation** — `11_ADMIN_WORKFLOWS_SPECIFICATION.md` §6 already establishes that staff "enter structured data into defined fields, not free-text descriptions standing in for structured facts." This is a meaningfully different governance model from the Product Relationship Module's editorial curation (`TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` §17) — attribute values are intended to be factual and verifiable, not a matter of editorial judgment.
 
 ## 8. Integration with Product Module
 
@@ -125,6 +127,7 @@ Nothing in this section is built now — it documents capability this module's s
 - **`MEDUSA_EXTENSIONS.md` #1 already names a migration risk** if the field list changes after launch — this document does not add a new risk here, only confirms it remains live and is sharpened by how many specifications now depend on this module's stability.
 - **Indexing this module into search before its shape stabilizes wastes rework**, per `ROADMAP.md`'s own explicit reasoning (§10) — a sequencing risk, not an architectural one, but one this module's own instability would directly cause downstream.
 - **The Attributes-vs-Facts boundary (§4, §12) is easy to blur in practice** — a future contributor could reasonably but incorrectly add presentation logic (formatting, grouping, plain-language phrasing) into this module instead of keeping it in `05_PRODUCT_DETAILS_SPECIFICATION.md`'s Facts layer; this document names the risk explicitly so it is caught rather than discovered later.
+- **Product-vs-variant attribute granularity (§6) is undecided** — if the field-list decision is made without deliberately addressing which attributes (if any) genuinely vary by product variant rather than by product, a field like bottle size risks being modeled inconsistently with how Medusa natively represents that kind of variation, creating rework once discovered. This document does not resolve which model is correct; it names the question so it is asked on purpose.
 
 ## 19. Dependencies
 
@@ -132,6 +135,7 @@ Nothing in this section is built now — it documents capability this module's s
 - **Depends on Paul's explicit approval of the final field list** — an already-tracked open business decision (`PROJECT_STATUS.md`, `MEDUSA_EXTENSIONS.md` #1); this document does not propose, narrow, or invent one.
 - **Blocks Tier D's Meilisearch integration planning and Tier C's Search/Listing/Product-Details API contract planning** — both should sequence after this module's field list is approved, mirroring `ROADMAP.md`'s own backend-phase ordering (§10, §18).
 - **Depends on a future document or decision assigning wine attribute accuracy/verification ownership** (§16) — a newly discovered gap, recorded here and in `PROJECT_STATUS.md`, not resolved.
+- **Depends on the field-list decision deliberately addressing product-vs-variant attribute granularity** (§6, §18) — a second newly discovered gap from this refinement pass, recorded here and in `PROJECT_STATUS.md`, not resolved.
 - **Depends on Paul's explicit confirmation that this module proceeds into further Tier B/C planning**, per `IMPLEMENTATION_PLANNING.md` §2 principle 4 — this document does not assume approval.
 
 ## 20. Quality Checklist
@@ -144,6 +148,8 @@ Every future addition to this module's planning must be able to answer **yes** t
 - [ ] **Does it avoid finalizing, adding, or removing a specific field**, leaving that to the still-open business decision? Checked against §5, §19.
 - [ ] **Does it avoid duplicating Food Central's `food-details` module or merging the two?** Checked against §4.
 - [ ] **Does it avoid inventing an answer to the attribute-accuracy-ownership gap** (§16) rather than recording it? Checked against §19.
+- [ ] **Does it avoid conflating attribute data (tasting notes) with a review/rating system?** Checked against §4 — no review system exists in v1, per `05_PRODUCT_DETAILS_SPECIFICATION.md` §22.
+- [ ] **Does it avoid silently assuming product-level vs. variant-level granularity for a given attribute** rather than flagging the question? Checked against §6, §18, §19.
 - [ ] **Does it stay purely architectural**, introducing no table, field type, endpoint, or code? Checked against this document's own scope statement.
 
 ## 21. Acceptance Criteria
@@ -155,7 +161,9 @@ Every future addition to this module's planning must be able to answer **yes** t
 - [ ] No presentation-layer formatting, grouping, or plain-language phrasing logic is defined within this module's own architecture — that remains `05_PRODUCT_DETAILS_SPECIFICATION.md`'s Facts-layer responsibility.
 - [ ] This document introduces no database table, field type, API endpoint, or UI component definition anywhere within it.
 - [ ] No field list is finalized, added to, or removed from `PRODUCT_CATALOG.md`'s existing proposal by this document.
+- [ ] No attribute record from this module is presented as, or confused with, a customer or expert review.
+- [ ] The eventual field-list decision explicitly addresses, rather than silently assumes, whether each attribute varies at the product or variant level.
 
 ---
 
-**Document status:** Draft (v1.0). This is the first full draft of the Wine & Spirits Attributes Module's architectural plan — ready for review, not yet approved. Per `IMPLEMENTATION_PLANNING.md` §7, it may proceed to a refinement pass or a direct approval once Paul reviews it. Upon approval, this document becomes the architectural reference Tier C (API Contract Planning) and any future field-list/data-model decision must build against without contradicting.
+**Document status:** Approved (v1.0). This is the architectural reference for the Wine & Spirits Attributes Module, reviewed against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, `MODULE_INVENTORY.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen specifications, with two cross-reference precision fixes, two new architectural clarifications (reviews/ratings boundary; product-vs-variant granularity), and a corresponding correction to `TIER_A_FOUNDATIONAL_RECONCILIATION.md`'s baseline table — no existing section rewritten. Per `DOCUMENTATION_GOVERNANCE.md` §5, it may now only be modified in response to an explicit new business or architecture decision, logged in `DECISION_LOG.md`. It is the architectural reference Tier C (API Contract Planning) and any future field-list/data-model decision must build against without contradicting.

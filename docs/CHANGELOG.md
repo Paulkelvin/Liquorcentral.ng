@@ -1,11 +1,35 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 3.8
+**Version:** 3.9
 **Owner:** Program
 **Last Updated:** 2026-07-18
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`.
+
+## v36 — 2026-07-18 — `TIER_B_WINE_ATTRIBUTES_MODULE.md` finalized to v1.0 — Approved
+
+**Context:** Paul approved a review-and-finalize pass on `TIER_B_WINE_ATTRIBUTES_MODULE.md` against `IMPLEMENTATION_PLANNING.md`, `TIER_A_FOUNDATIONAL_RECONCILIATION.md`, `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md`, `MODULE_INVENTORY.md`, `PRODUCT_BLUEPRINT.md`, `BUSINESS_RULES.md`, `MEDUSA_EXTENSIONS.md`, and all 11 frozen specifications, explicitly not a rewrite. Full reasoning in `DECISION_LOG.md`.
+
+**Changed (within `docs/implementation-planning/TIER_B_WINE_ATTRIBUTES_MODULE.md`):**
+
+- §4 (Explicit Non-Responsibilities) — corrected an ambiguous "(§8, §17)" self-citation to accurately state the module "confirms and remains consistent with" (not "depends on") the Product Relationship Module's prior architectural decision; added a new bullet distinguishing tasting notes from a customer/expert review system, per `05_PRODUCT_DETAILS_SPECIFICATION.md` §22's confirmed no-reviews-in-v1 stance.
+- §6 (Scope Within Wine & Spirits) — added a bullet naming Product-vs-Product-Variant attribute granularity as an explicitly open data-modeling question (bottle size being the likely candidate), not resolved here.
+- §7 (Ownership) — corrected an ambiguous "(§17)" self-citation to explicitly name `TIER_B_PRODUCT_RELATIONSHIP_MODULE.md` §17.
+- §18 (Risks) and §19 (Dependencies) — each gained a bullet reflecting the newly-discovered product-vs-variant granularity question.
+- §20 (Quality Checklist) and §21 (Acceptance Criteria) — each gained two new checks reflecting the reviews-boundary and granularity clarifications.
+- Document header: **Status: Draft → Approved**. No existing section was rewritten.
+
+**Changed (bookkeeping correction, `docs/implementation-planning/TIER_A_FOUNDATIONAL_RECONCILIATION.md`, v1.0 → v1.1):**
+
+- §6 and §14's `wine-details` dependency lists corrected from `03,04,05,09,11` to `01,03,04,05,11` — `09_FOOD_ORDERING_SPECIFICATION.md` depends on the symmetrical `food-details` module, not this one, and `01_NAVIGATION_SPECIFICATION.md`'s Wine Discovery Navigation genuinely depends on it. A non-substantive consistency correction, not a new architectural finding, per `DOCUMENTATION_GOVERNANCE.md` §6.
+
+**Changed (tracking documents):**
+
+- `docs/README.md` (v3.7) — Implementation Planning table updated: Tier B wine-attributes document now Approved.
+- `docs/implementation-planning/MODULE_INVENTORY.md` (v1.2) — `wine-details` row updated to "Architecture Approved"; two new not-yet-scoped rows added (accuracy ownership; product-vs-variant granularity).
+- `docs/PROJECT_STATUS.md` (v3.8), `docs/ROADMAP.md` (v4.1) — current phase, Completed work, Work in progress, Next recommended task, and Decisions awaiting Paul's approval updated to reflect the finalization and its two newly-recorded dependencies.
+- `docs/DECISION_LOG.md` — new entry recording the review findings and the finalization.
 
 ## v35 — 2026-07-18 — Second Tier B document drafted: Wine & Spirits Attributes Module
 
