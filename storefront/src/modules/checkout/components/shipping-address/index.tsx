@@ -1,12 +1,26 @@
 import { HttpTypes } from "@medusajs/types"
-import { Container } from "@modules/common/components/ui"
+import { Container, Text } from "@modules/common/components/ui"
 import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
 import { mapKeys } from "lodash"
 import React, { useEffect, useMemo, useState } from "react"
 import AddressSelect from "../address-select"
-import CountrySelect from "../country-select"
 
+/**
+ * 07_CHECKOUT_SPECIFICATION.md §7 — "freeform, landmark-friendly fields, not
+ * a rigid street-address/postal-code structure," and "the minimum field set
+ * genuinely needed." The vendored template's apparel-store form (required
+ * postal code, a "Company" field with no genuine use case here) is replaced
+ * with the field set this platform actually needs: a name, a delivery
+ * contact, a freeform delivery address, an optional landmark/directions
+ * field, and City/State — the state (or city) is also the plain-language
+ * signal `06_CART_SPECIFICATION.md` §10/§11's Lagos-only eligibility check
+ * reads at the checkout page level, since the exact geo-zone definition
+ * remains an open business decision this document doesn't invent.
+ * Country isn't shown at all — this region has exactly one — and is sent as
+ * a fixed hidden value instead of a single-option dropdown nobody needs to
+ * operate.
+ */
 const ShippingAddress = ({
   customer,
   cart,
@@ -22,10 +36,12 @@ const ShippingAddress = ({
     "shipping_address.first_name": cart?.shipping_address?.first_name || "",
     "shipping_address.last_name": cart?.shipping_address?.last_name || "",
     "shipping_address.address_1": cart?.shipping_address?.address_1 || "",
-    "shipping_address.company": cart?.shipping_address?.company || "",
-    "shipping_address.postal_code": cart?.shipping_address?.postal_code || "",
+    "shipping_address.address_2": cart?.shipping_address?.address_2 || "",
     "shipping_address.city": cart?.shipping_address?.city || "",
-    "shipping_address.country_code": cart?.shipping_address?.country_code || "",
+    "shipping_address.country_code":
+      cart?.shipping_address?.country_code ||
+      cart?.region?.countries?.[0]?.iso_2 ||
+      "",
     "shipping_address.province": cart?.shipping_address?.province || "",
     "shipping_address.phone": cart?.shipping_address?.phone || "",
     email: cart?.email || "",
@@ -55,10 +71,8 @@ const ShippingAddress = ({
         "shipping_address.first_name": address?.first_name || "",
         "shipping_address.last_name": address?.last_name || "",
         "shipping_address.address_1": address?.address_1 || "",
-        "shipping_address.company": address?.company || "",
-        "shipping_address.postal_code": address?.postal_code || "",
+        "shipping_address.address_2": address?.address_2 || "",
         "shipping_address.city": address?.city || "",
-        "shipping_address.country_code": address?.country_code || "",
         "shipping_address.province": address?.province || "",
         "shipping_address.phone": address?.phone || "",
       }))
@@ -73,7 +87,6 @@ const ShippingAddress = ({
   }
 
   useEffect(() => {
-    // Ensure cart is not null and has a shipping_address before setting form data
     if (cart && cart.shipping_address) {
       setFormAddress(cart?.shipping_address, cart?.email)
     }
@@ -81,12 +94,10 @@ const ShippingAddress = ({
     if (cart && !cart.email && customer?.email) {
       setFormAddress(undefined, customer.email)
     }
-  }, [cart]) // Add cart as a dependency
+  }, [cart])
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLInputElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
@@ -112,6 +123,11 @@ const ShippingAddress = ({
           />
         </Container>
       )}
+      <input
+        type="hidden"
+        name="shipping_address.country_code"
+        value={formData["shipping_address.country_code"]}
+      />
       <div className="grid grid-cols-2 gap-4">
         <Input
           label="First name"
@@ -131,34 +147,33 @@ const ShippingAddress = ({
           required
           data-testid="shipping-last-name-input"
         />
+        <div className="col-span-2">
+          <Input
+            label="Delivery address"
+            name="shipping_address.address_1"
+            autoComplete="address-line1"
+            value={formData["shipping_address.address_1"]}
+            onChange={handleChange}
+            required
+            data-testid="shipping-address-input"
+          />
+        </div>
+        <div className="col-span-2">
+          <Input
+            label="Landmark or additional directions (optional)"
+            name="shipping_address.address_2"
+            autoComplete="address-line2"
+            value={formData["shipping_address.address_2"]}
+            onChange={handleChange}
+            data-testid="shipping-landmark-input"
+          />
+          <Text className="txt-small text-ui-fg-subtle mt-1">
+            e.g. &ldquo;behind Shoprite, opposite First Bank&rdquo; — helps our
+            rider find you faster.
+          </Text>
+        </div>
         <Input
-          label="Address"
-          name="shipping_address.address_1"
-          autoComplete="address-line1"
-          value={formData["shipping_address.address_1"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-address-input"
-        />
-        <Input
-          label="Company"
-          name="shipping_address.company"
-          value={formData["shipping_address.company"]}
-          onChange={handleChange}
-          autoComplete="organization"
-          data-testid="shipping-company-input"
-        />
-        <Input
-          label="Postal code"
-          name="shipping_address.postal_code"
-          autoComplete="postal-code"
-          value={formData["shipping_address.postal_code"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-postal-code-input"
-        />
-        <Input
-          label="City"
+          label="City / Area"
           name="shipping_address.city"
           autoComplete="address-level2"
           value={formData["shipping_address.city"]}
@@ -166,27 +181,19 @@ const ShippingAddress = ({
           required
           data-testid="shipping-city-input"
         />
-        <CountrySelect
-          name="shipping_address.country_code"
-          autoComplete="country"
-          region={cart?.region}
-          value={formData["shipping_address.country_code"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-country-select"
-        />
         <Input
-          label="State / Province"
+          label="State"
           name="shipping_address.province"
           autoComplete="address-level1"
           value={formData["shipping_address.province"]}
           onChange={handleChange}
+          required
           data-testid="shipping-province-input"
         />
       </div>
       <div className="my-8">
         <Checkbox
-          label="Billing address same as shipping address"
+          label="Billing address same as delivery address"
           name="same_as_billing"
           checked={checked}
           onChange={onChange}
@@ -206,11 +213,13 @@ const ShippingAddress = ({
           data-testid="shipping-email-input"
         />
         <Input
-          label="Phone"
+          label="Delivery contact phone"
           name="shipping_address.phone"
+          type="tel"
           autoComplete="tel"
           value={formData["shipping_address.phone"]}
           onChange={handleChange}
+          required
           data-testid="shipping-phone-input"
         />
       </div>

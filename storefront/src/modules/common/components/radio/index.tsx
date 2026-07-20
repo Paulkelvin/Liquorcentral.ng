@@ -1,26 +1,36 @@
+/**
+ * Purely a visual indicator — every consumer (Shipping's method/pickup
+ * radios, Payment's provider radio, the saved-address Listbox option)
+ * nests this inside its own already-semantic interactive control
+ * (Headless UI's `Radio`/`RadioGroupOption` or `Listbox.Option`, each
+ * already `role="radio"`/selectable on its own). Rendering this as a
+ * second, nested `<button role="radio">` — with `aria-checked` hardcoded
+ * to `"true"` regardless of the real `checked` prop — was a genuine,
+ * newly-surfaced accessibility bug: a `nested-interactive` violation plus
+ * an accessible name axe-core only caught once a real Shipping Option
+ * existed for the first time (`07_CHECKOUT_SPECIFICATION.md` Milestone).
+ * Now a plain, `aria-hidden` decorative element, matching the icon-only
+ * treatment already used elsewhere on the platform.
+ */
 const Radio = ({ checked, 'data-testid': dataTestId }: { checked: boolean, 'data-testid'?: string }) => {
   return (
-    <>
-      <button
-        type="button"
-        role="radio"
-        aria-checked="true"
-        data-state={checked ? "checked" : "unchecked"}
-        className="group relative flex h-5 w-5 items-center justify-center outline-none"
-        data-testid={dataTestId || 'radio-button'}
-      >
-        <div className="shadow-borders-base group-hover:shadow-borders-strong-with-shadow bg-ui-bg-base group-data-[state=checked]:bg-ui-bg-interactive group-data-[state=checked]:shadow-borders-interactive group-focus:!shadow-borders-interactive-with-focus group-disabled:!bg-ui-bg-disabled group-disabled:!shadow-borders-base flex h-[14px] w-[14px] items-center justify-center rounded-full transition-all">
-          {checked && (
-            <span
-              data-state={checked ? "checked" : "unchecked"}
-              className="group flex items-center justify-center"
-            >
-              <div className="bg-ui-bg-base shadow-details-contrast-on-bg-interactive group-disabled:bg-ui-fg-disabled rounded-full group-disabled:shadow-none h-1.5 w-1.5"></div>
-            </span>
-          )}
-        </div>
-      </button>
-    </>
+    <span
+      aria-hidden="true"
+      data-state={checked ? "checked" : "unchecked"}
+      className="group relative flex h-5 w-5 items-center justify-center outline-none"
+      data-testid={dataTestId || 'radio-button'}
+    >
+      <div className="shadow-borders-base group-hover:shadow-borders-strong-with-shadow bg-ui-bg-base group-data-[state=checked]:bg-ui-bg-interactive group-data-[state=checked]:shadow-borders-interactive group-focus:!shadow-borders-interactive-with-focus group-disabled:!bg-ui-bg-disabled group-disabled:!shadow-borders-base flex h-[14px] w-[14px] items-center justify-center rounded-full transition-all">
+        {checked && (
+          <span
+            data-state={checked ? "checked" : "unchecked"}
+            className="group flex items-center justify-center"
+          >
+            <div className="bg-ui-bg-base shadow-details-contrast-on-bg-interactive group-disabled:bg-ui-fg-disabled rounded-full group-disabled:shadow-none h-1.5 w-1.5"></div>
+          </span>
+        )}
+      </div>
+    </span>
   )
 }
 

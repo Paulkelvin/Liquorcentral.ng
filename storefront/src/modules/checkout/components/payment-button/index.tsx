@@ -11,13 +11,19 @@ import ErrorMessage from "../error-message"
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
   "data-testid": string
+  /** 07_CHECKOUT_SPECIFICATION.md §8, §11 — an unresolved delivery-eligibility
+   * blocking condition also disables placing the order, on top of the
+   * ordinary readiness checks below. */
+  notReady?: boolean
 }
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   "data-testid": dataTestId,
+  notReady: externalNotReady = false,
 }) => {
   const notReady =
+    externalNotReady ||
     !cart ||
     !cart.shipping_address ||
     !cart.billing_address ||

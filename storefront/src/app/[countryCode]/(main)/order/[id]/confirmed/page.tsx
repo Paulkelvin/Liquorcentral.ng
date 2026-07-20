@@ -8,7 +8,13 @@ type Props = {
 }
 export const metadata: Metadata = {
   title: "Order Confirmed",
-  description: "You purchase was successful",
+  description: "Your purchase was successful",
+  // Customer-specific, session-bound — same treatment as checkout/cart
+  // (07_CHECKOUT_SPECIFICATION.md §25).
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 export default async function OrderConfirmedPage(props: Props) {

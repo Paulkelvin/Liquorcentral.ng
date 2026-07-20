@@ -1,11 +1,40 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.9
+**Version:** 6.0
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v57 — 2026-07-19 — Milestone 13: Checkout (`07_CHECKOUT_SPECIFICATION.md`)
+
+**Context:** With Cart (Milestone 12) complete, Checkout was the confirmed next and final individual specification in Paul's approved implementation order. Before any UI work, this milestone found the environment had **zero shipping options anywhere** (`GET /admin/shipping-options` returned empty) — Milestone 1's seed had deliberately stopped at region/store/sales-channel, so checkout could not function at all without real fulfillment infrastructure. Minimal, *permanent* (not QA-only) infrastructure was seeded first: two Fulfillment Sets on the existing "LiquorCentral Lagos Warehouse" stock location, using Medusa's native `manual_manual` provider. Built under the standing autonomous-continuation authorization; full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/lib/hooks/use-focus-step-heading.ts` — shared focus-management hook moving focus to a checkout step's heading whenever that step becomes active (§22).
+- `storefront/src/modules/checkout/components/delivery-eligibility-conflict/index.tsx` — the delivery-eligibility blocking-condition banner (§8/§11), with "change delivery address," "remove the Food Central item(s)," and "choose pickup" resolution paths.
+- `storefront/src/lib/util/cart-fulfillment.ts` gained `isLagosAddress`, `hasFoodCentralItems`, `isPickupShippingMethod`, and `hasUnresolvedDeliveryConflict` — the address/eligibility blocking-condition logic, reused identically by the conflict banner and the payment step's order-placement gate.
+- **Permanent backend seed (Admin API, not code):** Fulfillment Set "LiquorCentral Nationwide Delivery" (type `shipping`, service zone "Nigeria," one flat ₦3,000 "Standard Delivery" Shipping Option) and Fulfillment Set "LiquorCentral Pickup" (type `pickup`, service zone "Lagos Island Pickup," one flat ₦0 "Pickup — Lagos Island" Shipping Option) — both on the `manual_manual` fulfillment provider, enabled on the Lagos Warehouse stock location.
+
+**Changed:**
+
+- `storefront/src/modules/checkout/components/shipping-address/index.tsx`, `billing_address/index.tsx` — rewritten: removed `postal_code`/`company`, added a "Landmark or additional directions (optional)" field, relabeled fields for a freeform Nigerian address model, fixed country via a hidden input (no visible dropdown — the region has exactly one country).
+- `storefront/src/lib/data/cart.ts`'s `setAddresses` — fixed to read the real `address_2` form value (previously always hardcoded to `""`); removed `postal_code`/`company` from the address payloads sent to the backend.
+- `storefront/src/modules/checkout/templates/checkout-form/index.tsx` — computes the delivery-eligibility conflict and renders the new banner conditionally; adds a page-level, visually-hidden `<h1>Checkout</h1>` (§22 — no checkout step had ever had a top-level heading).
+- `storefront/src/modules/checkout/components/review/index.tsx` — added `hasDeliveryConflict` (gating `PaymentButton`) and a restated age-verification reminder for carts containing Wine & Spirits items.
+- `storefront/src/modules/checkout/components/payment-button/index.tsx` — added an optional `notReady` prop, ORed into the existing readiness checks.
+- `storefront/src/modules/checkout/components/error-message/index.tsx` — added `role="alert" aria-live="assertive"` (§21/§22).
+- `storefront/src/modules/common/components/radio/index.tsx` — **critical accessibility fix**: replaced a nested `<button role="radio" aria-checked="true">` (hardcoded `"true"` regardless of the real `checked` prop) with a plain `aria-hidden` decorative `<span>`; every consumer already wraps it in its own semantic interactive control. Found via the first-ever live axe-core scan against a real Shipping Option.
+- `storefront/src/modules/cart/templates/preview.tsx`, `storefront/src/modules/order/components/items/index.tsx` — rewritten to group into "Wine & Spirits"/"Food Central" sections with per-group subtotals, reusing Milestone 12's `cart-fulfillment.ts` utilities unchanged.
+- `storefront/src/app/[countryCode]/(checkout)/checkout/page.tsx` — expanded `retrieveCart` fields; added `robots: { index: false, follow: false }`; redirects to `/cart` on an empty cart or a confirmed-zero-stock Wine & Spirits item.
+- `storefront/src/lib/data/orders.ts`'s `retrieveOrder` — added `+items.product.food_details.*,+items.product.wine_details.*` to its previously non-overridable fields string.
+- `storefront/src/app/[countryCode]/(main)/order/[id]/confirmed/page.tsx` — added `robots: { index: false, follow: false }`.
+
+**Not changed, and explicitly out of scope:** true per-fulfillment-group delivery-method/slot selection (§9/§10 — one combined shipping-method selection serves the whole cart instead, since the `delivery-slot` module has no storefront wiring); real Paystack integration (module not yet built; `pp_system_default` used as placeholder); cash-on-delivery (already resolved as not supported); a hard age-recheck at order confirmation (still an open business decision, only restated); a real notification channel (channel undecided).
+
+**Also updated:** `storefront/README.md` (new "Milestone 13" section). `docs/PROJECT_STATUS.md` (→ v5.9), `docs/AI_HANDOFF.md` (→ v5.5), `docs/DECISION_LOG.md` (new entry, → v3.1), `docs/ROADMAP.md` (→ v6.1).
 
 ## v56 — 2026-07-19 — Milestone 12: Cart (`06_CART_SPECIFICATION.md`)
 

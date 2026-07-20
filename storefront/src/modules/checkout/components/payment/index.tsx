@@ -2,6 +2,7 @@
 import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
+import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
@@ -43,6 +44,7 @@ const Payment = ({
   const pathname = usePathname()
 
   const isOpen = searchParams.get("step") === "payment"
+  const headingRef = useFocusStepHeading(isOpen)
 
   const setPaymentMethod = async (method: string) => {
     setError(null)
@@ -115,9 +117,11 @@ const Payment = ({
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
+          ref={headingRef}
+          tabIndex={-1}
           level="h2"
           className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
+            "flex flex-row text-3xl-regular gap-x-2 items-baseline focus:outline-none",
             {
               "opacity-50 pointer-events-none select-none":
                 !isOpen && !paymentReady,

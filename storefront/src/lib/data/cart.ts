@@ -396,9 +396,10 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         first_name: formData.get("shipping_address.first_name"),
         last_name: formData.get("shipping_address.last_name"),
         address_1: formData.get("shipping_address.address_1"),
-        address_2: "",
-        company: formData.get("shipping_address.company"),
-        postal_code: formData.get("shipping_address.postal_code"),
+        // 07_CHECKOUT_SPECIFICATION.md §7 — the landmark/additional-directions
+        // field, previously always sent empty regardless of what the form
+        // collected.
+        address_2: formData.get("shipping_address.address_2") || "",
         city: formData.get("shipping_address.city"),
         country_code: formData.get("shipping_address.country_code"),
         province: formData.get("shipping_address.province"),
@@ -415,9 +416,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         first_name: formData.get("billing_address.first_name"),
         last_name: formData.get("billing_address.last_name"),
         address_1: formData.get("billing_address.address_1"),
-        address_2: "",
-        company: formData.get("billing_address.company"),
-        postal_code: formData.get("billing_address.postal_code"),
+        address_2: formData.get("billing_address.address_2") || "",
         city: formData.get("billing_address.city"),
         country_code: formData.get("billing_address.country_code"),
         province: formData.get("billing_address.province"),

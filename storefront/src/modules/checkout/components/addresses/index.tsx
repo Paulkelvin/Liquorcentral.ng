@@ -1,5 +1,6 @@
 "use client"
 import { setAddresses } from "@lib/data/cart"
+import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
 import useToggleState from "@lib/hooks/use-toggle-state"
 import compareAddresses from "@lib/util/compare-addresses"
 import { CheckCircleSolid } from "@medusajs/icons"
@@ -26,6 +27,7 @@ const Addresses = ({
   const pathname = usePathname()
 
   const isOpen = searchParams.get("step") === "address"
+  const headingRef = useFocusStepHeading(isOpen)
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -43,8 +45,10 @@ const Addresses = ({
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
+          ref={headingRef}
+          tabIndex={-1}
           level="h2"
-          className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
+          className="flex flex-row text-3xl-regular gap-x-2 items-baseline focus:outline-none"
         >
           Shipping Address
           {!isOpen && <CheckCircleSolid />}
@@ -64,6 +68,15 @@ const Addresses = ({
       {isOpen ? (
         <form action={formAction}>
           <div className="pb-8">
+            {!customer && (
+              <Text
+                className="text-ui-fg-subtle txt-small mb-4"
+                data-testid="guest-checkout-note"
+              >
+                You don&apos;t need an account to complete this order —
+                checking out as a guest is fully supported.
+              </Text>
+            )}
             <ShippingAddress
               customer={customer}
               checked={sameAsBilling}
@@ -107,15 +120,13 @@ const Addresses = ({
                       {cart.shipping_address.last_name}
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.address_1}{" "}
-                      {cart.shipping_address.address_2}
+                      {cart.shipping_address.address_1}
+                      {cart.shipping_address.address_2 &&
+                        `, ${cart.shipping_address.address_2}`}
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.postal_code},{" "}
-                      {cart.shipping_address.city}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.country_code?.toUpperCase()}
+                      {cart.shipping_address.city},{" "}
+                      {cart.shipping_address.province}
                     </Text>
                   </div>
 
@@ -124,7 +135,7 @@ const Addresses = ({
                     data-testid="shipping-contact-summary"
                   >
                     <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      Contact
+                      Delivery contact
                     </Text>
                     <Text className="txt-medium text-ui-fg-subtle">
                       {cart.shipping_address.phone}
@@ -153,15 +164,13 @@ const Addresses = ({
                           {cart.billing_address?.last_name}
                         </Text>
                         <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.address_1}{" "}
-                          {cart.billing_address?.address_2}
+                          {cart.billing_address?.address_1}
+                          {cart.billing_address?.address_2 &&
+                            `, ${cart.billing_address.address_2}`}
                         </Text>
                         <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.postal_code},{" "}
-                          {cart.billing_address?.city}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.country_code?.toUpperCase()}
+                          {cart.billing_address?.city},{" "}
+                          {cart.billing_address?.province}
                         </Text>
                       </>
                     )}

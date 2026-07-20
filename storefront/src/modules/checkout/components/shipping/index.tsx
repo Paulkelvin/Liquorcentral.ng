@@ -2,6 +2,7 @@
 import { Radio, RadioGroup } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
+import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -35,12 +36,8 @@ function formatAddress(address: HttpTypes.StoreCartAddress) {
     ret += `, ${address.address_2}`
   }
 
-  if (address.postal_code) {
-    ret += `, ${address.postal_code} ${address.city}`
-  }
-
-  if (address.country_code) {
-    ret += `, ${address.country_code.toUpperCase()}`
+  if (address.city) {
+    ret += `, ${address.city}`
   }
 
   return ret
@@ -68,6 +65,7 @@ const Shipping: React.FC<ShippingProps> = ({
   const pathname = usePathname()
 
   const isOpen = searchParams.get("step") === "delivery"
+  const headingRef = useFocusStepHeading(isOpen)
 
   const _shippingMethods = availableShippingMethods?.filter(
     (sm) => (sm as unknown as { service_zone?: { fulfillment_set?: { type?: string; location?: { address: HttpTypes.StoreCartAddress } } } }).service_zone?.fulfillment_set?.type !== "pickup"
@@ -155,9 +153,11 @@ const Shipping: React.FC<ShippingProps> = ({
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
+          ref={headingRef}
+          tabIndex={-1}
           level="h2"
           className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
+            "flex flex-row text-3xl-regular gap-x-2 items-baseline focus:outline-none",
             {
               "opacity-50 pointer-events-none select-none":
                 !isOpen && cart.shipping_methods?.length === 0,
@@ -192,7 +192,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 Shipping method
               </span>
               <span className="mb-4 text-ui-fg-muted txt-medium">
-                How would you like you order delivered
+                How would you like your order delivered?
               </span>
             </div>
             <div data-testid="delivery-options-container">

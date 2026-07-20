@@ -1,7 +1,11 @@
 import {
   getAvailableStock,
   groupSubtotal,
+  hasFoodCentralItems,
+  hasUnresolvedDeliveryConflict,
   isFoodCentralItem,
+  isLagosAddress,
+  isPickupShippingMethod,
   isStockManaged,
   splitGiftWrapLines,
 } from "../cart-fulfillment"
@@ -97,6 +101,93 @@ describe("getAvailableStock", () => {
   it("returns the known quantity when stock-managed", () => {
     const item = lineItem({ variant: { manage_inventory: true, allow_backorder: false } } as never)
     expect(getAvailableStock(item, 3)).toBe(3)
+  })
+})
+
+describe("isLagosAddress", () => {
+  it("is true when the province names Lagos", () => {
+    expect(isLagosAddress({ province: "Lagos", city: "Ikoyi" })).toBe(true)
+  })
+
+  it("is true when only the city names Lagos (case-insensitive)", () => {
+    expect(isLagosAddress({ province: "", city: "lagos island" })).toBe(true)
+  })
+
+  it("is false for a genuinely non-Lagos address", () => {
+    expect(isLagosAddress({ province: "FCT", city: "Abuja" })).toBe(false)
+  })
+
+  it("is false when no address exists yet", () => {
+    expect(isLagosAddress(null)).toBe(false)
+  })
+})
+
+describe("hasFoodCentralItems", () => {
+  it("is true when at least one item is Food Central", () => {
+    const wine = lineItem({ product: { wine_details: {} } } as never)
+    const food = lineItem({ product: { food_details: {} } } as never)
+    expect(hasFoodCentralItems([wine, food])).toBe(true)
+  })
+
+  it("is false when the cart has no Food Central items", () => {
+    const wine = lineItem({ product: { wine_details: {} } } as never)
+    expect(hasFoodCentralItems([wine])).toBe(false)
+  })
+})
+
+describe("isPickupShippingMethod", () => {
+  it("recognizes a pickup-named method", () => {
+    expect(isPickupShippingMethod({ name: "Pickup — Lagos Island" })).toBe(true)
+  })
+
+  it("is false for a delivery-named method", () => {
+    expect(isPickupShippingMethod({ name: "Standard Delivery" })).toBe(false)
+  })
+
+  it("is false when no method has been selected yet", () => {
+    expect(isPickupShippingMethod(null)).toBe(false)
+  })
+})
+
+describe("hasUnresolvedDeliveryConflict", () => {
+  const foodItem = lineItem({ product: { food_details: {} } } as never)
+
+  it("is false for a Wine & Spirits-only cart regardless of address", () => {
+    const wineItem = lineItem({ product: { wine_details: {} } } as never)
+    expect(
+      hasUnresolvedDeliveryConflict({
+        items: [wineItem],
+        shipping_address: { province: "FCT", city: "Abuja" },
+      })
+    ).toBe(false)
+  })
+
+  it("is false when the address is genuinely in Lagos", () => {
+    expect(
+      hasUnresolvedDeliveryConflict({
+        items: [foodItem],
+        shipping_address: { province: "Lagos", city: "Ikoyi" },
+      })
+    ).toBe(false)
+  })
+
+  it("is true when a Food Central item exists and the address isn't Lagos", () => {
+    expect(
+      hasUnresolvedDeliveryConflict({
+        items: [foodItem],
+        shipping_address: { province: "FCT", city: "Abuja" },
+      })
+    ).toBe(true)
+  })
+
+  it("is false once pickup is selected, even outside Lagos", () => {
+    expect(
+      hasUnresolvedDeliveryConflict({
+        items: [foodItem],
+        shipping_address: { province: "FCT", city: "Abuja" },
+        shipping_methods: [{ name: "Pickup — Lagos Island" }],
+      })
+    ).toBe(false)
   })
 })
 
