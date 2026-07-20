@@ -502,6 +502,32 @@ A live axe-core scan of the new pages found one color-contrast violation (`ui-fg
 - **Real end-to-end validation**: created two temporary QA dishes via the Admin API (one left Available, one flagged Unavailable via the new admin widget), confirmed both render correctly on the Today's Menu listing and their own PDPs (real Playwright screenshots, not static review) — the available dish shows a working Add to Cart; the unavailable one shows "Unavailable" with no Add-to-Cart control anywhere. Placed one real order through the full Store API checkout flow (pickup method), set its status to "Preparing" via the new admin widget, and confirmed the live-heading/list/live-region status display renders correctly (with the automatically-chosen "Ready for Pickup" third stage) on the order confirmation page.
 - Both QA products were deleted afterward (Food Central's untracked inventory meant no reservation blocked hard-deletion, unlike several prior milestones' wine products); the temporary QA admin account was deleted via the established `medusa exec` self-deletion-workaround script. The one real test order was deliberately left in place as an ordinary historical record, consistent with every prior milestone's treatment of completed test orders.
 
+## Milestone 16 — Delivery Tracking (`10_DELIVERY_SPECIFICATION.md`)
+
+Implements the post-order delivery-tracking behavior this specification adds beyond what Food Ordering already built — the tenth specification in the confirmed order. `10_DELIVERY_SPECIFICATION.md` was found already drafted, Approved — Frozen (v1.0), correcting a stale "not yet drafted" note carried in the tracking docs. Direct comparison against the frozen document found coverage (§5), the two-fulfillment-leg model (§5, §15), pickup (§8), and address/landmark handling (§12) all already satisfied by Cart, Checkout, and Food Ordering — the genuinely new work is Wine & Spirits' own delivery-status progression (§10) and rendering both catalogs' statuses independently on a mixed order (§15).
+
+### Wine & Spirits' own delivery-status progression, specified here for the first time (`lib/util/wine-delivery-status.ts`, `order/components/wine-delivery-status/`, backend's `admin/widgets/wine-delivery-status-widget.tsx`)
+
+§10 — Order Placed → Dispatched → In Transit → Delivered, the nationwide-dispatch equivalent of Food Ordering's own cook-to-order progression (`09_FOOD_ORDERING_SPECIFICATION.md` §7). Implemented via the identical mechanism: `order.metadata.wine_delivery_status` (a native field, no migration) set through a new admin widget mirroring `food-order-status-widget.tsx` exactly, and displayed via `WineDeliveryStatus`, a component structurally identical to `FoodOrderStatus` — real heading/list semantics, a live region, renders nothing when the order has no Wine & Spirits item or no stage has been set.
+
+### Both legs shown independently, never merged (`order/components/delivery-status/`)
+
+§15 — "no delivery communication ever merges the two legs into one combined status." A new `DeliveryStatus` wrapper renders both `WineDeliveryStatus` and `FoodOrderStatus`; on a genuinely mixed order it gives each its own catalog-labeled heading ("Wine & Spirits status"/"Food Central status"), and on a single-catalog order each keeps its plain "Order status" default — there's no ambiguity to resolve when only one is present. Wired into both the order-confirmation and account order-details templates in place of the bare `FoodOrderStatus` Milestone 15 added.
+
+### Deliberately not built, and why
+
+**Rider assignment/dispatch** (§7) — the specification itself states this "is currently an operational process (manual/staff-coordinated), not a dedicated software module." **Proof of delivery** (§17) — "not yet scoped" per the specification's own Backend Requirements table. **The delivery-fee schedule, rescheduling/cancellation policy, and the failed-delivery-attempt policy** (§13, §14, §16) — all named as genuine open business/operational decisions the specification itself doesn't resolve. **Proactive WhatsApp/SMS delivery communication** (§18) — depends on the still-unbuilt, still-Draft notification provider module. **Live GPS tracking, third-party courier integration, route optimisation, delivery marketplace features, AI dispatch, autonomous delivery, and locker pickup** (§27) — all explicitly out of scope per direct instruction; none appear anywhere.
+
+### A pre-existing, already-documented accessibility finding, reconfirmed rather than fixed
+
+A live axe-core scan of the order-confirmation page found one color-contrast violation (`bg-primary`), the same systemic `Button` finding carried since Milestone 7 — traced to an element unrelated to any component this milestone added, reconfirmed present and deliberately left unaltered per the established precedent.
+
+### Validated with real execution, not just static analysis
+
+- `tsc --noEmit`, `next lint`, `next build` (real backend running), and the full Jest suite (80 tests, unchanged — no new pure-function logic warranted new unit tests) all clean. The backend's own `medusa build` also clean.
+- **Real end-to-end validation**: created one temporary QA wine product and one temporary QA food product, placed a real mixed order through the full Store API checkout flow, set both new admin widgets (Dispatched; Preparing), and confirmed both status blocks render correctly, independently, clearly labeled, on the order confirmation page (real Playwright screenshots) and both admin widgets render correctly side by side in the Admin dashboard.
+- Both QA products and the temporary QA admin account were deleted after validation; the one real mixed test order was deliberately left in place as an ordinary historical record, consistent with every prior milestone's treatment of completed test orders.
+
 ## What's deliberately not here yet
 
 - **Meilisearch-backed search: ranking/typo-tolerance/synonyms, autocomplete, editorial boosting, and faceted search results** (`03_SEARCH_SPECIFICATION.md` §7, §8, §9, §11, §13) — Meilisearch itself remains unapproved (`DECISION_LOG.md`); `/search` today is a real native results page (unified list, catalog badges, sort, Load More, honest zero-result recovery — Milestone 10) but not this document's full mechanism set. **Search-within-category** (§4, §15/§16) also remains unbuilt — no scoped-search affordance exists on category pages yet.

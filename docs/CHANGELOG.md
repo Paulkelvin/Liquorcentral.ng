@@ -1,11 +1,28 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.2
+**Version:** 6.3
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v60 — 2026-07-20 — Milestone 16: Delivery Tracking (`10_DELIVERY_SPECIFICATION.md`)
+
+**Context:** With Food Ordering (Milestone 15) complete, Delivery Tracking was the confirmed next specification. `10_DELIVERY_SPECIFICATION.md` was found already drafted, Approved — Frozen (v1.0) — a prior status note in `PROJECT_STATUS.md` calling it "not yet drafted" was stale, corrected in the same change rather than treated as a new business decision. Direct comparison against the frozen document found its coverage/two-leg/pickup/address requirements already satisfied by Cart, Checkout, and Food Ordering; the genuinely new work narrowed to Wine & Spirits' own delivery-status progression (§10) and rendering both catalogs' statuses independently on a mixed order (§15).
+
+**Added (new, `backend/apps/backend/src/` — not part of `/docs`):** `admin/widgets/wine-delivery-status-widget.tsx` — an order-detail-page dropdown for the new Wine & Spirits delivery stage, reading/writing `order.metadata.wine_delivery_status` (native field, no migration).
+
+**Added (new, `storefront/` — not part of `/docs`):**
+- `storefront/src/lib/util/wine-delivery-status.ts` — `WINE_DELIVERY_STAGES`, `hasWineSpiritsItems`, `getWineDeliveryStage`.
+- `storefront/src/modules/order/components/wine-delivery-status/index.tsx` — the Wine & Spirits status display, mirroring `food-order-status` exactly.
+- `storefront/src/modules/order/components/delivery-status/index.tsx` — a wrapper rendering both catalogs' statuses, giving each its own catalog-labeled heading ("Wine & Spirits status"/"Food Central status") on a genuinely mixed order, or the generic "Order status" heading when only one catalog is present.
+
+**Changed:** `food-order-status/index.tsx` gained a `heading` prop (default "Order status") so `DeliveryStatus` can label it. `order-details-template.tsx`/`order-completed-template.tsx` now render `DeliveryStatus` instead of the bare `FoodOrderStatus`. `lib/data/orders.ts`'s `listOrders` fields extended with `+items.product.wine_details.id`. `order-card/index.tsx` gained a Wine & Spirits delivery-stage badge alongside the existing food-stage badge.
+
+**Not changed, and explicitly out of scope:** rider assignment/dispatch, proof of delivery, delivery-fee schedule, rescheduling/cancellation policy, failed-delivery-attempt policy, and proactive WhatsApp/SMS messaging — all named by the specification itself as operational/business parameters (§13, §14, §16, §17, §28) or dependent on the still-unbuilt notification provider (§18, §25). Live GPS tracking, third-party courier integration, route optimisation, AI dispatch, and locker pickup remain explicitly out of scope per §27.
+
+**Also updated:** `storefront/README.md` (new "Milestone 16" section). `docs/PROJECT_STATUS.md` (→ v6.2), `docs/AI_HANDOFF.md` (→ v5.8), `docs/DECISION_LOG.md` (new entry, → v3.4), `docs/ROADMAP.md` (→ v6.4).
 
 ## v59 — 2026-07-20 — Milestone 15: Food Ordering (`09_FOOD_ORDERING_SPECIFICATION.md`)
 

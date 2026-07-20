@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 3.3
+**Version:** 3.4
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
@@ -10,6 +10,21 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Engineering Milestone 16: Delivery Tracking (`10_DELIVERY_SPECIFICATION.md`)
+
+- **Decision:** Built Delivery Tracking next, per the confirmed specification implementation order. Before writing code, re-verified `10_DELIVERY_SPECIFICATION.md`'s actual status directly rather than trusting a prior session's stale note (`PROJECT_STATUS.md` had incorrectly carried "not yet drafted" forward) — found it already exists, Approved — Frozen (v1.0), so this milestone implemented directly against it rather than drafting a document that already existed.
+- **Reasoning:** Direct comparison of the frozen document's 30 sections against every prior milestone's actual implementation found most of its scope already satisfied: Lagos-vs-nationwide coverage and the two-fulfillment-leg model (Cart §6/Checkout §8), pickup (Checkout §9), address/landmark handling (Checkout §7), and Food Central's own status progression (Food Ordering §7, Milestone 15). The one section requiring genuinely new work was §10 — Wine & Spirits' own delivery-status progression, which the document itself states is "specified here for the first time," since `09_FOOD_ORDERING_SPECIFICATION.md` only ever specified Food Central's — plus §15's requirement that a mixed order's two legs be shown independently, side by side, never merged.
+- **Date:** 2026-07-20
+- **Impact:** Implemented Wine & Spirits' four-stage delivery progression (Order Placed → Dispatched → In Transit → Delivered) via the identical mechanism Food Ordering already established for its own progression — `order.metadata.wine_delivery_status`, a native field requiring no migration, set via a new admin widget (`wine-delivery-status-widget.tsx`) mirroring `food-order-status-widget.tsx` exactly. Built a `DeliveryStatus` wrapper component that renders both `WineDeliveryStatus` and `FoodOrderStatus` (each already independently null-safe when its own catalog/stage isn't present), giving each its own catalog-labeled heading ("Wine & Spirits status"/"Food Central status") only when the order genuinely contains both catalogs — a single-catalog order keeps the plain "Order status" heading each component already defaulted to, avoiding a redundant label where there's no ambiguity to resolve. Decisions and findings worth recording explicitly:
+  1. **A documentation staleness bug was caught and corrected, not a new business decision.** `PROJECT_STATUS.md`'s prior "Next recommended task" text described `10_DELIVERY_SPECIFICATION.md` as "not yet drafted" — factually wrong; the document has carried a "Status: Approved — Frozen, Version 1.0, Last Updated 2026-07-18" header since before Milestone 15 began. The error is corrected in place in this update rather than perpetuated.
+  2. **No new module, migration, or backend route was needed for the same reason Milestone 15's two mechanisms didn't need one**: Order's own native `metadata` field is already validated and writable through `POST /admin/orders/:id`, and already returned by the Store API's default order fields. Reusing the exact pattern (rather than inventing a parallel one for "the delivery version") keeps the two catalogs' status mechanisms symmetric and equally maintainable.
+  3. **Everything the specification names as a genuine open business/operational decision was left exactly that — open, not resolved or silently assumed**: Wine & Spirits' delivery mechanism (fleet vs. courier, §6), the delivery-fee schedule (§16), the failed-delivery-attempt policy — especially for perishable Food Central orders (§13), the cancellation-cutoff policy (§14), whether age is physically re-verified at hand-off (§17), and the exact Lagos delivery-area definition (§5). None of these block the document's own behavioral scope, and none were invented here.
+  4. **Rider assignment/dispatch, proof of delivery, and proactive WhatsApp/SMS communication remain unbuilt, exactly as the specification itself expects**: §7 and §25 both state rider dispatch is "an operational process... not a dedicated software module" for v1; §17 states the proof-of-delivery mechanism is "not yet scoped"; §18's proactive messaging depends on the still-unbuilt, still-Draft notification provider (`MEDUSA_EXTENSIONS.md` #5). None of these were fabricated to look more complete than the backend genuinely is.
+  5. **Live GPS tracking, third-party courier integration, route optimisation, delivery marketplace features, AI dispatch, autonomous delivery, and locker pickup** (§27) — confirmed absent from the implementation, consistent with the specification's own explicit exclusion list.
+  6. **Validated end to end against a real mixed order** (one Wine & Spirits item, one Food Central item) placed through the full Store API checkout flow, with both new admin widget values set (Dispatched; Preparing) and both status blocks confirmed rendering correctly, independently, clearly labeled, on the order confirmation page — real Playwright screenshots, not static review. A live axe-core scan found one pre-existing, already-documented systemic violation (`bg-primary`/`Button` color contrast, carried since Milestone 7), traced to a page element unrelated to any new component this milestone added — reconfirmed, not fixed, per the same precedent as every milestone since.
+  7. **Two temporary QA products (one wine, one food) and the temporary QA admin account were deleted after validation**; the one real mixed test order was deliberately left in place as an ordinary historical record, consistent with every prior milestone's treatment of completed test orders.
+- **Status:** Approved (autonomous continuation, per standing instruction).
 
 ### Engineering Milestone 15: Food Ordering (`09_FOOD_ORDERING_SPECIFICATION.md`)
 

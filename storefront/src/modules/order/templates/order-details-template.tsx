@@ -7,7 +7,7 @@ import ReorderButton from "@modules/account/components/reorder-button"
 import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
 import OrderDetails from "@modules/order/components/order-details"
-import FoodOrderStatus from "@modules/order/components/food-order-status"
+import DeliveryStatus from "@modules/order/components/delivery-status"
 import OrderSummary from "@modules/order/components/order-summary"
 import ShippingDetails from "@modules/order/components/shipping-details"
 import React from "react"
@@ -46,7 +46,7 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
         data-testid="order-details-container"
       >
         <OrderDetails order={order} showStatus />
-        <FoodOrderStatus order={order} />
+        <DeliveryStatus order={order} />
         <Items order={order} />
         <ShippingDetails order={order} />
         <OrderSummary order={order} />

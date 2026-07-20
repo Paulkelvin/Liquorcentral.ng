@@ -11,6 +11,11 @@ import {
   getFoodOrderStage,
   hasFoodCentralItems,
 } from "@lib/util/food-order-status"
+import {
+  wineDeliveryStageLabel,
+  getWineDeliveryStage,
+  hasWineSpiritsItems,
+} from "@lib/util/wine-delivery-status"
 import { HttpTypes } from "@medusajs/types"
 
 type OrderCardProps = {
@@ -31,6 +36,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
   }, [order])
 
   const foodStage = hasFoodCentralItems(order) ? getFoodOrderStage(order) : null
+  const wineStage = hasWineSpiritsItems(order) ? getWineDeliveryStage(order) : null
 
   return (
     <div className="bg-white flex flex-col" data-testid="order-card">
@@ -55,6 +61,13 @@ const OrderCard = ({ order }: OrderCardProps) => {
             {formatOrderStatus(order.fulfillment_status)}
           </Badge>
         </span>
+        {wineStage && (
+          <span className="pl-2">
+            <Badge color="neutral" data-testid="wine-delivery-status-badge">
+              {wineDeliveryStageLabel(wineStage)}
+            </Badge>
+          </span>
+        )}
         {foodStage && (
           <span className="pl-2">
             <Badge color="neutral" data-testid="food-order-status-badge">

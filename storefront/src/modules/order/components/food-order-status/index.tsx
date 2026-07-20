@@ -21,14 +21,23 @@ import {
  * §21 — real heading/list semantics, plus a live region. This
  * announces the current stage whenever the component (re-)renders with
  * a changed value — there is no polling or push-update mechanism yet
- * (real-time delivery status is `10_DELIVERY_SPECIFICATION.md`'s
- * future scope, not yet drafted), so this is accurate as of each
- * page load/refresh, not truly live while a tab sits open.
+ * (real-time status is `10_DELIVERY_SPECIFICATION.md` §11's own
+ * documented v1 limitation, not a live GPS/push mechanism), so this is
+ * accurate as of each page load/refresh, not truly live while a tab
+ * sits open.
+ *
+ * `heading` lets a caller rendering both catalogs' statuses side by
+ * side (`10_DELIVERY_SPECIFICATION.md` §15 — "never merged into one
+ * status") give this block its own catalog-labeled heading instead of
+ * the generic "Order status" default used when only one catalog's
+ * status is present.
  */
 export default function FoodOrderStatus({
   order,
+  heading = "Order status",
 }: {
   order: HttpTypes.StoreOrder
+  heading?: string
 }) {
   const stage = getFoodOrderStage(order)
   const containsFood = hasFoodCentralItems(order)
@@ -60,7 +69,7 @@ export default function FoodOrderStatus({
   return (
     <div className="flex flex-col gap-y-4" data-testid="food-order-status">
       <Heading level="h2" className="txt-large">
-        Order status
+        {heading}
       </Heading>
       <ol className="flex flex-col gap-y-2">
         {displayStages.map((s, index) => {
@@ -83,7 +92,7 @@ export default function FoodOrderStatus({
         })}
       </ol>
       <div role="status" aria-live="polite" className="sr-only">
-        {`Order status: ${foodOrderStageLabel(stage)}`}
+        {`${heading}: ${foodOrderStageLabel(stage)}`}
       </div>
     </div>
   )
