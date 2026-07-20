@@ -6,6 +6,7 @@ import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
 import OnboardingCta from "@modules/order/components/onboarding-cta"
 import OrderDetails from "@modules/order/components/order-details"
+import FoodOrderStatus from "@modules/order/components/food-order-status"
 import ShippingDetails from "@modules/order/components/shipping-details"
 import PaymentDetails from "@modules/order/components/payment-details"
 import { HttpTypes } from "@medusajs/types"
@@ -37,6 +38,7 @@ export default async function OrderCompletedTemplate({
             <span>Your order was placed successfully.</span>
           </Heading>
           <OrderDetails order={order} />
+          <FoodOrderStatus order={order} />
           <Heading level="h2" className="flex flex-row text-3xl-regular">
             Summary
           </Heading>

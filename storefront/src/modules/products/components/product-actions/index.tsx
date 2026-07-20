@@ -2,6 +2,7 @@
 
 import { addGiftWrapToLineItem, addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
+import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Text } from "@modules/common/components/ui"
 import Divider from "@modules/common/components/divider"
@@ -59,6 +60,13 @@ export default function ProductActions({
   // is off, made-to-order); only Wine & Spirits is genuinely stock-capped.
   const isFoodCentral = !!(product as ProductWithCatalogDetails).food_details
 
+  // 09_FOOD_ORDERING_SPECIFICATION.md §6, §16 — the "Unavailable" (86'd)
+  // state, distinct from Wine & Spirits' stock-based out-of-stock check
+  // below.
+  const foodUnavailable = isFoodCentralUnavailable(
+    product as ProductWithCatalogDetails
+  )
+
   // If there is only 1 variant, preselect the options
   useEffect(() => {
     if (product.variants?.length === 1) {
@@ -113,6 +121,12 @@ export default function ProductActions({
 
   // check if the selected variant is in stock
   const inStock = useMemo(() => {
+    // 09_FOOD_ORDERING_SPECIFICATION.md §6, §16 — a dish flagged
+    // Unavailable can't be added regardless of the (untracked) variant.
+    if (foodUnavailable) {
+      return false
+    }
+
     // If we don't manage inventory, we can always add to cart
     if (selectedVariant && !selectedVariant.manage_inventory) {
       return true
@@ -133,7 +147,7 @@ export default function ProductActions({
 
     // Otherwise, we can't add to cart
     return false
-  }, [selectedVariant])
+  }, [selectedVariant, foodUnavailable])
 
   // §17 — genuine available stock caps the stepper for Wine & Spirits only.
   const maxQuantity =
@@ -231,7 +245,9 @@ export default function ProductActions({
 
         {!inStock && isValidVariant && (
           <Text size="caption" className="text-danger">
-            This item is currently out of stock.
+            {foodUnavailable
+              ? "This dish is currently unavailable."
+              : "This item is currently out of stock."}
           </Text>
         )}
 
@@ -260,6 +276,8 @@ export default function ProductActions({
         >
           {!selectedVariant && !options
             ? "Select variant"
+            : foodUnavailable
+            ? "Unavailable"
             : !inStock || !isValidVariant
             ? "Out of stock"
             : "Add to cart"}

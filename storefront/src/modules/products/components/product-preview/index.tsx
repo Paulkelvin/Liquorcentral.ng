@@ -1,5 +1,6 @@
 import { Text } from "@modules/common/components/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
@@ -81,8 +82,9 @@ export default async function ProductPreview({
     : null
 
   const variants = (product.variants ?? []) as InventoryVariant[]
-  const isUnavailable =
-    variants.length === 0 || !variants.some(isVariantAvailable)
+  const foodUnavailable = isFoodCentralUnavailable(catalogProduct)
+  const soldOut = variants.length === 0 || !variants.some(isVariantAvailable)
+  const isUnavailable = foodUnavailable || soldOut
 
   return (
     <div data-testid="product-wrapper" className="flex flex-col gap-2">
@@ -122,7 +124,11 @@ export default async function ProductPreview({
                 className="text-danger"
                 data-testid="product-unavailable-label"
               >
-                Sold out
+                {/* 09_FOOD_ORDERING_SPECIFICATION.md §6 — Food Central's
+                    kitchen-capacity "Unavailable" is a distinct concept
+                    from Wine & Spirits' stock-based "Sold out", not the
+                    same label reused. */}
+                {foodUnavailable ? "Unavailable" : "Sold out"}
               </Text>
             )}
           </div>

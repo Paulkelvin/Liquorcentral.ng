@@ -1,11 +1,41 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.1
+**Version:** 6.2
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v59 — 2026-07-20 — Milestone 15: Food Ordering (`09_FOOD_ORDERING_SPECIFICATION.md`)
+
+**Context:** With Customer Account (Milestone 14) complete, Food Ordering was the confirmed next specification in Paul's approved implementation order. Research first found the specification roughly 60–70% already satisfied by prior milestones (catalog structure, ingredient/allergen/prep-time display, mixed-order handling, uncapped quantity) — this milestone's own genuinely new work was two mechanisms the specification requires as a decided minimum but with no existing backend home, per `TIER_B_FOOD_ATTRIBUTES_MODULE.md`'s own explicit exclusion of both from `food-details`. Built under the standing autonomous-continuation authorization; full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `backend/apps/backend/src/` — not part of `/docs`):**
+
+- `admin/widgets/food-availability-widget.tsx` — a product-detail-page toggle for the new Available/Unavailable dish flag, reading and writing `product.metadata.food_available` directly (no new module, migration, or `additional_data` plumbing — metadata is already a native, freely-writable product field).
+- `admin/widgets/food-order-status-widget.tsx` — an order-detail-page dropdown for the new cook-to-order status field, reading and writing `order.metadata.food_order_status` the same way.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/lib/util/food-availability.ts` — `isFoodCentralProduct`/`isFoodCentralUnavailable`, the shared "Unavailable" (86'd) check against `product.metadata.food_available`.
+- `storefront/src/lib/util/food-order-status.ts` — `FOOD_ORDER_STAGES`, `hasFoodCentralItems`, `getFoodOrderStage`, the shared cook-to-order stage vocabulary and detection logic.
+- `storefront/src/modules/order/components/food-order-status/index.tsx` — the real heading/list-semantics status-progression display with a live region, rendered only when an order genuinely contains a Food Central item and a stage has actually been set.
+- `storefront/src/modules/food-central/components/menu-grid/index.tsx` — the real Food Central menu listing (reused across Today's Menu, Pickup, and Scheduled Orders), extending the homepage Food Central Spotlight's own proven `listProducts({ fields: "+food_details.*" })` + filter pattern to a full listing.
+
+**Changed:**
+
+- `storefront/src/app/[countryCode]/(main)/food-central/page.tsx`, `pickup/page.tsx`, `scheduled/page.tsx` — replaced an unconditional `NotTakingOrders` placeholder with the real `FoodCentralMenuGrid` listing.
+- `storefront/src/modules/products/components/product-preview/index.tsx` — the listing card's "Sold out" logic now also checks `isFoodCentralUnavailable`, labeled "Unavailable" (a distinct concept from Wine & Spirits' stock-based "Sold out," per §6) rather than reusing the same label.
+- `storefront/src/modules/products/components/product-actions/index.tsx` — the PDP's `inStock`/Add-to-Cart logic now also checks `isFoodCentralUnavailable`, with dedicated "This dish is currently unavailable"/"Unavailable" messaging distinct from the stock-based "Out of stock" path.
+- `storefront/src/lib/data/orders.ts` — `retrieveOrder`/`listOrders` fields extended with `+metadata` (dropped by default once either function supplies its own explicit `fields`, the same additive-fields gotcha `listProducts` fixed in Milestone 9) and, for `listOrders`, `+items.product.food_details.id` so the account order list can detect Food Central items.
+- `storefront/src/modules/order/components/order-details/index.tsx` — removed a private, duplicate `formatStatus` helper in favor of the already-shared `lib/util/order-status.ts` formatter (a pre-existing inconsistency, not introduced here), and fixed a pre-existing `sata-testid` typo (should have been `data-testid`) on the payment-status element.
+- `storefront/src/modules/order/templates/order-details-template.tsx`, `order-completed-template.tsx` — both now render `FoodOrderStatus` alongside the existing `OrderDetails` block.
+- `storefront/src/modules/account/components/order-card/index.tsx` — shows a second badge with the current food-order stage, when applicable, alongside the existing native fulfillment-status badge.
+
+**Not changed, and explicitly out of scope:** the "Available to schedule" third availability state, the same-day cutoff countdown, any scheduling-picker UI, and kitchen-operating-hours gating — all depend on delivery-slot storefront wiring and cutoff timing still explicitly "not yet built"/"not yet decided" per `09_FOOD_ORDERING_SPECIFICATION.md` §25, the same gap Checkout (Milestone 13) already deferred true per-fulfillment-group slot selection on. One already-documented, systemic Design-System-level color-contrast violation (`ui-fg-muted`/`ui-fg-interactive`, from the vendored `@medusajs/ui-preset` token layer, first flagged in Milestone 7 under the shared `Button` component) was reconfirmed present on the new pages via this milestone's own axe-core scans and deliberately left unaltered, per the same precedent.
+
+**Also updated:** `storefront/README.md` (new "Milestone 15" section). `docs/PROJECT_STATUS.md` (→ v6.1), `docs/AI_HANDOFF.md` (→ v5.7), `docs/DECISION_LOG.md` (new entry, → v3.3), `docs/ROADMAP.md` (→ v6.3).
 
 ## v58 — 2026-07-20 — Milestone 14: Customer Account (`08_CUSTOMER_ACCOUNT_SPECIFICATION.md`)
 

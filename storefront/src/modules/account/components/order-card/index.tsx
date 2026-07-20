@@ -6,6 +6,11 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import ReorderButton from "@modules/account/components/reorder-button"
 import { convertToLocale } from "@lib/util/money"
 import { formatOrderStatus } from "@lib/util/order-status"
+import {
+  foodOrderStageLabel,
+  getFoodOrderStage,
+  hasFoodCentralItems,
+} from "@lib/util/food-order-status"
 import { HttpTypes } from "@medusajs/types"
 
 type OrderCardProps = {
@@ -24,6 +29,8 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const numberOfProducts = useMemo(() => {
     return order.items?.length ?? 0
   }, [order])
+
+  const foodStage = hasFoodCentralItems(order) ? getFoodOrderStage(order) : null
 
   return (
     <div className="bg-white flex flex-col" data-testid="order-card">
@@ -48,6 +55,13 @@ const OrderCard = ({ order }: OrderCardProps) => {
             {formatOrderStatus(order.fulfillment_status)}
           </Badge>
         </span>
+        {foodStage && (
+          <span className="pl-2">
+            <Badge color="neutral" data-testid="food-order-status-badge">
+              {foodOrderStageLabel(foodStage)}
+            </Badge>
+          </span>
+        )}
       </div>
       <div className="grid grid-cols-2 small:grid-cols-4 gap-4 my-4">
         {order.items?.slice(0, 3).map((i) => {
