@@ -548,6 +548,36 @@ The eleventh and final specification in the confirmed order — a backend-only m
 
 **With this milestone, all eleven specifications in the confirmed implementation order (`01` through `11`) are complete.**
 
+## Milestone 18 — Paystack payment provider and email/WhatsApp notification providers
+
+A backend-only milestone (`backend/apps/backend/`, not `storefront/`), recorded here for consistency with every prior milestone's documentation location. Per Paul's direct instruction, built the two remaining approved-but-unbuilt backend modules — Paystack (`MEDUSA_EXTENSIONS.md` #4) and the email/WhatsApp notification channels (`MEDUSA_EXTENSIONS.md` #5) — ready to activate the moment real credentials exist.
+
+### Paystack, a real redirect-based payment provider (`backend/apps/backend/src/modules/payment-paystack/`)
+
+Paystack's standard integration is a hosted checkout page, not a client-confirmed inline flow like Stripe's — `initiatePayment` creates a Paystack transaction and returns its `authorization_url` in the storefront-visible `data` field; `authorizePayment` verifies the transaction directly with Paystack rather than trusting a redirect alone; `getWebhookActionAndData` independently confirms via Paystack's HMAC-SHA512-verified `charge.success` webhook. Paystack auto-captures a successful charge, so `capturePayment` is an honest no-op rather than inventing a manual-capture step Paystack's API doesn't have.
+
+### Email and WhatsApp notification providers (`backend/apps/backend/src/modules/notification-whatsapp/`, `@medusajs/notification-sendgrid`)
+
+Email uses Medusa's own official SendGrid package — its raw-HTML `content` path means no SendGrid Dynamic Template needs pre-creating in SendGrid's dashboard. WhatsApp is a custom provider against Meta's Cloud API; since every message this platform sends is business-initiated, every send uses a pre-approved WhatsApp message template (free-form text is rejected outside a customer-reply window) — a real, load-bearing constraint, not an implementation detail glossed over.
+
+### Every provider activates by adding credentials, not by a further code change
+
+All three are registered conditionally in `medusa-config.ts`, only once their own required environment variable(s) exist — confirmed by direct testing with the dev server in three states: no keys (boots identically to before); real-shaped fake keys for all three services (confirms registration succeeds and, for the notification path, that a real placed order's `order.placed` event correctly routes to SendGrid's real API — failing only on the fake key's own 401 rejection, not on any wiring problem); then reverted. See `backend/apps/backend/.env.template` for exactly which variables each service needs and where to find them, and the one extra manual step Paystack needs (linking the region to the new provider via `POST /admin/regions/:id`, the same pattern Checkout's shipping options already use).
+
+### A first real notification consumer (`backend/apps/backend/src/subscribers/order-placed.ts`)
+
+Fires on Medusa's native `order.placed` event (no custom event needed) and sends an order-confirmation email. Validated against two real placed test orders in different environment states, confirming the subscriber's failure mode changes exactly as expected (no provider found → real SendGrid API rejection) as credentials are added.
+
+### Deliberately not built, and why
+
+**Further event-triggered notifications** (dispatch/preparing/delivered status-change messages using the Milestone 15/16 order-status mechanisms, password-reset-via-WhatsApp) — `MEDUSA_EXTENSIONS.md` #5 itself warns against underscoping this as a quick add-on; building every touchpoint before even one has a real credential to prove itself against risks unverified sprawl. **The storefront's own Paystack redirect UI** (a "Continue to Paystack" button, callback handling in Checkout) — cannot be meaningfully tested without a real Paystack key and a live redirect round-trip; shipping untested UI against a real payment flow is a correctness risk not worth taking blind. Both are the natural next step once Paul supplies real credentials.
+
+### Validated with real execution
+
+- The backend's own `medusa build` (types, lint, backend + admin dashboard compile) clean throughout.
+- **Real end-to-end validation**: three separate dev-server boot states (no keys; all three services with real-shaped fake credentials; reverted) each confirmed via `curl`'s health check and direct log inspection. Registered `pp_paystack_paystack` against the Nigeria region via the Admin API, confirmed it appeared in the Store API's payment-providers list, then reverted. Placed two real test orders via the Store API to exercise the `order.placed` subscriber in two different credential states.
+- Three temporary QA admin accounts (one per boot-validation pass) and one temporary QA product were deleted afterward via the established cleanup patterns; the two real test orders were deliberately left in place as ordinary historical records.
+
 ## What's deliberately not here yet
 
 - **Meilisearch-backed search: ranking/typo-tolerance/synonyms, autocomplete, editorial boosting, and faceted search results** (`03_SEARCH_SPECIFICATION.md` §7, §8, §9, §11, §13) — Meilisearch itself remains unapproved (`DECISION_LOG.md`); `/search` today is a real native results page (unified list, catalog badges, sort, Load More, honest zero-result recovery — Milestone 10) but not this document's full mechanism set. **Search-within-category** (§4, §15/§16) also remains unbuilt — no scoped-search affordance exists on category pages yet.

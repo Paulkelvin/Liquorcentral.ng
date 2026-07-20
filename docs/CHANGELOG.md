@@ -1,11 +1,31 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.4
+**Version:** 6.5
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v62 — 2026-07-20 — Milestone 18: Paystack payment provider and email/WhatsApp notification providers
+
+**Context:** With all eleven specifications complete (Milestone 17), Paul directly instructed building the two remaining approved-but-unbuilt modules — Paystack (`MEDUSA_EXTENSIONS.md` #4) and the email/WhatsApp notification channels (`MEDUSA_EXTENSIONS.md` #5) — ready to activate once he supplies real credentials.
+
+**Added (new, `backend/apps/backend/src/` — not part of `/docs`):**
+
+- `modules/payment-paystack/` — a real `AbstractPaymentProvider` against Paystack's Transaction API (redirect-based initiate/verify/webhook, matching Paystack's hosted-checkout integration model rather than a client-confirmed one).
+- `modules/notification-whatsapp/` — a real `AbstractNotificationProviderService` against Meta's WhatsApp Cloud API (template-message-only, per WhatsApp's business-initiated-message rules).
+- `subscribers/order-placed.ts` — the first real notification consumer: sends an order-confirmation email via the `email` channel on Medusa's native `order.placed` event, using SendGrid's raw-HTML `content` path (no SendGrid Dynamic Template ID needed).
+
+**Changed:**
+
+- `medusa-config.ts` — conditionally registers Paystack (payment) and SendGrid + WhatsApp (notification) providers, each only once its own required environment variable(s) are present; boots identically to before when none are set.
+- `package.json` — added `@medusajs/notification-sendgrid` as an explicit dependency (already present and correctly versioned in `node_modules`, confirmed).
+- `.env.template` — documents exactly which variables each of the three services needs and where to find them in that service's own dashboard.
+
+**Not changed, and explicitly out of scope:** further event-triggered notifications beyond order confirmation (dispatch/preparing/delivered status updates); the storefront's own Paystack redirect UI (a "Continue to Paystack" button, callback handling) — deferred until a real Paystack key exists to test the live redirect round-trip against, rather than shipped untested.
+
+**Also updated:** `docs/PROJECT_STATUS.md` (→ v6.4), `docs/AI_HANDOFF.md` (→ v6.0), `docs/DECISION_LOG.md` (new entry, → v3.6), `docs/ROADMAP.md` (→ v6.6).
 
 ## v61 — 2026-07-20 — Milestone 17: Admin Workflows (`11_ADMIN_WORKFLOWS_SPECIFICATION.md`)
 

@@ -2,6 +2,58 @@ import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
+/**
+ * `MEDUSA_EXTENSIONS.md` #4/#5 — Paystack (payment) and the email/WhatsApp
+ * notification channels are all approved decisions, but real credentials
+ * for none of them exist in this environment yet. Each provider below is
+ * registered only when its own required env var(s) are actually present,
+ * so this config boots identically to before (system-default payment
+ * only, no notification providers beyond the native log-only default)
+ * until real keys are supplied — adding them and restarting is the only
+ * step needed to activate each provider; no code change required.
+ */
+type ModuleProviderEntry = {
+  resolve: string
+  id: string
+  options: Record<string, unknown>
+}
+
+const paymentProviders: ModuleProviderEntry[] = []
+if (process.env.PAYSTACK_SECRET_KEY) {
+  paymentProviders.push({
+    resolve: "./src/modules/payment-paystack",
+    id: "paystack",
+    options: {
+      secretKey: process.env.PAYSTACK_SECRET_KEY,
+    },
+  })
+}
+
+const notificationProviders: ModuleProviderEntry[] = []
+if (process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM) {
+  notificationProviders.push({
+    resolve: "@medusajs/notification-sendgrid",
+    id: "sendgrid",
+    options: {
+      channels: ["email"],
+      api_key: process.env.SENDGRID_API_KEY,
+      from: process.env.SENDGRID_FROM,
+    },
+  })
+}
+if (process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
+  notificationProviders.push({
+    resolve: "./src/modules/notification-whatsapp",
+    id: "whatsapp",
+    options: {
+      channels: ["whatsapp"],
+      accessToken: process.env.WHATSAPP_ACCESS_TOKEN,
+      phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID,
+      languageCode: process.env.WHATSAPP_LANGUAGE_CODE,
+    },
+  })
+}
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -72,5 +124,28 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/delivery-slot",
     },
+    // Paystack (`MEDUSA_EXTENSIONS.md` #4, approved) — conditionally
+    // registered only once PAYSTACK_SECRET_KEY exists; see the comment
+    // above. pp_system_default remains registered natively regardless.
+    ...(paymentProviders.length
+      ? [
+          {
+            resolve: "@medusajs/medusa/payment",
+            options: { providers: paymentProviders },
+          },
+        ]
+      : []),
+    // Email (SendGrid) and WhatsApp (Meta Cloud API) notification
+    // channels (`MEDUSA_EXTENSIONS.md` #5, approved) — each conditionally
+    // registered only once its own required env vars exist; see the
+    // comment above.
+    ...(notificationProviders.length
+      ? [
+          {
+            resolve: "@medusajs/medusa/notification",
+            options: { providers: notificationProviders },
+          },
+        ]
+      : []),
   ],
 })

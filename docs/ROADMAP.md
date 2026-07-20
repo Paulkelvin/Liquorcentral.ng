@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 6.5
+**Version:** 6.6
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
@@ -90,7 +90,7 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 - ✅ **Stand up Medusa on Postgres + Redis (production-mode from day one, never launched on in-memory dev defaults)** — complete, 2026-07-19 (Engineering Milestone 1). `backend/apps/backend` is a running Medusa v2.17.2 application on real PostgreSQL and Redis (event bus, workflow engine, locking, and cache all Redis-backed). A Nigeria region and NGN-currency store are seeded; see `backend/README.md`.
 - ✅ **Install and configure the storefront (see `TECH_STACK.md`)** — complete, 2026-07-19 (Engineering Milestone 5). `storefront/` runs Medusa's official DTC Starter Next.js app, wired to the real backend (Nigeria region, a real publishable API key). Scaffold only — no LiquorCentral branding/UI applied yet; see `storefront/README.md`.
 - Regions/currency/tax for Nigeria — **partially complete**: a Nigeria region (NGN) and a Nigeria tax-region shell exist (Milestone 1), but the exact VAT/tax rate is still an open business/legal decision, not yet set.
-- Connect a payment provider — **Paystack, approved 2026-07-19** (see `DECISION_LOG.md`, `MEDUSA_EXTENSIONS.md` #4); no longer a launch blocker. Integration work not yet started; the seeded Nigeria region currently uses Medusa's built-in placeholder payment provider only. Build against environment variables — real Paystack credentials have not yet been supplied.
+- Connect a payment provider — **Paystack, approved 2026-07-19** (see `DECISION_LOG.md`, `MEDUSA_EXTENSIONS.md` #4). **✅ Implemented, Engineering Milestone 18 (2026-07-20)**: a real `AbstractPaymentProvider` (`backend/apps/backend/src/modules/payment-paystack`) against Paystack's Transaction API, registered conditionally in `medusa-config.ts` — activates automatically once `PAYSTACK_SECRET_KEY` is added to `.env` and the backend restarts (one further manual step then links the region to it, documented in `.env.template`). Real Paystack credentials have not yet been supplied, so the seeded Nigeria region still uses Medusa's placeholder provider only for now.
 - Build and ship **Wine & Spirits only** end to end: browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery — **in progress**. Age-gate (Engineering Milestone 8), category/collection/all-products browsing with the full Product Card Information Hierarchy, sort, Load More pagination, and empty states (Engineering Milestone 9), unified search (Engineering Milestone 10), the product detail page (Engineering Milestone 11), and the cart (Engineering Milestone 12) are complete; see `storefront/README.md`. Checkout/payment remains not yet started.
 - Include age verification here, not later — it's a legal gate on checkout, not an add-on.
 
@@ -111,7 +111,7 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 
 ## Phase 5 — Delivery communication
 
-- Integrate the notification provider — **channels approved 2026-07-19: Email and WhatsApp (both mandatory) plus in-app** (`MEDUSA_EXTENSIONS.md` #5, `DECISION_LOG.md`) — for proactive delivery updates, once real order volume exists to communicate about. The notification provider module's own Tier B architecture document remains Draft, not yet Approved.
+- Integrate the notification provider — **channels approved 2026-07-19: Email and WhatsApp (both mandatory) plus in-app** (`MEDUSA_EXTENSIONS.md` #5, `DECISION_LOG.md`). **✅ Both channel integrations implemented, Engineering Milestone 18 (2026-07-20)**: email via Medusa's official `@medusajs/notification-sendgrid` package (raw HTML content, no SendGrid template ID coordination needed); WhatsApp via a custom provider (`backend/apps/backend/src/modules/notification-whatsapp`) against Meta's WhatsApp Cloud API, template-message-only per WhatsApp's own business-initiated-message rules. Both register conditionally, activating once their own env vars are supplied. A first real subscriber (`order.placed` → order-confirmation email) proves the pipeline end to end. The notification provider module's own Tier B architecture document remains Draft — this is the concrete Tier D channel-integration work that document itself defers, not a redefinition of it. Further event-triggered messages (dispatch/delivery-status updates) remain a follow-on, not built this milestone.
 
 ## Phase 6 — Search
 
