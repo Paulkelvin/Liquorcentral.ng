@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 3.4
+**Version:** 3.5
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
@@ -10,6 +10,21 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Engineering Milestone 17: Admin Workflows (`11_ADMIN_WORKFLOWS_SPECIFICATION.md`)
+
+- **Decision:** Built Admin Workflows next, per the confirmed specification implementation order — the eleventh and final specification, already Approved — Frozen. Rather than assume a large build was needed, compared its 30 sections directly against every prior milestone's actual implementation before writing any code.
+- **Reasoning:** That comparison found nearly the entire document already satisfied by existing work: product/attribute management via the `wine-details`/`food-details` admin widgets (Milestones 2–3); category/collection management via native Medusa Admin (Milestone 7's seeded tree); inventory/availability management via native Inventory plus the `food-availability-widget` (Milestone 15); pricing via native Medusa Pricing; a mixed order's two fulfillment legs already shown to staff as distinctly as to the customer via the two independent status widgets built in Milestones 15/16 (§11's own requirement, satisfied without new work); kitchen/delivery status advancement via those same widgets (§12, §13); and customer support order/account lookup via native Admin's Customer→Orders view (§14). The one requirement with no existing surface anywhere was §5's at-a-glance operational dashboard.
+- **Date:** 2026-07-20
+- **Impact:** Built `operations-dashboard-widget.tsx`. Decisions and findings worth recording explicitly:
+  1. **Medusa Admin has no dashboard/home injection zone at all**, confirmed by inspecting `@medusajs/admin-shared`'s own full injection-zone list directly rather than assuming one existed. `order.list.before` — appearing above the Orders list table — was chosen as the closest honest native surface, since order volume/status is §5's own primary named content and the specification itself requires this be "built as Medusa Admin widgets and routes, not a bespoke application."
+  2. **The dashboard's Food Central queue and Wine & Spirits in-transit counts are computed over an honestly-stated recent-orders sample (the last 50), not a fabricated full-history total.** §18 explicitly names a dedicated reporting/aggregation mechanism as "not yet built" — building a true historical aggregation endpoint would be inventing backend capability §18 itself says doesn't exist yet. The widget states its own sample size in its own copy rather than presenting a partial count as if it were complete.
+  3. **Both catalogs' counts are shown with equal visual weight** (font size, layout position), directly implementing the new Cross-Catalog Operational Parity section's "neither catalog's queue, alert, or summary is positioned or weighted as more important by default."
+  4. **Promotional-collection start/end-date fields and simultaneous-cap (3–4) enforcement (§7, §10) were considered and deliberately not built this milestone.** No live promotional Collection exists anywhere in this environment to validate an enforcement mechanism against — the identical reasoning Milestone 12 applied when it found no real catalog data existed to validate a price-change-detection feature against genuine (not fabricated) price movement. Recorded as a real, buildable gap for a future pass once real promotional data exists, not silently dropped.
+  5. **Staff roles/permissions (§15), audit logging (§20), and staff-facing notifications/alert thresholds (§19) remain unbuilt, exactly as the specification itself expects** — each is named as "not yet scoped" or a genuinely open business/technical decision in the specification's own Backend Requirements table and Risks section, not a shortfall in this implementation.
+  6. **Validated live**: a temporary QA admin account logged into the real running Admin dashboard and confirmed the widget renders correctly on the Orders page with accurate counts (reflecting that the underlying QA test products from Milestones 15/16 had already been deleted during those milestones' own cleanup, so their orders correctly no longer register as containing a live Food Central/Wine & Spirits product — an honest consequence of cleanup order, not a bug). The temporary QA admin account was deleted afterward via the established `medusa exec` self-deletion-workaround script; no QA products were created or needed for this backend-only milestone.
+  7. **With this milestone, all eleven specifications in the confirmed implementation order (`01` through `11`) are complete.** No further specification remains to build against; continuing engineering work is gated on open business decisions (real Paystack integration, the notification provider, delivery-slot storefront wiring) rather than a next named milestone, per the standing autonomous-continuation authorization.
+- **Status:** Approved (autonomous continuation, per standing instruction).
 
 ### Engineering Milestone 16: Delivery Tracking (`10_DELIVERY_SPECIFICATION.md`)
 

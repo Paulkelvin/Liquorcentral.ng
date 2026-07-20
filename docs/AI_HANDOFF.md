@@ -1,7 +1,7 @@
 # AI Handoff Document — LiquorCentral.ng
 
 **Status:** Approved (living, authoritative onboarding document)
-**Version:** 5.8
+**Version:** 5.9
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
@@ -306,8 +306,10 @@ Anyone — human or AI — picking up this project should read, in this order:
 
 - **Engineering Milestone 16 — Delivery Tracking (`10_DELIVERY_SPECIFICATION.md`) implemented (2026-07-20)**, the tenth specification in the confirmed order. `10_DELIVERY_SPECIFICATION.md` was found already drafted, Approved — Frozen (v1.0) — correcting a stale note in this document's own prior entry (and in `PROJECT_STATUS.md`) that called it "not yet drafted." Direct comparison against the frozen document found coverage, the two-fulfillment-leg model, pickup, and address handling all already satisfied by prior milestones — the genuinely new work was Wine & Spirits' own delivery-status progression (§10, specified here for the first time: Order Placed → Dispatched → In Transit → Delivered), implemented via the identical native-`order.metadata` + admin-widget pattern Food Ordering already established, plus a `DeliveryStatus` wrapper rendering both catalogs' statuses independently and clearly labeled on a mixed order (§15 — "never merged into one status"). Rider assignment, proof of delivery, delivery fees, rescheduling/cancellation policy, and proactive WhatsApp/SMS messaging remain deliberately unbuilt, per the specification's own naming of them as operational/business parameters or dependent on the still-unbuilt notification provider. Full detail in `docs/DECISION_LOG.md` and `storefront/README.md`.
 
+- **Engineering Milestone 17 — Admin Workflows (`11_ADMIN_WORKFLOWS_SPECIFICATION.md`) implemented (2026-07-20)**, the eleventh and final specification in the confirmed order. Comparison against every prior milestone found nearly all its scope already satisfied — the one genuinely new gap was §5's at-a-glance operational dashboard, which had no existing surface since Medusa Admin has no dashboard/home injection zone. Built `operations-dashboard-widget.tsx` on the `order.list.before` zone: total order count, Food Central queue count, and Wine & Spirits in-transit count, shown with equal cross-catalog weight, computed over an honestly-stated recent-orders sample rather than a fabricated full-history total. Staff roles/permissions, audit logging, staff notifications, and promotional-collection cap enforcement remain deliberately unbuilt, each named by the specification as open or deferred. Full detail in `docs/DECISION_LOG.md` and `storefront/README.md`.
+
 **In Progress**
-- None. Milestones 1 through 16 are complete — Backend Foundation, `wine-details`, `food-details`, `delivery-slot`, the storefront scaffold, Phase 0c Storefront Foundation, and all ten specifications in the confirmed order (Navigation, Homepage, Product Listing, Search, Product Details, Cart, Checkout, Customer Account, Food Ordering, Delivery Tracking). The local payment provider and notification provider *modules themselves* remain not yet implemented in code, though the underlying business decisions blocking them are now largely resolved (see below).
+- None. Milestones 1 through 17 are complete — Backend Foundation, `wine-details`, `food-details`, `delivery-slot`, the storefront scaffold, Phase 0c Storefront Foundation, and all eleven specifications in the confirmed order (Navigation, Homepage, Product Listing, Search, Product Details, Cart, Checkout, Customer Account, Food Ordering, Delivery Tracking, Admin Workflows). The local payment provider and notification provider *modules themselves* remain not yet implemented in code, though the underlying business decisions blocking them are now largely resolved (see below). **With all eleven specifications complete, remaining engineering work is gated on open business decisions rather than a next named milestone.**
 
 **Not Started**
 - Every Phase 2 (Implementation Planning) Tier C–F document — per `IMPLEMENTATION_READINESS_REPORT.md` (v1.0, Approved), no Tier C document is required before implementation begins, and none is currently planned as a precondition to it.

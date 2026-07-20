@@ -1,11 +1,21 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.3
+**Version:** 6.4
 **Owner:** Program
 **Last Updated:** 2026-07-20
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v61 — 2026-07-20 — Milestone 17: Admin Workflows (`11_ADMIN_WORKFLOWS_SPECIFICATION.md`)
+
+**Context:** With Delivery Tracking (Milestone 16) complete, Admin Workflows was the confirmed next and final specification in Paul's approved implementation order. Comparing its 30 sections against every prior milestone's actual implementation found nearly all its scope already satisfied — the genuinely new work narrowed to one gap: an at-a-glance operational dashboard (§5), which had no existing surface anywhere.
+
+**Added (new, `backend/apps/backend/src/` — not part of `/docs`):** `admin/widgets/operations-dashboard-widget.tsx` — total order count, Food Central queue count, and Wine & Spirits in-transit count, shown with equal visual weight, on Medusa Admin's `order.list.before` zone (the closest honest native surface, since no dashboard/home injection zone exists in `@medusajs/admin-shared`'s own zone list). Computed over a stated, honest sample ("last 50 orders"), not a fabricated full-history total, since §18 names a dedicated reporting/BI aggregation mechanism as "not yet built."
+
+**Not changed, and explicitly out of scope:** granular role-differentiated staff permissions (§15 — genuinely open decision), audit logging (§20 — "not yet scoped"), staff-facing notifications/alert thresholds (§19 — "not yet scoped"), richer reports/analytics beyond the dashboard snapshot (§18), promotional-collection start/end-date and simultaneous-cap enforcement (§7, §10 — a real gap, but no live promotional data exists yet to validate an enforcement mechanism against, the same reasoning Milestone 12 applied to price-change detection), and any CMS-authoring workflow (§16, dependent on the not-yet-approved Sanity integration).
+
+**Also updated:** `storefront/README.md` (new "Milestone 17" section — the backend-only milestone's validation and scope notes are recorded there for consistency with every prior milestone's documentation location). `docs/PROJECT_STATUS.md` (→ v6.3), `docs/AI_HANDOFF.md` (→ v5.9), `docs/DECISION_LOG.md` (new entry, → v3.5), `docs/ROADMAP.md` (→ v6.5). **With this milestone, all eleven specifications in the confirmed implementation order are complete.**
 
 ## v60 — 2026-07-20 — Milestone 16: Delivery Tracking (`10_DELIVERY_SPECIFICATION.md`)
 
