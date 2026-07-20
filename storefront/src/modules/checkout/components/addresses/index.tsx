@@ -3,6 +3,7 @@ import { setAddresses } from "@lib/data/cart"
 import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
 import useToggleState from "@lib/hooks/use-toggle-state"
 import compareAddresses from "@lib/util/compare-addresses"
+import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import Divider from "@modules/common/components/divider"
@@ -53,7 +54,7 @@ const Addresses = ({
           Shipping Address
           {!isOpen && <CheckCircleSolid />}
         </Heading>
-        {!isOpen && cart?.shipping_address && (
+        {!isOpen && hasRealAddress(cart?.shipping_address) && (
           <Text>
             <button
               onClick={handleEdit}
@@ -105,7 +106,7 @@ const Addresses = ({
       ) : (
         <div>
           <div className="text-small-regular">
-            {cart && cart.shipping_address ? (
+            {cart && cart.shipping_address && hasRealAddress(cart.shipping_address) ? (
               <div className="flex items-start gap-x-8">
                 <div className="flex items-start gap-x-1 w-full">
                   <div

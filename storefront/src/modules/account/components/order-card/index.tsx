@@ -1,9 +1,11 @@
-import { Button } from "@modules/common/components/ui"
+import { Badge, Button } from "@modules/common/components/ui"
 import { useMemo } from "react"
 
 import Thumbnail from "@modules/products/components/thumbnail"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import ReorderButton from "@modules/account/components/reorder-button"
 import { convertToLocale } from "@lib/util/money"
+import { formatOrderStatus } from "@lib/util/order-status"
 import { HttpTypes } from "@medusajs/types"
 
 type OrderCardProps = {
@@ -38,9 +40,14 @@ const OrderCard = ({ order }: OrderCardProps) => {
             currency_code: order.currency_code,
           })}
         </span>
-        <span className="pl-2">{`${numberOfLines} ${
+        <span className="px-2">{`${numberOfLines} ${
           numberOfLines > 1 ? "items" : "item"
         }`}</span>
+        <span className="pl-2">
+          <Badge data-testid="order-status">
+            {formatOrderStatus(order.fulfillment_status)}
+          </Badge>
+        </span>
       </div>
       <div className="grid grid-cols-2 small:grid-cols-4 gap-4 my-4">
         {order.items?.slice(0, 3).map((i) => {
@@ -78,7 +85,8 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </div>
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-x-4">
+        <ReorderButton orderId={order.id} />
         <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
           <Button data-testid="order-details-link" variant="secondary">
             See details

@@ -85,6 +85,26 @@ export function getAvailableStock(
 }
 
 /**
+ * Medusa v2 creates a cart's `shipping_address`/`billing_address` record
+ * eagerly, at cart-creation time — every field but `country_code` is null
+ * on a genuinely fresh cart, but the record itself is never actually
+ * `null`. Every prior truthy-only check (`cart.shipping_address &&
+ * ...`) across checkout treated a brand-new, still-empty cart as if it
+ * already had a real, submitted address — found via direct inspection of
+ * a real cart through the Store API, not assumed, after a live prefill
+ * bug traced back to exactly this. `address_1` is the one field no real
+ * address is ever missing, so its presence is the genuine "has an
+ * address" signal; `06_CART_SPECIFICATION.md`'s own `cart/templates/
+ * summary.tsx` already discovered and handled this same gotcha, this
+ * reuses the identical check rather than inventing a second one.
+ */
+export function hasRealAddress(
+  address: Pick<HttpTypes.StoreCartAddress, "address_1"> | null | undefined
+): boolean {
+  return !!address?.address_1
+}
+
+/**
  * 07_CHECKOUT_SPECIFICATION.md §8, §11 — the authoritative Lagos-only
  * eligibility check for Food Central, run against a real address for the
  * first time (the cart could only state the rule informally, §10). The

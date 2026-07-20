@@ -2,6 +2,7 @@ import {
   getAvailableStock,
   groupSubtotal,
   hasFoodCentralItems,
+  hasRealAddress,
   hasUnresolvedDeliveryConflict,
   isFoodCentralItem,
   isLagosAddress,
@@ -101,6 +102,26 @@ describe("getAvailableStock", () => {
   it("returns the known quantity when stock-managed", () => {
     const item = lineItem({ variant: { manage_inventory: true, allow_backorder: false } } as never)
     expect(getAvailableStock(item, 3)).toBe(3)
+  })
+})
+
+describe("hasRealAddress", () => {
+  it("is false for null/undefined", () => {
+    expect(hasRealAddress(null)).toBe(false)
+    expect(hasRealAddress(undefined)).toBe(false)
+  })
+
+  it("is false for Medusa's eagerly-created, still-empty address record", () => {
+    // Medusa v2 creates a cart's shipping_address/billing_address record at
+    // cart-creation time — every field but country_code is null until the
+    // customer actually submits one.
+    expect(hasRealAddress({ address_1: null, country_code: "ng" } as never)).toBe(
+      false
+    )
+  })
+
+  it("is true once address_1 is genuinely set", () => {
+    expect(hasRealAddress({ address_1: "12 Awolowo Road" })).toBe(true)
   })
 })
 

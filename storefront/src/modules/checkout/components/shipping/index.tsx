@@ -3,6 +3,7 @@ import { Radio, RadioGroup } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
+import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -170,8 +171,8 @@ const Shipping: React.FC<ShippingProps> = ({
           )}
         </Heading>
         {!isOpen &&
-          cart?.shipping_address &&
-          cart?.billing_address &&
+          hasRealAddress(cart?.shipping_address) &&
+          hasRealAddress(cart?.billing_address) &&
           cart?.email && (
             <Text>
               <button

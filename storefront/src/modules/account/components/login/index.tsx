@@ -50,6 +50,18 @@ const Login = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
+        {/* 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §9 — "visible directly on
+            the login step, not buried." */}
+        <div className="text-right mt-2">
+          <button
+            type="button"
+            onClick={() => setCurrentView(LOGIN_VIEW.FORGOT_PASSWORD)}
+            className="text-small-regular text-ui-fg-base underline"
+            data-testid="forgot-password-button"
+          >
+            Forgot password?
+          </button>
+        </div>
         <ErrorMessage
           error={message?.state === "error" ? message.error : null}
           data-testid="login-error-message"

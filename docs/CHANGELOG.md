@@ -1,11 +1,48 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.0
+**Version:** 6.1
 **Owner:** Program
-**Last Updated:** 2026-07-19
+**Last Updated:** 2026-07-20
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v58 — 2026-07-20 — Milestone 14: Customer Account (`08_CUSTOMER_ACCOUNT_SPECIFICATION.md`)
+
+**Context:** With Checkout (Milestone 13) complete, Customer Account was the confirmed next specification in Paul's approved implementation order — built on top of the vendored template's existing account module, which turned out to be partly stubbed (password change, email change) and partly missing (password reset, reordering, notification preferences, privacy/deletion) relative to the frozen specification. Built under the standing autonomous-continuation authorization; full reasoning in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/modules/account/components/forgot-password/index.tsx`, `reset-password/index.tsx`, `storefront/src/app/[countryCode]/(main)/reset-password/page.tsx` — the full password-reset flow (§9), never confirming or denying account existence.
+- `storefront/src/modules/account/components/privacy-security/index.tsx`, `storefront/src/app/.../account/@dashboard/privacy/page.tsx` — real data visibility plus a real, password-gated account deletion/deactivation request pathway (§17, §18).
+- `storefront/src/modules/account/components/notification-preferences/index.tsx`, `storefront/src/app/.../account/@dashboard/notifications/page.tsx` — an honest informational stub (§16 — no channel/provider module exists yet).
+- `storefront/src/modules/account/components/reorder-button/index.tsx` — the re-validating Reorder action (§15).
+- `storefront/src/lib/util/reorder.ts`, `lib/util/__tests__/reorder.test.ts` — the pure reorder availability/quantity decision function, unit-tested.
+- `storefront/src/lib/util/order-status.ts` — shared order-status formatting.
+
+**Changed:**
+
+- `storefront/src/lib/data/customer.ts` — added `requestPasswordReset`, `completePasswordReset`, `updateCustomerPassword` (real implementation, current-password re-verification), `requestAccountLifecycleChange` (deletion/deactivation request-intake); rewrote `addCustomerAddress`/`updateCustomerAddress` to freeform fields with default-address exclusivity enforced client-side (no backend constraint exists); removed the broken email-update stub.
+- `storefront/src/lib/data/orders.ts` — added `reorderItems`, re-validating each line against current stock/availability via the Store API.
+- `storefront/src/lib/util/cart-fulfillment.ts` — added `hasRealAddress()`, applied across six checkout call sites (`checkout-form`, `payment-button`, `review`, `shipping`, `shipping-address`, `addresses`) that had all been treating Medusa's eagerly-created, still-empty cart address record as if it were a real, submitted address since Milestone 13.
+- `storefront/src/modules/common/components/input/index.tsx` — added `id={name}` to the underlying `<input>`, fixing a critical, platform-wide `label` association bug (no text field built from this shared component had ever had a working accessible label) and password show/hide toggle `aria-label`/`aria-pressed`.
+- `storefront/src/modules/common/components/checkbox/index.tsx` — accepts an `id` prop (previously hardcoded, colliding whenever more than one checkbox rendered on a page).
+- `storefront/src/modules/account/components/account-info/index.tsx` — added `inert` to collapsed edit panels (previously stayed interactive despite being invisible, intercepting clicks meant for other fields) and live-region announcements for success/error states.
+- `storefront/src/modules/account/components/address-card/add-address.tsx`, `edit-address-modal.tsx`, `address-book/index.tsx` — freeform fields matching Checkout's own model, a "Default" badge, and a "use as default" checkbox.
+- `storefront/src/modules/account/components/profile-password/index.tsx` — real implementation (previously `console.info("not implemented")`).
+- `storefront/src/modules/account/components/profile-email/index.tsx` — read-only display with an honest limitation note (see `DECISION_LOG.md`'s Auth-architecture finding).
+- `storefront/src/modules/account/components/order-card/index.tsx`, `overview/index.tsx` — real order status badges, a Reorder action, fixed heading structure and invalid list markup.
+- `storefront/src/modules/account/components/account-nav/index.tsx` — added Notifications/Privacy & Security links; fixed a heading-order break (a nav-section label was itself an `<h3>` positioned ahead of every page's own `<h1>`).
+- `storefront/src/modules/account/templates/account-layout.tsx`, `login-template.tsx` — heading-order fix; added the Forgot Password view.
+- `storefront/src/modules/account/components/register/index.tsx`, `transfer-request-form/index.tsx`, and various page metadata — removed residual "Medusa Store" branding; fixed a heading-order break; added `robots: { index: false, follow: false }` across every account/reset-password/verify-account route.
+- `storefront/src/app/.../account/@dashboard/orders/page.tsx` — removed a false "you can also create returns or exchanges" claim (no returns pathway exists, pending the still-open alcohol-return policy).
+- `storefront/src/modules/order/templates/order-details-template.tsx` — added the Reorder action to Order Details.
+
+**Deleted:** `storefront/src/modules/account/components/profile-billing-address/index.tsx` — a vendored apparel-store "Billing address" Profile section that duplicated and conflicted with the frozen specification's own unified Saved Addresses concept.
+
+**Not changed, and explicitly out of scope:** real notification-channel toggles (no provider module exists); automated, policy-enforcing account deletion/deactivation (§18's policy itself is open); multi-factor authentication and concurrent-session management UI (Session & Security Behaviour names these as implementation parameters, not required). One already-documented, systemic Design-System-level color-contrast violation (the shared `Button`/`text-ui-fg-interactive` tokens, first flagged in Milestone 7) was reconfirmed present via this milestone's own axe-core scans and deliberately left unaltered, per the same precedent.
+
+**Also updated:** `storefront/README.md` (new "Milestone 14" section). `docs/PROJECT_STATUS.md` (→ v6.0), `docs/AI_HANDOFF.md` (→ v5.6), `docs/DECISION_LOG.md` (new entry, → v3.2), `docs/ROADMAP.md` (→ v6.2).
 
 ## v57 — 2026-07-19 — Milestone 13: Checkout (`07_CHECKOUT_SPECIFICATION.md`)
 

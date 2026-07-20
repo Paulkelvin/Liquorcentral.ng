@@ -1,8 +1,9 @@
-import { Container } from "@modules/common/components/ui"
+import { Badge, Container } from "@modules/common/components/ui"
 
 import ChevronDown from "@modules/common/icons/chevron-down"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { convertToLocale } from "@lib/util/money"
+import { formatOrderStatus } from "@lib/util/order-status"
 import { HttpTypes } from "@medusajs/types"
 
 type OverviewProps = {
@@ -15,9 +16,13 @@ const Overview = ({ customer, orders }: OverviewProps) => {
     <div data-testid="overview-page-wrapper">
       <div className="hidden small:block">
         <div className="text-xl-semi flex justify-between items-center mb-4">
-          <span data-testid="welcome-message" data-value={customer?.first_name}>
+          <h1
+            className="text-xl-semi"
+            data-testid="welcome-message"
+            data-value={customer?.first_name}
+          >
             Hello {customer?.first_name}
-          </span>
+          </h1>
           <span className="text-small-regular text-ui-fg-base">
             Signed in as:{" "}
             <span
@@ -33,7 +38,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
           <div className="flex flex-col gap-y-4 h-full col-span-1 row-span-2 flex-1">
             <div className="flex items-start gap-x-16 mb-6">
               <div className="flex flex-col gap-y-4">
-                <h3 className="text-large-semi">Profile</h3>
+                <h2 className="text-large-semi">Profile</h2>
                 <div className="flex items-end gap-x-2">
                   <span
                     className="text-3xl-semi leading-none"
@@ -49,7 +54,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
               </div>
 
               <div className="flex flex-col gap-y-4">
-                <h3 className="text-large-semi">Addresses</h3>
+                <h2 className="text-large-semi">Addresses</h2>
                 <div className="flex items-end gap-x-2">
                   <span
                     className="text-3xl-semi leading-none"
@@ -67,7 +72,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
 
             <div className="flex flex-col gap-y-4">
               <div className="flex items-center gap-x-2">
-                <h3 className="text-large-semi">Recent orders</h3>
+                <h2 className="text-large-semi">Recent orders</h2>
               </div>
               <ul
                 className="flex flex-col gap-y-4"
@@ -85,7 +90,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                           href={`/account/orders/details/${order.id}`}
                         >
                           <Container className="bg-gray-50 flex justify-between items-center p-4">
-                            <div className="grid grid-cols-3 grid-rows-2 text-small-regular gap-x-4 flex-1">
+                            <div className="grid grid-cols-4 grid-rows-2 text-small-regular gap-x-4 flex-1">
                               <span className="font-semibold">Date placed</span>
                               <span className="font-semibold">
                                 Order number
@@ -93,6 +98,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                               <span className="font-semibold">
                                 Total amount
                               </span>
+                              <span className="font-semibold">Status</span>
                               <span data-testid="order-created-date">
                                 {new Date(order.created_at).toDateString()}
                               </span>
@@ -107,6 +113,11 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                                   amount: order.total,
                                   currency_code: order.currency_code,
                                 })}
+                              </span>
+                              <span>
+                                <Badge data-testid="order-status">
+                                  {formatOrderStatus(order.fulfillment_status)}
+                                </Badge>
                               </span>
                             </div>
                             <button
@@ -124,7 +135,9 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                     )
                   })
                 ) : (
-                  <span data-testid="no-orders-message">No recent orders</span>
+                  // A bare <span> directly inside a <ul> is invalid list
+                  // markup (axe's `list` rule) — found via a live scan.
+                  <li data-testid="no-orders-message">No recent orders</li>
                 )}
               </ul>
             </div>

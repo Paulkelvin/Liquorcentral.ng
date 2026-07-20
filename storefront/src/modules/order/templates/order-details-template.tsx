@@ -3,6 +3,7 @@
 import { XMark } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import ReorderButton from "@modules/account/components/reorder-button"
 import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
 import OrderDetails from "@modules/order/components/order-details"
@@ -12,10 +13,15 @@ import React from "react"
 
 type OrderDetailsTemplateProps = {
   order: HttpTypes.StoreOrder
+  /** Suppressed on the guest order-confirmation page — reordering is an
+   * account-area capability (08_CUSTOMER_ACCOUNT_SPECIFICATION.md §15),
+   * not something a just-completed, not-yet-signed-in checkout offers. */
+  showReorder?: boolean
 }
 
 const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
   order,
+  showReorder = false,
 }) => {
   return (
     <div className="flex flex-col justify-center gap-y-4">
@@ -29,6 +35,11 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
           <XMark /> Back to overview
         </LocalizedClientLink>
       </div>
+      {showReorder && (
+        <div className="flex justify-end">
+          <ReorderButton orderId={order.id} />
+        </div>
+      )}
       <div
         className="flex flex-col gap-4 h-full bg-white w-full"
         data-testid="order-details-container"

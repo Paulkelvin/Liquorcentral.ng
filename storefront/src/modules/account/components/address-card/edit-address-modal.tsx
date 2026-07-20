@@ -7,11 +7,11 @@ import {
 import useToggleState from "@lib/hooks/use-toggle-state"
 import { PencilSquare as Edit, Trash } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
-import CountrySelect from "@modules/checkout/components/country-select"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
+import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
 import Modal from "@modules/common/components/modal"
-import { Button, Heading, Text, clx } from "@modules/common/components/ui"
+import { Badge, Button, Heading, Text, clx } from "@modules/common/components/ui"
 import Spinner from "@modules/common/icons/spinner"
 import React, { useActionState, useEffect, useState } from "react"
 
@@ -21,6 +21,12 @@ type EditAddressProps = {
   isActive?: boolean
 }
 
+/**
+ * 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §12 — the identical freeform,
+ * landmark-friendly field structure as checkout (no postal_code, no
+ * company), plus "one saved address may be marked as default" — shown as
+ * a badge and toggled via the same checkbox used when adding an address.
+ */
 const EditAddress: React.FC<EditAddressProps> = ({
   region,
   address,
@@ -28,7 +34,10 @@ const EditAddress: React.FC<EditAddressProps> = ({
 }) => {
   const [removing, setRemoving] = useState(false)
   const [successState, setSuccessState] = useState(false)
+  const isDefault = address.is_default_shipping || address.is_default_billing
+  const [defaultChecked, setDefaultChecked] = useState(!!isDefault)
   const { state, open, close: closeModal } = useToggleState(false)
+  const countryCode = region.countries?.[0]?.iso_2 || address.country_code || ""
 
   const [formState, formAction] = useActionState(updateCustomerAddress, {
     success: false,
@@ -71,31 +80,34 @@ const EditAddress: React.FC<EditAddressProps> = ({
         data-testid="address-container"
       >
         <div className="flex flex-col">
-          <Heading
-            className="text-left text-base-semi"
-            data-testid="address-name"
-          >
-            {address.first_name} {address.last_name}
-          </Heading>
-          {address.company && (
-            <Text
-              className="txt-compact-small text-ui-fg-base"
-              data-testid="address-company"
+          <div className="flex items-center justify-between">
+            <Heading
+              className="text-left text-base-semi"
+              data-testid="address-name"
             >
-              {address.company}
-            </Text>
-          )}
+              {address.first_name} {address.last_name}
+            </Heading>
+            {isDefault && (
+              // color="success" (bg-success-tint/text-success) was tried
+              // first but failed a live axe-core color-contrast check —
+              // a newly-surfaced instance of the same Design-System-level
+              // token issue already documented for the shared Button
+              // component (see DECISION_LOG.md); "neutral" is used instead
+              // since it's already confirmed passing elsewhere (e.g. the
+              // order-status badge).
+              <Badge color="neutral" data-testid="address-default-badge">
+                Default
+              </Badge>
+            )}
+          </div>
           <Text className="flex flex-col text-left text-base-regular mt-2">
             <span data-testid="address-address">
               {address.address_1}
               {address.address_2 && <span>, {address.address_2}</span>}
             </span>
-            <span data-testid="address-postal-city">
-              {address.postal_code}, {address.city}
-            </span>
-            <span data-testid="address-province-country">
-              {address.province && `${address.province}, `}
-              {address.country_code?.toUpperCase()}
+            <span data-testid="address-city-province">
+              {address.city}
+              {address.province && `, ${address.province}`}
             </span>
           </Text>
         </div>
@@ -125,6 +137,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
         </Modal.Title>
         <form action={formAction}>
           <input type="hidden" name="addressId" value={address.id} />
+          <input type="hidden" name="country_code" value={countryCode} />
           <Modal.Body>
             <div className="grid grid-cols-1 gap-y-2">
               <div className="grid grid-cols-2 gap-x-2">
@@ -146,67 +159,62 @@ const EditAddress: React.FC<EditAddressProps> = ({
                 />
               </div>
               <Input
-                label="Company"
-                name="company"
-                autoComplete="organization"
-                defaultValue={address.company || undefined}
-                data-testid="company-input"
-              />
-              <Input
-                label="Address"
+                label="Delivery address"
                 name="address_1"
                 required
                 autoComplete="address-line1"
                 defaultValue={address.address_1 || undefined}
                 data-testid="address-1-input"
               />
-              <Input
-                label="Apartment, suite, etc."
-                name="address_2"
-                autoComplete="address-line2"
-                defaultValue={address.address_2 || undefined}
-                data-testid="address-2-input"
-              />
-              <div className="grid grid-cols-[144px_1fr] gap-x-2">
+              <div>
                 <Input
-                  label="Postal code"
-                  name="postal_code"
-                  required
-                  autoComplete="postal-code"
-                  defaultValue={address.postal_code || undefined}
-                  data-testid="postal-code-input"
+                  label="Landmark or additional directions (optional)"
+                  name="address_2"
+                  autoComplete="address-line2"
+                  defaultValue={address.address_2 || undefined}
+                  data-testid="address-2-input"
                 />
+                <Text className="txt-small text-ui-fg-subtle mt-1">
+                  e.g. &ldquo;behind Shoprite, opposite First Bank&rdquo; —
+                  helps our rider find you faster.
+                </Text>
+              </div>
+              <div className="grid grid-cols-2 gap-x-2">
                 <Input
-                  label="City"
+                  label="City / Area"
                   name="city"
                   required
-                  autoComplete="locality"
+                  autoComplete="address-level2"
                   defaultValue={address.city || undefined}
                   data-testid="city-input"
                 />
+                <Input
+                  label="State"
+                  name="province"
+                  required
+                  autoComplete="address-level1"
+                  defaultValue={address.province || undefined}
+                  data-testid="state-input"
+                />
               </div>
-              <Input
-                label="Province / State"
-                name="province"
-                autoComplete="address-level1"
-                defaultValue={address.province || undefined}
-                data-testid="state-input"
-              />
-              <CountrySelect
-                name="country_code"
-                region={region}
-                required
-                autoComplete="country"
-                defaultValue={address.country_code || undefined}
-                data-testid="country-select"
-              />
               <Input
                 label="Phone"
                 name="phone"
-                autoComplete="phone"
+                type="tel"
+                autoComplete="tel"
                 defaultValue={address.phone || undefined}
                 data-testid="phone-input"
               />
+              <div className="mt-2">
+                <Checkbox
+                  label="Use as my default address"
+                  name="is_default"
+                  id={`is-default-${address.id}`}
+                  checked={defaultChecked}
+                  onChange={() => setDefaultChecked(!defaultChecked)}
+                  data-testid="is-default-checkbox"
+                />
+              </div>
             </div>
             {formState.error && (
               <div className="text-rose-500 text-small-regular py-2">

@@ -78,14 +78,15 @@ const AddressSelect = ({
                       data-testid="shipping-address-radio"
                     />
                     <div className="flex flex-col">
-                      <span className="text-left text-base-semi">
+                      <span className="text-left text-base-semi flex items-center gap-x-2">
                         {address.first_name} {address.last_name}
+                        {(address.is_default_shipping ||
+                          address.is_default_billing) && (
+                          <span className="text-compact-small text-ui-fg-interactive">
+                            Default
+                          </span>
+                        )}
                       </span>
-                      {address.company && (
-                        <span className="text-small-regular text-ui-fg-base">
-                          {address.company}
-                        </span>
-                      )}
                       <div className="flex flex-col text-left text-base-regular mt-2">
                         <span>
                           {address.address_1}
@@ -93,13 +94,7 @@ const AddressSelect = ({
                             <span>, {address.address_2}</span>
                           )}
                         </span>
-                        <span>
-                          {address.postal_code}, {address.city}
-                        </span>
-                        <span>
-                          {address.province && `${address.province}, `}
-                          {address.country_code?.toUpperCase()}
-                        </span>
+                        <span>{address.city}</span>
                       </div>
                     </div>
                   </div>

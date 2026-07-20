@@ -1,6 +1,6 @@
 import { listCartShippingMethods } from "@lib/data/fulfillment"
 import { listCartPaymentMethods } from "@lib/data/payment"
-import { hasUnresolvedDeliveryConflict } from "@lib/util/cart-fulfillment"
+import { hasRealAddress, hasUnresolvedDeliveryConflict } from "@lib/util/cart-fulfillment"
 import { HttpTypes } from "@medusajs/types"
 import { Heading } from "@modules/common/components/ui"
 import Addresses from "@modules/checkout/components/addresses"
@@ -29,8 +29,11 @@ export default async function CheckoutForm({
 
   // 07_CHECKOUT_SPECIFICATION.md §8, §11 — checked as soon as a real
   // address exists, since that's the earliest point this check can happen.
+  // `hasRealAddress`, not bare truthiness: Medusa creates every cart's
+  // shipping_address record eagerly (empty but non-null), which would
+  // otherwise make this evaluate before the customer ever enters anything.
   const hasConflict =
-    !!cart.shipping_address && hasUnresolvedDeliveryConflict(cart)
+    hasRealAddress(cart.shipping_address) && hasUnresolvedDeliveryConflict(cart)
 
   return (
     <div className="w-full grid grid-cols-1 gap-y-8">

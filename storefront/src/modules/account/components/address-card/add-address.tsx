@@ -1,24 +1,36 @@
 "use client"
 
 import { Plus } from "@medusajs/icons"
-import { Button, Heading } from "@modules/common/components/ui"
+import { Button, Heading, Text } from "@modules/common/components/ui"
 import { useActionState, useEffect, useState } from "react"
 
 import { addCustomerAddress } from "@lib/data/customer"
 import useToggleState from "@lib/hooks/use-toggle-state"
 import { HttpTypes } from "@medusajs/types"
-import CountrySelect from "@modules/checkout/components/country-select"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
+import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
 import Modal from "@modules/common/components/modal"
 
+/**
+ * 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §12 — "saved addresses use the
+ * identical freeform, landmark-friendly field structure already
+ * established in 07_CHECKOUT_SPECIFICATION.md §7" — no postal_code, no
+ * company, country fixed via a hidden input (this region has exactly one).
+ */
 const AddAddress = ({
   region,
+  addresses,
 }: {
   region: HttpTypes.StoreRegion
   addresses: HttpTypes.StoreCustomerAddress[]
 }) => {
+  const hasDefault = addresses.some(
+    (a) => a.is_default_shipping || a.is_default_billing
+  )
+  const countryCode = region.countries?.[0]?.iso_2 || ""
   const [successState, setSuccessState] = useState(false)
+  const [isDefault, setIsDefault] = useState(!hasDefault)
   const { state, open, close: closeModal } = useToggleState(false)
 
   const [formState, formAction] = useActionState(addCustomerAddress, {
@@ -62,6 +74,7 @@ const AddAddress = ({
         <form action={formAction}>
           <Modal.Body>
             <div className="flex flex-col gap-y-2">
+              <input type="hidden" name="country_code" value={countryCode} />
               <div className="grid grid-cols-2 gap-x-2">
                 <Input
                   label="First name"
@@ -79,59 +92,56 @@ const AddAddress = ({
                 />
               </div>
               <Input
-                label="Company"
-                name="company"
-                autoComplete="organization"
-                data-testid="company-input"
-              />
-              <Input
-                label="Address"
+                label="Delivery address"
                 name="address_1"
                 required
                 autoComplete="address-line1"
                 data-testid="address-1-input"
               />
-              <Input
-                label="Apartment, suite, etc."
-                name="address_2"
-                autoComplete="address-line2"
-                data-testid="address-2-input"
-              />
-              <div className="grid grid-cols-[144px_1fr] gap-x-2">
+              <div>
                 <Input
-                  label="Postal code"
-                  name="postal_code"
-                  required
-                  autoComplete="postal-code"
-                  data-testid="postal-code-input"
+                  label="Landmark or additional directions (optional)"
+                  name="address_2"
+                  autoComplete="address-line2"
+                  data-testid="address-2-input"
                 />
+                <Text className="txt-small text-ui-fg-subtle mt-1">
+                  e.g. &ldquo;behind Shoprite, opposite First Bank&rdquo; —
+                  helps our rider find you faster.
+                </Text>
+              </div>
+              <div className="grid grid-cols-2 gap-x-2">
                 <Input
-                  label="City"
+                  label="City / Area"
                   name="city"
                   required
-                  autoComplete="locality"
+                  autoComplete="address-level2"
                   data-testid="city-input"
+                />
+                <Input
+                  label="State"
+                  name="province"
+                  required
+                  autoComplete="address-level1"
+                  data-testid="state-input"
                 />
               </div>
               <Input
-                label="Province / State"
-                name="province"
-                autoComplete="address-level1"
-                data-testid="state-input"
-              />
-              <CountrySelect
-                region={region}
-                name="country_code"
-                required
-                autoComplete="country"
-                data-testid="country-select"
-              />
-              <Input
                 label="Phone"
                 name="phone"
-                autoComplete="phone"
+                type="tel"
+                autoComplete="tel"
                 data-testid="phone-input"
               />
+              <div className="mt-2">
+                <Checkbox
+                  label="Use as my default address"
+                  name="is_default"
+                  checked={isDefault}
+                  onChange={() => setIsDefault(!isDefault)}
+                  data-testid="is-default-checkbox"
+                />
+              </div>
             </div>
             {formState.error && (
               <div

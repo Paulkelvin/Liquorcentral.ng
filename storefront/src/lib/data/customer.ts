@@ -247,6 +247,172 @@ export async function confirmEmailVerification(
   }
 }
 
+// 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §9 — requesting a reset never
+// confirms or denies whether the submitted email has an account; the same
+// generic outcome is returned whether the request actually found an
+// account or not, so the caller never has anything account-existence-
+// revealing to render.
+export async function requestPasswordReset(
+  _currentState: unknown,
+  formData: FormData
+): Promise<{ state: "sent" }> {
+  const email = formData.get("email") as string
+
+  try {
+    await sdk.auth.resetPassword("customer", "emailpass", {
+      identifier: email,
+    })
+  } catch {
+    // Intentionally swallowed — see the non-leaking note above.
+  }
+
+  return { state: "sent" }
+}
+
+// Completes a password reset using the single-use token from the reset
+// email's link. Mirrors confirmEmailVerification's shape and doesn't
+// require an existing session, since the customer may be opening the link
+// on a device they aren't currently signed in on.
+export async function completePasswordReset(
+  token: string,
+  password: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await sdk.auth.updateProvider("customer", "emailpass", { password }, token)
+    return { success: true }
+  } catch (error) {
+    return { success: false, error: String(error) }
+  }
+}
+
+export type PasswordUpdateState = { success: boolean; error: string | null }
+
+// §11 — changing the password requires the current password; Session &
+// Security Behaviour's "step-up" pattern is implemented by re-authenticating
+// with the old password before accepting the new one, rather than trusting
+// the existing session alone.
+export async function updateCustomerPassword(
+  _currentState: PasswordUpdateState,
+  formData: FormData
+): Promise<PasswordUpdateState> {
+  const customer = await retrieveCustomer()
+  if (!customer?.email) {
+    return { success: false, error: "You must be signed in to do that." }
+  }
+
+  const oldPassword = formData.get("old_password") as string
+  const newPassword = formData.get("new_password") as string
+  const confirmPassword = formData.get("confirm_password") as string
+
+  if (newPassword !== confirmPassword) {
+    return {
+      success: false,
+      error: "New password and confirmation do not match.",
+    }
+  }
+
+  let freshToken: string
+  try {
+    const result = await sdk.auth.login("customer", "emailpass", {
+      email: customer.email,
+      password: oldPassword,
+    })
+    if (typeof result !== "string") {
+      return { success: false, error: "Your current password is incorrect." }
+    }
+    freshToken = result
+  } catch {
+    return { success: false, error: "Your current password is incorrect." }
+  }
+
+  try {
+    await sdk.auth.updateProvider(
+      "customer",
+      "emailpass",
+      { password: newPassword },
+      freshToken
+    )
+  } catch (error) {
+    return { success: false, error: String(error) }
+  }
+
+  // Session & Security Behaviour: "changing a password invalidates every
+  // other active session." Native Medusa Auth issues stateless JWTs with no
+  // server-side revocation list, so a token already issued to another
+  // device remains valid until it naturally expires — this rotates the
+  // *current* session to a token issued after the change, which is the
+  // full extent of what's achievable without new backend work (a session-
+  // version check on every request). Flagged, not silently claimed as
+  // solved — see DECISION_LOG.md.
+  await setAuthToken(freshToken)
+
+  return { success: true, error: null }
+}
+
+export type AccountLifecycleRequestState = {
+  success: boolean
+  error: string | null
+  requested?: "deletion" | "deactivation"
+}
+
+// §18 — "a request pathway exists and is honored." The exact deletion-
+// vs-deactivation policy (waiting periods, data anonymization, retention)
+// is an explicitly open business/legal decision this document doesn't
+// resolve (§28) — so this records a real, timestamped request against the
+// customer record (visible to whoever processes it) rather than
+// fabricating an automated instant-delete/deactivate the policy doesn't
+// yet define. The customer is signed out afterward, matching the
+// "irreversible action" focus/confirmation discipline in §22, without
+// claiming future logins are actually blocked — no backend enforcement of
+// that exists yet.
+export async function requestAccountLifecycleChange(
+  _currentState: AccountLifecycleRequestState,
+  formData: FormData
+): Promise<AccountLifecycleRequestState> {
+  const kind = formData.get("kind") as "deletion" | "deactivation"
+  const password = formData.get("password") as string
+  const customer = await retrieveCustomer()
+
+  if (!customer?.email) {
+    return { success: false, error: "You must be signed in to do that." }
+  }
+
+  try {
+    const result = await sdk.auth.login("customer", "emailpass", {
+      email: customer.email,
+      password,
+    })
+    if (typeof result !== "string") {
+      return { success: false, error: "Your password is incorrect." }
+    }
+  } catch {
+    return { success: false, error: "Your password is incorrect." }
+  }
+
+  const metadataKey =
+    kind === "deletion"
+      ? "account_deletion_requested_at"
+      : "account_deactivation_requested_at"
+
+  try {
+    await updateCustomer({
+      metadata: { ...(customer.metadata ?? {}), [metadataKey]: new Date().toISOString() },
+    })
+  } catch (error) {
+    return { success: false, error: String(error) }
+  }
+
+  // Ends the current session (without the full `signout` helper's
+  // redirect, since this action needs to return a value the confirmation
+  // UI renders in place, not navigate away from it).
+  await sdk.auth.logout()
+  await removeAuthToken()
+  const customerCacheTag = await getCacheTag("customers")
+  revalidateTag(customerCacheTag)
+
+  return { success: true, error: null, requested: kind }
+}
+
 export async function signout(countryCode: string) {
   await sdk.auth.logout()
 
@@ -278,26 +444,64 @@ export async function transferCart() {
   revalidateTag(cartCacheTag)
 }
 
+/**
+ * 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §12 — "saved addresses use the
+ * identical freeform, landmark-friendly field structure already
+ * established in 07_CHECKOUT_SPECIFICATION.md §7" — no postal_code, no
+ * company, a landmark/directions field via address_2. `is_default_shipping`
+ * is this platform's single "default address" concept (§12) — there is no
+ * separate billing-address flow, since checkout only ever asks about one
+ * delivery address plus a same-as-shipping billing checkbox.
+ */
+/**
+ * The Customer module's Address entity has no service-level exclusivity
+ * constraint on `is_default_shipping`/`is_default_billing` (confirmed by
+ * inspecting `@medusajs/customer`'s models and migrations directly — it's
+ * a plain boolean column, nothing enforces "only one at a time"). §12's
+ * "one saved address may be marked as default" is therefore enforced here,
+ * in the storefront, by clearing any other address currently marked
+ * default before a new one is marked, rather than assuming the backend
+ * does it.
+ */
+async function clearOtherDefaultAddresses(excludeAddressId?: string) {
+  const customer = await retrieveCustomer()
+  const headers = { ...(await getAuthHeaders()) }
+
+  const others = (customer?.addresses ?? []).filter(
+    (a) =>
+      a.id !== excludeAddressId &&
+      (a.is_default_shipping || a.is_default_billing)
+  )
+
+  await Promise.all(
+    others.map((a) =>
+      sdk.store.customer.updateAddress(
+        a.id!,
+        { is_default_shipping: false, is_default_billing: false },
+        {},
+        headers
+      )
+    )
+  )
+}
+
 export const addCustomerAddress = async (
-  currentState: Record<string, unknown>,
+  _currentState: Record<string, unknown>,
   formData: FormData
 ): Promise<{ success: boolean; error: string | null }> => {
-  const isDefaultBilling = (currentState.isDefaultBilling as boolean) || false
-  const isDefaultShipping = (currentState.isDefaultShipping as boolean) || false
+  const isDefault = formData.get("is_default") === "on"
 
   const address = {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
-    company: formData.get("company") as string,
     address_1: formData.get("address_1") as string,
     address_2: formData.get("address_2") as string,
     city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
     province: formData.get("province") as string,
     country_code: formData.get("country_code") as string,
     phone: formData.get("phone") as string,
-    is_default_billing: isDefaultBilling,
-    is_default_shipping: isDefaultShipping,
+    is_default_billing: isDefault,
+    is_default_shipping: isDefault,
   }
 
   const headers = {
@@ -307,6 +511,9 @@ export const addCustomerAddress = async (
   return sdk.store.customer
     .createAddress(address, {}, headers)
     .then(async () => {
+      if (isDefault) {
+        await clearOtherDefaultAddresses()
+      }
       const customerCacheTag = await getCacheTag("customers")
       revalidateTag(customerCacheTag)
       return { success: true, error: null }
@@ -346,16 +553,18 @@ export const updateCustomerAddress = async (
     return { success: false, error: "Address ID is required" }
   }
 
+  const isDefault = formData.get("is_default") === "on"
+
   const address = {
     first_name: formData.get("first_name") as string,
     last_name: formData.get("last_name") as string,
-    company: formData.get("company") as string,
     address_1: formData.get("address_1") as string,
     address_2: formData.get("address_2") as string,
     city: formData.get("city") as string,
-    postal_code: formData.get("postal_code") as string,
     province: formData.get("province") as string,
     country_code: formData.get("country_code") as string,
+    is_default_billing: isDefault,
+    is_default_shipping: isDefault,
   } as HttpTypes.StoreUpdateCustomerAddress
 
   const phone = formData.get("phone") as string
@@ -371,6 +580,9 @@ export const updateCustomerAddress = async (
   return sdk.store.customer
     .updateAddress(addressId, address, {}, headers)
     .then(async () => {
+      if (isDefault) {
+        await clearOtherDefaultAddresses(addressId)
+      }
       const customerCacheTag = await getCacheTag("customers")
       revalidateTag(customerCacheTag)
       return { success: true, error: null }

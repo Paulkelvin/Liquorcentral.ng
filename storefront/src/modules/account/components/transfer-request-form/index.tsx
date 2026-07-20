@@ -26,7 +26,11 @@ export default function TransferRequestForm() {
     <div className="flex flex-col gap-y-4 w-full">
       <div className="grid sm:grid-cols-2 items-center gap-x-8 gap-y-4 w-full">
         <div className="flex flex-col gap-y-1">
-          <Heading level="h3" className="!text-sm font-semibold text-neutral-950">
+          {/* The Orders page's own heading is an <h1> with nothing between
+              it and here — <h2> is the correct next level, found via a
+              live axe-core scan that had never touched this component
+              rendering after a real order existed before now. */}
+          <Heading level="h2" className="!text-sm font-semibold text-neutral-950">
             Order transfers
           </Heading>
           <p className="text-small-regular text-neutral-500">

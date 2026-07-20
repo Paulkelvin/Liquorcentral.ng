@@ -2,7 +2,7 @@
 
 import { Heading, Text, clx } from "@modules/common/components/ui"
 
-import { isFoodCentralItem, splitGiftWrapLines } from "@lib/util/cart-fulfillment"
+import { hasRealAddress, isFoodCentralItem, splitGiftWrapLines } from "@lib/util/cart-fulfillment"
 import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
 import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
@@ -26,7 +26,7 @@ const Review = ({
   )
 
   const previousStepsCompleted =
-    cart.shipping_address &&
+    hasRealAddress(cart.shipping_address) &&
     (cart.shipping_methods?.length ?? 0) > 0 &&
     (cart.payment_collection || paidByGiftcard)
 

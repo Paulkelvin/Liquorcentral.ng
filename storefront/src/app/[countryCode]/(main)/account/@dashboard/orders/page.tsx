@@ -9,6 +9,7 @@ import TransferRequestForm from "@modules/account/components/transfer-request-fo
 export const metadata: Metadata = {
   title: "Orders",
   description: "Overview of your previous orders.",
+  robots: { index: false, follow: false },
 }
 
 export default async function Orders() {
@@ -23,8 +24,8 @@ export default async function Orders() {
       <div className="mb-8 flex flex-col gap-y-4">
         <h1 className="text-2xl-semi">Orders</h1>
         <p className="text-base-regular">
-          View your previous orders and their status. You can also create
-          returns or exchanges for your orders if needed.
+          View your previous orders, spanning both Wine &amp; Spirits and
+          Food Central, and reorder a past purchase in one action.
         </p>
       </div>
       <div>

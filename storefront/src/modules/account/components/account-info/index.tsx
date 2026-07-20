@@ -68,10 +68,14 @@ const AccountInfo = ({
         </div>
       </div>
 
-      {/* Success state */}
+      {/* Success state — §22: account state changes are announced via the
+          same polite live-region mechanism established in
+          06_CART_SPECIFICATION.md §23. */}
       <Disclosure>
         <Disclosure.Panel
           static
+          role="status"
+          aria-live="polite"
           className={clx(
             "transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
             {
@@ -91,6 +95,8 @@ const AccountInfo = ({
       <Disclosure>
         <Disclosure.Panel
           static
+          role="alert"
+          aria-live="assertive"
           className={clx(
             "transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden",
             {
@@ -109,11 +115,21 @@ const AccountInfo = ({
       <Disclosure>
         <Disclosure.Panel
           static
+          inert={!state}
           className={clx(
             "transition-[max-height,opacity] duration-300 ease-in-out overflow-visible",
             {
-              "max-h-[1000px] opacity-100": state,
-              "max-h-0 opacity-0": !state,
+              "max-h-[1000px] opacity-100 pointer-events-auto": state,
+              // A collapsed panel previously stayed interactive despite
+              // being invisible — `overflow-visible` (needed so dropdowns
+              // like CountrySelect aren't clipped) combined with opacity-0
+              // alone doesn't disable pointer events or remove it from tab
+              // order, so a closed field's own "Save changes" button could
+              // silently intercept a click meant for a different field
+              // entirely. Found via real end-to-end testing (a click on one
+              // field's Edit button hitting another field's hidden Save
+              // button instead), not by inspection.
+              "max-h-0 opacity-0 pointer-events-none": !state,
             }
           )}
         >

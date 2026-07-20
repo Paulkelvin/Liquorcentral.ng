@@ -21,11 +21,11 @@ const Register = ({ setCurrentView }: Props) => {
       data-testid="register-page"
     >
       <h1 className="text-large-semi uppercase mb-6">
-        Become a Medusa Store Member
+        Create your account
       </h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your Medusa Store Member profile, and get access to an enhanced
-        shopping experience.
+        Faster checkout, saved addresses, and your full order history — an
+        account is entirely optional, never required to buy.
       </p>
       {message?.state === "verification_required" && (
         <div

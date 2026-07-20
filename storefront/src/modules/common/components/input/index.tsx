@@ -42,6 +42,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             type={inputType}
             name={name}
+            id={name}
             placeholder=" "
             required={required}
             className="pt-4 pb-1 block w-full h-11 px-4 mt-0 bg-ui-bg-field border rounded-md appearance-none focus:outline-none focus:ring-0 focus:shadow-borders-interactive-with-active border-ui-border-base hover:bg-ui-bg-field-hover"
@@ -60,6 +61,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
               className="text-ui-fg-subtle px-4 focus:outline-none transition-all duration-150 outline-none focus:text-ui-fg-base absolute right-0 top-3"
             >
               {showPassword ? <Eye /> : <EyeOff />}

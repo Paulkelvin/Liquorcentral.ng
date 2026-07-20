@@ -6,6 +6,7 @@ type CheckboxProps = {
   onChange?: () => void
   label: string
   name?: string
+  id?: string
   'data-testid'?: string
 }
 
@@ -14,13 +15,19 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
   onChange,
   label,
   name,
+  id,
   'data-testid': dataTestId
 }) => {
+  // A hardcoded "checkbox" id previously collided whenever more than one
+  // instance rendered on the same page (e.g. one "set as default" checkbox
+  // per saved address) — each instance now needs its own id.
+  const inputId = id || name || "checkbox"
+
   return (
     <div className="flex items-center space-x-2 ">
       <Checkbox
         className="text-base-regular flex items-center gap-x-2"
-        id="checkbox"
+        id={inputId}
         role="checkbox"
         checked={checked}
         readOnly
@@ -30,7 +37,7 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
         data-testid={dataTestId}
       />
       <Label
-        htmlFor="checkbox"
+        htmlFor={inputId}
         className="!transform-none !txt-medium"
       >
         {label}

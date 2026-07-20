@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRightOnRectangle } from "@medusajs/icons"
+import { ArrowRightOnRectangle, BellAlert, ShieldCheck } from "@medusajs/icons"
 import { clx } from "@modules/common/components/ui"
 import { useParams, usePathname } from "next/navigation"
 
@@ -89,6 +89,32 @@ const AccountNav = ({
                   </LocalizedClientLink>
                 </li>
                 <li>
+                  <LocalizedClientLink
+                    href="/account/notifications"
+                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    data-testid="notifications-link"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <BellAlert />
+                      <span>Notifications</span>
+                    </div>
+                    <ChevronDown className="transform -rotate-90" />
+                  </LocalizedClientLink>
+                </li>
+                <li>
+                  <LocalizedClientLink
+                    href="/account/privacy"
+                    className="flex items-center justify-between py-4 border-b border-gray-200 px-8"
+                    data-testid="privacy-link"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <ShieldCheck />
+                      <span>Privacy &amp; security</span>
+                    </div>
+                    <ChevronDown className="transform -rotate-90" />
+                  </LocalizedClientLink>
+                </li>
+                <li>
                   <button
                     type="button"
                     className="flex items-center justify-between py-4 border-b border-gray-200 px-8 w-full"
@@ -110,7 +136,13 @@ const AccountNav = ({
       <div className="hidden small:block" data-testid="account-nav">
         <div>
           <div className="pb-4">
-            <h3 className="text-base-semi">Account</h3>
+            {/* A nav-section label, not page content — a heading here
+                would sit in the document's heading outline ahead of the
+                actual page's own <h1> (AccountLayout renders this nav
+                before {children}), a real heading-order break found via a
+                live scan once an account page finally had enough content
+                for the break to surface as a genuine skip. */}
+            <p className="text-base-semi">Account</p>
           </div>
           <div className="text-base-regular">
             <ul className="flex mb-0 justify-start items-start flex-col gap-y-4">
@@ -148,6 +180,24 @@ const AccountNav = ({
                   data-testid="orders-link"
                 >
                   Orders
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/notifications"
+                  route={route!}
+                  data-testid="notifications-link"
+                >
+                  Notifications
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/privacy"
+                  route={route!}
+                  data-testid="privacy-link"
+                >
+                  Privacy &amp; security
                 </AccountNavLink>
               </li>
               <li className="text-grey-700">

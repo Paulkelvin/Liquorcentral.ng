@@ -2,6 +2,7 @@ import { HttpTypes } from "@medusajs/types"
 import { Container, Text } from "@modules/common/components/ui"
 import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
+import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { mapKeys } from "lodash"
 import React, { useEffect, useMemo, useState } from "react"
 import AddressSelect from "../address-select"
@@ -87,8 +88,18 @@ const ShippingAddress = ({
   }
 
   useEffect(() => {
-    if (cart && cart.shipping_address) {
+    if (hasRealAddress(cart?.shipping_address)) {
       setFormAddress(cart?.shipping_address, cart?.email)
+    } else if (customer) {
+      // 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §12 — "one saved address may
+      // be marked as default, pre-selected at checkout" — only applied
+      // when the cart doesn't already carry a real address of its own.
+      const defaultAddress = customer.addresses?.find(
+        (a) => a.is_default_shipping || a.is_default_billing
+      )
+      if (defaultAddress) {
+        setFormAddress(defaultAddress as HttpTypes.StoreCartAddress)
+      }
     }
 
     if (cart && !cart.email && customer?.email) {

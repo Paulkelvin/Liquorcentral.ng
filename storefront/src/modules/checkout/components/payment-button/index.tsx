@@ -2,6 +2,7 @@
 
 import { isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
+import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
@@ -25,8 +26,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   const notReady =
     externalNotReady ||
     !cart ||
-    !cart.shipping_address ||
-    !cart.billing_address ||
+    !hasRealAddress(cart.shipping_address) ||
+    !hasRealAddress(cart.billing_address) ||
     !cart.email ||
     (cart.shipping_methods?.length ?? 0) < 1
 
