@@ -2,21 +2,6 @@ import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
-// TEMPORARY diagnostic — remove once the Railway deployment env-var
-// mismatch is root-caused. Prints only presence/length, never secret
-// values, to the deploy log.
-console.log("[env-diagnostic]", {
-  cwd: process.cwd(),
-  NODE_ENV: process.env.NODE_ENV,
-  JWT_SECRET_present: !!process.env.JWT_SECRET,
-  JWT_SECRET_length: process.env.JWT_SECRET?.length ?? 0,
-  COOKIE_SECRET_present: !!process.env.COOKIE_SECRET,
-  REDIS_URL_present: !!process.env.REDIS_URL,
-  DATABASE_URL_present: !!process.env.DATABASE_URL,
-  STORE_CORS_present: !!process.env.STORE_CORS,
-  totalEnvVarCount: Object.keys(process.env).length,
-})
-
 /**
  * `MEDUSA_EXTENSIONS.md` #4/#5 — Paystack (payment) and the email/WhatsApp
  * notification channels are all approved decisions, but real credentials
