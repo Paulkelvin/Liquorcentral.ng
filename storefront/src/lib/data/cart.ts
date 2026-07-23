@@ -23,8 +23,13 @@ import { getLocale } from "./locale-actions"
  */
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
+  // 06_CART_SPECIFICATION.md §5/§6 — mixed-cart fulfillment-leg grouping
+  // needs each line item's catalog (`food_details`/`wine_details`
+  // presence, the same mechanism used throughout the storefront); §7/§13
+  // need genuine variant stock to cap/label quantity honestly, not the
+  // vendored placeholder's hardcoded `maxQtyFromInventory = 10`.
   fields ??=
-    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
+    "*items, *region, *items.product, *items.product.food_details, *items.product.wine_details, *items.variant, +items.variant.inventory_quantity, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
 
   if (!id) {
     return null

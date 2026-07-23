@@ -5,6 +5,7 @@ import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import Divider from "@modules/common/components/divider"
+import QuantityStepper from "@modules/common/components/quantity-stepper"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import { isEqual } from "lodash"
 import { useParams, usePathname, useSearchParams } from "next/navigation"
@@ -189,50 +190,27 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        {/* §17 — a numeric stepper beside add-to-cart, meeting the
-            44x44px touch-target minimum, capped by genuine stock for
-            Wine & Spirits, uncapped for Food Central. */}
+        {/* §17 — a numeric stepper beside add-to-cart, capped by genuine
+            stock for Wine & Spirits, uncapped for Food Central. The same
+            `QuantityStepper` 06_CART_SPECIFICATION.md §7 requires the
+            cart to reuse rather than introduce a second pattern. */}
         <div className="flex items-center gap-3">
           <span id="pdp-quantity-label" className="txt-compact-small text-text-secondary">
             Quantity
           </span>
-          <div className="flex items-center border border-border rounded-radius-md">
-            <button
-              type="button"
-              aria-label="Decrease quantity"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              disabled={quantity <= 1 || !!disabled || isAdding}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-            >
-              −
-            </button>
-            <span
-              role="spinbutton"
-              aria-labelledby="pdp-quantity-label"
-              aria-valuenow={quantity}
-              aria-valuemin={1}
-              aria-valuemax={maxQuantity}
-              data-testid="product-quantity-value"
-              className="min-w-[2.5rem] text-center txt-compact-medium"
-            >
-              {quantity}
-            </span>
-            <button
-              type="button"
-              aria-label="Increase quantity"
-              onClick={() =>
-                setQuantity((q) =>
-                  maxQuantity !== undefined ? Math.min(maxQuantity, q + 1) : q + 1
-                )
-              }
-              disabled={
-                !!disabled || isAdding || (maxQuantity !== undefined && quantity >= maxQuantity)
-              }
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-            >
-              +
-            </button>
-          </div>
+          <QuantityStepper
+            value={quantity}
+            max={maxQuantity}
+            onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
+            onIncrease={() =>
+              setQuantity((q) =>
+                maxQuantity !== undefined ? Math.min(maxQuantity, q + 1) : q + 1
+              )
+            }
+            disabled={!!disabled || isAdding}
+            labelId="pdp-quantity-label"
+            data-testid="product-quantity-value"
+          />
         </div>
 
         <Button

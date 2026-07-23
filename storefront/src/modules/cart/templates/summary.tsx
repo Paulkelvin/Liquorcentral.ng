@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Heading } from "@modules/common/components/ui"
+import { Heading } from "@modules/common/components/ui"
 
 import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
@@ -33,11 +33,16 @@ const Summary = ({ cart }: SummaryProps) => {
       <DiscountCode cart={cart} />
       <Divider />
       <CartTotals totals={cart} />
+      {/* A single interactive element, not a link wrapping a button (a
+          nested-interactive violation the same class already fixed once
+          in the cart dropdown, Milestone 6) — the link itself carries
+          the button's own visual styling. */}
       <LocalizedClientLink
         href={"/checkout?step=" + step}
         data-testid="checkout-button"
+        className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[44px] w-full bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active"
       >
-        <Button className="w-full h-10">Go to checkout</Button>
+        Go to checkout
       </LocalizedClientLink>
     </div>
   )

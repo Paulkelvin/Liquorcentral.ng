@@ -286,6 +286,53 @@ This project has never seeded real catalog data (Milestones 7, 9, and 10 already
 - **A structural check confirmed**: valid `Product`/`Offer` JSON-LD present with the correct computed availability; a real, unique page title; zero links containing a nested `<a>`; the accordion trigger's `aria-expanded` correctly flips `false → true` on a keyboard `Enter` press (not just a mouse click).
 - **Full visual validation with real browser screenshots** — desktop and mobile, both catalogs, the sold-out state, the (now-fixed) not-found state, the accordion open/closed, quantity/variant selection, and the add-to-cart confirmation sequence — see this milestone's completion report. Three genuine bugs (above) were found this way and do not appear in any other check performed.
 
+## Milestone 12 — Cart (`06_CART_SPECIFICATION.md`)
+
+Layers the specification's real cart behavior on top of the vendored starter cart, which previously rendered every line item in one flat, undifferentiated list with a `<select>`-based quantity dropdown and a totals block that always showed a computed shipping/tax amount (usually ₦0.00) regardless of whether checkout had ever run.
+
+### Fulfillment-leg grouping (§5/§6) — the specification's own "most consequential section"
+
+A mixed cart (both Wine & Spirits and Food Central line items present) now renders as two visually distinct, separately-headed, separately-subtotaled groups, split by the same `food_details`/`wine_details` presence check used throughout the platform (Product Listing card, Search badge, PDP). Each group carries its own delivery-scope copy — "Delivered across Lagos" for Wine & Spirits, "Delivered within Lagos Island, same-day, scheduled, or pickup. Cooked to order — not held stock." for Food Central — mirroring the PDP's `TrustDeliveryInfo` wording (Milestone 11) for consistency. Grouping is presentation only: still one cart, one checkout action (§5) — never order-splitting.
+
+### A shared quantity control (§7) — no second pattern
+
+`QuantityStepper` (new, `modules/common/components/quantity-stepper`) was extracted from Milestone 11's PDP stepper and is now used identically by both the PDP and the cart's line-item row, satisfying §7's explicit "the cart does not introduce a second quantity-control pattern" instruction. The vendored `cart-item-select` (`<select>`-based quantity dropdown) is deleted — fully superseded, zero remaining references confirmed before removal. Wine & Spirits quantity remains capped by genuine available stock; Food Central remains uncapped (made-to-order, `manage_inventory: false`).
+
+### Pricing Transparency (§ Pricing Transparency table) — a real, fixed violation
+
+The vendored `CartTotals` always rendered a computed "Shipping: ₦0.00" / "Taxes: ₦0.00" line, even before checkout had ever run and no real address existed to compute either against — reading as a false free-shipping/no-tax claim, directly against the specification's own "never shown as ₦0, blank, or omitted silently" rule. Fixed by branching on whether `cart.shipping_methods?.length` is genuinely populated: before checkout, both lines read "Calculated at checkout"; after, the real computed amounts show.
+
+### Availability and removal labeling (§12/§23)
+
+A line item whose variant is out of genuine stock now shows an explicit "Currently unavailable" label (never silently removed) and its quantity stepper disables both directions. Every remove action carries a specific accessible name — `"Remove [product name]"`, via a new `itemName` prop on the shared `DeleteButton` — never a bare icon or a generic "Remove item" where a real product name is available.
+
+### A genuine Medusa v2 API limitation, discovered and worked around
+
+The Cart endpoint's own `items.variant.inventory_quantity` field expansion (`fields: "+items.variant.inventory_quantity"`) does not resolve — confirmed via direct `curl` inspection bypassing all Next.js caching, returning `null` for a variant with genuine, real stock — even though the identical `+variants.inventory_quantity` syntax resolves correctly and reliably on the Store Product endpoint, which the rest of this codebase already depends on (`listProducts`, `product-actions`). Rather than continuing to debug Medusa's internal query-graph behavior, `items.tsx` (a server component) now performs a supplementary `listProducts` call for the product IDs present in the cart and builds a variant-id → real-stock lookup map, passed down to each `<Item>` as a prop instead of trusting the cart's own broken expansion. Verified end to end with a real depleted-after-added-to-cart scenario (see Visual validation, below): a genuinely in-stock variant shows as available and an genuinely depleted one does not, cross-checked directly against the Admin API's own inventory-level data.
+
+### Two more nested-interactive-element bugs, found via real axe-core auditing
+
+The same defect class first found and fixed in Milestone 6's cart-dropdown trigger recurred twice on the cart page itself: `Summary`'s "Go to checkout" and `SignInPrompt`'s "Sign in" both wrapped a vendored `Button` inside a `LocalizedClientLink`, producing a link containing a second, redundant interactive element (a genuine `link-name`-adjacent WCAG defect, not a style nit). Both fixed by applying the button's own visual classes directly to the link instead of nesting — same visual result, one interactive element per control.
+
+### A third, narrower accessibility gap: thumbnail-only links with no accessible name
+
+Real axe-core auditing of the populated cart found a `link-name` violation on every line item's thumbnail link: the shared `Thumbnail` component falls back to an unlabeled placeholder icon whenever a product has no image, leaving the surrounding link with no accessible text at all. Fixed within this milestone's own file (`cart/components/item/index.tsx`) by adding a real `aria-label` (the item's own name) to the link. The same underlying gap likely exists wherever else `Thumbnail`-only links appear (order history, the mini-cart dropdown) — not fixed here, since those belong to already-shipped milestones; noted for whoever next touches those files.
+
+### Two pre-existing, site-wide color-contrast issues found, deliberately left unaltered
+
+Real axe-core auditing surfaced the shared `Button` component's primary variant (`bg-primary`/`text-surface-elevated`, ≈4.24:1 against the WCAG AA 4.5:1 requirement — already documented as systemic since Milestones 7/8) now also confirmed on the cart's own "Go to checkout" button, and a vendored discount-code control's `text-ui-fg-interactive`. Both trace to established design tokens used across the entire site, not introduced by this milestone — changing either is a Design-System-level decision, recorded here rather than altered unilaterally.
+
+### Visual validation against real seeded data
+
+This project has never seeded real catalog data. Three temporary, clearly `[QA]`-prefixed products were created via the Admin API for this milestone: an in-stock wine, a wine deliberately depleted to zero stock *after* being added to the cart (a two-phase Playwright test, restarting the dev server between phases so the depletion is genuinely visible and not masked by stale fetch caching — simulating §12's "an item becomes unavailable" scenario for real, not by construction), and a Food Central dish. All three, plus this milestone's own temporary stock location, were removed after screenshots; two throwaway admin accounts (`claude-qa5`/`claude-qa6`) were cross-deleted from each other, leaving zero leftover QA products, stock locations, or admin accounts.
+
+### Validated with real execution, not just static analysis
+
+- `tsc --noEmit`, `next lint`, `next build` (real backend running), and the full Jest suite (31 tests across 8 suites, all pre-existing) all clean.
+- **axe-core against the empty cart and the mixed-populated cart (real seeded QA data present, including a genuinely unavailable item)**: zero violations on the empty cart; only the two pre-existing, already-documented site-wide contrast issues (above) on the populated cart — every violation resolvable within this milestone's own scope was found and fixed.
+- **A structural check confirmed**: zero links containing a nested interactive element; a working `role="status" aria-live="polite"` cart-total live region; three correctly-configured `role="spinbutton"` quantity controls with real per-item `aria-valuemax` (matching genuine stock, including `0` for the depleted item and `null`/uncapped for the made-to-order food item); specific per-item delete-button accessible names; full keyboard operability of the checkout link and quantity controls.
+- **Full visual validation with real browser screenshots** — desktop and mobile, the empty cart, the mixed cart (both groups), the unavailable-item state, a quantity-update interaction, and the totals summary's "Calculated at checkout" state — see this milestone's completion report.
+
 ## What's deliberately not here yet
 
 - **Meilisearch-backed search: ranking/typo-tolerance/synonyms, autocomplete, editorial boosting, and faceted search results** (`03_SEARCH_SPECIFICATION.md` §7, §8, §9, §11, §13) — Meilisearch itself remains unapproved (`DECISION_LOG.md`); `/search` today is a real native results page (unified list, catalog badges, sort, Load More, honest zero-result recovery — Milestone 10) but not this document's full mechanism set. **Search-within-category** (§4, §15/§16) also remains unbuilt — no scoped-search affordance exists on category pages yet.
@@ -297,8 +344,9 @@ This project has never seeded real catalog data (Milestones 7, 9, and 10 already
 - **A real payment provider integration** — Paystack is the approved provider (`DECISION_LOG.md`), but the storefront's checkout flow has no actual Paystack integration built yet; real API keys have not been supplied. Build against environment variables when Checkout's turn in the specification order arrives.
 - **Product detail gallery zoom** (`05_PRODUCT_DETAILS_SPECIFICATION.md` §6) — explicitly required by the specification, genuinely not built; a substantial, separate interactive feature deliberately deferred to its own focused pass rather than rushed alongside Milestone 11's other work. See this README's Milestone 11 section.
 - **Product Details' Pairing Recommendations (§14) and Gift Wrap cross-sell (§16)** — the former blocked on the same "pairs with" data-model gap named throughout this list; the latter needs a new backend mechanism the specification's own Backend Requirements table already marks "Recommended, not yet built."
-- **Any product/catalog data** — no products have been seeded; pages render correctly with empty results (Milestones 9, 10, and 11's own visual validation each used temporary QA-only products, created and deleted via the Admin API specifically for that purpose — see this README's own milestone sections and `DECISION_LOG.md`).
+- **Cart's Saved-for-Later (§14), Gift Wrapping (§15), and cross-selling/pairing suggestions (§18)** — Saved-for-Later needs a new persisted-list backend mechanism not built anywhere in this platform yet; Gift Wrapping needs the same new backend priced-line-item mechanism Product Details' own Gift Wrap cross-sell is blocked on; cross-selling depends on the same "pairs with" data-model gap named throughout this list. See this README's Milestone 12 section.
+- **Any product/catalog data** — no products have been seeded; pages render correctly with empty results (Milestones 9, 10, 11, and 12's own visual validation each used temporary QA-only products, created and deleted via the Admin API specifically for that purpose — see this README's own milestone sections and `DECISION_LOG.md`).
 - **Delivery-slot selection UI** — the backend's `delivery-slot` module (Milestone 4) has no storefront-facing UI yet; `07_CHECKOUT_SPECIFICATION.md`'s calendar-grid slot picker is unbuilt.
 - **A real display typeface** — `font-display` is a generic system-serif stack; `BRAND_GUIDELINES.md` has not yet selected one.
-- **The color-contrast issues found and left unfixed** — see "Validated with real execution" above (vendored "Sort by" control and price text; the `Button` primary variant's white-on-`#EC2D07` contrast, confirmed systemic since Milestone 7).
+- **The color-contrast issues found and left unfixed** — see "Validated with real execution" above (vendored "Sort by" control and price text; the `Button` primary variant's white-on-`#EC2D07` contrast, confirmed systemic since Milestone 7 and reconfirmed on the cart's checkout button in Milestone 12; a vendored discount-code control's `text-ui-fg-interactive`, found in Milestone 12).
 - **A mobile accordion footer** (§8.9's "collapsible/accordion groupings to avoid an excessively long scroll") — Milestone 7 built a static, always-expanded footer identical on mobile and desktop; not revisited since, but worth flagging given real mobile screenshots in this and prior milestones' completion reports show the long-scroll consequence directly.

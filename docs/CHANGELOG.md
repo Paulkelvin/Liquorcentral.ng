@@ -1,11 +1,38 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.8
+**Version:** 5.9
 **Owner:** Program
-**Last Updated:** 2026-07-19
+**Last Updated:** 2026-07-23
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v56 — 2026-07-23 — Milestone 12: Cart (`06_CART_SPECIFICATION.md`)
+
+**Context:** Built next per the confirmed specification implementation order, following Product Details (Milestone 11). Layered the specification's real cart behavior on top of the vendored starter cart — mixed-catalog fulfillment-leg grouping, a shared quantity stepper, honest pricing-transparency totals, and per-item availability. Full reasoning, including a genuine Medusa v2 API limitation discovered and worked around, in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/modules/common/components/quantity-stepper/index.tsx` — a shared, accessible (`role="spinbutton"`) quantity control extracted from Milestone 11's PDP stepper, now used identically by both the PDP and the cart line item, per §7's "no second quantity-control pattern" instruction.
+
+**Removed:**
+
+- `storefront/src/modules/cart/components/cart-item-select/index.tsx` — the vendored `<select>`-based quantity dropdown, fully superseded by `QuantityStepper`, confirmed zero remaining references before deletion.
+
+**Changed:**
+
+- `storefront/src/modules/cart/templates/items.tsx` — rebuilt to render two visually distinct, separately-subtotaled fulfillment-leg groups (§5/§6) instead of one flat item list, each with its own delivery-scope copy; now also performs a supplementary `listProducts` lookup to obtain real per-variant stock (see below) and passes it down to each line item.
+- `storefront/src/modules/cart/components/item/index.tsx` — rewritten to use `QuantityStepper` and an externally-supplied inventory value instead of the cart's own (broken — see below) `variant.inventory_quantity` field; adds an explicit "Currently unavailable" label (§12/§23) and a real `aria-label` on the thumbnail link (fixing a link-name accessibility gap found via axe-core).
+- `storefront/src/modules/common/components/cart-totals/index.tsx` — rewritten to fix a real Pricing Transparency violation: previously always rendered a computed "Shipping: ₦0.00" / "Taxes: ₦0.00" even before checkout ever supplied a real address, reading as a false free-shipping/no-tax claim. Now shows "Calculated at checkout" until `cart.shipping_methods` is genuinely populated.
+- `storefront/src/modules/cart/templates/summary.tsx` and `storefront/src/modules/cart/components/sign-in-prompt/index.tsx` — **fixed two genuine nested-interactive-element bugs** (a `Button` nested inside a `LocalizedClientLink`, the same defect class first found in Milestone 6's cart-dropdown trigger): "Go to checkout" and "Sign in" now apply the button's own classes directly to the link instead of nesting.
+- `storefront/src/modules/common/components/delete-button/index.tsx` — added an `itemName` prop for a real accessible name (`"Remove [product name]"`, per §23) and a `data-testid` prop for consistency with the rest of the cart's testable elements.
+- `storefront/src/lib/data/cart.ts` — `retrieveCart`'s default `fields` expanded to include product/variant/catalog-badge data needed by the new grouping and availability logic.
+
+**A genuine Medusa v2 API limitation was found and worked around:** the Cart endpoint's own `items.variant.inventory_quantity` field expansion does not resolve (confirmed via direct API inspection, not a caching artifact), even though the identical expansion syntax resolves reliably on the Store Product endpoint. Rather than trusting the cart's own broken expansion, `items.tsx` now performs a supplementary `listProducts` call for the cart's product IDs and passes real per-variant stock down as a prop.
+
+**Not changed, and explicitly out of scope:** Saved-for-Later (§14), Gift Wrapping (§15), and cross-selling/pairing suggestions (§18) — each blocked on an unbuilt backend mechanism the specification's own text already names as not yet built. Two pre-existing, site-wide color-contrast shortfalls (the shared `Button` primary variant; a vendored discount-code control) were found but deliberately left unaltered — Design-System-level design-token decisions, not Cart's to make unilaterally. No planning document's substance was altered.
+
+**Also updated:** `storefront/README.md` (new "Milestone 12" section, including the Medusa Cart-endpoint limitation and its workaround). `docs/PROJECT_STATUS.md` (→ v5.8), `docs/AI_HANDOFF.md` (→ v5.4), `docs/ROADMAP.md` (→ v6.0), `docs/DECISION_LOG.md` (new entry, → v3.0).
 
 ## v55 — 2026-07-19 — Milestone 11: Product Details (`05_PRODUCT_DETAILS_SPECIFICATION.md`)
 

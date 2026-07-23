@@ -7,9 +7,18 @@ import { notFound } from "next/navigation"
 export const metadata: Metadata = {
   title: "Cart",
   description: "View your cart",
+  // §25 — "the cart is not an indexable page... customer-specific and
+  // session-bound," the same treatment already established for search.
+  robots: { index: false, follow: true },
 }
 
-export default async function Cart() {
+type Props = {
+  params: Promise<{ countryCode: string }>
+}
+
+export default async function Cart(props: Props) {
+  const { countryCode } = await props.params
+
   const cart = await retrieveCart().catch((error) => {
     console.error(error)
     return notFound()
@@ -17,5 +26,5 @@ export default async function Cart() {
 
   const customer = await retrieveCustomer()
 
-  return <CartTemplate cart={cart} customer={customer} />
+  return <CartTemplate cart={cart} customer={customer} countryCode={countryCode} />
 }
