@@ -1,11 +1,32 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 5.7
+**Version:** 5.8
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v55 — 2026-07-19 — Milestone 11: Product Details (`05_PRODUCT_DETAILS_SPECIFICATION.md`)
+
+**Context:** Built next per the confirmed specification implementation order, following Search (Milestone 10). Rebuilt the vendored starter's generic, unmodified-since-scaffold product detail page around the specification's real information hierarchy, fact sheets, and trust/delivery information. Full reasoning, including three genuine bugs found via real click-through testing, in `DECISION_LOG.md`.
+
+**Added (new, `storefront/` — not part of `/docs`):**
+
+- `storefront/src/modules/products/components/product-facts/index.tsx` — the full wine/food fact sheet (§10–§13): labeled, grouped key-value rows reading `wine_details`/`food_details`, omitting fields with no value, allergens paired with an icon and explicit text (never color alone).
+- `storefront/src/modules/products/components/trust-delivery-info/index.tsx` — honest, catalog-specific trust/delivery information (§19–§21): Food Central states cooked-to-order, Lagos Island delivery, and 9am–11pm hours; Wine & Spirits states Lagos-wide delivery and an 18+ reminder, and **deliberately shows no returns claim**, since that policy remains an open business decision.
+
+**Changed:**
+
+- `storefront/src/modules/products/components/product-actions/index.tsx` — added a real quantity stepper (§17 — previously entirely absent; every add-to-cart call hardcoded `quantity: 1`), capped by genuine stock for Wine & Spirits, uncapped for Food Central, plus a live-region add-to-cart confirmation (§18/§25). **Fixed a genuine bug**: `!options` was always `false` (an empty object is truthy), so "Select variant" copy was unreachable and a freshly-loaded multi-variant product showed a misleading "Out of stock" instead.
+- `storefront/src/modules/products/components/product-tabs/{index,accordion}.tsx` — swapped the vendored generic "Material/Weight" and fabricated "3-5 business days"/"no questions asked" content for `ProductFacts` and `TrustDeliveryInfo`. **Fixed a genuine accessibility bug in the shared `Accordion` primitive**: only a sub-44px chevron icon was inside the actual `AccordionPrimitive.Trigger`; the visible section title, sitting outside it, did nothing when clicked.
+- `storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx` — real per-product SEO metadata and `Product`/`Offer` JSON-LD (§27), replacing the vendored `"| Medusa Store"` placeholder. **Fixed a genuine pre-existing crash bug**, present since the Milestone 5 scaffold: an image-lookup call ran before the `notFound()` check, so a nonexistent product handle threw an unhandled error instead of showing the graceful not-found page.
+- `storefront/src/modules/products/templates/product-info/index.tsx` — added an above-the-fold `KeyFacts` line (§7), distinct from the full fact sheet.
+- `storefront/src/modules/products/components/{image-gallery,related-products}/index.tsx` — real per-image alt text (§6/§25, replacing generic "Product image N"); Related Products now filters to the same catalog when no category/collection/tags exist to narrow by, fixing a real gap where an unfiltered fallback could show cross-catalog results.
+
+**Not changed, and explicitly out of scope:** Gallery zoom (§6, explicitly required by the specification — a genuine, tracked gap, not an oversight). Pairing Recommendations (§14, blocked on the unbuilt "pairs with" data model) and Gift Wrap cross-sell (§16, needs a new backend mechanism). No planning document's substance was altered.
+
+**Also updated:** `storefront/README.md` (new "Milestone 11" section, including the visual-validation findings and the three bugs found). `docs/PROJECT_STATUS.md` (→ v5.7), `docs/AI_HANDOFF.md` (→ v5.3), `docs/ROADMAP.md` (→ v5.9), `docs/DECISION_LOG.md` (new entry, → v2.9).
 
 ## v54 — 2026-07-19 — Batch business-decision approval; Milestone 10: Search (`03_SEARCH_SPECIFICATION.md`)
 

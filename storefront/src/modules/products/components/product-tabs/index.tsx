@@ -1,25 +1,41 @@
 "use client"
 
-import Back from "@modules/common/icons/back"
-import FastDelivery from "@modules/common/icons/fast-delivery"
-import Refresh from "@modules/common/icons/refresh"
+import { HttpTypes } from "@medusajs/types"
 
 import Accordion from "./accordion"
-import { HttpTypes } from "@medusajs/types"
+import ProductFacts from "@modules/products/components/product-facts"
+import TrustDeliveryInfo from "@modules/products/components/trust-delivery-info"
 
 type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
+/**
+ * 05_PRODUCT_DETAILS_SPECIFICATION.md §7 (progressive disclosure), §13
+ * ("the fact sheet is... reachable on the page, not hidden behind a page
+ * navigation... that would remove it from the page's own scroll flow"),
+ * §25 (an accessible disclosure pattern, `aria-expanded`-carrying trigger
+ * controlling a content region). The underlying `Accordion` (Radix UI,
+ * `type="multiple"`) already satisfies this: every section expands in
+ * place, several can be open at once, and none of it navigates away from
+ * the page — a disclosure widget, not a tab-switcher that would hide
+ * other content. Only the *content* changed here: the vendored starter's
+ * generic "Material/Country of origin/Weight" and fabricated "3-5
+ * business days"/"no questions asked" copy (neither true of this
+ * business — Food Central is same-day, and the alcohol return policy is
+ * a genuinely open decision, not "no questions asked") is replaced with
+ * real Wine/Food fact sheets (§10–§13) and honest, catalog-specific
+ * trust/delivery information (§19–§21).
+ */
 const ProductTabs = ({ product }: ProductTabsProps) => {
   const tabs = [
     {
-      label: "Product Information",
-      component: <ProductInfoTab product={product} />,
+      label: "Product details",
+      component: <ProductFacts product={product} />,
     },
     {
-      label: "Shipping & Returns",
-      component: <ShippingInfoTab />,
+      label: "Delivery & trust",
+      component: <TrustDeliveryInfo product={product} />,
     },
   ]
 
@@ -37,83 +53,6 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
           </Accordion.Item>
         ))}
       </Accordion>
-    </div>
-  )
-}
-
-const ProductInfoTab = ({ product }: ProductTabsProps) => {
-  return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-2 gap-x-8">
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <span className="font-semibold">Material</span>
-            <p>{product.material ? product.material : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Country of origin</span>
-            <p>{product.origin_country ? product.origin_country : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Type</span>
-            <p>{product.type ? product.type.value : "-"}</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <span className="font-semibold">Weight</span>
-            <p>{product.weight ? `${product.weight} g` : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Dimensions</span>
-            <p>
-              {product.length && product.width && product.height
-                ? `${product.length}L x ${product.width}W x ${product.height}H`
-                : "-"}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const ShippingInfoTab = () => {
-  return (
-    <div className="text-small-regular py-8">
-      <div className="grid grid-cols-1 gap-y-8">
-        <div className="flex items-start gap-x-2">
-          <FastDelivery />
-          <div>
-            <span className="font-semibold">Fast delivery</span>
-            <p className="max-w-sm">
-              Your package will arrive in 3-5 business days at your pick up
-              location or in the comfort of your home.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start gap-x-2">
-          <Refresh />
-          <div>
-            <span className="font-semibold">Simple exchanges</span>
-            <p className="max-w-sm">
-              Is the fit not quite right? No worries - we&apos;ll exchange your
-              product for a new one.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start gap-x-2">
-          <Back />
-          <div>
-            <span className="font-semibold">Easy returns</span>
-            <p className="max-w-sm">
-              Just return your product and we&apos;ll refund your money. No
-              questions asked – we&apos;ll do our best to make sure your return
-              is hassle-free.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

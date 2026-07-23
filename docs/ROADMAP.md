@@ -1,7 +1,7 @@
 # Roadmap
 
 **Status:** Draft (sequencing proposal; not yet approved as a committed schedule — no dates are attached, this defines order and dependency, not timing)
-**Version:** 5.8
+**Version:** 5.9
 **Owner:** Program
 **Last Updated:** 2026-07-19
 
@@ -91,7 +91,7 @@ With all 11 Product Specifications frozen, `docs/IMPLEMENTATION_PLANNING.md` (v1
 - ✅ **Install and configure the storefront (see `TECH_STACK.md`)** — complete, 2026-07-19 (Engineering Milestone 5). `storefront/` runs Medusa's official DTC Starter Next.js app, wired to the real backend (Nigeria region, a real publishable API key). Scaffold only — no LiquorCentral branding/UI applied yet; see `storefront/README.md`.
 - Regions/currency/tax for Nigeria — **partially complete**: a Nigeria region (NGN) and a Nigeria tax-region shell exist (Milestone 1), but the exact VAT/tax rate is still an open business/legal decision, not yet set.
 - Connect a payment provider — **Paystack, approved 2026-07-19** (see `DECISION_LOG.md`, `MEDUSA_EXTENSIONS.md` #4); no longer a launch blocker. Integration work not yet started; the seeded Nigeria region currently uses Medusa's built-in placeholder payment provider only. Build against environment variables — real Paystack credentials have not yet been supplied.
-- Build and ship **Wine & Spirits only** end to end: browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery — **in progress**. Age-gate (Engineering Milestone 8), category/collection/all-products browsing with the full Product Card Information Hierarchy, sort, Load More pagination, and empty states (Engineering Milestone 9) are complete; see `storefront/README.md`. PDP, cart behavior, and checkout/payment remain not yet started.
+- Build and ship **Wine & Spirits only** end to end: browse → age-gate → PDP → cart → guest checkout → payment → nationwide delivery — **in progress**. Age-gate (Engineering Milestone 8), category/collection/all-products browsing with the full Product Card Information Hierarchy, sort, Load More pagination, and empty states (Engineering Milestone 9), and the product detail page with real fact sheets, a quantity stepper, and honest trust/delivery information (Engineering Milestone 11) are complete; see `storefront/README.md`. Gallery zoom is a tracked gap on the completed PDP. Cart behavior and checkout/payment (now unblocked — Paystack approved) remain not yet started.
 - Include age verification here, not later — it's a legal gate on checkout, not an add-on.
 
 ## Phase 2 — Product data foundation

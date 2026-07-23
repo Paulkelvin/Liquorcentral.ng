@@ -38,6 +38,9 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [justAdded, setJustAdded] = useState(false)
+  // §17 — "the default quantity is always one — never pre-filled higher."
+  const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options
@@ -116,6 +119,25 @@ export default function ProductActions({
     return false
   }, [selectedVariant])
 
+  /**
+   * §17 — Wine & Spirits quantity is capped by genuine available stock
+   * (inventory tracking is on for that catalog); Food Central is not
+   * capped by a stock count (made-to-order, inventory tracking off) —
+   * any practical per-order limit is an operational/checkout concern,
+   * not a customer-facing number invented at the PDP level.
+   */
+  const maxQuantity =
+    selectedVariant?.manage_inventory && !selectedVariant?.allow_backorder
+      ? selectedVariant?.inventory_quantity || 0
+      : undefined
+
+  // Reset to the default quantity of one whenever the selected variant
+  // changes, so a quantity valid for one variant is never silently
+  // carried over to a different variant's stock (§17).
+  useEffect(() => {
+    setQuantity(1)
+  }, [selectedVariant?.id])
+
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
@@ -128,11 +150,16 @@ export default function ProductActions({
 
     await addToCart({
       variantId: selectedVariant.id,
-      quantity: 1,
+      quantity,
       countryCode,
     })
 
     setIsAdding(false)
+    // §18 — "immediate, persistent confirmation," announced via a polite
+    // live region (§25), in addition to the existing cart-dropdown
+    // auto-open on item-count change.
+    setJustAdded(true)
+    window.setTimeout(() => setJustAdded(false), 2000)
   }
 
   return (
@@ -162,6 +189,52 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
+        {/* §17 — a numeric stepper beside add-to-cart, meeting the
+            44x44px touch-target minimum, capped by genuine stock for
+            Wine & Spirits, uncapped for Food Central. */}
+        <div className="flex items-center gap-3">
+          <span id="pdp-quantity-label" className="txt-compact-small text-text-secondary">
+            Quantity
+          </span>
+          <div className="flex items-center border border-border rounded-radius-md">
+            <button
+              type="button"
+              aria-label="Decrease quantity"
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              disabled={quantity <= 1 || !!disabled || isAdding}
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            >
+              −
+            </button>
+            <span
+              role="spinbutton"
+              aria-labelledby="pdp-quantity-label"
+              aria-valuenow={quantity}
+              aria-valuemin={1}
+              aria-valuemax={maxQuantity}
+              data-testid="product-quantity-value"
+              className="min-w-[2.5rem] text-center txt-compact-medium"
+            >
+              {quantity}
+            </span>
+            <button
+              type="button"
+              aria-label="Increase quantity"
+              onClick={() =>
+                setQuantity((q) =>
+                  maxQuantity !== undefined ? Math.min(maxQuantity, q + 1) : q + 1
+                )
+              }
+              disabled={
+                !!disabled || isAdding || (maxQuantity !== undefined && quantity >= maxQuantity)
+              }
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
         <Button
           onClick={handleAddToCart}
           disabled={
@@ -176,12 +249,17 @@ export default function ProductActions({
           isLoading={isAdding}
           data-testid="add-product-button"
         >
-          {!selectedVariant && !options
+          {!selectedVariant && Object.keys(options).length === 0
             ? "Select variant"
             : !inStock || !isValidVariant
             ? "Out of stock"
             : "Add to cart"}
         </Button>
+        {/* §18/§25 — add-to-cart confirmation announced via a polite live
+            region, in addition to the cart dropdown's own auto-open. */}
+        <div role="status" aria-live="polite" className="sr-only">
+          {justAdded && "Added to cart"}
+        </div>
         <MobileActions
           product={product}
           variant={selectedVariant}

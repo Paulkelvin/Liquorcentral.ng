@@ -87,12 +87,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  // 05_PRODUCT_DETAILS_SPECIFICATION.md §27 — "descriptive, unique meta
+  // title and description per product — never a templated string
+  // identical across the catalog." The description falls back to the
+  // title only when the product genuinely has no description yet (a
+  // data-completeness gap, not something this page invents copy for).
+  const title = `${product.title} — LiquorCentral`
+  const description = product.description || product.title || "LiquorCentral"
+
   return {
-    title: `${product.title} | Medusa Store`,
-    description: `${product.title}`,
+    title,
+    description,
     openGraph: {
-      title: `${product.title} | Medusa Store`,
-      description: `${product.title}`,
+      title,
+      description,
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   }
@@ -113,23 +121,77 @@ export default async function ProductPage(props: Props) {
     countryCode: params.countryCode,
     queryParams: {
       handle: params.handle,
+      // §12/§13 — the wine/food fact sheet's data source, on top of the
+      // starter's own default fields (pricing, variant options/images).
       fields:
-        "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,+categories.*",
+        "+categories.*,+food_details.*,+wine_details.*",
     },
   }).then(({ response }) => response.products[0])
 
-  const images = getImagesForVariant(pricedProduct, selectedVariantId)
-
+  // §24 — "a product genuinely not found... a graceful, plain-language
+  // page... never a raw, dead-end error." A genuine pre-existing crash
+  // bug, found via real click-through testing of this exact state: the
+  // vendored starter called `getImagesForVariant(pricedProduct, ...)`
+  // *before* this check, so a nonexistent handle threw
+  // "Cannot read properties of undefined (reading 'images')" instead of
+  // ever reaching `notFound()` — the graceful not-found page was
+  // unreachable in practice. Fixed by checking first.
   if (!pricedProduct) {
     notFound()
   }
 
+  const images = getImagesForVariant(pricedProduct, selectedVariantId)
+
+  // §27 — Product/Offer structured data, kept in sync with the page's own
+  // displayed price/availability/currency rather than a separately
+  // maintained copy.
+  const cheapestVariant = pricedProduct.variants?.find(
+    (v) => (v as { calculated_price?: { calculated_amount?: number } }).calculated_price
+  ) as
+    | (HttpTypes.StoreProductVariant & {
+        calculated_price?: { calculated_amount: number; currency_code: string }
+        inventory_quantity?: number
+      })
+    | undefined
+  const anyVariantAvailable = pricedProduct.variants?.some((v) => {
+    const variant = v as HttpTypes.StoreProductVariant & {
+      inventory_quantity?: number
+    }
+    if (!variant.manage_inventory) return true
+    if (variant.allow_backorder) return true
+    return (variant.inventory_quantity || 0) > 0
+  })
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: pricedProduct.title,
+    description: pricedProduct.description || pricedProduct.title,
+    image: pricedProduct.thumbnail ? [pricedProduct.thumbnail] : undefined,
+    offers: cheapestVariant?.calculated_price
+      ? {
+          "@type": "Offer",
+          priceCurrency: cheapestVariant.calculated_price.currency_code?.toUpperCase(),
+          price: (cheapestVariant.calculated_price.calculated_amount / 100).toFixed(2),
+          availability: anyVariantAvailable
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+        }
+      : undefined,
+  }
+
   return (
-    <ProductTemplate
-      product={pricedProduct}
-      region={region}
-      countryCode={params.countryCode}
-      images={images ?? []}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <ProductTemplate
+        product={pricedProduct}
+        region={region}
+        countryCode={params.countryCode}
+        images={images ?? []}
+      />
+    </>
   )
 }
