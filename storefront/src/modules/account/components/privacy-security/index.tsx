@@ -2,7 +2,7 @@
 
 import { requestAccountLifecycleChange } from "@lib/data/customer"
 import { Button, Text } from "@modules/common/components/ui"
-import Input from "@modules/common/components/input"
+import { PasswordInput } from "@modules/common/components/ui/password-input"
 import { HttpTypes } from "@medusajs/types"
 import { useActionState, useEffect, useRef, useState } from "react"
 
@@ -104,10 +104,9 @@ export default function PrivacySecurity({ customer }: Props) {
                   className="flex flex-col gap-y-2 max-w-sm"
                 >
                   <input type="hidden" name="kind" value={kind} />
-                  <Input
+                  <PasswordInput
                     label="Confirm your password"
                     name="password"
-                    type="password"
                     required
                     autoComplete="current-password"
                     data-testid="lifecycle-password-input"

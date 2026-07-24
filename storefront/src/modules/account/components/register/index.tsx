@@ -1,7 +1,8 @@
 "use client"
 
 import { useActionState } from "react"
-import Input from "@modules/common/components/input"
+import { Input } from "@modules/common/components/ui"
+import { PasswordInput } from "@modules/common/components/ui/password-input"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
@@ -67,11 +68,10 @@ const Register = ({ setCurrentView }: Props) => {
             autoComplete="tel"
             data-testid="phone-input"
           />
-          <Input
+          <PasswordInput
             label="Password"
             name="password"
             required
-            type="password"
             autoComplete="new-password"
             data-testid="password-input"
           />
@@ -81,7 +81,7 @@ const Register = ({ setCurrentView }: Props) => {
           data-testid="register-error"
         />
         <span className="text-center text-text-primary text-caption mt-6">
-          By creating an account, you agree to Medusa Store&apos;s{" "}
+          By creating an account, you agree to LiquorCentral&apos;s{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
             className="underline"

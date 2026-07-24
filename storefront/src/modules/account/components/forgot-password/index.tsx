@@ -3,7 +3,7 @@
 import { requestPasswordReset } from "@lib/data/customer"
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
-import Input from "@modules/common/components/input"
+import { Input } from "@modules/common/components/ui"
 import { useActionState } from "react"
 
 type Props = {

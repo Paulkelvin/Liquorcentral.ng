@@ -34,8 +34,16 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 
   return (
     <Container
+      elevated={false}
       className={clx(
-        "relative w-full overflow-hidden p-4 bg-surface shadow-elevation-card-rest rounded-large group-hover:shadow-elevation-card-hover transition-shadow ease-in-out duration-150",
+        // §13 (Proposed Design Direction, "Depth is subtle") — elevation-0
+        // at rest, elevation-1 on hover (the card's `group` class lives on
+        // the surrounding link, e.g. ProductPreview). `shadow-elevation-1`
+        // was previously `shadow-elevation-card-rest`/`-hover`, two classes
+        // never actually defined anywhere in tailwind.config.js — Tailwind
+        // silently generated no CSS for them, so every product card has
+        // been rendering with zero shadow at all since it shipped.
+        "relative w-full overflow-hidden shadow-elevation-0 group-hover:shadow-elevation-1 transition-shadow duration-standard ease-in-out",
         className,
         {
           "aspect-[11/14]": isFeatured,
@@ -63,7 +71,7 @@ const ImageOrPlaceholder = ({
     <Image
       src={image}
       alt={alt || "Product photo"}
-      className="absolute inset-0 object-cover object-center"
+      className="absolute inset-0 object-cover object-center transition-transform duration-standard ease-out group-hover:scale-[1.03]"
       draggable={false}
       quality={50}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"

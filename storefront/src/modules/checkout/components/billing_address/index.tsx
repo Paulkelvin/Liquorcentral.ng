@@ -1,5 +1,5 @@
 import { HttpTypes } from "@medusajs/types"
-import Input from "@modules/common/components/input"
+import { Input } from "@modules/common/components/ui"
 import React, { useState } from "react"
 
 const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {

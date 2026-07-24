@@ -1,7 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
-import { Container, Text } from "@modules/common/components/ui"
+import { Container, Input, Text } from "@modules/common/components/ui"
 import Checkbox from "@modules/common/components/checkbox"
-import Input from "@modules/common/components/input"
 import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { mapKeys } from "lodash"
 import React, { useEffect, useMemo, useState } from "react"

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useActionState } from "react"
-import Input from "@modules/common/components/input"
+import { PasswordInput } from "@modules/common/components/ui/password-input"
 import AccountInfo from "../account-info"
 import { HttpTypes } from "@medusajs/types"
 import { updateCustomerPassword } from "@lib/data/customer"
@@ -42,26 +42,23 @@ const ProfilePassword: React.FC<MyInformationProps> = ({
         data-testid="account-password-editor"
       >
         <div className="grid grid-cols-2 gap-4">
-          <Input
+          <PasswordInput
             label="Old password"
             name="old_password"
             required
-            type="password"
             autoComplete="current-password"
             data-testid="old-password-input"
           />
           <div />
-          <Input
+          <PasswordInput
             label="New password"
-            type="password"
             name="new_password"
             required
             autoComplete="new-password"
             data-testid="new-password-input"
           />
-          <Input
+          <PasswordInput
             label="Confirm password"
-            type="password"
             name="confirm_password"
             required
             autoComplete="new-password"

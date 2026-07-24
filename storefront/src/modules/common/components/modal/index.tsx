@@ -34,7 +34,13 @@ const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-opacity-75 backdrop-blur-md  h-screen" />
+          {/* `bg-opacity-75` alone (no companion `bg-*` color class) was a
+              genuine pre-existing bug — Tailwind's opacity utility has
+              nothing to apply against, so the overlay never actually
+              dimmed the page behind it, only blurred it. `bg-overlay`
+              (DESIGN_SYSTEM.md §B6 Semantic Design Tokens) is a real,
+              single token for exactly this. */}
+          <div className="fixed inset-0 bg-overlay backdrop-blur-md  h-screen" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-hidden">
@@ -65,7 +71,8 @@ const Modal = ({
                     "max-w-xl": size === "medium",
                     "max-w-3xl": size === "large",
                     "bg-transparent shadow-none": search,
-                    "bg-surface-elevated shadow-xl border rounded-rounded": !search,
+                    "bg-surface-elevated shadow-elevation-3 border border-border rounded-radius-lg":
+                      !search,
                   }
                 )}
               >
@@ -86,7 +93,12 @@ const Title: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <Dialog.Title className="flex items-center justify-between">
       <div className="text-body font-semibold">{children}</div>
       <div>
-        <button onClick={close} data-testid="close-modal-button">
+        <button
+          onClick={close}
+          aria-label="Close dialog"
+          data-testid="close-modal-button"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-radius-sm"
+        >
           <X size={20} />
         </button>
       </div>

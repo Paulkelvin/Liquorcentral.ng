@@ -8,7 +8,7 @@ import {
 } from "@headlessui/react"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
-import { Button } from "@modules/common/components/ui"
+import { ShoppingBag } from "@medusajs/icons"
 import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
@@ -92,9 +92,21 @@ const CartDropdown = ({
         <PopoverButton
           as={LocalizedClientLink}
           href="/cart"
-          className="h-full inline-flex items-center hover:text-interactive"
+          aria-label={`Cart, ${totalItems} item${totalItems === 1 ? "" : "s"}`}
+          className="h-full inline-flex items-center gap-1.5 hover:text-interactive relative"
           data-testid="nav-cart-link"
-        >{`Cart (${totalItems})`}</PopoverButton>
+        >
+          <ShoppingBag />
+          <span aria-hidden="true">Cart</span>
+          {totalItems > 0 && (
+            <span
+              aria-hidden="true"
+              className="min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-surface-elevated text-[11px] leading-[18px] font-semibold text-center"
+            >
+              {totalItems}
+            </span>
+          )}
+        </PopoverButton>
         <Transition
           show={cartDropdownOpen}
           as={Fragment}
@@ -107,7 +119,7 @@ const CartDropdown = ({
         >
           <PopoverPanel
             static
-            className="hidden small:block absolute top-[calc(100%+1px)] right-0 bg-surface-elevated border-x border-b border-divider w-[420px] text-text-primary"
+            className="hidden small:block absolute top-[calc(100%+1px)] right-0 bg-surface-elevated border-x border-b border-divider shadow-elevation-2 w-[420px] text-text-primary"
             data-testid="nav-cart-dropdown"
           >
             <div className="p-4 flex items-center justify-center">
@@ -200,14 +212,12 @@ const CartDropdown = ({
                       })}
                     </span>
                   </div>
-                  <LocalizedClientLink href="/cart" passHref>
-                    <Button
-                      className="w-full"
-                      size="large"
-                      data-testid="go-to-cart-button"
-                    >
-                      Go to cart
-                    </Button>
+                  <LocalizedClientLink
+                    href="/cart"
+                    data-testid="go-to-cart-button"
+                    className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[48px] px-6 text-body-lg w-full bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active"
+                  >
+                    Go to cart
                   </LocalizedClientLink>
                 </div>
               </>
@@ -219,11 +229,12 @@ const CartDropdown = ({
                   </div>
                   <span>Your shopping bag is empty.</span>
                   <div>
-                    <LocalizedClientLink href="/store">
-                      <>
-                        <span className="sr-only">Go to all products page</span>
-                        <Button onClick={close}>Explore products</Button>
-                      </>
+                    <LocalizedClientLink
+                      href="/store"
+                      onClick={close}
+                      className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[44px] px-4 text-body bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active"
+                    >
+                      Explore products
                     </LocalizedClientLink>
                   </div>
                 </div>

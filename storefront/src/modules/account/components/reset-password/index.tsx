@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@modules/common/components/ui"
 import { completePasswordReset } from "@lib/data/customer"
-import Input from "@modules/common/components/input"
+import { PasswordInput } from "@modules/common/components/ui/password-input"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 /**
@@ -57,18 +57,16 @@ const ResetPassword = () => {
           className="w-full flex flex-col gap-y-2"
           action={handleSubmit}
         >
-          <Input
+          <PasswordInput
             label="New password"
             name="password"
-            type="password"
             autoComplete="new-password"
             required
             data-testid="new-password-input"
           />
-          <Input
+          <PasswordInput
             label="Confirm password"
             name="confirm_password"
-            type="password"
             autoComplete="new-password"
             required
             data-testid="confirm-password-input"
@@ -104,8 +102,11 @@ const ResetPassword = () => {
             Your password has been reset. You can now sign in with your new
             password.
           </p>
-          <LocalizedClientLink href="/account">
-            <Button variant="primary">Go to sign in</Button>
+          <LocalizedClientLink
+            href="/account"
+            className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[44px] px-4 text-body bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active"
+          >
+            Go to sign in
           </LocalizedClientLink>
         </>
       )}
@@ -120,8 +121,11 @@ const ResetPassword = () => {
             This reset link is invalid or has expired. Request a new one from
             the sign-in page.
           </p>
-          <LocalizedClientLink href="/account">
-            <Button variant="secondary">Go to sign in</Button>
+          <LocalizedClientLink
+            href="/account"
+            className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[44px] px-4 text-body bg-surface-elevated text-text-primary border border-border hover:bg-ink-100"
+          >
+            Go to sign in
           </LocalizedClientLink>
         </>
       )}

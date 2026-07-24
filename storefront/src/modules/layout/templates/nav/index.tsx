@@ -6,6 +6,7 @@ import { listRegions } from "@lib/data/regions"
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import { StoreRegion } from "@medusajs/types"
+import { ShoppingBag } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import MobileNavDrawer from "@modules/layout/components/mobile-nav-drawer"
@@ -43,7 +44,7 @@ export default async function Nav() {
       <header className="relative h-16 mx-auto border-b duration-200 bg-surface-elevated border-border">
         <nav
           aria-label="Main"
-          className="ds-container txt-xsmall-plus text-text-secondary flex items-center justify-between w-full h-full text-caption"
+          className="ds-container text-text-secondary flex items-center justify-between w-full h-full text-caption"
         >
           <div className="flex-1 basis-0 h-full flex items-center gap-6">
             <div className="h-full sm:hidden">
@@ -61,9 +62,13 @@ export default async function Nav() {
           </div>
 
           <div className="flex items-center h-full">
+            {/* Proposed Design Direction — "even a text-only wordmark with
+                the display face" reads as a considered brand mark rather
+                than generic uppercase body text (no logomark exists yet;
+                see DECISION_LOG.md/BRAND_GUIDELINES.md for that open item). */}
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus text-text-primary hover:text-interactive uppercase"
+              className="font-display text-heading-4 font-semibold tracking-tight text-text-primary hover:text-interactive"
               data-testid="nav-store-link"
             >
               LiquorCentral
@@ -84,11 +89,13 @@ export default async function Nav() {
             <Suspense
               fallback={
                 <LocalizedClientLink
-                  className="hover:text-interactive flex gap-2"
+                  className="hover:text-interactive inline-flex items-center gap-1.5"
                   href="/cart"
+                  aria-label="Cart, 0 items"
                   data-testid="nav-cart-link"
                 >
-                  Cart (0)
+                  <ShoppingBag />
+                  <span aria-hidden="true">Cart</span>
                 </LocalizedClientLink>
               }
             >
