@@ -1,4 +1,4 @@
-module.exports = async function ({ container }) {
+export default async function ({ container }) {
   const email = process.env.ADMIN_EMAIL
   const password = process.env.ADMIN_PASSWORD
 
@@ -7,8 +7,7 @@ module.exports = async function ({ container }) {
     return
   }
 
-  const { Modules } = require("@medusajs/framework/utils")
-  const userModuleService = container.resolve(Modules.USER)
+  const userModuleService = container.resolve("user")
 
   const existing = await userModuleService.listUsers({ email })
   if (existing.length > 0) {
@@ -16,8 +15,8 @@ module.exports = async function ({ container }) {
     return
   }
 
-  const authService = container.resolve(Modules.AUTH)
-  const workflowService = container.resolve(Modules.WORKFLOW_ENGINE)
+  const authService = container.resolve("auth")
+  const workflowService = container.resolve("workflows")
 
   const { result: users } = await workflowService.run("create-users-workflow", {
     input: { users: [{ email }] },
