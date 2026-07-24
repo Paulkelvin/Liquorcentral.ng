@@ -32,7 +32,7 @@ export default function Hero() {
         </Text>
         <div className="flex flex-col sm:flex-row gap-4 mt-2 w-full max-w-md">
           <LocalizedClientLink
-            href="/categories"
+            href="/store"
             className="flex-1 inline-flex items-center justify-center rounded-radius-md font-medium bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active px-6 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
             data-testid="hero-wine-spirits-link"
           >

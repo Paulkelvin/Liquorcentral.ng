@@ -16,7 +16,7 @@ export default function MobileWayfindingStrip() {
       data-testid="mobile-wayfinding-strip"
     >
       <LocalizedClientLink
-        href="/categories"
+        href="/store"
         className="txt-small-plus text-text-primary whitespace-nowrap hover:text-interactive"
       >
         Wine &amp; Spirits

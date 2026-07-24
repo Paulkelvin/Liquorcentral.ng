@@ -33,7 +33,7 @@ export default async function CuratedCollections({
           Curated collections are coming soon.
         </Text>
         <LocalizedClientLink
-          href="/categories"
+          href="/store"
           className="txt-medium-plus text-text-primary underline hover:text-interactive"
         >
           Shop Wine &amp; Spirits

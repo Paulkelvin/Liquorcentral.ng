@@ -38,6 +38,7 @@ type FoodDetailsSeed = {
 
 type SeedProduct = {
   handle: string;
+  imageKeywords: string;
   title: string;
   description: string;
   price: number; // NGN, plain decimal amount (this project's convention)
@@ -51,6 +52,7 @@ type SeedProduct = {
 const PRODUCTS: SeedProduct[] = [
   {
     handle: "chateau-margaux-2015",
+    imageKeywords: "red-wine,wine-bottle",
     title: "Château Margaux 2015",
     description:
       "A legendary Bordeaux first-growth. Rich blackcurrant and cedar notes with a long, silky finish.",
@@ -69,6 +71,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "casillero-del-diablo-cabernet-sauvignon",
+    imageKeywords: "red-wine,wine-bottle",
     title: "Casillero del Diablo Cabernet Sauvignon",
     description: "An approachable Chilean red with dark fruit and light spice, smooth tannins.",
     price: 12000,
@@ -86,6 +89,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "dom-perignon-vintage-2013",
+    imageKeywords: "champagne,champagne-bottle",
     title: "Dom Pérignon Vintage 2013",
     description: "A prestige vintage champagne — crisp citrus and brioche with fine, persistent bubbles.",
     price: 250000,
@@ -103,6 +107,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "veuve-clicquot-yellow-label",
+    imageKeywords: "champagne,champagne-bottle",
     title: "Veuve Clicquot Yellow Label",
     description: "A classic non-vintage champagne — bright apple and pear with a rich, toasty finish.",
     price: 68000,
@@ -119,6 +124,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "johnnie-walker-blue-label",
+    imageKeywords: "whisky,whiskey",
     title: "Johnnie Walker Blue Label",
     description: "A rare blend of some of Scotland's finest aged whiskies — smoky, honeyed, and complex.",
     price: 175000,
@@ -135,6 +141,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "macallan-12-double-cask",
+    imageKeywords: "whisky,scotch",
     title: "The Macallan 12 Year Double Cask",
     description: "Single malt Scotch aged in a combination of American and European oak sherry casks.",
     price: 62000,
@@ -152,6 +159,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "jack-daniels-old-no-7",
+    imageKeywords: "whiskey,bourbon",
     title: "Jack Daniel's Old No. 7",
     description: "Tennessee whiskey mellowed drop by drop through sugar maple charcoal.",
     price: 28000,
@@ -168,6 +176,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "hennessy-vsop",
+    imageKeywords: "cognac,brandy",
     title: "Hennessy VSOP",
     description: "A rich, complex cognac with notes of dried fruit, toffee, and toasted almond.",
     price: 55000,
@@ -184,6 +193,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "grey-goose-vodka",
+    imageKeywords: "vodka,bottle",
     title: "Grey Goose Vodka",
     description: "A clean, smooth French vodka with a subtle almond finish.",
     price: 32000,
@@ -200,6 +210,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "bombay-sapphire-gin",
+    imageKeywords: "gin,bottle",
     title: "Bombay Sapphire Gin",
     description: "A vibrant London Dry gin — bright juniper with citrus and warm spice notes.",
     price: 27000,
@@ -216,6 +227,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "bacardi-superior-rum",
+    imageKeywords: "rum,bottle",
     title: "Bacardi Superior Rum",
     description: "A light, crisp white rum with subtle vanilla and almond notes.",
     price: 21000,
@@ -232,6 +244,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "patron-silver-tequila",
+    imageKeywords: "tequila,bottle",
     title: "Patrón Silver Tequila",
     description: "A smooth, 100% agave tequila with fresh agave, citrus, and light pepper notes.",
     price: 58000,
@@ -248,6 +261,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "baileys-irish-cream",
+    imageKeywords: "cream-liqueur,bottle",
     title: "Baileys Irish Cream",
     description: "A smooth blend of Irish whiskey and cream with notes of cocoa and vanilla.",
     price: 18000,
@@ -264,6 +278,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "heineken-lager-crate",
+    imageKeywords: "beer,lager",
     title: "Heineken Lager (Crate of 12)",
     description: "A crisp, balanced lager with a mild bitterness — crate of 12 bottles.",
     price: 9500,
@@ -280,6 +295,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "jollof-rice-grilled-chicken",
+    imageKeywords: "jollof-rice,nigerian-food",
     title: "Jollof Rice with Grilled Chicken",
     description: "Classic smoky-sweet jollof rice served with a grilled chicken quarter.",
     price: 6500,
@@ -297,6 +313,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "suya-platter-beef-skewers",
+    imageKeywords: "suya,skewers",
     title: "Suya Platter (Beef Skewers)",
     description: "Spiced grilled beef skewers with yaji suya spice, served with onion and tomato.",
     price: 8000,
@@ -314,6 +331,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "peppered-goat-meat-asun",
+    imageKeywords: "goat-meat,nigerian-food",
     title: "Peppered Goat Meat (Asun)",
     description: "Chopped, char-grilled goat meat tossed in a spicy pepper sauce.",
     price: 9500,
@@ -331,6 +349,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "grilled-tilapia-fried-plantain",
+    imageKeywords: "grilled-fish,plantain",
     title: "Grilled Tilapia with Fried Plantain",
     description: "Whole grilled tilapia fish with a side of sweet fried plantain and pepper sauce.",
     price: 8500,
@@ -348,6 +367,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "chicken-shawarma-wrap",
+    imageKeywords: "shawarma,wrap",
     title: "Chicken Shawarma Wrap",
     description: "Grilled chicken shawarma wrapped in pita with garlic sauce, lettuce, and pickles.",
     price: 4500,
@@ -365,6 +385,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "small-chops-party-pack",
+    imageKeywords: "spring-rolls,snacks",
     title: "Small Chops Party Pack",
     description: "An assorted party pack of spring rolls, samosa, puff puff, chicken drumettes, and fish rolls.",
     price: 15000,
@@ -392,16 +413,37 @@ export default async function product_catalog_seed({
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const fulfillmentModuleService = container.resolve(Modules.FULFILLMENT);
 
+  const imageUrl = (seed: SeedProduct, index: number) =>
+    `https://loremflickr.com/600/800/${encodeURIComponent(seed.imageKeywords)}?lock=${index + 1}`;
+
   const existingProducts = await productModuleService.listProducts(
     {},
-    { select: ["id", "handle"] }
+    { select: ["id", "handle", "thumbnail"] }
   );
-  const existingHandles = new Set(existingProducts.map((p) => p.handle));
+  const existingProductByHandle = new Map(
+    existingProducts.map((p) => [p.handle, p])
+  );
 
-  const toCreate = PRODUCTS.filter((p) => !existingHandles.has(p.handle));
+  const toCreate = PRODUCTS.filter((p) => !existingProductByHandle.has(p.handle));
+
+  // Corrects images on products created by an earlier run of this script
+  // (e.g. before topically-relevant placeholder photos replaced generic
+  // random ones) — re-runs harmlessly if images already match.
+  for (const [index, seed] of PRODUCTS.entries()) {
+    const existing = existingProductByHandle.get(seed.handle);
+    if (!existing) continue;
+
+    const newUrl = imageUrl(seed, index);
+    if (existing.thumbnail === newUrl) continue;
+
+    await productModuleService.updateProducts(existing.id, {
+      thumbnail: newUrl,
+      images: [{ url: newUrl }],
+    });
+  }
 
   if (toCreate.length === 0) {
-    logger.info("product-catalog-seed: all seed products already exist — skipping.");
+    logger.info("product-catalog-seed: all seed products already exist — images refreshed, skipping creation.");
     return;
   }
 
@@ -447,6 +489,8 @@ export default async function product_catalog_seed({
   );
 
   for (const seed of toCreate) {
+    const index = PRODUCTS.indexOf(seed);
+    const url = imageUrl(seed, index);
     const categoryIds = (seed.categoryHandles ?? [])
       .map((handle) => categoryIdByHandle.get(handle))
       .filter((id): id is string => !!id);
@@ -459,8 +503,8 @@ export default async function product_catalog_seed({
             handle: seed.handle,
             description: seed.description,
             status: "published",
-            thumbnail: `https://picsum.photos/seed/${seed.handle}/600/800`,
-            images: [{ url: `https://picsum.photos/seed/${seed.handle}/600/800` }],
+            thumbnail: url,
+            images: [{ url }],
             category_ids: categoryIds,
             sales_channels: [{ id: salesChannel.id }],
             shipping_profile_id: shippingProfileId,

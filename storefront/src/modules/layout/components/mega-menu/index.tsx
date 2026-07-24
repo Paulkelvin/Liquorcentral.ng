@@ -40,7 +40,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
     // structural link rather than a broken or missing menu.
     return (
       <LocalizedClientLink
-        href="/categories"
+        href="/store"
         className="h-full flex items-center hover:text-interactive"
       >
         Wine &amp; Spirits
