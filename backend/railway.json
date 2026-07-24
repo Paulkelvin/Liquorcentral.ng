@@ -5,7 +5,7 @@
     "buildCommand": "yarn build"
   },
   "deploy": {
-    "preDeployCommand": "yarn workspace @dtc/backend medusa db:migrate",
+    "preDeployCommand": "yarn workspace @dtc/backend medusa db:migrate && yarn workspace @dtc/backend medusa exec ./src/scripts/create-admin-from-env.js",
     "startCommand": "yarn start",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
