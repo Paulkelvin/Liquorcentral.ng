@@ -2,11 +2,19 @@
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react"
 import { HttpTypes } from "@medusajs/types"
-import { ArrowRightMini, BarsThree, ChevronDown, ShoppingBag, User, XMark } from "@medusajs/icons"
+import {
+  ArrowRightMini,
+  BarsThree,
+  ChevronDown,
+  MagnifyingGlassMini,
+  ShoppingBag,
+  User,
+  XMark,
+} from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
-import { usePathname } from "next/navigation"
-import { Fragment, useState } from "react"
+import { useParams, usePathname, useRouter } from "next/navigation"
+import { Fragment, FormEvent, useState } from "react"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { Locale } from "@lib/data/locales"
@@ -76,7 +84,10 @@ export default function MobileNavDrawer({
   const countryToggleState = useToggleState()
   const languageToggleState = useToggleState()
   const pathname = usePathname()
+  const router = useRouter()
+  const { countryCode } = useParams()
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+  const [query, setQuery] = useState("")
 
   const toggleExpanded = (id: string) => {
     setExpandedIds((prev) => {
@@ -98,7 +109,17 @@ export default function MobileNavDrawer({
 
   return (
     <Popover className="h-full flex">
-      {({ close }) => (
+      {({ close }) => {
+        const submitSearch = (event: FormEvent<HTMLFormElement>) => {
+          event.preventDefault()
+          if (!query.trim()) {
+            return
+          }
+          close()
+          router.push(`/${countryCode}/search?q=${encodeURIComponent(query.trim())}`)
+        }
+
+        return (
         <>
           <PopoverButton
             data-testid="mobile-nav-menu-button"
@@ -140,6 +161,32 @@ export default function MobileNavDrawer({
                   <XMark />
                 </button>
               </div>
+
+              {/* Fixed search row — mobile search now lives here instead
+                  of a second icon in the header row itself (direct
+                  product feedback: one entry point, reachable the
+                  moment the drawer opens, not a nested overlay). Real
+                  GET form to /search?q=, same as the desktop-only
+                  header search field. */}
+              <form
+                role="search"
+                onSubmit={submitSearch}
+                className="shrink-0 flex items-center gap-2 h-11 mx-6 my-4 px-3 rounded-radius-md border border-border"
+              >
+                <MagnifyingGlassMini className="text-text-muted" aria-hidden="true" />
+                <label htmlFor="mobile-nav-search" className="sr-only">
+                  Search products
+                </label>
+                <input
+                  id="mobile-nav-search"
+                  type="search"
+                  name="q"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search Wine & Spirits, Food Central..."
+                  className="bg-transparent outline-none txt-small text-text-primary placeholder:text-text-muted w-full"
+                />
+              </form>
 
               {/* Scrollable main navigation — only this region scrolls */}
               <nav aria-label="Full navigation" className="flex-1 overflow-y-auto px-6 py-6">
@@ -315,7 +362,8 @@ export default function MobileNavDrawer({
             </PopoverPanel>
           </Transition>
         </>
-      )}
+        )
+      }}
     </Popover>
   )
 }

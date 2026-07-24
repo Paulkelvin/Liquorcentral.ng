@@ -2,7 +2,7 @@ import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import ProductPreview from "@modules/products/components/product-preview"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import InteractiveLink from "@modules/common/components/interactive-link"
 import { Heading } from "@modules/common/components/ui"
 
 /**
@@ -47,22 +47,19 @@ export default async function FoodCentralSpotlight({
 
   return (
     <div className="ds-container py-12 small:py-24">
-      <div className="flex justify-between items-center gap-4 mb-8">
-        <Heading level="h2" display className="min-w-0 truncate">
+      <div className="flex justify-between items-center gap-4 mb-6">
+        <Heading level="h2" display className="min-w-0 truncate !text-heading-4">
           Today&rsquo;s Menu
         </Heading>
-        <LocalizedClientLink
-          href="/food-central"
-          className="txt-medium-plus text-text-primary underline hover:text-interactive shrink-0 whitespace-nowrap"
-        >
+        <InteractiveLink href="/food-central" subtle>
           View Food Central
-        </LocalizedClientLink>
+        </InteractiveLink>
       </div>
 
       {foodProducts.length === 0 ? (
         <NotTakingOrders title="Today's Menu" />
       ) : (
-        <ul className="grid grid-cols-2 small:grid-cols-4 gap-x-6 gap-y-12">
+        <ul className="grid grid-cols-2 small:grid-cols-4 gap-x-6 gap-y-8">
           {foodProducts.map((product) => (
             <li key={product.id}>
               <ProductPreview product={product} region={region} />

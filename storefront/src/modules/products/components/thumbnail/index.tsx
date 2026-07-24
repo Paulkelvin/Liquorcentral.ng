@@ -1,6 +1,8 @@
+"use client"
+
 import { Container, clx } from "@modules/common/components/ui"
 import Image from "next/image"
-import React from "react"
+import React, { useState } from "react"
 
 import PlaceholderImage from "@modules/common/icons/placeholder-image"
 
@@ -78,7 +80,14 @@ const ImageOrPlaceholder = ({
   size,
   alt,
 }: Pick<ThumbnailProps, "size" | "alt"> & { image?: string }) => {
-  return image ? (
+  // A real image URL can still fail at runtime (dead link, network
+  // hiccup, host outage) distinct from having no thumbnail at all — an
+  // `onError` fallback catches that case too, so a broken image never
+  // collapses into an empty void; both states land on the same
+  // placeholder box below.
+  const [failed, setFailed] = useState(false)
+
+  return image && !failed ? (
     <Image
       src={image}
       alt={alt || "Product photo"}
@@ -86,10 +95,11 @@ const ImageOrPlaceholder = ({
       draggable={false}
       quality={50}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+      onError={() => setFailed(true)}
       fill
     />
   ) : (
-    <div className="w-full h-full absolute inset-0 flex items-center justify-center">
+    <div className="w-full h-full absolute inset-0 flex items-center justify-center bg-ink-100">
       <PlaceholderImage size={size === "small" ? 16 : 24} />
     </div>
   )

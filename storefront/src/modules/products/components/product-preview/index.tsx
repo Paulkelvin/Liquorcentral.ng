@@ -85,10 +85,18 @@ export default async function ProductPreview({
   const isUnavailable = foodUnavailable || soldOut
 
   return (
-    <div data-testid="product-wrapper" className="flex flex-col gap-2">
+    // `h-full` + `flex-col` so every card in a CSS Grid row (the parent
+    // <ul>'s own grid, e.g. paginated-products.tsx) stretches to match
+    // its tallest sibling, and quick-add's `mt-auto` (a direct flex
+    // child of this same container) pins itself to the card's bottom
+    // edge regardless of how many lines the title above it wraps to.
+    <div
+      data-testid="product-wrapper"
+      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-border bg-surface-elevated"
+    >
       {/* §9/§212 — the card's one real link wraps only image/name/price;
           quick-add is a sibling control below, never nested inside it. */}
-      <LocalizedClientLink href={`/products/${product.handle}`} className="group">
+      <LocalizedClientLink href={`/products/${product.handle}`}>
         <Thumbnail
           thumbnail={product.thumbnail}
           images={product.images}
@@ -106,7 +114,7 @@ export default async function ProductPreview({
          * beyond that) so a long name can never push the layout apart or
          * collide with the price, at any card width.
          */}
-        <div className="flex flex-col mt-3 gap-1">
+        <div className="flex flex-col gap-1 p-3">
           <Text
             size="caption"
             className="text-text-secondary font-medium line-clamp-2"
@@ -153,6 +161,7 @@ export default async function ProductPreview({
         <QuickAddButton
           product={product}
           weight={isFoodCentral ? "primary" : "secondary"}
+          className="mt-auto mx-3 mb-3"
         />
       )}
     </div>

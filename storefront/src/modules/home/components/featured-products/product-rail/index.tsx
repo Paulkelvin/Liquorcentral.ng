@@ -28,15 +28,25 @@ export default async function ProductRail({
 
   return (
     <div className="ds-container py-12 small:py-24">
-      <div className="flex justify-between items-center gap-4 mb-8">
-        <Heading level="h2" display className="min-w-0 truncate">
+      <div className="flex justify-between items-center gap-4 mb-6">
+        {/* Editorial-scale section heading (§3, 20px/text-heading-4)
+            rather than the full text-heading-2 (31px) `level="h2"`
+            otherwise maps to — `!` (important) since Heading's own
+            headingSizeByLevel class is hardcoded ahead of this
+            className in source order. Semantic level stays h2 (correct
+            document outline); only the visual size is overridden. */}
+        <Heading level="h2" display className="min-w-0 truncate !text-heading-4">
           {collection.title}
         </Heading>
-        <InteractiveLink href={`/collections/${collection.handle}`}>
+        <InteractiveLink href={`/collections/${collection.handle}`} subtle>
           View all
         </InteractiveLink>
       </div>
-      <ul className="grid grid-cols-2 small:grid-cols-3 gap-x-6 gap-y-24 small:gap-y-36">
+      {/* Equal-height cards (ProductPreview's own `h-full` + grid's
+          default row stretch) no longer need the old oversized gap-y
+          that padded around variable-height cards — a normal gap works
+          now that every card in a row lines up on the same baseline. */}
+      <ul className="grid grid-cols-2 small:grid-cols-3 gap-x-6 gap-y-8">
         {pricedProducts &&
           pricedProducts.map((product) => (
             <li key={product.id}>

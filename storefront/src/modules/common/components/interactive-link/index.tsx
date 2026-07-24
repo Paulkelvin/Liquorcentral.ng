@@ -1,16 +1,26 @@
 import { ArrowUpRightMini } from "@medusajs/icons"
-import { Text } from "@modules/common/components/ui"
+import { Text, clx } from "@modules/common/components/ui"
 import LocalizedClientLink from "../localized-client-link"
 type InteractiveLinkProps = {
   href: string
   children?: React.ReactNode
   onClick?: () => void
+  /**
+   * A quieter, editorial treatment for a "View all"-style action
+   * sitting beside a section heading — small uppercase tracking-wide
+   * text in the secondary color, instead of the default brand
+   * `text-interactive` link color this component otherwise renders
+   * everywhere else (e.g. empty-state/not-found CTAs, where the bolder
+   * default is the correct, more prominent action).
+   */
+  subtle?: boolean
 }
 
 const InteractiveLink = ({
   href,
   children,
   onClick,
+  subtle,
   ...props
 }: InteractiveLinkProps) => {
   return (
@@ -20,10 +30,20 @@ const InteractiveLink = ({
       onClick={onClick}
       {...props}
     >
-      <Text className="text-interactive whitespace-nowrap">{children}</Text>
+      <Text
+        size={subtle ? "caption" : undefined}
+        className={clx(
+          "whitespace-nowrap",
+          subtle
+            ? "text-text-secondary uppercase tracking-wider"
+            : "text-interactive"
+        )}
+      >
+        {children}
+      </Text>
       <ArrowUpRightMini
         className="group-hover:rotate-45 ease-in-out duration-150"
-        color="var(--color-interactive)"
+        color={subtle ? "var(--color-text-secondary)" : "var(--color-interactive)"}
       />
     </LocalizedClientLink>
   )

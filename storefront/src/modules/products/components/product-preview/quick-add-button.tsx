@@ -3,6 +3,7 @@
 import { addToCart } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { clx } from "@modules/common/components/ui"
 import { useParams } from "next/navigation"
 import { MouseEvent, useState } from "react"
 
@@ -47,9 +48,11 @@ const sharedClass =
 export default function QuickAddButton({
   product,
   weight,
+  className,
 }: {
   product: HttpTypes.StoreProduct
   weight: "primary" | "secondary"
+  className?: string
 }) {
   const countryCode = useParams().countryCode as string
   const [status, setStatus] = useState<"idle" | "adding" | "added" | "error">(
@@ -63,13 +66,16 @@ export default function QuickAddButton({
   // Both weights are real buttons, never bare underlined text — §9's
   // Food Central-primary / Wine-secondary visual-weight distinction is
   // expressed as filled vs. outline, not as button-chrome vs. plain text.
-  const primaryClass = `${sharedClass} bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active`
-  const secondaryClass = `${sharedClass} bg-transparent border border-border text-text-primary hover:bg-ink-100 hover:border-text-secondary`
+  const primaryClass = clx(sharedClass, "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active", className)
+  const secondaryClass = clx(sharedClass, "bg-transparent border border-border text-text-primary hover:bg-ink-100 hover:border-text-secondary", className)
   const variantClass = weight === "primary" ? primaryClass : secondaryClass
 
   if (variants.length === 0 || (singleVariant && !isVariantPurchasable(singleVariant))) {
     return (
-      <span className="inline-flex items-center text-caption text-text-muted" data-testid="product-unavailable-label">
+      <span
+        className={clx("inline-flex items-center text-caption text-text-muted", className)}
+        data-testid="product-unavailable-label"
+      >
         Sold out
       </span>
     )
