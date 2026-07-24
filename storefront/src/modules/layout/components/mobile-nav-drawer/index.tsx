@@ -2,9 +2,9 @@
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react"
 import { HttpTypes } from "@medusajs/types"
-import { ArrowRightMini, XMark } from "@medusajs/icons"
+import { ArrowRightMini, MapPin, ShoppingBag, TruckFast, User, XMark } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { clx } from "@modules/common/components/ui"
+import { Heading, clx } from "@modules/common/components/ui"
 import { Fragment } from "react"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
@@ -71,44 +71,50 @@ export default function MobileNavDrawer({
           >
             <PopoverPanel
               focus
-              className="fixed inset-0 z-[60] bg-surface-elevated overflow-y-auto"
+              className="fixed inset-0 z-[60] bg-surface overflow-y-auto"
               data-testid="mobile-nav-drawer"
             >
-              <div className="flex flex-col min-h-full p-6">
-                <div className="flex justify-end">
+              <div className="flex flex-col min-h-full">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-surface-elevated">
+                  <span className="font-display text-heading-4 font-semibold tracking-tight text-text-primary">
+                    LiquorCentral
+                  </span>
                   <button
                     data-testid="close-mobile-nav-drawer"
                     aria-label="Close menu"
-                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                    className="min-h-[44px] min-w-[44px] flex items-center justify-center -mr-2 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-radius-sm"
                     onClick={() => close()}
                   >
                     <XMark />
                   </button>
                 </div>
 
-                <nav aria-label="Full navigation" className="flex-1 mt-4">
+                <nav aria-label="Full navigation" className="flex-1 px-6 py-6">
                   <ul className="flex flex-col gap-8">
                     <li>
-                      <span className="txt-large-plus text-text-primary block mb-3">
-                        Wine &amp; Spirits
-                      </span>
-                      <ul className="flex flex-col gap-4 pl-2">
+                      <div className="flex items-center gap-2 mb-3">
+                        <TruckFast className="text-secondary" aria-hidden="true" />
+                        <Heading level="h3" display className="text-body-lg">
+                          Wine &amp; Spirits
+                        </Heading>
+                      </div>
+                      <ul className="flex flex-col gap-1 pl-1">
                         {topLevel.map((category) => (
                           <li key={category.id}>
                             <LocalizedClientLink
                               href={`/categories/${category.handle}`}
-                              className="txt-medium-plus text-text-primary hover:text-interactive"
+                              className="flex items-center min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:bg-ink-100 hover:text-interactive"
                               onClick={() => close()}
                             >
                               {category.name}
                             </LocalizedClientLink>
                             {!!category.category_children?.length && (
-                              <ul className="mt-2 pl-3 flex flex-col gap-2">
+                              <ul className="pl-4 flex flex-col gap-1">
                                 {category.category_children.map((child) => (
                                   <li key={child.id}>
                                     <LocalizedClientLink
                                       href={`/categories/${child.handle}`}
-                                      className="txt-small text-text-secondary hover:text-text-primary"
+                                      className="flex items-center min-h-[40px] px-3 -mx-3 rounded-radius-sm txt-small text-text-secondary hover:bg-ink-100 hover:text-text-primary"
                                       onClick={() => close()}
                                     >
                                       {child.name}
@@ -123,15 +129,18 @@ export default function MobileNavDrawer({
                     </li>
 
                     <li>
-                      <span className="txt-large-plus text-text-primary block mb-3">
-                        Food Central
-                      </span>
-                      <ul className="flex flex-col gap-2 pl-2">
+                      <div className="flex items-center gap-2 mb-3">
+                        <MapPin className="text-secondary" aria-hidden="true" />
+                        <Heading level="h3" display className="text-body-lg">
+                          Food Central
+                        </Heading>
+                      </div>
+                      <ul className="flex flex-col gap-1 pl-1">
                         {FOOD_CENTRAL_DESTINATIONS.map((destination) => (
                           <li key={destination.href}>
                             <LocalizedClientLink
                               href={destination.href}
-                              className="txt-medium-plus text-text-primary hover:text-interactive"
+                              className="flex items-center min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:bg-ink-100 hover:text-interactive"
                               onClick={() => close()}
                             >
                               {destination.label}
@@ -141,26 +150,28 @@ export default function MobileNavDrawer({
                       </ul>
                     </li>
 
-                    <li className="border-t border-divider pt-6 flex flex-col gap-3">
+                    <li className="border-t border-border pt-6 flex flex-col gap-1">
                       <LocalizedClientLink
                         href="/account"
-                        className="txt-medium-plus text-text-primary hover:text-interactive"
+                        className="flex items-center gap-2 min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:bg-ink-100 hover:text-interactive"
                         onClick={() => close()}
                       >
+                        <User className="text-text-secondary" aria-hidden="true" />
                         Account
                       </LocalizedClientLink>
                       <LocalizedClientLink
                         href="/cart"
-                        className="txt-medium-plus text-text-primary hover:text-interactive"
+                        className="flex items-center gap-2 min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:bg-ink-100 hover:text-interactive"
                         onClick={() => close()}
                       >
+                        <ShoppingBag className="text-text-secondary" aria-hidden="true" />
                         Cart
                       </LocalizedClientLink>
                     </li>
                   </ul>
                 </nav>
 
-                <div className="flex flex-col gap-y-6 border-t border-divider pt-6 mt-6">
+                <div className="flex flex-col gap-y-6 border-t border-border px-6 py-6">
                   {!!locales?.length && (
                     <div
                       className="flex justify-between"
