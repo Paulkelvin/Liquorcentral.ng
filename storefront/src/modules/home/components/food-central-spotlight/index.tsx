@@ -36,12 +36,14 @@ export default async function FoodCentralSpotlight({
 
   const { response } = await listProducts({
     countryCode,
-    queryParams: { limit: 4, fields: "+food_details.*" },
+    queryParams: { limit: 100, fields: "+food_details.*" },
   })
 
-  const foodProducts = response.products.filter(
-    (product) => (product as unknown as { food_details?: unknown }).food_details
-  )
+  const foodProducts = response.products
+    .filter(
+      (product) => (product as unknown as { food_details?: unknown }).food_details
+    )
+    .slice(0, 4)
 
   return (
     <div className="content-container py-12 small:py-24">
