@@ -95,7 +95,9 @@ export default async function Nav() {
                   data-testid="nav-cart-link"
                 >
                   <ShoppingBag />
-                  <span aria-hidden="true">Cart</span>
+                  <span aria-hidden="true" className="hidden small:inline">
+                    Cart
+                  </span>
                 </LocalizedClientLink>
               }
             >

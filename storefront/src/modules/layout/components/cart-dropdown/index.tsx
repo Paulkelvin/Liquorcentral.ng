@@ -96,16 +96,20 @@ const CartDropdown = ({
           className="h-full inline-flex items-center gap-1.5 hover:text-interactive relative"
           data-testid="nav-cart-link"
         >
-          <ShoppingBag />
-          <span aria-hidden="true">Cart</span>
-          {totalItems > 0 && (
-            <span
-              aria-hidden="true"
-              className="min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-surface-elevated text-[11px] leading-[18px] font-semibold text-center"
-            >
-              {totalItems}
-            </span>
-          )}
+          <span className="relative inline-flex">
+            <ShoppingBag />
+            {totalItems > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute -top-1 -right-1.5 min-w-[16px] h-[16px] px-[3px] rounded-full bg-primary text-surface-elevated text-[10px] leading-[16px] font-semibold text-center"
+              >
+                {totalItems}
+              </span>
+            )}
+          </span>
+          <span aria-hidden="true" className="hidden small:inline">
+            Cart
+          </span>
         </PopoverButton>
         <Transition
           show={cartDropdownOpen}

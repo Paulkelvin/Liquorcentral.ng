@@ -2,7 +2,7 @@
 
 import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useState } from "react"
-import { Button, Heading, Text } from "@modules/common/components/ui"
+import { Button, Text } from "@modules/common/components/ui"
 import { AGE_GATE_COOKIE_NAME as COOKIE_NAME } from "./constants"
 
 /**
@@ -75,31 +75,45 @@ export default function AgeGate({
             >
               <Dialog.Panel
                 data-testid="age-gate"
-                className="w-full max-w-sm rounded-radius-lg bg-surface-elevated p-8 text-left shadow-elevation-3"
+                className="w-full max-w-xs rounded-radius-lg bg-surface-elevated p-6 text-left shadow-elevation-3"
               >
                 {declined ? (
                   <>
-                    <Dialog.Title as={Heading} level="h2" display className="mb-3">
+                    <Dialog.Title
+                      as="h2"
+                      className="font-display text-heading-3 font-medium leading-snug text-text-primary mb-2"
+                    >
                       Age restricted
                     </Dialog.Title>
-                    <Text muted>
+                    <Text size="caption" muted>
                       You must be of legal drinking age to access
                       LiquorCentral.
                     </Text>
                   </>
                 ) : (
                   <>
-                    <Dialog.Title as={Heading} level="h2" display className="mb-3">
+                    <Dialog.Title
+                      as="h2"
+                      className="font-display text-heading-3 font-medium leading-snug text-text-primary mb-2"
+                    >
                       Welcome to LiquorCentral
                     </Dialog.Title>
-                    <Text muted className="mb-6">
+                    <Text size="caption" muted className="mb-5">
                       You must be of legal drinking age to enter this site.
                       Please confirm your age.
                     </Text>
-                    <div className="flex flex-col gap-3 sm:flex-row">
+                    <div className="flex flex-col gap-2">
+                      {/* A dark charcoal fill rather than the loud brand
+                          accent color — this modal's "refined classic"
+                          aesthetic deliberately steps outside the shared
+                          Button variants' color/radius, so the color and
+                          radius are overridden with `!` (important)
+                          utilities rather than relying on className
+                          ordering, which Tailwind doesn't guarantee wins
+                          against the component's own hardcoded classes. */}
                       <Button
                         onClick={confirm}
-                        className="w-full"
+                        className="w-full !rounded-[4px] !bg-ink-900 !text-surface-elevated hover:!bg-ink-700 active:!bg-ink-900"
                         data-testid="age-gate-confirm"
                       >
                         I am 18 or older
@@ -107,7 +121,7 @@ export default function AgeGate({
                       <Button
                         onClick={decline}
                         variant="secondary"
-                        className="w-full"
+                        className="w-full !rounded-[4px] !border !border-border !bg-transparent !text-text-secondary hover:!text-text-primary"
                         data-testid="age-gate-decline"
                       >
                         I am under 18
