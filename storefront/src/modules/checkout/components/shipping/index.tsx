@@ -388,7 +388,7 @@ const Shipping: React.FC<ShippingProps> = ({
         <div>
           <div className="text-caption">
             {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
-              <div className="flex flex-col w-1/3">
+              <div className="flex flex-col w-full small:w-1/3">
                 <Text className="txt-medium-plus text-text-primary mb-1">
                   Method
                 </Text>

@@ -14,9 +14,12 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
       <Heading level="h2" className="flex flex-row text-heading-1 my-6">
         Delivery
       </Heading>
-      <div className="flex items-start gap-x-8">
+      {/* Same real bug as checkout's Addresses summary panel: an
+          unconditional 3-column row with no responsive stacking squeezed
+          every column to ~1/3 of even a narrow mobile viewport. */}
+      <div className="flex flex-col small:flex-row items-start gap-6 small:gap-x-8">
         <div
-          className="flex flex-col w-1/3"
+          className="flex flex-col w-full small:w-1/3"
           data-testid="shipping-address-summary"
         >
           <Text className="txt-medium-plus text-text-primary mb-1">
@@ -37,18 +40,18 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
         </div>
 
         <div
-          className="flex flex-col w-1/3 "
+          className="flex flex-col w-full small:w-1/3"
           data-testid="shipping-contact-summary"
         >
           <Text className="txt-medium-plus text-text-primary mb-1">Contact</Text>
           <Text className="txt-medium text-text-secondary">
             {order.shipping_address?.phone}
           </Text>
-          <Text className="txt-medium text-text-secondary">{order.email}</Text>
+          <Text className="txt-medium text-text-secondary break-all">{order.email}</Text>
         </div>
 
         <div
-          className="flex flex-col w-1/3"
+          className="flex flex-col w-full small:w-1/3"
           data-testid="shipping-method-summary"
         >
           <Text className="txt-medium-plus text-text-primary mb-1">Method</Text>
