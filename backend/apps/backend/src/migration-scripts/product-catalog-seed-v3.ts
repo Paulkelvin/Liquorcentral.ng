@@ -39,7 +39,7 @@ type FoodDetailsSeed = {
 
 type SeedProduct = {
   handle: string;
-  imageKeywords: string;
+  realImageUrl: string;
   title: string;
   description: string;
   price: number; // NGN, plain decimal amount (this project's convention)
@@ -53,7 +53,7 @@ type SeedProduct = {
 const PRODUCTS: SeedProduct[] = [
   {
     handle: "chateau-margaux-2015",
-    imageKeywords: "red-wine,wine-bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Pavillon-Rouge-de-Margaux-1985.JPG",
     title: "Château Margaux 2015",
     description:
       "A legendary Bordeaux first-growth. Rich blackcurrant and cedar notes with a long, silky finish.",
@@ -72,7 +72,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "casillero-del-diablo-cabernet-sauvignon",
-    imageKeywords: "red-wine,wine-bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b7/Casillero_del_Diablo_wine.jpg",
     title: "Casillero del Diablo Cabernet Sauvignon",
     description: "An approachable Chilean red with dark fruit and light spice, smooth tannins.",
     price: 12000,
@@ -90,7 +90,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "dom-perignon-vintage-2013",
-    imageKeywords: "champagne,champagne-bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/76/Dom_Perignon_1999.jpg",
     title: "Dom Pérignon Vintage 2013",
     description: "A prestige vintage champagne — crisp citrus and brioche with fine, persistent bubbles.",
     price: 250000,
@@ -108,7 +108,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "veuve-clicquot-yellow-label",
-    imageKeywords: "champagne,champagne-bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/25/Veuve_clicquot.jpg",
     title: "Veuve Clicquot Yellow Label",
     description: "A classic non-vintage champagne — bright apple and pear with a rich, toasty finish.",
     price: 68000,
@@ -125,7 +125,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "johnnie-walker-blue-label",
-    imageKeywords: "whisky,whiskey",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Johnnie_Walker_Blue_Label_-_promotional_bottle_-_Suvarnabhumi_Airport.JPG",
     title: "Johnnie Walker Blue Label",
     description: "A rare blend of some of Scotland's finest aged whiskies — smoky, honeyed, and complex.",
     price: 175000,
@@ -142,7 +142,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "macallan-12-double-cask",
-    imageKeywords: "whisky,scotch",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Macallan_12.jpg",
     title: "The Macallan 12 Year Double Cask",
     description: "Single malt Scotch aged in a combination of American and European oak sherry casks.",
     price: 62000,
@@ -160,7 +160,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "jack-daniels-old-no-7",
-    imageKeywords: "whiskey,bourbon",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c0/Jack_Daniel%27s_Old_No._7_1%2C14l.jpg",
     title: "Jack Daniel's Old No. 7",
     description: "Tennessee whiskey mellowed drop by drop through sugar maple charcoal.",
     price: 28000,
@@ -177,7 +177,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "hennessy-vsop",
-    imageKeywords: "cognac,brandy",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d6/Hennessy_cognac_bottle_with_drinking_glass.JPG",
     title: "Hennessy VSOP",
     description: "A rich, complex cognac with notes of dried fruit, toffee, and toasted almond.",
     price: 55000,
@@ -194,7 +194,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "grey-goose-vodka",
-    imageKeywords: "vodka,bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Grey_Goose_Bottle.jpg",
     title: "Grey Goose Vodka",
     description: "A clean, smooth French vodka with a subtle almond finish.",
     price: 32000,
@@ -211,7 +211,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "bombay-sapphire-gin",
-    imageKeywords: "gin,bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Bombay-sapphire.jpg",
     title: "Bombay Sapphire Gin",
     description: "A vibrant London Dry gin — bright juniper with citrus and warm spice notes.",
     price: 27000,
@@ -228,7 +228,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "bacardi-superior-rum",
-    imageKeywords: "rum,bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c1/2023_Rum_Bacardi_Carta_Oro_%283%29.jpg",
     title: "Bacardi Superior Rum",
     description: "A light, crisp white rum with subtle vanilla and almond notes.",
     price: 21000,
@@ -245,7 +245,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "patron-silver-tequila",
-    imageKeywords: "tequila,bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b3/PatronGoldBottle.jpg",
     title: "Patrón Silver Tequila",
     description: "A smooth, 100% agave tequila with fresh agave, citrus, and light pepper notes.",
     price: 58000,
@@ -262,7 +262,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "baileys-irish-cream",
-    imageKeywords: "cream-liqueur,bottle",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Baileys_Original_Irish_Cream_Bottle.jpg",
     title: "Baileys Irish Cream",
     description: "A smooth blend of Irish whiskey and cream with notes of cocoa and vanilla.",
     price: 18000,
@@ -279,7 +279,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "heineken-lager-crate",
-    imageKeywords: "beer,lager",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Heineken_Bottle.JPG",
     title: "Heineken Lager (Crate of 12)",
     description: "A crisp, balanced lager with a mild bitterness — crate of 12 bottles.",
     price: 9500,
@@ -295,8 +295,34 @@ const PRODUCTS: SeedProduct[] = [
     },
   },
   {
+    handle: "premium-whisky-gift-set",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/11/Six_classic_malt_whiskys_of_Scotland_inside_box.JPG",
+    title: "Premium Whisky Gift Set",
+    description: "A curated set of classic single malt Scotch whiskies, boxed and ready to gift.",
+    price: 95000,
+    categoryHandles: ["gift-sets"],
+    optionTitle: "Set",
+    optionValue: "6 x 50ml",
+    wine_details: {
+      producer: "Assorted Scottish Distilleries",
+      region: "Scotland",
+      bottle_size: "6 x 50ml",
+      tasting_notes: "A tasting selection across six classic Scotch malt styles.",
+    },
+  },
+  {
+    handle: "sommelier-corkscrew-set",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/6/63/Corkscrew_bottle_openers.jpg",
+    title: "Sommelier Corkscrew & Bottle Opener Set",
+    description: "A waiter's-friend style corkscrew and bottle opener set for wine and spirits.",
+    price: 8500,
+    categoryHandles: ["accessories"],
+    optionTitle: "Set",
+    optionValue: "Standard",
+  },
+  {
     handle: "jollof-rice-grilled-chicken",
-    imageKeywords: "jollof-rice,nigerian-food",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Jollof_rice_and_veggies.jpg",
     title: "Jollof Rice with Grilled Chicken",
     description: "Classic smoky-sweet jollof rice served with a grilled chicken quarter.",
     price: 6500,
@@ -314,7 +340,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "suya-platter-beef-skewers",
-    imageKeywords: "suya,skewers",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/54/Suya.jpg",
     title: "Suya Platter (Beef Skewers)",
     description: "Spiced grilled beef skewers with yaji suya spice, served with onion and tomato.",
     price: 8000,
@@ -332,7 +358,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "peppered-goat-meat-asun",
-    imageKeywords: "goat-meat,nigerian-food",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/43/Asun.jpg",
     title: "Peppered Goat Meat (Asun)",
     description: "Chopped, char-grilled goat meat tossed in a spicy pepper sauce.",
     price: 9500,
@@ -350,7 +376,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "grilled-tilapia-fried-plantain",
-    imageKeywords: "grilled-fish,plantain",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Plated_grilled_fish.jpg",
     title: "Grilled Tilapia with Fried Plantain",
     description: "Whole grilled tilapia fish with a side of sweet fried plantain and pepper sauce.",
     price: 8500,
@@ -368,7 +394,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "chicken-shawarma-wrap",
-    imageKeywords: "shawarma,wrap",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/40/Shawarma.png",
     title: "Chicken Shawarma Wrap",
     description: "Grilled chicken shawarma wrapped in pita with garlic sauce, lettuce, and pickles.",
     price: 4500,
@@ -386,7 +412,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "small-chops-party-pack",
-    imageKeywords: "spring-rolls,snacks",
+    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Small_chops.jpg",
     title: "Small Chops Party Pack",
     description: "An assorted party pack of spring rolls, samosa, puff puff, chicken drumettes, and fish rolls.",
     price: 15000,
@@ -414,8 +440,11 @@ export default async function product_catalog_seed({
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const fulfillmentModuleService = container.resolve(Modules.FULFILLMENT);
 
-  const imageUrl = (seed: SeedProduct, index: number) =>
-    `https://loremflickr.com/600/800/${encodeURIComponent(seed.imageKeywords)}?lock=${index + 1}`;
+  // Real product photography sourced from Wikimedia Commons (openly
+  // licensed) — not brand-supplied imagery. Fine for a UI-review pass;
+  // if LiquorCentral secures real supplier/brand photography later,
+  // that should replace these, not the other way around.
+  const imageUrl = (seed: SeedProduct, _index: number) => seed.realImageUrl;
 
   const existingProducts = await productModuleService.listProducts(
     {},
