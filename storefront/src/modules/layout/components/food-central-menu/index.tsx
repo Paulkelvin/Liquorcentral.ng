@@ -3,6 +3,8 @@
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useHoverIntentOpen } from "@lib/hooks/use-hover-intent-open"
+import { clx } from "@modules/common/components/ui"
+import { usePathname } from "next/navigation"
 import { Fragment, useRef } from "react"
 
 /**
@@ -24,6 +26,9 @@ const FOOD_CENTRAL_DESTINATIONS = [
 export default function FoodCentralMenu() {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const hoverIntent = useHoverIntentOpen(triggerRef)
+  const pathname = usePathname()
+  const isActive = pathname?.includes("/food-central") ?? false
+  const activeClass = isActive ? "text-text-primary font-semibold" : "text-text-secondary"
 
   return (
     <Popover className="h-full flex relative" as="div">
@@ -38,7 +43,11 @@ export default function FoodCentralMenu() {
         >
           <PopoverButton
             ref={triggerRef}
-            className="h-full flex items-center hover:text-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            aria-current={isActive ? "page" : undefined}
+            className={clx(
+              "h-full flex items-center hover:text-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-focus",
+              activeClass
+            )}
             data-testid="food-central-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >

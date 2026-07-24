@@ -1,4 +1,8 @@
+"use client"
+
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { clx } from "@modules/common/components/ui"
+import { usePathname } from "next/navigation"
 
 /**
  * 01_NAVIGATION_SPECIFICATION.md §7.2 — a persistent, horizontally-
@@ -8,8 +12,16 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
  * viewport. Deliberately just two equal-weight links here (not a
  * dropdown/mega-menu trigger, which is desktop-specific, §6) — depth
  * beneath either branch lives in the drawer (§7.3), not this strip.
+ *
+ * The currently-selected department reads in the primary text color;
+ * the other stays in the muted/secondary color — everywhere else (not
+ * "/food-central") is treated as Wine & Spirits' own territory, since
+ * that's this platform's primary catalog.
  */
 export default function MobileWayfindingStrip() {
+  const pathname = usePathname()
+  const isFoodCentral = pathname?.includes("/food-central") ?? false
+
   return (
     <div
       className="sm:hidden flex items-center gap-6 overflow-x-auto px-4 h-11 border-b border-border bg-surface-elevated"
@@ -17,13 +29,25 @@ export default function MobileWayfindingStrip() {
     >
       <LocalizedClientLink
         href="/store"
-        className="txt-small-plus text-text-primary whitespace-nowrap hover:text-interactive"
+        aria-current={!isFoodCentral ? "page" : undefined}
+        className={clx(
+          "txt-small-plus whitespace-nowrap hover:text-interactive",
+          !isFoodCentral
+            ? "text-text-primary font-semibold"
+            : "text-text-secondary"
+        )}
       >
         Wine &amp; Spirits
       </LocalizedClientLink>
       <LocalizedClientLink
         href="/food-central"
-        className="txt-small-plus text-text-primary whitespace-nowrap hover:text-interactive"
+        aria-current={isFoodCentral ? "page" : undefined}
+        className={clx(
+          "txt-small-plus whitespace-nowrap hover:text-interactive",
+          isFoodCentral
+            ? "text-text-primary font-semibold"
+            : "text-text-secondary"
+        )}
       >
         Food Central
       </LocalizedClientLink>

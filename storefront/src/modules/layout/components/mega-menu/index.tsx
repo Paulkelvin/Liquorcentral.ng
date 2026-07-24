@@ -5,6 +5,8 @@ import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { groupCategoriesForMegaMenu } from "@lib/util/mega-menu"
 import { useHoverIntentOpen } from "@lib/hooks/use-hover-intent-open"
+import { clx } from "@modules/common/components/ui"
+import { usePathname } from "next/navigation"
 import { Fragment, useRef } from "react"
 
 type MegaMenuProps = {
@@ -34,6 +36,11 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const hoverIntent = useHoverIntentOpen(triggerRef)
   const columns = groupCategoriesForMegaMenu(categories, 3)
+  const pathname = usePathname()
+  // Everywhere that isn't "/food-central" is Wine & Spirits' own
+  // territory, since that's this platform's primary catalog.
+  const isActive = !(pathname?.includes("/food-central") ?? false)
+  const activeClass = isActive ? "text-text-primary font-semibold" : "text-text-secondary"
 
   if (columns.length === 0) {
     // §24 — a category-tree fetch/empty failure falls back to the plain
@@ -41,7 +48,8 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
     return (
       <LocalizedClientLink
         href="/store"
-        className="h-full flex items-center hover:text-interactive"
+        aria-current={isActive ? "page" : undefined}
+        className={clx("h-full flex items-center hover:text-interactive", activeClass)}
       >
         Wine &amp; Spirits
       </LocalizedClientLink>
@@ -69,7 +77,11 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
         >
           <PopoverButton
             ref={triggerRef}
-            className="h-full flex items-center hover:text-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            aria-current={isActive ? "page" : undefined}
+            className={clx(
+              "h-full flex items-center hover:text-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-focus",
+              activeClass
+            )}
             data-testid="mega-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >

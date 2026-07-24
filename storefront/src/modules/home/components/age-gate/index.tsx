@@ -56,7 +56,10 @@ export default function AgeGate({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-ink-900/60" aria-hidden="true" />
+          <div
+            className="fixed inset-0 bg-overlay backdrop-blur-md"
+            aria-hidden="true"
+          />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -76,7 +79,7 @@ export default function AgeGate({
               >
                 {declined ? (
                   <>
-                    <Dialog.Title as={Heading} level="h2" className="mb-3">
+                    <Dialog.Title as={Heading} level="h2" display className="mb-3">
                       Age restricted
                     </Dialog.Title>
                     <Text muted>
@@ -86,12 +89,12 @@ export default function AgeGate({
                   </>
                 ) : (
                   <>
-                    <Dialog.Title as={Heading} level="h2" className="mb-3">
+                    <Dialog.Title as={Heading} level="h2" display className="mb-3">
                       Welcome to LiquorCentral
                     </Dialog.Title>
                     <Text muted className="mb-6">
-                      This site sells alcohol. Please confirm you are of
-                      legal drinking age to continue.
+                      You must be of legal drinking age to enter this site.
+                      Please confirm your age.
                     </Text>
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <Button
@@ -99,7 +102,7 @@ export default function AgeGate({
                         className="w-full"
                         data-testid="age-gate-confirm"
                       >
-                        I am of legal age
+                        I am 18 or older
                       </Button>
                       <Button
                         onClick={decline}
@@ -107,7 +110,7 @@ export default function AgeGate({
                         className="w-full"
                         data-testid="age-gate-decline"
                       >
-                        I am not
+                        I am under 18
                       </Button>
                     </div>
                   </>
