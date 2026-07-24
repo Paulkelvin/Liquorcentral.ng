@@ -11,7 +11,7 @@ const ErrorMessage = ({ error, 'data-testid': dataTestid }: { error?: string | n
 
   return (
     <div
-      className="pt-2 text-rose-500 text-small-regular"
+      className="pt-2 text-danger text-caption"
       role="alert"
       aria-live="assertive"
       data-testid={dataTestid}

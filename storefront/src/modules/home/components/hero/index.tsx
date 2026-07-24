@@ -20,7 +20,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 export default function Hero() {
   return (
     <div className="w-full border-b border-border bg-surface">
-      <div className="content-container flex flex-col items-center text-center gap-6 py-24 small:py-32">
+      <div className="ds-container flex flex-col items-center text-center gap-6 py-24 small:py-32">
         <Heading level="h1" display className="text-heading-1 max-w-2xl">
           Nigeria&rsquo;s premium destination for curated wines, spirits,
           and complementary culinary experiences.

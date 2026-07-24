@@ -23,14 +23,14 @@ type MyInformationProps = {
  */
 const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
   return (
-    <div className="text-small-regular" data-testid="account-email-editor">
+    <div className="text-caption" data-testid="account-email-editor">
       <div className="flex flex-col">
-        <span className="uppercase text-ui-fg-base">Email</span>
+        <span className="uppercase text-text-primary">Email</span>
         <span className="font-semibold" data-testid="current-info">
           {customer.email}
         </span>
       </div>
-      <Text className="text-ui-fg-subtle mt-2">
+      <Text className="text-text-secondary mt-2">
         Changing your email address isn&apos;t supported yet — please contact
         us if you need this address updated.
       </Text>

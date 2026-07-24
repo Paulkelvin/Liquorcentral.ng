@@ -120,7 +120,7 @@ const ShippingAddress = ({
     <>
       {customer && (addressesInRegion?.length || 0) > 0 && (
         <Container className="mb-6 flex flex-col gap-y-4 p-5">
-          <p className="text-small-regular">
+          <p className="text-caption">
             {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
           </p>
           <AddressSelect
@@ -178,7 +178,7 @@ const ShippingAddress = ({
             onChange={handleChange}
             data-testid="shipping-landmark-input"
           />
-          <Text className="txt-small text-ui-fg-subtle mt-1">
+          <Text className="txt-small text-text-secondary mt-1">
             e.g. &ldquo;behind Shoprite, opposite First Bank&rdquo; — helps our
             rider find you faster.
           </Text>

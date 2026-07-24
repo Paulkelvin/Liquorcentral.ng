@@ -94,12 +94,12 @@ const Item = ({
       </Table.Cell>
 
       <Table.Cell className="text-left">
-        <Text className="txt-medium-plus text-ui-fg-base" data-testid="product-title">
+        <Text className="txt-medium-plus text-text-primary" data-testid="product-title">
           {item.product_title}
         </Text>
         <LineItemOptions variant={item.variant} data-testid="product-variant" />
         {isUnavailable && (
-          <Text className="text-ui-fg-error mt-1" data-testid="product-unavailable-notice">
+          <Text className="text-danger mt-1" data-testid="product-unavailable-notice">
             Currently unavailable — remove this item or check back later.
           </Text>
         )}
@@ -155,7 +155,7 @@ const Item = ({
         >
           {type === "preview" && (
             <span className="flex gap-x-1 ">
-              <Text className="text-ui-fg-muted">{item.quantity}x </Text>
+              <Text className="text-text-muted">{item.quantity}x </Text>
               <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
             </span>
           )}

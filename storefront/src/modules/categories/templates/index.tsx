@@ -56,7 +56,7 @@ export default function CategoryTemplate({
     <>
       <Breadcrumbs segments={breadcrumbSegments} />
       <div
-        className="flex flex-col small:flex-row small:items-start py-6 content-container"
+        className="flex flex-col small:flex-row small:items-start py-6 ds-container"
         data-testid="category-container"
       >
       <RefinementList
@@ -65,11 +65,11 @@ export default function CategoryTemplate({
         hideOptionsPicker
       />
       <div className="w-full">
-        <div className="flex flex-row mb-8 text-2xl-semi gap-4">
+        <div className="flex flex-row mb-8 text-heading-2 font-semibold gap-4">
           <h1 data-testid="category-page-title">{category.name}</h1>
         </div>
         {category.description && (
-          <div className="mb-8 text-base-regular">
+          <div className="mb-8 text-body">
             <p>{category.description}</p>
           </div>
         )}

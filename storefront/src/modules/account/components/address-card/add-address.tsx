@@ -59,11 +59,11 @@ const AddAddress = ({
   return (
     <>
       <button
-        className="border border-ui-border-base rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between"
+        className="border border-border rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between"
         onClick={open}
         data-testid="add-address-button"
       >
-        <span className="text-base-semi">New address</span>
+        <span className="text-body font-semibold">New address</span>
         <Plus />
       </button>
 
@@ -105,7 +105,7 @@ const AddAddress = ({
                   autoComplete="address-line2"
                   data-testid="address-2-input"
                 />
-                <Text className="txt-small text-ui-fg-subtle mt-1">
+                <Text className="txt-small text-text-secondary mt-1">
                   e.g. &ldquo;behind Shoprite, opposite First Bank&rdquo; —
                   helps our rider find you faster.
                 </Text>
@@ -145,7 +145,7 @@ const AddAddress = ({
             </div>
             {formState.error && (
               <div
-                className="text-rose-500 text-small-regular py-2"
+                className="text-danger text-caption py-2"
                 data-testid="address-error"
               >
                 {formState.error}

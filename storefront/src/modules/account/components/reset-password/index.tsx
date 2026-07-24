@@ -50,7 +50,7 @@ const ResetPassword = () => {
       className="max-w-sm w-full flex flex-col items-center text-center gap-y-4"
       data-testid="reset-password-page"
     >
-      <h1 className="text-large-semi uppercase">Set a new password</h1>
+      <h1 className="text-body font-semibold uppercase">Set a new password</h1>
 
       {state === "form" && (
         <form
@@ -75,7 +75,7 @@ const ResetPassword = () => {
           />
           {error && (
             <div
-              className="text-rose-500 text-small-regular py-2"
+              className="text-danger text-caption py-2"
               role="alert"
               aria-live="assertive"
             >
@@ -97,7 +97,7 @@ const ResetPassword = () => {
       {state === "success" && (
         <>
           <p
-            className="text-base-regular text-ui-fg-base"
+            className="text-body text-text-primary"
             role="status"
             aria-live="polite"
           >
@@ -113,7 +113,7 @@ const ResetPassword = () => {
       {state === "error" && (
         <>
           <p
-            className="text-base-regular text-ui-fg-base"
+            className="text-body text-text-primary"
             role="alert"
             aria-live="assertive"
           >

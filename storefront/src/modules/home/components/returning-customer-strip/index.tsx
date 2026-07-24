@@ -32,7 +32,7 @@ export default async function ReturningCustomerStrip() {
   }
 
   return (
-    <div className="content-container py-8 border-t border-divider">
+    <div className="ds-container py-8 border-t border-divider">
       <Text className="txt-small-plus text-text-primary mb-4">
         Reorder from a recent order
       </Text>

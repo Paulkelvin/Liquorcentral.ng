@@ -31,8 +31,8 @@ export default async function Profile() {
   return (
     <div className="w-full" data-testid="profile-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Profile</h1>
-        <p className="text-base-regular">
+        <h1 className="text-heading-2 font-semibold">Profile</h1>
+        <p className="text-body">
           View and update your profile information, including your name and
           phone number, and change your password.
         </p>
@@ -51,5 +51,5 @@ export default async function Profile() {
 }
 
 const Divider = () => {
-  return <div className="w-full h-px bg-gray-200" />
+  return <div className="w-full h-px bg-ink-200" />
 }

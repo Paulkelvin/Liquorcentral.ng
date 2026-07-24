@@ -24,10 +24,10 @@ const ForgotPassword = ({ setCurrentView }: Props) => {
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="forgot-password-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Reset your password</h1>
+      <h1 className="text-body font-semibold uppercase mb-6">Reset your password</h1>
       {message?.state === "sent" ? (
         <div
-          className="w-full mb-6 text-center text-base-regular text-ui-fg-base bg-ui-bg-subtle border border-ui-border-base rounded-rounded p-4"
+          className="w-full mb-6 text-center text-body text-text-primary bg-surface border border-border rounded-rounded p-4"
           data-testid="password-reset-sent-message"
           role="status"
           aria-live="polite"
@@ -37,7 +37,7 @@ const ForgotPassword = ({ setCurrentView }: Props) => {
         </div>
       ) : (
         <>
-          <p className="text-center text-base-regular text-ui-fg-base mb-8">
+          <p className="text-center text-body text-text-primary mb-8">
             Enter the email address you sign in with — we&apos;ll send a link
             to reset your password.
           </p>
@@ -60,7 +60,7 @@ const ForgotPassword = ({ setCurrentView }: Props) => {
           </form>
         </>
       )}
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
+      <span className="text-center text-text-primary text-caption mt-6">
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
           className="underline"

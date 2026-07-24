@@ -58,7 +58,7 @@ export default async function SearchPage(props: Props) {
   const pageNumber = searchParams.page ? parseInt(searchParams.page) : 1
 
   return (
-    <div className="content-container py-6">
+    <div className="ds-container py-6">
       <h1 className="txt-2xl-semi mb-2" data-testid="search-page-title">
         {query ? `Search results for "${query}"` : "Search"}
       </h1>

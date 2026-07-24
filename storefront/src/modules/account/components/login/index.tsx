@@ -17,13 +17,13 @@ const Login = ({ setCurrentView }: Props) => {
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="login-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">Welcome back</h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-8">
+      <h1 className="text-body font-semibold uppercase mb-6">Welcome back</h1>
+      <p className="text-center text-body text-text-primary mb-8">
         Sign in to access an enhanced shopping experience.
       </p>
       {message?.state === "verification_required" && (
         <div
-          className="w-full mb-6 text-center text-base-regular text-ui-fg-base bg-ui-bg-subtle border border-ui-border-base rounded-rounded p-4"
+          className="w-full mb-6 text-center text-body text-text-primary bg-surface border border-border rounded-rounded p-4"
           data-testid="login-verification-message"
         >
           We sent a verification link to <strong>{message.email}</strong>.
@@ -56,7 +56,7 @@ const Login = ({ setCurrentView }: Props) => {
           <button
             type="button"
             onClick={() => setCurrentView(LOGIN_VIEW.FORGOT_PASSWORD)}
-            className="text-small-regular text-ui-fg-base underline"
+            className="text-caption text-text-primary underline"
             data-testid="forgot-password-button"
           >
             Forgot password?
@@ -70,7 +70,7 @@ const Login = ({ setCurrentView }: Props) => {
           Sign in
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
+      <span className="text-center text-text-primary text-caption mt-6">
         Not a member?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}

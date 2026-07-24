@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  */
 export default function SupportPage() {
   return (
-    <div className="content-container py-16">
+    <div className="ds-container py-16">
       <EmptyState
         title="Support"
         description="Delivery and returns information is coming soon."

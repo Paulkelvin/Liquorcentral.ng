@@ -100,7 +100,7 @@ export default async function ProductPreview({
         />
         <div className="flex txt-compact-medium mt-4 justify-between items-start gap-2">
           <div className="flex flex-col gap-1 min-w-0">
-            <Text className="text-ui-fg-subtle" data-testid="product-title">
+            <Text className="text-text-secondary" data-testid="product-title">
               {product.title}
             </Text>
             {catalogFact && (

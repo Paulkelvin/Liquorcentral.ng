@@ -21,12 +21,12 @@ const CartTemplate = ({
 }) => {
   return (
     <div className="py-12">
-      <div className="content-container" data-testid="cart-container">
+      <div className="ds-container" data-testid="cart-container">
         {notices && notices.length > 0 && (
           <div
             role="status"
             aria-live="polite"
-            className="mb-6 flex flex-col gap-y-2 rounded-radius-sm border border-warning bg-warning-tint p-4 text-small-regular text-text-primary"
+            className="mb-6 flex flex-col gap-y-2 rounded-radius-sm border border-warning bg-warning-tint p-4 text-caption text-text-primary"
             data-testid="cart-notices"
           >
             {notices.map((notice, index) => (
@@ -36,7 +36,7 @@ const CartTemplate = ({
         )}
         {cart?.items?.length ? (
           <div className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-x-40">
-            <div className="flex flex-col bg-white py-6 gap-y-6">
+            <div className="flex flex-col bg-surface-elevated py-6 gap-y-6">
               {!customer && (
                 <>
                   <SignInPrompt />
@@ -49,7 +49,7 @@ const CartTemplate = ({
               <div className="flex flex-col gap-y-8 sticky top-12">
                 {cart && cart.region && (
                   <>
-                    <div className="bg-white py-6">
+                    <div className="bg-surface-elevated py-6">
                       <Summary cart={cart} />
                     </div>
                   </>

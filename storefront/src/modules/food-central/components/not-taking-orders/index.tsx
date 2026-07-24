@@ -14,7 +14,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
  */
 export default function NotTakingOrders({ title }: { title: string }) {
   return (
-    <div className="content-container">
+    <div className="ds-container">
       <EmptyState
         title={title}
         description="Food Central isn't taking orders yet. Check back soon."

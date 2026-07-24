@@ -43,7 +43,7 @@ export default async function Nav() {
       <header className="relative h-16 mx-auto border-b duration-200 bg-surface-elevated border-border">
         <nav
           aria-label="Main"
-          className="content-container txt-xsmall-plus text-text-secondary flex items-center justify-between w-full h-full text-small-regular"
+          className="ds-container txt-xsmall-plus text-text-secondary flex items-center justify-between w-full h-full text-caption"
         >
           <div className="flex-1 basis-0 h-full flex items-center gap-6">
             <div className="h-full sm:hidden">

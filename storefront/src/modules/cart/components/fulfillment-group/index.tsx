@@ -48,12 +48,12 @@ const FulfillmentGroup = ({
           <Heading level="h2" className="txt-medium-plus">
             {title}
           </Heading>
-          <Text className="text-ui-fg-subtle">{deliveryMessage}</Text>
+          <Text className="text-text-secondary">{deliveryMessage}</Text>
         </div>
       </div>
       <Table>
         <Table.Header className="border-t-0">
-          <Table.Row className="text-ui-fg-subtle txt-medium-plus">
+          <Table.Row className="text-text-secondary txt-medium-plus">
             <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
             <Table.HeaderCell>
               <span className="sr-only">Product image</span>
@@ -82,9 +82,9 @@ const FulfillmentGroup = ({
       </Table>
       <div className="flex justify-end">
         <div className="flex items-center gap-x-4">
-          <Text className="text-ui-fg-subtle">{title} subtotal</Text>
+          <Text className="text-text-secondary">{title} subtotal</Text>
           <Text
-            className="txt-medium-plus text-ui-fg-base"
+            className="txt-medium-plus text-text-primary"
             data-testid="cart-fulfillment-group-subtotal"
             data-value={subtotal}
           >

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  */
 export default function AboutPage() {
   return (
-    <div className="content-container py-16">
+    <div className="ds-container py-16">
       <EmptyState
         title="About LiquorCentral"
         description="This page is coming soon."

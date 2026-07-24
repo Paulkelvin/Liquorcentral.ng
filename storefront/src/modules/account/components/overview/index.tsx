@@ -15,15 +15,15 @@ const Overview = ({ customer, orders }: OverviewProps) => {
   return (
     <div data-testid="overview-page-wrapper">
       <div className="hidden small:block">
-        <div className="text-xl-semi flex justify-between items-center mb-4">
+        <div className="text-heading-3 font-semibold flex justify-between items-center mb-4">
           <h1
-            className="text-xl-semi"
+            className="text-heading-3 font-semibold"
             data-testid="welcome-message"
             data-value={customer?.first_name}
           >
             Hello {customer?.first_name}
           </h1>
-          <span className="text-small-regular text-ui-fg-base">
+          <span className="text-caption text-text-primary">
             Signed in as:{" "}
             <span
               className="font-semibold"
@@ -34,36 +34,36 @@ const Overview = ({ customer, orders }: OverviewProps) => {
             </span>
           </span>
         </div>
-        <div className="flex flex-col py-8 border-t border-gray-200">
+        <div className="flex flex-col py-8 border-t border-divider">
           <div className="flex flex-col gap-y-4 h-full col-span-1 row-span-2 flex-1">
             <div className="flex items-start gap-x-16 mb-6">
               <div className="flex flex-col gap-y-4">
-                <h2 className="text-large-semi">Profile</h2>
+                <h2 className="text-body font-semibold">Profile</h2>
                 <div className="flex items-end gap-x-2">
                   <span
-                    className="text-3xl-semi leading-none"
+                    className="text-heading-1 font-semibold leading-none"
                     data-testid="customer-profile-completion"
                     data-value={getProfileCompletion(customer)}
                   >
                     {getProfileCompletion(customer)}%
                   </span>
-                  <span className="uppercase text-base-regular text-ui-fg-subtle">
+                  <span className="uppercase text-body text-text-secondary">
                     Completed
                   </span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-y-4">
-                <h2 className="text-large-semi">Addresses</h2>
+                <h2 className="text-body font-semibold">Addresses</h2>
                 <div className="flex items-end gap-x-2">
                   <span
-                    className="text-3xl-semi leading-none"
+                    className="text-heading-1 font-semibold leading-none"
                     data-testid="addresses-count"
                     data-value={customer?.addresses?.length || 0}
                   >
                     {customer?.addresses?.length || 0}
                   </span>
-                  <span className="uppercase text-base-regular text-ui-fg-subtle">
+                  <span className="uppercase text-body text-text-secondary">
                     Saved
                   </span>
                 </div>
@@ -72,7 +72,7 @@ const Overview = ({ customer, orders }: OverviewProps) => {
 
             <div className="flex flex-col gap-y-4">
               <div className="flex items-center gap-x-2">
-                <h2 className="text-large-semi">Recent orders</h2>
+                <h2 className="text-body font-semibold">Recent orders</h2>
               </div>
               <ul
                 className="flex flex-col gap-y-4"
@@ -89,8 +89,8 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                         <LocalizedClientLink
                           href={`/account/orders/details/${order.id}`}
                         >
-                          <Container className="bg-gray-50 flex justify-between items-center p-4">
-                            <div className="grid grid-cols-4 grid-rows-2 text-small-regular gap-x-4 flex-1">
+                          <Container className="bg-ink-100 flex justify-between items-center p-4">
+                            <div className="grid grid-cols-4 grid-rows-2 text-caption gap-x-4 flex-1">
                               <span className="font-semibold">Date placed</span>
                               <span className="font-semibold">
                                 Order number

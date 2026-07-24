@@ -28,7 +28,7 @@ export default async function CuratedCollections({
 
   if (collections.length === 0) {
     return (
-      <div className="content-container py-12 small:py-24 text-center">
+      <div className="ds-container py-12 small:py-24 text-center">
         <Text muted className="mb-4">
           Curated collections are coming soon.
         </Text>

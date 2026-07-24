@@ -26,7 +26,7 @@ const Item = ({ item, currencyCode }: ItemProps) => {
 
       <Table.Cell className="text-left">
         <Text
-          className="txt-medium-plus text-ui-fg-base"
+          className="txt-medium-plus text-text-primary"
           data-testid="product-name"
         >
           {item.product_title}
@@ -37,7 +37,7 @@ const Item = ({ item, currencyCode }: ItemProps) => {
       <Table.Cell className="!pr-0">
         <span className="!pr-0 flex flex-col items-end h-full justify-center">
           <span className="flex gap-x-1 ">
-            <Text className="text-ui-fg-muted">
+            <Text className="text-text-muted">
               <span data-testid="product-quantity">{item.quantity}</span>x{" "}
             </Text>
             <LineItemUnitPrice

@@ -47,7 +47,7 @@ const Item: React.FC<AccordionItemProps> = ({
     <AccordionPrimitive.Item
       {...props}
       className={clx(
-        "border-grey-20 group border-t last:mb-0 last:border-b",
+        "border-border group border-t last:mb-0 last:border-b",
         "py-3",
         className
       )}
@@ -70,7 +70,7 @@ const Item: React.FC<AccordionItemProps> = ({
               05_PRODUCT_DETAILS_SPECIFICATION.md §25). */}
           <AccordionPrimitive.Trigger className="flex w-full items-center justify-between text-left">
             <div className="flex items-center gap-4">
-              <Text className="text-ui-fg-subtle text-sm">{title}</Text>
+              <Text className="text-text-secondary text-sm">{title}</Text>
             </div>
             {customTrigger || <MorphingTrigger />}
           </AccordionPrimitive.Trigger>
@@ -88,7 +88,7 @@ const Item: React.FC<AccordionItemProps> = ({
           "radix-state-closed:animate-accordion-close radix-state-open:animate-accordion-open radix-state-closed:pointer-events-none px-1"
         )}
       >
-        <div className="inter-base-regular group-radix-state-closed:animate-accordion-close">
+        <div className="text-body group-radix-state-closed:animate-accordion-close">
           {description && <Text>{description}</Text>}
           <div className="w-full">{children}</div>
         </div>
@@ -103,10 +103,10 @@ const MorphingTrigger = () => {
   return (
     <div
       aria-hidden="true"
-      className="text-grey-90 hover:bg-grey-5 active:bg-grey-5 active:text-violet-60 focus:border-violet-60 disabled:text-grey-30 bg-transparent disabled:bg-transparent rounded-rounded group relative p-[6px]">
+      className="text-text-primary hover:bg-ink-100 active:bg-ink-100 active:text-interactive focus:border-focus disabled:text-disabled bg-transparent disabled:bg-transparent rounded-rounded group relative p-[6px]">
       <div className="h-5 w-5">
-        <span className="bg-grey-50 rounded-circle group-radix-state-open:rotate-90 absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] duration-300" />
-        <span className="bg-grey-50 rounded-circle group-radix-state-open:rotate-90 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] duration-300" />
+        <span className="bg-text-primary rounded-circle group-radix-state-open:rotate-90 absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] duration-300" />
+        <span className="bg-text-primary rounded-circle group-radix-state-open:rotate-90 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] duration-300" />
       </div>
     </div>
   )

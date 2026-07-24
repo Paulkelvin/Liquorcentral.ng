@@ -50,7 +50,7 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
     const hasOverflow = lines.length > 4
     return (
       <div key={title} className="mb-4">
-        <Text className="txt-small-plus text-ui-fg-subtle mb-2">{title}</Text>
+        <Text className="txt-small-plus text-text-secondary mb-2">{title}</Text>
         <div
           className={clx({
             "pl-[1px] overflow-y-scroll overflow-x-hidden no-scrollbar max-h-[420px]":
@@ -74,7 +74,7 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
           </Table>
         </div>
         <div className="flex justify-end">
-          <Text className="txt-small-plus text-ui-fg-subtle">
+          <Text className="txt-small-plus text-text-secondary">
             {title} subtotal:{" "}
             {convertToLocale({
               amount: groupSubtotal(lines, giftWrapByParent),

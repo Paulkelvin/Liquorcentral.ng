@@ -58,7 +58,7 @@ export default function ReorderButton({
             </Text>
           )}
           {summary.unavailable.length > 0 && summary.addedCount > 0 && (
-            <Text className="text-ui-fg-subtle">
+            <Text className="text-text-secondary">
               {summary.unavailable.length} item
               {summary.unavailable.length === 1 ? "" : "s"} could not be
               re-added ({summary.unavailable.join(", ")}) — no longer
@@ -66,7 +66,7 @@ export default function ReorderButton({
             </Text>
           )}
           {summary.priceChanged.length > 0 && (
-            <Text className="text-ui-fg-subtle">
+            <Text className="text-text-secondary">
               {summary.priceChanged.join(", ")}{" "}
               {summary.priceChanged.length === 1 ? "has" : "have"} changed in
               price since this order.

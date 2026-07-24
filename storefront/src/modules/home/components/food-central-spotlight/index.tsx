@@ -46,7 +46,7 @@ export default async function FoodCentralSpotlight({
     .slice(0, 4)
 
   return (
-    <div className="content-container py-12 small:py-24">
+    <div className="ds-container py-12 small:py-24">
       <div className="flex justify-between items-center mb-8">
         <Heading level="h2" className="txt-xlarge">
           Today&rsquo;s Menu

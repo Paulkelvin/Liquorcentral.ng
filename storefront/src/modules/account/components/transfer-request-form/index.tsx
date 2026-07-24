@@ -33,7 +33,7 @@ export default function TransferRequestForm() {
           <Heading level="h2" className="!text-sm font-semibold text-neutral-950">
             Order transfers
           </Heading>
-          <p className="text-small-regular text-neutral-500">
+          <p className="text-caption text-neutral-500">
             Can&apos;t find the order you are looking for?
             <br /> Connect an order to your account.
           </p>
@@ -55,7 +55,7 @@ export default function TransferRequestForm() {
         </form>
       </div>
       {!state.success && state.error && (
-        <Text className="text-base-regular text-rose-500 text-right">
+        <Text className="text-body text-danger text-right">
           {state.error}
         </Text>
       )}
@@ -67,7 +67,7 @@ export default function TransferRequestForm() {
               <Text className="text-medim-pl text-neutral-950">
                 Transfer for order {state.order?.id} requested
               </Text>
-              <Text className="text-base-regular text-neutral-600">
+              <Text className="text-body text-neutral-600">
                 Transfer request email sent to {state.order?.email}
               </Text>
             </div>

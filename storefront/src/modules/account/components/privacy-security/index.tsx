@@ -43,28 +43,28 @@ export default function PrivacySecurity({ customer }: Props) {
   return (
     <div className="w-full" data-testid="privacy-security-page">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Privacy &amp; security</h1>
+        <h1 className="text-heading-2 font-semibold">Privacy &amp; security</h1>
       </div>
 
       <div className="flex flex-col gap-y-8">
         <section>
-          <h2 className="text-large-semi mb-2">Your data</h2>
-          <Text className="text-ui-fg-base mb-4">
+          <h2 className="text-body font-semibold mb-2">Your data</h2>
+          <Text className="text-text-primary mb-4">
             This is the personal data your account holds today.
           </Text>
-          <dl className="grid grid-cols-[140px_1fr] gap-y-2 text-small-regular">
-            <dt className="text-ui-fg-subtle">Name</dt>
+          <dl className="grid grid-cols-[140px_1fr] gap-y-2 text-caption">
+            <dt className="text-text-secondary">Name</dt>
             <dd data-testid="privacy-name">
               {customer.first_name} {customer.last_name}
             </dd>
-            <dt className="text-ui-fg-subtle">Email</dt>
+            <dt className="text-text-secondary">Email</dt>
             <dd data-testid="privacy-email">{customer.email}</dd>
-            <dt className="text-ui-fg-subtle">Phone</dt>
+            <dt className="text-text-secondary">Phone</dt>
             <dd data-testid="privacy-phone">{customer.phone || "—"}</dd>
-            <dt className="text-ui-fg-subtle">Saved addresses</dt>
+            <dt className="text-text-secondary">Saved addresses</dt>
             <dd data-testid="privacy-address-count">{addressCount}</dd>
           </dl>
-          <Text className="text-ui-fg-subtle mt-4">
+          <Text className="text-text-secondary mt-4">
             To correct any of this, use Profile or Addresses. The exact
             length of time this data is retained, and how it complies with
             Nigerian data-protection requirements (NDPR), hasn&apos;t been
@@ -73,9 +73,9 @@ export default function PrivacySecurity({ customer }: Props) {
           </Text>
         </section>
 
-        <section className="border-t border-gray-200 pt-8">
-          <h2 className="text-large-semi mb-2">Leave LiquorCentral</h2>
-          <Text className="text-ui-fg-base mb-4">
+        <section className="border-t border-divider pt-8">
+          <h2 className="text-body font-semibold mb-2">Leave LiquorCentral</h2>
+          <Text className="text-text-primary mb-4">
             You can request that your account be deactivated (reversible) or
             deleted (not reversible). Either way, any order you&apos;ve
             already placed stays exactly as it was — this only affects your
@@ -88,7 +88,7 @@ export default function PrivacySecurity({ customer }: Props) {
               tabIndex={-1}
               role="status"
               aria-live="polite"
-              className="focus:outline-none rounded-rounded border border-ui-border-base bg-ui-bg-subtle p-4"
+              className="focus:outline-none rounded-rounded border border-border bg-surface p-4"
               data-testid="lifecycle-request-confirmation"
             >
               We&apos;ve recorded your {state.requested} request. Since the
@@ -114,7 +114,7 @@ export default function PrivacySecurity({ customer }: Props) {
                   />
                   {state.error && (
                     <div
-                      className="text-rose-500 text-small-regular"
+                      className="text-danger text-caption"
                       role="alert"
                       aria-live="assertive"
                     >

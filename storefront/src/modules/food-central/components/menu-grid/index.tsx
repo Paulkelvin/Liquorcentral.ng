@@ -49,7 +49,7 @@ export default async function FoodCentralMenuGrid({
   }
 
   return (
-    <div className="content-container py-12 small:py-24">
+    <div className="ds-container py-12 small:py-24">
       <div className="mb-8 flex flex-col gap-y-2">
         <Heading level="h1" className="txt-xlarge">
           {title}

@@ -18,9 +18,9 @@ export default function NotificationPreferences() {
   return (
     <div className="w-full" data-testid="notification-preferences-page">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Notification preferences</h1>
+        <h1 className="text-heading-2 font-semibold">Notification preferences</h1>
       </div>
-      <Text className="text-ui-fg-base">
+      <Text className="text-text-primary">
         Notification channels (email, WhatsApp) are approved but not yet
         connected — there&apos;s nothing to configure here yet. Once they are,
         you&apos;ll be able to choose how you hear about your orders here.

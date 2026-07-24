@@ -39,11 +39,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const wineStage = hasWineSpiritsItems(order) ? getWineDeliveryStage(order) : null
 
   return (
-    <div className="bg-white flex flex-col" data-testid="order-card">
-      <div className="uppercase text-large-semi mb-1">
+    <div className="bg-surface-elevated flex flex-col" data-testid="order-card">
+      <div className="uppercase text-body font-semibold mb-1">
         #<span data-testid="order-display-id">{order.display_id}</span>
       </div>
-      <div className="flex items-center divide-x divide-gray-200 text-small-regular text-ui-fg-base">
+      <div className="flex items-center divide-x divide-gray-200 text-caption text-text-primary">
         <span className="pr-2" data-testid="order-created-at">
           {new Date(order.created_at).toDateString()}
         </span>
@@ -90,9 +90,9 @@ const OrderCard = ({ order }: OrderCardProps) => {
                 size="full"
                 alt={i.title || "Product photo"}
               />
-              <div className="flex items-center text-small-regular text-ui-fg-base">
+              <div className="flex items-center text-caption text-text-primary">
                 <span
-                  className="text-ui-fg-base font-semibold"
+                  className="text-text-primary font-semibold"
                   data-testid="item-title"
                 >
                   {i.title}
@@ -105,10 +105,10 @@ const OrderCard = ({ order }: OrderCardProps) => {
         })}
         {numberOfProducts > 4 && (
           <div className="w-full h-full flex flex-col items-center justify-center">
-            <span className="text-small-regular text-ui-fg-base">
+            <span className="text-caption text-text-primary">
               + {numberOfLines - 4}
             </span>
-            <span className="text-small-regular text-ui-fg-base">more</span>
+            <span className="text-caption text-text-primary">more</span>
           </div>
         )}
       </div>

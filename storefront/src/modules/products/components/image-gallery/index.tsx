@@ -30,7 +30,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
     return (
       <div className="flex items-start relative">
         <div className="flex flex-col flex-1 small:mx-16 gap-y-4">
-          <Container className="relative aspect-[29/34] w-full overflow-hidden bg-ui-bg-subtle flex items-center justify-center">
+          <Container className="relative aspect-[29/34] w-full overflow-hidden bg-surface flex items-center justify-center">
             <PlaceholderImage size={36} />
           </Container>
         </div>
@@ -47,7 +47,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
           return (
             <Container
               key={image.id}
-              className="relative aspect-[29/34] w-full overflow-hidden bg-ui-bg-subtle"
+              className="relative aspect-[29/34] w-full overflow-hidden bg-surface"
               id={image.id}
             >
               {!!image.url && (

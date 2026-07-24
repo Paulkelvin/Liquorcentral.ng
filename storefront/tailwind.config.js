@@ -162,8 +162,15 @@ module.exports = {
         "heading-1": ["39px", { lineHeight: "1.15" }],
       },
       fontFamily: {
+        // LiquorCentral Design System body face (DESIGN_SYSTEM.md §B1 /
+        // BRAND_IDENTITY.md §14): DM Sans, self-hosted via next/font/google
+        // in src/app/layout.tsx (see `--font-body`). A humanist sans with
+        // more warmth than Inter (which this config named but never
+        // actually loaded as a real webfont — it silently fell through to
+        // the system stack), while remaining equally legible at small
+        // sizes for wine/food descriptions.
         sans: [
-          "Inter",
+          "var(--font-body)",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
@@ -174,13 +181,12 @@ module.exports = {
         ],
         // LiquorCentral Design System display face (DESIGN_SYSTEM.md §B1 /
         // BRAND_IDENTITY.md §14): "a warm serif/slab display face, used
-        // sparingly" — direction only, no specific typeface is selected
-        // yet (BRAND_GUIDELINES.md explicitly reserves that decision). A
-        // generic system-serif stack satisfies the direction without
-        // inventing a brand typeface choice; swap this one array for a
-        // real webfont when BRAND_GUIDELINES.md selects one — no component
-        // using `font-display` needs to change.
+        // sparingly" — Source Serif 4, self-hosted via next/font/google
+        // (see `--font-display`). Warm, substantial, reads as heritage and
+        // craft rather than fashion; excellent screen rendering at both
+        // heading and hero sizes.
         display: [
+          "var(--font-display)",
           "ui-serif",
           "Georgia",
           "Cambria",

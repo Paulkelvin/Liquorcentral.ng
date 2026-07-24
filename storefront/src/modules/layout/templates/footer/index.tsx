@@ -38,7 +38,7 @@ export default async function Footer() {
 
   return (
     <footer className="border-t border-border w-full">
-      <div className="content-container flex flex-col w-full">
+      <div className="ds-container flex flex-col w-full">
         <div className="flex flex-col gap-y-10 xsmall:flex-row items-start justify-between py-24">
           <div>
             <LocalizedClientLink
@@ -48,7 +48,7 @@ export default async function Footer() {
               LiquorCentral
             </LocalizedClientLink>
           </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-5 w-full sm:w-auto">
+          <div className="text-caption gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-5 w-full sm:w-auto">
             {topLevelCategories.length > 0 && (
               <div className="flex flex-col gap-y-2">
                 <span className="txt-small-plus text-text-primary">Shop</span>

@@ -43,13 +43,13 @@ const Addresses = ({
   const [message, formAction] = useActionState(setAddresses, null)
 
   return (
-    <div className="bg-white">
+    <div className="bg-surface-elevated">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           ref={headingRef}
           tabIndex={-1}
           level="h2"
-          className="flex flex-row text-3xl-regular gap-x-2 items-baseline focus:outline-none"
+          className="flex flex-row text-heading-1 gap-x-2 items-baseline focus:outline-none"
         >
           Shipping Address
           {!isOpen && <CheckCircleSolid />}
@@ -58,7 +58,7 @@ const Addresses = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="text-interactive hover:text-interactive-hover"
               data-testid="edit-address-button"
             >
               Edit
@@ -71,7 +71,7 @@ const Addresses = ({
           <div className="pb-8">
             {!customer && (
               <Text
-                className="text-ui-fg-subtle txt-small mb-4"
+                className="text-text-secondary txt-small mb-4"
                 data-testid="guest-checkout-note"
               >
                 You don&apos;t need an account to complete this order —
@@ -89,7 +89,7 @@ const Addresses = ({
               <div>
                 <Heading
                   level="h2"
-                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
+                  className="text-heading-1 gap-x-4 pb-6 pt-8"
                 >
                   Billing address
                 </Heading>
@@ -105,7 +105,7 @@ const Addresses = ({
         </form>
       ) : (
         <div>
-          <div className="text-small-regular">
+          <div className="text-caption">
             {cart && cart.shipping_address && hasRealAddress(cart.shipping_address) ? (
               <div className="flex items-start gap-x-8">
                 <div className="flex items-start gap-x-1 w-full">
@@ -113,19 +113,19 @@ const Addresses = ({
                     className="flex flex-col w-1/3"
                     data-testid="shipping-address-summary"
                   >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                    <Text className="txt-medium-plus text-text-primary mb-1">
                       Shipping Address
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    <Text className="txt-medium text-text-secondary">
                       {cart.shipping_address.first_name}{" "}
                       {cart.shipping_address.last_name}
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    <Text className="txt-medium text-text-secondary">
                       {cart.shipping_address.address_1}
                       {cart.shipping_address.address_2 &&
                         `, ${cart.shipping_address.address_2}`}
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    <Text className="txt-medium text-text-secondary">
                       {cart.shipping_address.city},{" "}
                       {cart.shipping_address.province}
                     </Text>
@@ -135,13 +135,13 @@ const Addresses = ({
                     className="flex flex-col w-1/3 "
                     data-testid="shipping-contact-summary"
                   >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                    <Text className="txt-medium-plus text-text-primary mb-1">
                       Delivery contact
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    <Text className="txt-medium text-text-secondary">
                       {cart.shipping_address.phone}
                     </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
+                    <Text className="txt-medium text-text-secondary">
                       {cart.email}
                     </Text>
                   </div>
@@ -150,26 +150,26 @@ const Addresses = ({
                     className="flex flex-col w-1/3"
                     data-testid="billing-address-summary"
                   >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                    <Text className="txt-medium-plus text-text-primary mb-1">
                       Billing Address
                     </Text>
 
                     {sameAsBilling ? (
-                      <Text className="txt-medium text-ui-fg-subtle">
+                      <Text className="txt-medium text-text-secondary">
                         Billing and delivery address are the same.
                       </Text>
                     ) : (
                       <>
-                        <Text className="txt-medium text-ui-fg-subtle">
+                        <Text className="txt-medium text-text-secondary">
                           {cart.billing_address?.first_name}{" "}
                           {cart.billing_address?.last_name}
                         </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
+                        <Text className="txt-medium text-text-secondary">
                           {cart.billing_address?.address_1}
                           {cart.billing_address?.address_2 &&
                             `, ${cart.billing_address.address_2}`}
                         </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
+                        <Text className="txt-medium text-text-secondary">
                           {cart.billing_address?.city},{" "}
                           {cart.billing_address?.province}
                         </Text>

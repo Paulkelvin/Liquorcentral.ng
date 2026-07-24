@@ -13,7 +13,7 @@ export const metadata: Metadata = {
  */
 export default function LegalPage() {
   return (
-    <div className="content-container py-16">
+    <div className="ds-container py-16">
       <EmptyState
         title="Legal & Compliance"
         description="This page is coming soon."

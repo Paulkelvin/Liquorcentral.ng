@@ -145,7 +145,7 @@
 
   input:focus ~ label,
   input:not(:placeholder-shown) ~ label {
-    @apply -translate-y-2 text-xsmall-regular;
+    @apply -translate-y-2 text-caption font-normal;
   }
 
   input:focus ~ label {
@@ -176,76 +176,15 @@
 }
 
 @layer components {
-  /* Vendored DTC Starter container (1440px) — untouched; existing
-     account/cart/checkout pages use this. */
-  .content-container {
-    @apply max-w-[1440px] w-full mx-auto px-6;
-  }
-
   /*
    * LiquorCentral Design System container (DESIGN_SYSTEM.md §B3): max
    * content width 1280px, centered, with the grid's own responsive
-   * margins (16px mobile, 24px tablet, 32px desktop). New shared layout
-   * components (Nav shell, Footer shell, and future page specifications)
-   * use this, not .content-container.
+   * margins (16px mobile, 24px tablet, 32px desktop). The single content
+   * width used platform-wide — the vendored DTC Starter's own 1440px
+   * `.content-container` has been fully migrated away from and removed.
    */
   .ds-container {
     @apply max-w-content w-full mx-auto px-4 md:px-6 lg:px-8;
   }
 
-  .contrast-btn {
-    @apply px-4 py-2 border border-black rounded-full hover:bg-black hover:text-white transition-colors duration-200 ease-in;
-  }
-
-  .text-xsmall-regular {
-    @apply text-[10px] leading-4 font-normal;
-  }
-
-  .text-small-regular {
-    @apply text-xs leading-5 font-normal;
-  }
-
-  .text-small-semi {
-    @apply text-xs leading-5 font-semibold;
-  }
-
-  .text-base-regular {
-    @apply text-sm leading-6 font-normal;
-  }
-
-  .text-base-semi {
-    @apply text-sm leading-6 font-semibold;
-  }
-
-  .text-large-regular {
-    @apply text-base leading-6 font-normal;
-  }
-
-  .text-large-semi {
-    @apply text-base leading-6 font-semibold;
-  }
-
-  .text-xl-regular {
-    @apply text-2xl leading-[36px] font-normal;
-  }
-
-  .text-xl-semi {
-    @apply text-2xl leading-[36px] font-semibold;
-  }
-
-  .text-2xl-regular {
-    @apply text-[30px] leading-[48px] font-normal;
-  }
-
-  .text-2xl-semi {
-    @apply text-[30px] leading-[48px] font-semibold;
-  }
-
-  .text-3xl-regular {
-    @apply text-[32px] leading-[44px] font-normal;
-  }
-
-  .text-3xl-semi {
-    @apply text-[32px] leading-[44px] font-semibold;
-  }
 }

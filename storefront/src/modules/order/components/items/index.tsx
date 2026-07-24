@@ -46,7 +46,7 @@ const Items = ({ order }: ItemsProps) => {
     }
     return (
       <div key={title} className="flex flex-col mb-4">
-        <Text className="txt-medium-plus text-ui-fg-base my-2">{title}</Text>
+        <Text className="txt-medium-plus text-text-primary my-2">{title}</Text>
         <Table>
           <Table.Body data-testid="products-table">
             {lines

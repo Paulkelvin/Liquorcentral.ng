@@ -42,7 +42,7 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="content-container pt-6">
+      <nav aria-label="Breadcrumb" className="ds-container pt-6">
         <ol className="flex flex-wrap items-center gap-x-2 txt-small text-text-secondary">
           {segments.map((segment, index) => {
             const isLast = index === segments.length - 1

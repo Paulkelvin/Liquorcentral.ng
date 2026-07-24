@@ -61,7 +61,7 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
           Cart
         </Heading>
         {wineLines.length > 0 && foodLines.length > 0 && (
-          <details className="text-small-regular text-ui-fg-subtle">
+          <details className="text-caption text-text-secondary">
             <summary className="cursor-pointer select-none">Why is my cart split?</summary>
             <p className="mt-2 max-w-sm">
               LiquorCentral is one company serving two catalogs with different delivery
@@ -75,7 +75,7 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
 
       <FulfillmentGroup
         title="Wine & Spirits"
-        icon={<TruckFast className="mt-1 shrink-0 text-ui-fg-subtle" aria-hidden="true" />}
+        icon={<TruckFast className="mt-1 shrink-0 text-text-secondary" aria-hidden="true" />}
         deliveryMessage="Delivered across all of Lagos."
         items={wineLines}
         giftWrapByParent={giftWrapByParent}
@@ -88,7 +88,7 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
 
       <FulfillmentGroup
         title="Food Central"
-        icon={<MapPin className="mt-1 shrink-0 text-ui-fg-subtle" aria-hidden="true" />}
+        icon={<MapPin className="mt-1 shrink-0 text-text-secondary" aria-hidden="true" />}
         deliveryMessage="Delivered within Lagos Island — same-day, scheduled, or pickup, chosen at checkout."
         items={foodLines}
         giftWrapByParent={giftWrapByParent}

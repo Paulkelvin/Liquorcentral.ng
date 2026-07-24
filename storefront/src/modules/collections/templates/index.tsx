@@ -29,10 +29,10 @@ export default function CollectionTemplate({
       <Breadcrumbs
         segments={[{ label: "Home", href: "/" }, { label: collection.title }]}
       />
-      <div className="flex flex-col small:flex-row small:items-start py-6 content-container">
+      <div className="flex flex-col small:flex-row small:items-start py-6 ds-container">
       <RefinementList sortBy={sort} hideOptionsPicker />
       <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
+        <div className="mb-8 text-heading-2 font-semibold">
           <h1>{collection.title}</h1>
         </div>
         <Suspense

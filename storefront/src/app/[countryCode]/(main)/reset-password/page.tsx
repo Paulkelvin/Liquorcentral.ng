@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
     <div className="w-full flex justify-center px-8 py-12">
       <Suspense
         fallback={
-          <p className="text-base-regular text-ui-fg-base">Loading...</p>
+          <p className="text-body text-text-primary">Loading...</p>
         }
       >
         <ResetPassword />

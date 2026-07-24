@@ -21,7 +21,7 @@ const STATEMENTS = [
 export default function TrustDeliveryBand() {
   return (
     <div className="w-full border-t border-divider bg-surface">
-      <div className="content-container py-12">
+      <div className="ds-container py-12">
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {STATEMENTS.map((statement) => (
             <li key={statement} className="flex items-start gap-3">

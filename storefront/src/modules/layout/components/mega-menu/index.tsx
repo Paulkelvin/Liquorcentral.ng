@@ -92,7 +92,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
             >
               <nav
                 aria-label="Wine & Spirits categories"
-                className="content-container py-8 grid grid-cols-1 sm:grid-cols-3 gap-8"
+                className="ds-container py-8 grid grid-cols-1 sm:grid-cols-3 gap-8"
               >
                 {columns.map((column, columnIndex) => (
                   <div key={columnIndex} className="flex flex-col gap-6">

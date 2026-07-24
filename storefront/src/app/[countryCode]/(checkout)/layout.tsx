@@ -12,10 +12,10 @@ export default function CheckoutLayout({
         Skip to content
       </a>
       <div className="h-16 bg-surface-elevated border-b border-border">
-        <nav className="flex h-full items-center content-container justify-between">
+        <nav className="flex h-full items-center ds-container justify-between">
           <LocalizedClientLink
             href="/cart"
-            className="text-small-semi text-text-primary flex items-center gap-x-2 uppercase flex-1 basis-0"
+            className="text-caption font-semibold text-text-primary flex items-center gap-x-2 uppercase flex-1 basis-0"
             data-testid="back-to-cart-link"
           >
             <ChevronDown className="rotate-90" size={16} />

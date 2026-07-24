@@ -25,10 +25,10 @@ export default function DeliveryEligibilityConflict() {
   return (
     <div
       role="alert"
-      className="bg-white border border-danger rounded-radius-sm p-6 mb-8"
+      className="bg-surface-elevated border border-danger rounded-radius-sm p-6 mb-8"
       data-testid="delivery-eligibility-conflict"
     >
-      <Heading level="h2" className="text-xl-semi text-text-primary mb-2">
+      <Heading level="h2" className="text-heading-3 font-semibold text-text-primary mb-2">
         Food Central can&apos;t deliver to this address
       </Heading>
       <Text className="text-text-secondary mb-4">

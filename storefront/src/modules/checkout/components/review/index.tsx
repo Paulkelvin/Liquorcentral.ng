@@ -37,14 +37,14 @@ const Review = ({
   const hasWineItems = productLines.some((item) => !isFoodCentralItem(item))
 
   return (
-    <div className="bg-white">
+    <div className="bg-surface-elevated">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           ref={headingRef}
           tabIndex={-1}
           level="h2"
           className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline focus:outline-none",
+            "flex flex-row text-heading-1 gap-x-2 items-baseline focus:outline-none",
             {
               "opacity-50 pointer-events-none select-none": !isOpen,
             }
@@ -57,7 +57,7 @@ const Review = ({
         <>
           <div className="flex items-start gap-x-1 w-full mb-6">
             <div className="w-full">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+              <Text className="txt-medium-plus text-text-primary mb-1">
                 By clicking the Place Order button, you confirm that you have
                 read, understand and accept our Terms of Use, Terms of Sale and
                 Returns Policy and acknowledge that you have read Medusa
@@ -65,7 +65,7 @@ const Review = ({
               </Text>
               {hasWineItems && (
                 <Text
-                  className="text-ui-fg-subtle txt-small mt-2"
+                  className="text-text-secondary txt-small mt-2"
                   data-testid="checkout-age-verification-note"
                 >
                   This order contains age-restricted items — you&apos;ll
