@@ -1,6 +1,7 @@
 import { MedusaContainer } from "@medusajs/framework";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import {
+  createCollectionsWorkflow,
   createProductsWorkflow,
   createShippingProfilesWorkflow,
 } from "@medusajs/medusa/core-flows";
@@ -444,9 +445,13 @@ export default async function product_catalog_seed({
 
   if (toCreate.length === 0) {
     logger.info("product-catalog-seed: all seed products already exist — images refreshed, skipping creation.");
-    return;
+  } else {
+    await createMissingProducts();
   }
 
+  await seedCuratedCollections();
+
+  async function createMissingProducts() {
   const categories = await productModuleService.listProductCategories(
     {},
     { select: ["id", "handle"] }
@@ -531,4 +536,76 @@ export default async function product_catalog_seed({
   logger.info(
     `product-catalog-seed: finished creating ${toCreate.length} product(s).`
   );
+  }
+
+  // Curated Collections — 02_HOMEPAGE_SPECIFICATION.md §8.4/§19: the
+  // homepage's Curated Collections section only ever renders its
+  // fallback link until at least one real Collection exists. Seeding two
+  // here so the homepage has genuine shelves to show, same UI-review
+  // rationale as the products themselves — not a final merchandising
+  // decision on naming or grouping.
+  async function seedCuratedCollections() {
+  const COLLECTIONS: { title: string; handle: string; productHandles: string[] }[] = [
+    {
+      title: "Featured Wines & Spirits",
+      handle: "featured-wines-spirits",
+      productHandles: [
+        "chateau-margaux-2015",
+        "dom-perignon-vintage-2013",
+        "johnnie-walker-blue-label",
+        "hennessy-vsop",
+      ],
+    },
+    {
+      title: "Everyday Favourites",
+      handle: "everyday-favourites",
+      productHandles: [
+        "casillero-del-diablo-cabernet-sauvignon",
+        "jack-daniels-old-no-7",
+        "grey-goose-vodka",
+        "heineken-lager-crate",
+      ],
+    },
+  ];
+
+  const existingCollections = await productModuleService.listProductCollections(
+    {},
+    { select: ["id", "handle"] }
+  );
+  const allProducts = await productModuleService.listProducts(
+    {},
+    { select: ["id", "handle"] }
+  );
+  const productIdByHandle = new Map(allProducts.map((p) => [p.handle, p.id]));
+
+  for (const collectionSeed of COLLECTIONS) {
+    let collectionId = existingCollections.find(
+      (c) => c.handle === collectionSeed.handle
+    )?.id;
+
+    if (!collectionId) {
+      const { result } = await createCollectionsWorkflow(container).run({
+        input: {
+          collections: [
+            { title: collectionSeed.title, handle: collectionSeed.handle },
+          ],
+        },
+      });
+      collectionId = result[0].id;
+      logger.info(`product-catalog-seed: created collection "${collectionSeed.title}".`);
+    }
+
+    const productIds = collectionSeed.productHandles
+      .map((handle) => productIdByHandle.get(handle))
+      .filter((id): id is string => !!id);
+
+    for (const productId of productIds) {
+      await productModuleService.updateProducts(productId, {
+        collection_id: collectionId,
+      });
+    }
+  }
+
+  logger.info("product-catalog-seed: finished seeding curated collections.");
+  }
 }
