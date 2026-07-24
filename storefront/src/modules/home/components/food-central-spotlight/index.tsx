@@ -48,7 +48,7 @@ export default async function FoodCentralSpotlight({
   return (
     <div className="ds-container py-12 small:py-24">
       <div className="flex justify-between items-center mb-8">
-        <Heading level="h2" className="txt-xlarge">
+        <Heading level="h2" display>
           Today&rsquo;s Menu
         </Heading>
         <LocalizedClientLink

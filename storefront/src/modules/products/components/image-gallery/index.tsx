@@ -25,11 +25,12 @@ type ImageGalleryProps = {
  */
 const ImageGallery = ({ images, title }: ImageGalleryProps) => {
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   if (images.length === 0) {
     return (
       <div className="flex items-start relative">
-        <div className="flex flex-col flex-1 small:mx-16 gap-y-4">
+        <div className="flex flex-col flex-1 gap-y-4">
           <Container className="relative aspect-[29/34] w-full overflow-hidden bg-surface flex items-center justify-center">
             <PlaceholderImage size={36} />
           </Container>
@@ -38,42 +39,81 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
     )
   }
 
-  return (
-    <div className="flex items-start relative">
-      <div className="flex flex-col flex-1 small:mx-16 gap-y-4">
-        {images.map((image, index) => {
-          const alt = `${title} — photo ${index + 1} of ${images.length}`
+  const activeImage = images[activeIndex] ?? images[0]
+  const activeAlt = `${title} — photo ${activeIndex + 1} of ${images.length}`
 
-          return (
-            <Container
-              key={image.id}
-              className="relative aspect-[29/34] w-full overflow-hidden bg-surface"
-              id={image.id}
-            >
-              {!!image.url && (
-                <button
-                  type="button"
-                  onClick={() => setZoomedIndex(index)}
-                  aria-label={`Zoom in on ${alt}`}
-                  className="absolute inset-0 h-full w-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-                >
+  return (
+    <div className="relative">
+      {/* Design Audit Phase 3 roadmap item 12 — "proper image gallery with
+          thumbnails," replacing the previous vertical stack of every
+          full-size image one after another. One large image at a time,
+          selected from a thumbnail strip — the zoom lightbox (§6) is
+          unchanged, now zooming whichever image is currently active. */}
+      <Container
+        className="relative aspect-[29/34] w-full overflow-hidden bg-surface"
+        id={activeImage.id}
+      >
+        {!!activeImage.url && (
+          <button
+            type="button"
+            onClick={() => setZoomedIndex(activeIndex)}
+            aria-label={`Zoom in on ${activeAlt}`}
+            className="absolute inset-0 h-full w-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+          >
+            <Image
+              src={activeImage.url}
+              priority
+              className="absolute inset-0 rounded-rounded"
+              alt={activeAlt}
+              fill
+              sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+              style={{
+                objectFit: "cover",
+              }}
+            />
+          </button>
+        )}
+      </Container>
+
+      {images.length > 1 && (
+        <div
+          role="tablist"
+          aria-label={`${title} photos`}
+          className="mt-4 grid grid-cols-5 gap-3"
+        >
+          {images.map((image, index) => {
+            const isActive = index === activeIndex
+            return (
+              <button
+                key={image.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-label={`Show photo ${index + 1} of ${images.length}`}
+                onClick={() => setActiveIndex(index)}
+                className={
+                  "relative aspect-square w-full overflow-hidden rounded-radius-sm bg-surface border transition-colors " +
+                  (isActive
+                    ? "border-primary"
+                    : "border-border hover:border-text-secondary")
+                }
+              >
+                {image.url && (
                   <Image
                     src={image.url}
-                    priority={index <= 2 ? true : false}
-                    className="absolute inset-0 rounded-rounded"
-                    alt={alt}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0"
                     fill
-                    sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-                    style={{
-                      objectFit: "cover",
-                    }}
+                    sizes="80px"
+                    style={{ objectFit: "cover" }}
                   />
-                </button>
-              )}
-            </Container>
-          )
-        })}
-      </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       <Dialog
         open={zoomedIndex !== null}

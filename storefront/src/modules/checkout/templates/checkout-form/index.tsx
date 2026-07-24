@@ -6,6 +6,7 @@ import { Heading } from "@modules/common/components/ui"
 import Addresses from "@modules/checkout/components/addresses"
 import DeliveryEligibilityConflict from "@modules/checkout/components/delivery-eligibility-conflict"
 import Payment from "@modules/checkout/components/payment"
+import ProgressSteps from "@modules/checkout/components/progress-steps"
 import Review from "@modules/checkout/components/review"
 import Shipping from "@modules/checkout/components/shipping"
 
@@ -42,6 +43,8 @@ export default async function CheckoutForm({
       <Heading level="h1" className="sr-only">
         Checkout
       </Heading>
+
+      <ProgressSteps />
 
       <Addresses cart={cart} customer={customer} />
 

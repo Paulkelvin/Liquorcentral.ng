@@ -98,18 +98,24 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           { label: product.title },
         ]}
       />
+      {/*
+       * Proposed Design Direction (Design Audit §13, Phase 3 roadmap item
+       * 12) — a 2-column layout, images on the left, product name/price/
+       * facts/actions together on the right, replacing the previous
+       * 3-column split (info | gallery | actions) that put the product's
+       * name on the opposite side of the page from its own price and
+       * add-to-cart control. "What am I buying" and "how do I buy it" now
+       * share one column, right beside the photos that answer them.
+       */}
       <div
-        className="ds-container  flex flex-col small:flex-row small:items-start py-6 relative"
+        className="ds-container grid grid-cols-1 small:grid-cols-2 gap-x-12 py-6 relative"
         data-testid="product-container"
       >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
-          <ProductInfo product={product} />
-          <ProductTabs product={product} />
-        </div>
-        <div className="block w-full relative">
+        <div className="w-full">
           <ImageGallery images={images} title={product.title ?? ""} />
         </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
+        <div className="flex flex-col small:sticky small:top-48 small:self-start w-full py-8 gap-y-8">
+          <ProductInfo product={product} />
           <ProductOnboardingCta />
           <Suspense
             fallback={
@@ -126,6 +132,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               countryCode={countryCode}
             />
           </Suspense>
+          <ProductTabs product={product} />
         </div>
       </div>
       <div

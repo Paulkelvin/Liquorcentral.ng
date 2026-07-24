@@ -3,7 +3,7 @@ import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
 import useFocusStepHeading from "@lib/hooks/use-focus-step-heading"
-import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
+import { CheckCircleSolid, CreditCard, ShieldCheck } from "@medusajs/icons"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripeCardContainer,
@@ -188,6 +188,17 @@ const Payment = ({
               </Text>
             </div>
           )}
+
+          {/* Design Audit Phase 3 roadmap item 14 ("Checkout visual
+              polish... trust signals at payment step") — the audit's own
+              Conversion & Trust finding: "'Secure payment' is a text
+              statement in the trust band [only]. No payment provider logos,
+              no security badges at checkout." A concrete reassurance right
+              beside the actual payment control, not just on the homepage. */}
+          <div className="flex items-center gap-2 text-caption text-text-secondary mt-4">
+            <ShieldCheck className="text-secondary shrink-0" />
+            <span>Your payment is processed securely. We never store your card details.</span>
+          </div>
 
           <ErrorMessage
             error={error}

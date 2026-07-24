@@ -1,5 +1,6 @@
 import { listCategories } from "@lib/data/categories";
 import { listCollections } from "@lib/data/collections";
+import { CheckCircleSolid } from "@medusajs/icons";
 import { Text, clx } from "@modules/common/components/ui";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
@@ -40,13 +41,17 @@ export default async function Footer() {
     <footer className="border-t border-border w-full">
       <div className="ds-container flex flex-col w-full">
         <div className="flex flex-col gap-y-10 xsmall:flex-row items-start justify-between py-24">
-          <div>
+          <div className="flex flex-col gap-y-2">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus text-text-secondary hover:text-text-primary uppercase"
+              className="font-display text-heading-4 font-semibold tracking-tight text-text-primary hover:text-interactive"
             >
               LiquorCentral
             </LocalizedClientLink>
+            <Text className="text-caption text-text-muted max-w-[220px]">
+              Premium wine, spirits, and Nigerian food — sold and delivered
+              directly by us, never a stranger.
+            </Text>
           </div>
           <div className="text-caption gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-5 w-full sm:w-auto">
             {topLevelCategories.length > 0 && (
@@ -191,10 +196,20 @@ export default async function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-text-muted">
-          <Text className="txt-compact-small" as="span">
+        <div className="flex flex-col sm:flex-row gap-y-4 w-full mb-16 sm:items-center sm:justify-between text-text-muted border-t border-border pt-8">
+          <Text className="text-caption" as="span">
             © {new Date().getFullYear()} LiquorCentral. All rights reserved.
           </Text>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-caption">
+            <span className="flex items-center gap-1.5">
+              <CheckCircleSolid className="text-secondary shrink-0" />
+              Sold &amp; delivered directly by LiquorCentral
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircleSolid className="text-secondary shrink-0" />
+              Secure payment
+            </span>
+          </div>
         </div>
       </div>
     </footer>

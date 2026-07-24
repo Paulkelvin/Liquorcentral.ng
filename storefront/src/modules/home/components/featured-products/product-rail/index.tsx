@@ -1,6 +1,6 @@
 import { listProducts } from "@lib/data/products"
 import { HttpTypes } from "@medusajs/types"
-import { Text } from "@modules/common/components/ui"
+import { Heading } from "@modules/common/components/ui"
 
 import InteractiveLink from "@modules/common/components/interactive-link"
 import ProductPreview from "@modules/products/components/product-preview"
@@ -28,8 +28,10 @@ export default async function ProductRail({
 
   return (
     <div className="ds-container py-12 small:py-24">
-      <div className="flex justify-between mb-8">
-        <Text className="txt-xlarge">{collection.title}</Text>
+      <div className="flex justify-between items-center mb-8">
+        <Heading level="h2" display>
+          {collection.title}
+        </Heading>
         <InteractiveLink href={`/collections/${collection.handle}`}>
           View all
         </InteractiveLink>
