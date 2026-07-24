@@ -20,7 +20,7 @@ export default async function CuratedCollections({
   countryCode: string
 }) {
   const region = await getRegion(countryCode)
-  const { collections } = await listCollections({ limit: "2" })
+  const { collections } = await listCollections({ limit: "6" })
 
   if (!region) {
     return null
