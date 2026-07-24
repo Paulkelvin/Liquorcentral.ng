@@ -28,8 +28,8 @@ export default async function ProductRail({
 
   return (
     <div className="ds-container py-12 small:py-24">
-      <div className="flex justify-between items-center mb-8">
-        <Heading level="h2" display>
+      <div className="flex justify-between items-center gap-4 mb-8">
+        <Heading level="h2" display className="min-w-0 truncate">
           {collection.title}
         </Heading>
         <InteractiveLink href={`/collections/${collection.handle}`}>
@@ -40,7 +40,7 @@ export default async function ProductRail({
         {pricedProducts &&
           pricedProducts.map((product) => (
             <li key={product.id}>
-              <ProductPreview product={product} region={region} isFeatured />
+              <ProductPreview product={product} region={region} />
             </li>
           ))}
       </ul>

@@ -34,12 +34,10 @@ function isVariantAvailable(variant: InventoryVariant) {
 
 export default async function ProductPreview({
   product,
-  isFeatured,
   showCatalogBadge,
   region: _region,
 }: {
   product: HttpTypes.StoreProduct
-  isFeatured?: boolean
   /**
    * 03_SEARCH_SPECIFICATION.md's new cross-catalog-labeling requirement
    * (a unified result list spans both catalogs, so each card needs its
@@ -95,7 +93,6 @@ export default async function ProductPreview({
           thumbnail={product.thumbnail}
           images={product.images}
           size="full"
-          isFeatured={isFeatured}
           alt={product.title || "Product photo"}
         />
         {/*
@@ -109,8 +106,12 @@ export default async function ProductPreview({
          * beyond that) so a long name can never push the layout apart or
          * collide with the price, at any card width.
          */}
-        <div className="flex flex-col txt-compact-medium mt-4 gap-1">
-          <Text className="text-text-secondary line-clamp-2" data-testid="product-title">
+        <div className="flex flex-col mt-3 gap-1">
+          <Text
+            size="caption"
+            className="text-text-secondary font-medium line-clamp-2"
+            data-testid="product-title"
+          >
             {product.title}
           </Text>
           {cheapestPrice && (

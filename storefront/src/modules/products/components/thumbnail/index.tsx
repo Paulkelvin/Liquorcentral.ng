@@ -8,7 +8,6 @@ type ThumbnailProps = {
   thumbnail?: string | null
   images?: { url?: string }[] | null
   size?: "small" | "medium" | "large" | "full" | "square"
-  isFeatured?: boolean
   className?: string
   /**
    * 04_PRODUCT_LISTING_SPECIFICATION.md §24 / §111 — "descriptive alt
@@ -25,7 +24,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   thumbnail,
   images,
   size = "small",
-  isFeatured,
   className,
   "data-testid": dataTestid,
   alt = "Product photo",
@@ -43,12 +41,25 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         // never actually defined anywhere in tailwind.config.js — Tailwind
         // silently generated no CSS for them, so every product card has
         // been rendering with zero shadow at all since it shipped.
-        "relative w-full overflow-hidden shadow-elevation-0 group-hover:shadow-elevation-1 transition-shadow duration-standard ease-in-out",
+        //
+        // `!p-0 !rounded-radius-sm` overrides Container's own hardcoded
+        // `rounded-radius-md p-4` base (a real bug: every product card
+        // image sat inset by 16px of padding it never needed) — `!`
+        // (important) is required since Tailwind doesn't guarantee a
+        // later className wins over the component's own hardcoded
+        // classes by source order alone.
+        "relative w-full overflow-hidden !p-0 !rounded-radius-sm shadow-elevation-0 group-hover:shadow-elevation-1 transition-shadow duration-standard ease-in-out",
         className,
         {
-          "aspect-[11/14]": isFeatured,
-          "aspect-[9/16]": !isFeatured && size !== "square",
-          "aspect-[1/1]": size === "square",
+          // A single uniform 1:1 ratio across every product-card-grid
+          // thumbnail ("full"/"square", used by ProductPreview) — the
+          // previous 9:16/11:14 split rendered every grid card as a very
+          // tall portrait strip. "small"/"medium"/"large" remain
+          // unaffected: those sizes are used for fixed-width line-item
+          // thumbnails (cart, order review), a different context this
+          // task's product-card-grid scope doesn't cover.
+          "aspect-[9/16]": size === "small" || size === "medium" || size === "large",
+          "aspect-square": size === "full" || size === "square",
           "w-[180px]": size === "small",
           "w-[290px]": size === "medium",
           "w-[440px]": size === "large",

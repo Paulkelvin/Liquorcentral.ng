@@ -24,7 +24,7 @@ function isVariantPurchasable(variant?: QuickAddVariant) {
 }
 
 const sharedClass =
-  "inline-flex items-center justify-center min-h-[44px] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+  "inline-flex items-center justify-center w-full min-h-[44px] py-2 px-4 text-caption font-medium rounded-radius-sm transition-colors duration-standard ease-in-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
 
 /**
  * 04_PRODUCT_LISTING_SPECIFICATION.md §9 "Quick actions" — a sibling
@@ -60,8 +60,11 @@ export default function QuickAddButton({
   const singleVariant = variants.length === 1 ? variants[0] : undefined
   const hasMultipleVariants = variants.length > 1
 
-  const primaryClass = `${sharedClass} w-full px-4 py-2 rounded-radius-md font-medium border border-border text-text-primary hover:bg-surface-elevated`
-  const secondaryClass = `${sharedClass} px-2 text-caption text-text-primary underline hover:text-interactive`
+  // Both weights are real buttons, never bare underlined text — §9's
+  // Food Central-primary / Wine-secondary visual-weight distinction is
+  // expressed as filled vs. outline, not as button-chrome vs. plain text.
+  const primaryClass = `${sharedClass} bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active`
+  const secondaryClass = `${sharedClass} bg-transparent border border-border text-text-primary hover:bg-ink-100 hover:border-text-secondary`
   const variantClass = weight === "primary" ? primaryClass : secondaryClass
 
   if (variants.length === 0 || (singleVariant && !isVariantPurchasable(singleVariant))) {
