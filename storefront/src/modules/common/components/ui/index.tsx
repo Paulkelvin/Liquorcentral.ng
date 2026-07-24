@@ -118,7 +118,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={clsx(
-          "inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-colors duration-standard ease-in-out",
+          // Proposed Design Direction / Phase 4 roadmap item 15 ("button
+          // press feedback") — a subtle scale-down on press, on top of the
+          // existing color-only active state, so pressing a button reads as
+          // a physical action, not just a color swap.
+          "inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-[background-color,transform] duration-standard ease-in-out active:scale-[0.98]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
           "disabled:pointer-events-none disabled:opacity-50 disabled:bg-disabled-surface disabled:text-disabled",
           variant === "primary" && "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
@@ -273,15 +277,25 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, id, ...props }, ref) => {
+  ({ className, label, error, id, name, ...props }, ref) => {
+    // A real, critical axe-core "every form element has a label" bug found
+    // during the Design Audit's own accessibility sweep: every caller of
+    // this component supplies `name` but not a separate `id` (the old,
+    // now-deleted Input auto-derived its own `id` from `name` the same
+    // way), so `htmlFor={id}` was resolving to `undefined` and the visible
+    // <label> was never actually associated with its <input> for any
+    // assistive technology. Falling back to `name` here fixes every
+    // consumer at the source instead of touching each call site.
+    const inputId = id ?? name
     return (
       <div className="flex flex-col gap-1">
-        {label && <Label htmlFor={id}>{label}</Label>}
+        {label && <Label htmlFor={inputId}>{label}</Label>}
         <input
           ref={ref}
-          id={id}
+          id={inputId}
+          name={name}
           aria-invalid={!!error}
-          aria-describedby={error && id ? `${id}-error` : undefined}
+          aria-describedby={error && inputId ? `${inputId}-error` : undefined}
           className={clsx(
             "flex min-h-[44px] w-full rounded-radius-sm border bg-surface-elevated px-3 py-2 text-body text-text-primary placeholder:text-text-muted",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
@@ -294,7 +308,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {/* Errors appear directly below the field, in plain language
             (DESIGN_SYSTEM.md §B9) — never a generic "invalid input". */}
         {error && (
-          <p id={id ? `${id}-error` : undefined} role="alert" className="text-caption text-danger">
+          <p id={inputId ? `${inputId}-error` : undefined} role="alert" className="text-caption text-danger">
             {error}
           </p>
         )}

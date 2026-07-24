@@ -98,43 +98,54 @@ export default async function ProductPreview({
           isFeatured={isFeatured}
           alt={product.title || "Product photo"}
         />
-        <div className="flex txt-compact-medium mt-4 justify-between items-start gap-2">
-          <div className="flex flex-col gap-1 min-w-0">
-            <Text className="text-text-secondary" data-testid="product-title">
-              {product.title}
+        {/*
+         * Real bug found on the live deployment, not the sandbox: a
+         * side-by-side title/price row (`justify-between items-start`)
+         * collided visually whenever a title wrapped to 2 lines on a
+         * narrow mobile card (2-column grid) — the price, pinned to the
+         * top via `items-start`, rendered directly beside the title's
+         * first line instead of clearing it. Price now sits on its own
+         * line below a title capped at 2 lines (`line-clamp-2`, ellipsis
+         * beyond that) so a long name can never push the layout apart or
+         * collide with the price, at any card width.
+         */}
+        <div className="flex flex-col txt-compact-medium mt-4 gap-1">
+          <Text className="text-text-secondary line-clamp-2" data-testid="product-title">
+            {product.title}
+          </Text>
+          {cheapestPrice && (
+            <div className="flex items-center gap-x-2">
+              <PreviewPrice price={cheapestPrice} />
+            </div>
+          )}
+          {catalogFact && (
+            <Text
+              as="span"
+              size="caption"
+              muted
+              data-testid={
+                showCatalogBadge
+                  ? "product-catalog-badge"
+                  : "product-catalog-fact"
+              }
+            >
+              {catalogFact}
             </Text>
-            {catalogFact && (
-              <Text
-                as="span"
-                size="caption"
-                muted
-                data-testid={
-                  showCatalogBadge
-                    ? "product-catalog-badge"
-                    : "product-catalog-fact"
-                }
-              >
-                {catalogFact}
-              </Text>
-            )}
-            {isUnavailable && (
-              <Text
-                as="span"
-                size="caption"
-                className="text-danger"
-                data-testid="product-unavailable-label"
-              >
-                {/* 09_FOOD_ORDERING_SPECIFICATION.md §6 — Food Central's
-                    kitchen-capacity "Unavailable" is a distinct concept
-                    from Wine & Spirits' stock-based "Sold out", not the
-                    same label reused. */}
-                {foodUnavailable ? "Unavailable" : "Sold out"}
-              </Text>
-            )}
-          </div>
-          <div className="flex items-center gap-x-2 shrink-0">
-            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
-          </div>
+          )}
+          {isUnavailable && (
+            <Text
+              as="span"
+              size="caption"
+              className="text-danger"
+              data-testid="product-unavailable-label"
+            >
+              {/* 09_FOOD_ORDERING_SPECIFICATION.md §6 — Food Central's
+                  kitchen-capacity "Unavailable" is a distinct concept
+                  from Wine & Spirits' stock-based "Sold out", not the
+                  same label reused. */}
+              {foodUnavailable ? "Unavailable" : "Sold out"}
+            </Text>
+          )}
         </div>
       </LocalizedClientLink>
       {!isUnavailable && (

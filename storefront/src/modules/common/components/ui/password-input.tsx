@@ -19,19 +19,25 @@ type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & 
 }
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ className, label, error, id, ...props }, ref) => {
+  ({ className, label, error, id, name, ...props }, ref) => {
     const [visible, setVisible] = useState(false)
+    // Same fallback as the shared Input (ui/index.tsx) — every caller here
+    // passes `name` but not a separate `id`, so `htmlFor` must fall back to
+    // `name` or the visible label above is never actually associated with
+    // the field for assistive technology.
+    const inputId = id ?? name
 
     return (
       <div className="flex flex-col gap-1">
-        {label && <Label htmlFor={id}>{label}</Label>}
+        {label && <Label htmlFor={inputId}>{label}</Label>}
         <div className="relative">
           <Input
             ref={ref}
-            id={id}
+            id={inputId}
+            name={name}
             type={visible ? "text" : "password"}
             aria-invalid={!!error}
-            aria-describedby={error && id ? `${id}-error` : undefined}
+            aria-describedby={error && inputId ? `${inputId}-error` : undefined}
             className={clx("pr-11", className)}
             {...props}
           />
@@ -46,7 +52,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           </button>
         </div>
         {error && (
-          <p id={id ? `${id}-error` : undefined} role="alert" className="text-caption text-danger">
+          <p id={inputId ? `${inputId}-error` : undefined} role="alert" className="text-caption text-danger">
             {error}
           </p>
         )}

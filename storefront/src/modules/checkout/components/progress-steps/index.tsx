@@ -28,13 +28,17 @@ export default function ProgressSteps() {
   return (
     <ol
       aria-label="Checkout progress"
-      className="flex items-center gap-2 small:gap-4 text-caption"
+      // Responsive audit (Phase 4 roadmap item 18) — 4 steps with connector
+      // lines don't fit a narrow mobile viewport at full label width; the
+      // row scrolls horizontally within itself (no-scrollbar) rather than
+      // overflowing the page, which was a real, confirmed layout bug.
+      className="flex items-center gap-2 small:gap-4 text-caption overflow-x-auto no-scrollbar -mx-4 px-4 small:mx-0 small:px-0"
     >
       {STEPS.map((step, index) => {
         const isActive = index === activeIndex
         const isPast = activeIndex >= 0 && index < activeIndex
         return (
-          <li key={step.key} className="flex items-center gap-2 small:gap-4">
+          <li key={step.key} className="flex items-center gap-2 small:gap-4 shrink-0">
             <span className="flex items-center gap-1.5">
               <span
                 aria-hidden="true"

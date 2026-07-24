@@ -36,7 +36,10 @@ export default function EmptyState({
         .join(" ")}
     >
       {icon && (
-        <div className="text-text-muted" aria-hidden="true">
+        <div
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-ink-100 text-text-secondary"
+          aria-hidden="true"
+        >
           {icon}
         </div>
       )}

@@ -1,6 +1,7 @@
 import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { OptionValueIds } from "@lib/util/product-option-filters"
+import { MagnifyingGlass } from "@medusajs/icons"
 import ProductPreview from "@modules/products/components/product-preview"
 import LoadMore from "@modules/store/components/load-more"
 import EmptyState from "@modules/common/components/empty-state"
@@ -120,6 +121,7 @@ export default async function PaginatedProducts({
     // applied by this route yet — see storefront/README.md).
     return (
       <EmptyState
+        icon={<MagnifyingGlass className="w-8 h-8" />}
         title={emptyStateTitle}
         description={emptyStateDescription}
         action={
