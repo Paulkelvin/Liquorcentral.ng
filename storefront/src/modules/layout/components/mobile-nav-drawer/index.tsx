@@ -2,7 +2,7 @@
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react"
 import { HttpTypes } from "@medusajs/types"
-import { ArrowRightMini, ChevronDown, ShoppingBag, User, XMark } from "@medusajs/icons"
+import { ArrowRightMini, BarsThree, ChevronDown, ShoppingBag, User, XMark } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
 import { usePathname } from "next/navigation"
@@ -102,9 +102,10 @@ export default function MobileNavDrawer({
         <>
           <PopoverButton
             data-testid="mobile-nav-menu-button"
-            className="h-full flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            aria-label="Open menu"
+            className="h-full min-w-[44px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           >
-            Menu
+            <BarsThree width={24} height={24} aria-hidden="true" />
           </PopoverButton>
 
           <Transition

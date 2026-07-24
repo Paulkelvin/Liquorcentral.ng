@@ -89,12 +89,12 @@ export default async function Nav() {
             <Suspense
               fallback={
                 <LocalizedClientLink
-                  className="hover:text-interactive inline-flex items-center gap-1.5"
+                  className="hover:text-interactive min-w-[44px] inline-flex items-center justify-center gap-1.5"
                   href="/cart"
                   aria-label="Cart, 0 items"
                   data-testid="nav-cart-link"
                 >
-                  <ShoppingBag />
+                  <ShoppingBag width={24} height={24} />
                   <span aria-hidden="true" className="hidden small:inline">
                     Cart
                   </span>

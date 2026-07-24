@@ -69,7 +69,7 @@ export default function SearchField() {
           className="h-11 w-11 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           onClick={() => setMobileOpen(true)}
         >
-          <MagnifyingGlassMini aria-hidden="true" />
+          <MagnifyingGlassMini width={24} height={24} aria-hidden="true" />
         </button>
 
         {mobileOpen && (

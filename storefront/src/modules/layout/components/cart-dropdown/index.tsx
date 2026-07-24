@@ -93,11 +93,11 @@ const CartDropdown = ({
           as={LocalizedClientLink}
           href="/cart"
           aria-label={`Cart, ${totalItems} item${totalItems === 1 ? "" : "s"}`}
-          className="h-full inline-flex items-center gap-1.5 hover:text-interactive relative"
+          className="h-full min-w-[44px] inline-flex items-center justify-center gap-1.5 hover:text-interactive relative"
           data-testid="nav-cart-link"
         >
           <span className="relative inline-flex">
-            <ShoppingBag />
+            <ShoppingBag width={24} height={24} />
             {totalItems > 0 && (
               <span
                 aria-hidden="true"
