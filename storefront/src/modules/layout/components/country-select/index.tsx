@@ -78,6 +78,8 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
               <span className="txt-compact-small flex items-center gap-x-2">
                 <ReactCountryFlag
                   svg
+                  alt=""
+                  aria-hidden="true"
                   style={{
                     width: "16px",
                     height: "16px",
@@ -110,6 +112,8 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
                   >
                     <ReactCountryFlag
                       svg
+                      alt=""
+                      aria-hidden="true"
                       style={{
                         width: "16px",
                         height: "16px",
