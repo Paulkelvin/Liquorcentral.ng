@@ -20,11 +20,10 @@ const ForgotPassword = ({ setCurrentView }: Props) => {
   const [message, formAction] = useActionState(requestPasswordReset, null)
 
   return (
-    <div
-      className="max-w-sm w-full flex flex-col items-center"
-      data-testid="forgot-password-page"
-    >
-      <h1 className="text-body font-semibold uppercase mb-6">Reset your password</h1>
+    <div className="flex w-full flex-col" data-testid="forgot-password-page">
+      <h1 className="mb-4 text-center font-display text-heading-3 font-semibold tracking-tight text-text-primary">
+        Reset your password
+      </h1>
       {message?.state === "sent" ? (
         <div
           className="w-full mb-6 text-center text-body text-text-primary bg-surface border border-border rounded-rounded p-4"

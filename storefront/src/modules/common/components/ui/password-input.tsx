@@ -38,7 +38,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             type={visible ? "text" : "password"}
             aria-invalid={!!error}
             aria-describedby={error && inputId ? `${inputId}-error` : undefined}
-            className={clx("pr-11", className)}
+            className={clx("pr-12", className)}
             {...props}
           />
           <button
@@ -46,7 +46,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             onClick={() => setVisible((v) => !v)}
             aria-label={visible ? "Hide password" : "Show password"}
             aria-pressed={visible}
-            className="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            className="absolute right-0 top-0 flex h-[46px] w-12 items-center justify-center rounded-r-radius-md text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           >
             {visible ? <Eye /> : <EyeOff />}
           </button>

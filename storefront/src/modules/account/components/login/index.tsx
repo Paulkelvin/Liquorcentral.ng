@@ -14,25 +14,26 @@ const Login = ({ setCurrentView }: Props) => {
   const [message, formAction] = useActionState(login, null)
 
   return (
-    <div
-      className="max-w-sm w-full flex flex-col items-center"
-      data-testid="login-page"
-    >
-      <h1 className="text-body font-semibold uppercase mb-6">Welcome back</h1>
-      <p className="text-center text-body text-text-primary mb-8">
+    <div className="flex w-full flex-col" data-testid="login-page">
+      <h1 className="mb-2 text-center font-display text-heading-3 font-semibold tracking-tight text-text-primary">
+        Welcome back
+      </h1>
+      <p className="mx-auto mb-7 max-w-[34ch] text-center text-caption text-text-muted">
         Sign in to access an enhanced shopping experience.
       </p>
+
       {message?.state === "verification_required" && (
         <div
-          className="w-full mb-6 text-center text-body text-text-primary bg-surface border border-border rounded-rounded p-4"
+          className="mb-6 rounded-radius-md border border-border bg-surface p-4 text-center text-caption text-text-primary"
           data-testid="login-verification-message"
         >
           We sent a verification link to <strong>{message.email}</strong>.
           Please verify your email, then sign in.
         </div>
       )}
+
       <form className="w-full" action={formAction}>
-        <div className="flex flex-col w-full gap-y-2">
+        <div className="flex w-full flex-col gap-y-4">
           <Input
             label="Email"
             name="email"
@@ -50,37 +51,44 @@ const Login = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
+
         {/* 08_CUSTOMER_ACCOUNT_SPECIFICATION.md §9 — "visible directly on
             the login step, not buried." */}
-        <div className="text-right mt-2">
+        <div className="mt-2 text-right">
           <button
             type="button"
             onClick={() => setCurrentView(LOGIN_VIEW.FORGOT_PASSWORD)}
-            className="text-caption text-text-primary underline"
+            className="rounded-radius-sm text-caption text-text-muted transition-colors duration-standard ease-in-out hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
             data-testid="forgot-password-button"
           >
             Forgot password?
           </button>
         </div>
+
         <ErrorMessage
           error={message?.state === "error" ? message.error : null}
           data-testid="login-error-message"
         />
-        <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
+
+        <SubmitButton
+          data-testid="sign-in-button"
+          size="large"
+          className="mt-6 w-full"
+        >
           Sign in
         </SubmitButton>
       </form>
-      <span className="text-center text-text-primary text-caption mt-6">
+
+      <p className="mt-6 text-center text-caption text-text-muted">
         Not a member?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
-          className="underline"
+          className="rounded-radius-sm font-semibold text-interactive transition-colors duration-standard ease-in-out hover:text-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           data-testid="register-button"
         >
           Join us
         </button>
-        .
-      </span>
+      </p>
     </div>
   )
 }

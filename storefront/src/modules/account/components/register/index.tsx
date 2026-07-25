@@ -17,14 +17,11 @@ const Register = ({ setCurrentView }: Props) => {
   const [message, formAction] = useActionState(signup, null)
 
   return (
-    <div
-      className="max-w-sm flex flex-col items-center"
-      data-testid="register-page"
-    >
-      <h1 className="text-body font-semibold uppercase mb-6">
+    <div className="flex w-full flex-col" data-testid="register-page">
+      <h1 className="mb-2 text-center font-display text-heading-3 font-semibold tracking-tight text-text-primary">
         Create your account
       </h1>
-      <p className="text-center text-body text-text-primary mb-4">
+      <p className="mx-auto mb-6 max-w-[36ch] text-center text-caption text-text-muted">
         Faster checkout, saved addresses, and your full order history — an
         account is entirely optional, never required to buy.
       </p>
