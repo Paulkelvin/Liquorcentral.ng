@@ -92,41 +92,45 @@ export default async function ProductPreview({
     // edge regardless of how many lines the title above it wraps to.
     <div
       data-testid="product-wrapper"
-      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-border bg-surface-elevated"
+      className="group flex h-full flex-col rounded-radius-md border border-border bg-surface-elevated p-2"
     >
       {/* §9/§212 — the card's one real link wraps only image/name/price;
           quick-add is a sibling control below, never nested inside it. */}
       <LocalizedClientLink href={`/products/${product.handle}`}>
-        <Thumbnail
-          thumbnail={product.thumbnail}
-          images={product.images}
-          size="full"
-          alt={product.title || "Product photo"}
-        />
-        {/*
-         * Real bug found on the live deployment, not the sandbox: a
-         * side-by-side title/price row (`justify-between items-start`)
-         * collided visually whenever a title wrapped to 2 lines on a
-         * narrow mobile card (2-column grid) — the price, pinned to the
-         * top via `items-start`, rendered directly beside the title's
-         * first line instead of clearing it. Price now sits on its own
-         * line below a title capped at 2 lines (`line-clamp-2`, ellipsis
-         * beyond that) so a long name can never push the layout apart or
-         * collide with the price, at any card width.
-         */}
-        <div className="flex flex-col gap-1 p-3">
+        {/* Price sits *on* the photo, bottom-right, over a dark
+            bottom-up gradient scrim — the scrim is what makes light
+            type legible regardless of what the photo behind it looks
+            like, so it is never rendered without one. */}
+        <div className="relative">
+          <Thumbnail
+            thumbnail={product.thumbnail}
+            images={product.images}
+            size="full"
+            alt={product.title || "Product photo"}
+          />
+          {cheapestPrice && (
+            <>
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 rounded-b-radius-sm bg-gradient-to-t from-scrim to-transparent"
+              />
+              <div className="absolute bottom-2 right-2 flex items-baseline gap-x-2">
+                <PreviewPrice price={cheapestPrice} overlay />
+              </div>
+            </>
+          )}
+        </div>
+        <div className="flex flex-col gap-0.5 px-1 pt-3 pb-3">
+          {/* Capped at 2 lines so a long name can never push a card's
+              own layout apart; equal-height rows plus the button's
+              `mt-auto` below keep every card's action on one baseline
+              whether the title runs to one line or two. */}
           <Text
-            size="caption"
-            className="text-text-secondary font-medium line-clamp-2"
+            className="text-text-primary font-medium line-clamp-2"
             data-testid="product-title"
           >
             {product.title}
           </Text>
-          {cheapestPrice && (
-            <div className="flex items-center gap-x-2">
-              <PreviewPrice price={cheapestPrice} />
-            </div>
-          )}
           {catalogFact && (
             <Text
               as="span"
@@ -161,7 +165,7 @@ export default async function ProductPreview({
         <QuickAddButton
           product={product}
           weight={isFoodCentral ? "primary" : "secondary"}
-          className="mt-auto mx-3 mb-3"
+          className="mt-auto"
         />
       )}
     </div>

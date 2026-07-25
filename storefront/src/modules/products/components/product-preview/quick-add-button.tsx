@@ -65,9 +65,11 @@ export default function QuickAddButton({
 
   // Both weights are real buttons, never bare underlined text — §9's
   // Food Central-primary / Wine-secondary visual-weight distinction is
-  // expressed as filled vs. outline, not as button-chrome vs. plain text.
+  // expressed as a solid brand fill vs. a quiet neutral surface fill
+  // (not an outline: a bordered button competes with the card's own
+  // border directly around it).
   const primaryClass = clx(sharedClass, "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active", className)
-  const secondaryClass = clx(sharedClass, "bg-transparent border border-border text-text-primary hover:bg-ink-100 hover:border-text-secondary", className)
+  const secondaryClass = clx(sharedClass, "bg-ink-100 text-text-primary hover:bg-ink-200 active:bg-ink-200", className)
   const variantClass = weight === "primary" ? primaryClass : secondaryClass
 
   if (variants.length === 0 || (singleVariant && !isVariantPurchasable(singleVariant))) {

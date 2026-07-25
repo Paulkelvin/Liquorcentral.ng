@@ -35,7 +35,11 @@ export default async function ProductRail({
             headingSizeByLevel class is hardcoded ahead of this
             className in source order. Semantic level stays h2 (correct
             document outline); only the visual size is overridden. */}
-        <Heading level="h2" display className="min-w-0 truncate !text-heading-4">
+        {/* Deliberately not truncated — a long collection title wraps
+            onto a second line rather than being cut off with an
+            ellipsis. "View all" stays on one line via its own
+            `shrink-0 whitespace-nowrap`, so the two never collide. */}
+        <Heading level="h2" display className="!text-heading-4">
           {collection.title}
         </Heading>
         <InteractiveLink href={`/collections/${collection.handle}`} subtle>

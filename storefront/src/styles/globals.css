@@ -32,9 +32,11 @@
   --ink-200: #d8d5cc;
   --ink-100: #eceae3;
   --ink-900-50: rgba(26, 26, 26, 0.5);
+  --ink-900-80: rgba(26, 26, 26, 0.8);
 
   /* Surface Elevated — a distinct value from the page's own Off White */
   --surface-elevated: #ffffff;
+  --surface-elevated-75: rgba(255, 255, 255, 0.75);
 
   /* Tier 3 — Semantic Design Tokens (the only vocabulary components use) */
   --color-primary: var(--brand-red);
@@ -57,6 +59,18 @@
   --color-danger: var(--functional-danger);
   --color-information: var(--functional-information);
   --color-overlay: var(--ink-900-50);
+  /*
+   * Media scrim — the dark end of the bottom-up gradient laid over a
+   * product photo so light type (a price) stays legible no matter what
+   * the photo behind it looks like, plus the muted light tone used on
+   * top of it. Precomputed rgba for the same reason as the tint tokens
+   * below: Tailwind's opacity-modifier syntax silently emits *no rule
+   * at all* for a color defined as a bare `var()` (verified against
+   * this project's own built CSS), so `from-ink-900/80` would leave
+   * the scrim invisible and the price unreadable.
+   */
+  --color-scrim: var(--ink-900-80);
+  --color-on-scrim-muted: var(--surface-elevated-75);
 
   /*
    * Interactive state layer (DESIGN_SYSTEM.md "Interactive States"): hover
