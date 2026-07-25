@@ -1,18 +1,7 @@
 import { Text, clx } from "@modules/common/components/ui"
 import { VariantPrice } from "types/global"
 
-export default async function PreviewPrice({
-  price,
-  /**
-   * Rendered on top of the product photo (over a dark gradient scrim)
-   * rather than as a line of text below it — light type instead of the
-   * usual ink tokens, since the ground behind it is the image.
-   */
-  overlay,
-}: {
-  price: VariantPrice
-  overlay?: boolean
-}) {
+export default async function PreviewPrice({ price }: { price: VariantPrice }) {
   if (!price) {
     return null
   }
@@ -22,10 +11,7 @@ export default async function PreviewPrice({
       {price.price_type === "sale" && (
         <Text
           size="caption"
-          className={clx(
-            "line-through",
-            overlay ? "text-on-scrim-muted" : "text-text-muted"
-          )}
+          className="line-through text-text-muted"
           data-testid="original-price"
         >
           {price.original_price}
@@ -33,9 +19,8 @@ export default async function PreviewPrice({
       )}
       <Text
         className={clx("font-semibold", {
-          "text-surface-elevated drop-shadow-sm": overlay,
-          "text-text-primary": !overlay,
-          "text-interactive": !overlay && price.price_type === "sale",
+          "text-text-primary": price.price_type !== "sale",
+          "text-interactive": price.price_type === "sale",
         })}
         data-testid="price"
       >

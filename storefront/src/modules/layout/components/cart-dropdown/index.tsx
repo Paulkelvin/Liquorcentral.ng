@@ -2,7 +2,6 @@
 
 import {
   Popover,
-  PopoverButton,
   PopoverPanel,
   Transition,
 } from "@headlessui/react"
@@ -80,17 +79,18 @@ const CartDropdown = ({
       onMouseLeave={close}
     >
       <Popover className="relative h-full">
-        {/* `as={LocalizedClientLink}` — rendering PopoverButton as a
-            <button> wrapping a nested <a> is two interactive elements in
-            one control, a genuine WCAG violation (nested-interactive)
-            screen readers can't reliably announce. Rendering the link
-            itself as the PopoverButton keeps exactly one interactive
-            element, still carrying the aria-expanded state Headless UI
-            injects (valid on a link, unlike a bare <span>). The
-            dropdown's open/close is driven by the wrapping div's hover
-            handlers, not a click here, so no interaction is lost. */}
-        <PopoverButton
-          as={LocalizedClientLink}
+        {/* A plain link, deliberately *not* a PopoverButton. Rendering it
+            as one (`as={LocalizedClientLink}`) meant Headless UI attached
+            its own click handler to toggle the panel and suppressed the
+            navigation — so tapping the cart icon did nothing at all on
+            touch, where there is no hover to open the dropdown and the
+            panel itself is `hidden small:block` anyway. Verified in a
+            real mobile browser: the URL never left the current page.
+            The dropdown is driven entirely by this wrapper's hover
+            handlers plus `<Transition show>` and `<PopoverPanel static>`,
+            so Headless UI's internal open state was never load-bearing
+            here and nothing is lost by dropping the trigger. */}
+        <LocalizedClientLink
           href="/cart"
           aria-label={`Cart, ${totalItems} item${totalItems === 1 ? "" : "s"}`}
           className="h-full min-w-[44px] inline-flex items-center justify-center gap-1.5 hover:text-interactive relative"
@@ -110,7 +110,7 @@ const CartDropdown = ({
           <span aria-hidden="true" className="hidden small:inline">
             Cart
           </span>
-        </PopoverButton>
+        </LocalizedClientLink>
         <Transition
           show={cartDropdownOpen}
           as={Fragment}

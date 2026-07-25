@@ -55,7 +55,7 @@ export default function QuickAddButton({
   className?: string
 }) {
   const countryCode = useParams().countryCode as string
-  const [status, setStatus] = useState<"idle" | "adding" | "added" | "error">(
+  const [status, setStatus] = useState<"idle" | "added" | "error">(
     "idle"
   )
 
@@ -95,6 +95,16 @@ export default function QuickAddButton({
     )
   }
 
+  /**
+   * Optimistic on purpose: the button confirms immediately on tap rather
+   * than sitting on an "Adding…" pending label while the server round
+   * trip completes, which read as sluggish on a real phone. The request
+   * still runs, and a genuine failure rolls the label back to "Try
+   * again" — so the only thing given up is the intermediate spinner
+   * state, never the truth about whether the add actually succeeded.
+   * The control also stays enabled throughout, so a second tap is never
+   * swallowed by a disabled attribute.
+   */
   const handleClick = async (event: MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
@@ -103,7 +113,7 @@ export default function QuickAddButton({
       return
     }
 
-    setStatus("adding")
+    setStatus("added")
 
     try {
       await addToCart({
@@ -111,7 +121,6 @@ export default function QuickAddButton({
         quantity: 1,
         countryCode,
       })
-      setStatus("added")
       window.setTimeout(() => setStatus("idle"), 2000)
     } catch {
       setStatus("error")
@@ -120,9 +129,7 @@ export default function QuickAddButton({
   }
 
   const label =
-    status === "adding"
-      ? "Adding…"
-      : status === "added"
+    status === "added"
       ? "Added ✓"
       : status === "error"
       ? "Try again"
@@ -132,7 +139,6 @@ export default function QuickAddButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={status === "adding"}
       data-testid="product-quick-add-button"
       className={variantClass}
     >

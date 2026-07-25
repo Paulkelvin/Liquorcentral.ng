@@ -90,8 +90,6 @@ module.exports = {
           tint: "var(--color-information-tint)",
         },
         overlay: "var(--color-overlay)",
-        scrim: "var(--color-scrim)",
-        "on-scrim-muted": "var(--color-on-scrim-muted)",
         // Neutral System (DESIGN_SYSTEM.md §B6) — the raw scale the
         // semantic tokens above resolve from. Prefer the semantic tokens;
         // these exist for the rare case a component genuinely needs a

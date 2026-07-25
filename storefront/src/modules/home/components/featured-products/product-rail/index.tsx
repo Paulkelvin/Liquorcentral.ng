@@ -39,10 +39,10 @@ export default async function ProductRail({
             onto a second line rather than being cut off with an
             ellipsis. "View all" stays on one line via its own
             `shrink-0 whitespace-nowrap`, so the two never collide. */}
-        <Heading level="h2" display className="!text-heading-4">
+        <Heading level="h2" display className="!text-heading-3">
           {collection.title}
         </Heading>
-        <InteractiveLink href={`/collections/${collection.handle}`} subtle>
+        <InteractiveLink href={`/collections/${collection.handle}`}>
           View all
         </InteractiveLink>
       </div>
@@ -50,7 +50,7 @@ export default async function ProductRail({
           default row stretch) no longer need the old oversized gap-y
           that padded around variable-height cards — a normal gap works
           now that every card in a row lines up on the same baseline. */}
-      <ul className="grid grid-cols-2 small:grid-cols-3 gap-x-6 gap-y-8">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-8">
         {pricedProducts &&
           pricedProducts.map((product) => (
             <li key={product.id}>

@@ -92,35 +92,22 @@ export default async function ProductPreview({
     // edge regardless of how many lines the title above it wraps to.
     <div
       data-testid="product-wrapper"
-      className="group flex h-full flex-col rounded-radius-md border border-border bg-surface-elevated p-2"
+      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-border bg-surface-elevated"
     >
       {/* §9/§212 — the card's one real link wraps only image/name/price;
           quick-add is a sibling control below, never nested inside it. */}
       <LocalizedClientLink href={`/products/${product.handle}`}>
-        {/* Price sits *on* the photo, bottom-right, over a dark
-            bottom-up gradient scrim — the scrim is what makes light
-            type legible regardless of what the photo behind it looks
-            like, so it is never rendered without one. */}
-        <div className="relative">
-          <Thumbnail
-            thumbnail={product.thumbnail}
-            images={product.images}
-            size="full"
-            alt={product.title || "Product photo"}
-          />
-          {cheapestPrice && (
-            <>
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 rounded-b-radius-sm bg-gradient-to-t from-scrim to-transparent"
-              />
-              <div className="absolute bottom-2 right-2 flex items-baseline gap-x-2">
-                <PreviewPrice price={cheapestPrice} overlay />
-              </div>
-            </>
-          )}
-        </div>
-        <div className="flex flex-col gap-0.5 px-1 pt-3 pb-3">
+        {/* The photo runs edge to edge into the card's top corners — no
+            inset on the sides or top — with the card's own
+            `overflow-hidden` doing the corner clipping. */}
+        <Thumbnail
+          thumbnail={product.thumbnail}
+          images={product.images}
+          size="full"
+          rounded={false}
+          alt={product.title || "Product photo"}
+        />
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-3">
           {/* Capped at 2 lines so a long name can never push a card's
               own layout apart; equal-height rows plus the button's
               `mt-auto` below keep every card's action on one baseline
@@ -131,6 +118,13 @@ export default async function ProductPreview({
           >
             {product.title}
           </Text>
+          {/* Price reads as a line of its own beneath the name, not laid
+              over the photo. */}
+          {cheapestPrice && (
+            <div className="flex items-baseline gap-x-2">
+              <PreviewPrice price={cheapestPrice} />
+            </div>
+          )}
           {catalogFact && (
             <Text
               as="span"

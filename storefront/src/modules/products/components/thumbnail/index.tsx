@@ -19,6 +19,16 @@ type ThumbnailProps = {
    * one should pass it.
    */
   alt?: string
+  /**
+   * Corner rounding. An explicit prop rather than something a caller
+   * overrides through `className`, because the base below already needs
+   * `!` (important) to beat Container's own hardcoded radius — and two
+   * competing `!important` radius classes would be resolved by
+   * Tailwind's internal utility ordering, not by which one the caller
+   * passed. `false` is for a thumbnail sitting flush inside a parent
+   * that clips the corners itself (the product card).
+   */
+  rounded?: boolean
   "data-testid"?: string
 }
 
@@ -27,6 +37,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   images,
   size = "small",
   className,
+  rounded = true,
   "data-testid": dataTestid,
   alt = "Product photo",
 }) => {
@@ -50,7 +61,8 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         // (important) is required since Tailwind doesn't guarantee a
         // later className wins over the component's own hardcoded
         // classes by source order alone.
-        "relative w-full overflow-hidden !p-0 !rounded-radius-sm shadow-elevation-0 group-hover:shadow-elevation-1 transition-shadow duration-standard ease-in-out",
+        "relative w-full overflow-hidden !p-0 shadow-elevation-0 group-hover:shadow-elevation-1 transition-shadow duration-standard ease-in-out",
+        rounded ? "!rounded-radius-sm" : "!rounded-none",
         className,
         {
           // A single uniform 1:1 ratio across every product-card-grid

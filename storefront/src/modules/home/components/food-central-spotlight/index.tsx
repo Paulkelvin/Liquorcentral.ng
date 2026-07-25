@@ -48,10 +48,10 @@ export default async function FoodCentralSpotlight({
   return (
     <div className="ds-container py-12 small:py-24">
       <div className="flex justify-between items-center gap-4 mb-6">
-        <Heading level="h2" display className="!text-heading-4">
+        <Heading level="h2" display className="!text-heading-3">
           Today&rsquo;s Menu
         </Heading>
-        <InteractiveLink href="/food-central" subtle>
+        <InteractiveLink href="/food-central">
           View Food Central
         </InteractiveLink>
       </div>
@@ -59,7 +59,7 @@ export default async function FoodCentralSpotlight({
       {foodProducts.length === 0 ? (
         <NotTakingOrders title="Today's Menu" />
       ) : (
-        <ul className="grid grid-cols-2 small:grid-cols-4 gap-x-6 gap-y-8">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-8">
           {foodProducts.map((product) => (
             <li key={product.id}>
               <ProductPreview product={product} region={region} />

@@ -154,7 +154,7 @@ export default async function PaginatedProducts({
         {countLabel}
       </div>
       <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
+        className="grid grid-cols-1 w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8"
         data-testid="products-list"
         aria-label={countLabel}
       >
