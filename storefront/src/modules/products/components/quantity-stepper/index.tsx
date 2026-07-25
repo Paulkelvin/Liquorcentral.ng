@@ -15,6 +15,7 @@ export default function QuantityStepper({
   max,
   min = 1,
   disabled,
+  hideLabel = false,
 }: {
   quantity: number
   onChange: (quantity: number) => void
@@ -29,6 +30,13 @@ export default function QuantityStepper({
    */
   min?: number
   disabled?: boolean
+  /**
+   * Hides the "Quantity" label visually while keeping it associated with
+   * the input for screen readers — for dense contexts like the cart
+   * drawer, where a visible label on every row is noise. §17/§25 require
+   * a real associated label, not that it always be on screen.
+   */
+  hideLabel?: boolean
 }) {
   const inputId = useId()
   const clamp = (value: number) => {
@@ -38,7 +46,9 @@ export default function QuantityStepper({
 
   return (
     <div className="flex flex-col gap-1">
-      <Label htmlFor={inputId}>Quantity</Label>
+      <Label htmlFor={inputId} className={hideLabel ? "sr-only" : undefined}>
+        Quantity
+      </Label>
       {/* One control, not three floating boxes: a single pill with
           hairline internal dividers. Each segment still holds the 44px
           touch minimum (§B11) — the pill is 44px tall and each button

@@ -1,6 +1,7 @@
 "use client"
 
 import { addGiftWrapToLineItem, addToCart } from "@lib/data/cart"
+import { useCart } from "@lib/context/cart-context"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
@@ -48,6 +49,7 @@ export default function ProductActions({
   const searchParams = useSearchParams()
   const { showToast } = useToast()
 
+  const { openDrawer } = useCart()
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
   const [quantity, setQuantity] = useState(1)
@@ -190,12 +192,17 @@ export default function ProductActions({
         })
       }
 
-      // §18, §25 — immediate, persistent confirmation via both an inline
-      // polite live region and a toast (DESIGN_SYSTEM.md §B9: a toast in
-      // addition to inline confirmation, never a toast alone).
+      // §18, §25 — immediate, persistent confirmation. The inline polite
+      // live region stays; the success toast is gone, because the cart
+      // drawer now slides in on every add and is a strictly stronger
+      // confirmation than a toast (it shows the item, the quantity and
+      // the new subtotal, and persists until dismissed). §B9's rule is
+      // "never a toast alone" — a drawer plus a toast sliding in over it
+      // was two notifications for one action. The failure path below
+      // still toasts, since nothing else reports it.
       const message = `Added ${quantity} × ${product.title} to your cart.`
       setConfirmation(message)
-      showToast({ title: "Added to cart", description: product.title, variant: "success" })
+      openDrawer()
     } catch {
       showToast({
         title: "Couldn't add to cart",

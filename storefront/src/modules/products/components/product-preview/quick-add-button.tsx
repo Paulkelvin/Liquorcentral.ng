@@ -1,6 +1,7 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
+import { useCart } from "@lib/context/cart-context"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
@@ -55,6 +56,7 @@ export default function QuickAddButton({
   department?: "wine" | "food"
 }) {
   const countryCode = useParams().countryCode as string
+  const { openDrawer } = useCart()
   const [status, setStatus] = useState<"idle" | "added" | "error">(
     "idle"
   )
@@ -120,6 +122,10 @@ export default function QuickAddButton({
     }
 
     setStatus("added")
+    // Opened before the request resolves, so the drawer is already
+    // sliding in as the customer lifts their finger — the cart it shows
+    // fills in from the server a moment later.
+    openDrawer()
 
     try {
       await addToCart({

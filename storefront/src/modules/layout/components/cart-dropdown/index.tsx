@@ -1,253 +1,50 @@
 "use client"
 
-import {
-  Popover,
-  PopoverPanel,
-  Transition,
-} from "@headlessui/react"
-import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
 import { ShoppingBag } from "@medusajs/icons"
-import DeleteButton from "@modules/common/components/delete-button"
-import LineItemOptions from "@modules/common/components/line-item-options"
-import LineItemPrice from "@modules/common/components/line-item-price"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Thumbnail from "@modules/products/components/thumbnail"
-import { usePathname } from "next/navigation"
-import { Fragment, useEffect, useRef, useState } from "react"
+import { useCart } from "@lib/context/cart-context"
 
-const CartDropdown = ({
-  cart: cartState,
-}: {
-  cart?: HttpTypes.StoreCart | null
-}) => {
-  const [activeTimer, setActiveTimer] = useState<NodeJS.Timer | undefined>(
-    undefined
-  )
-  const [cartDropdownOpen, setCartDropdownOpen] = useState(false)
-
-  const open = () => setCartDropdownOpen(true)
-  const close = () => setCartDropdownOpen(false)
-
-  const totalItems =
-    cartState?.items?.reduce((acc, item) => {
-      return acc + item.quantity
-    }, 0) || 0
-
-  const subtotal = cartState?.subtotal ?? 0
-  const itemRef = useRef<number>(totalItems || 0)
-
-  const timedOpen = () => {
-    open()
-
-    const timer = setTimeout(close, 5000)
-
-    setActiveTimer(timer)
-  }
-
-  const openAndCancel = () => {
-    if (activeTimer) {
-      clearTimeout(activeTimer)
-    }
-
-    open()
-  }
-
-  // Clean up the timer when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (activeTimer) {
-        clearTimeout(activeTimer)
-      }
-    }
-  }, [activeTimer])
-
-  const pathname = usePathname()
-
-  // open cart dropdown when modifying the cart items, but only if we're not on the cart page
-  useEffect(() => {
-    if (itemRef.current !== totalItems && !pathname.includes("/cart")) {
-      timedOpen()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems, itemRef.current])
+/**
+ * The nav's cart control. Opens the slide-out drawer.
+ *
+ * This used to be a hover-only mini-cart in a Headless UI `Popover`,
+ * whose panel was `hidden small:block` — so on touch, where there is no
+ * hover, the icon was only ever a link to `/cart` and there was no
+ * mini-cart at all. A plain `<button>` opening a Dialog serves both
+ * input models with one interaction, and sidesteps the class of bug
+ * documented on the old trigger, where making it a `PopoverButton`
+ * silently swallowed navigation on touch.
+ *
+ * The count comes from the cart context, so it reflects an optimistic
+ * add immediately rather than waiting for the server round trip.
+ */
+const CartDropdown = () => {
+  const { totalItems, openDrawer } = useCart()
 
   return (
-    <div
-      className="h-full z-50"
-      onMouseEnter={openAndCancel}
-      onMouseLeave={close}
+    <button
+      type="button"
+      onClick={openDrawer}
+      aria-label={`Cart, ${totalItems} item${totalItems === 1 ? "" : "s"}`}
+      aria-haspopup="dialog"
+      className="relative inline-flex h-full min-w-[44px] items-center justify-center gap-1.5 transition-colors duration-standard ease-in-out hover:text-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      data-testid="nav-cart-link"
     >
-      <Popover className="relative h-full">
-        {/* A plain link, deliberately *not* a PopoverButton. Rendering it
-            as one (`as={LocalizedClientLink}`) meant Headless UI attached
-            its own click handler to toggle the panel and suppressed the
-            navigation — so tapping the cart icon did nothing at all on
-            touch, where there is no hover to open the dropdown and the
-            panel itself is `hidden small:block` anyway. Verified in a
-            real mobile browser: the URL never left the current page.
-            The dropdown is driven entirely by this wrapper's hover
-            handlers plus `<Transition show>` and `<PopoverPanel static>`,
-            so Headless UI's internal open state was never load-bearing
-            here and nothing is lost by dropping the trigger. */}
-        <LocalizedClientLink
-          href="/cart"
-          aria-label={`Cart, ${totalItems} item${totalItems === 1 ? "" : "s"}`}
-          className="h-full min-w-[44px] inline-flex items-center justify-center gap-1.5 hover:text-interactive relative"
-          data-testid="nav-cart-link"
-        >
-          <span className="relative inline-flex">
-            <ShoppingBag width={24} height={24} />
-            {totalItems > 0 && (
-              <span
-                aria-hidden="true"
-                className="absolute -top-1 -right-1.5 min-w-[16px] h-[16px] px-[3px] rounded-full bg-primary text-surface-elevated text-[10px] leading-[16px] font-semibold text-center"
-              >
-                {totalItems}
-              </span>
-            )}
-          </span>
-          <span aria-hidden="true" className="hidden small:inline">
-            Cart
-          </span>
-        </LocalizedClientLink>
-        <Transition
-          show={cartDropdownOpen}
-          as={Fragment}
-          enter="transition ease-out duration-200"
-          enterFrom="opacity-0 translate-y-1"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-150"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 translate-y-1"
-        >
-          <PopoverPanel
-            static
-            className="hidden small:block absolute top-[calc(100%+1px)] right-0 bg-surface-elevated border-x border-b border-divider shadow-elevation-2 w-[420px] text-text-primary"
-            data-testid="nav-cart-dropdown"
+      <span className="relative inline-flex">
+        <ShoppingBag width={24} height={24} />
+        {totalItems > 0 && (
+          <span
+            aria-hidden="true"
+            className="absolute -top-1 -right-1.5 h-[16px] min-w-[16px] rounded-full bg-primary px-[3px] text-center text-[10px] font-semibold leading-[16px] text-surface-elevated"
+            data-testid="nav-cart-count"
           >
-            <div className="p-4 flex items-center justify-center">
-              <h3 className="text-body font-semibold">Cart</h3>
-            </div>
-            {cartState && cartState.items?.length ? (
-              <>
-                <div className="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px">
-                  {cartState.items
-                    .sort((a, b) => {
-                      return (a.created_at ?? "") > (b.created_at ?? "")
-                        ? -1
-                        : 1
-                    })
-                    .map((item) => (
-                      <div
-                        className="grid grid-cols-[122px_1fr] gap-x-4"
-                        key={item.id}
-                        data-testid="cart-item"
-                      >
-                        <LocalizedClientLink
-                          href={`/products/${item.product_handle}`}
-                          className="w-24"
-                        >
-                          <Thumbnail
-                            thumbnail={item.thumbnail}
-                            images={item.variant?.product?.images}
-                            size="square"
-                            alt={item.title || item.product_title || "Product photo"}
-                          />
-                        </LocalizedClientLink>
-                        <div className="flex flex-col justify-between flex-1">
-                          <div className="flex flex-col flex-1">
-                            <div className="flex items-start justify-between">
-                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
-                                <h3 className="text-body overflow-hidden text-ellipsis">
-                                  <LocalizedClientLink
-                                    href={`/products/${item.product_handle}`}
-                                    data-testid="product-link"
-                                  >
-                                    {item.title}
-                                  </LocalizedClientLink>
-                                </h3>
-                                <LineItemOptions
-                                  variant={item.variant}
-                                  data-testid="cart-item-variant"
-                                  data-value={item.variant}
-                                />
-                                <span
-                                  data-testid="cart-item-quantity"
-                                  data-value={item.quantity}
-                                >
-                                  Quantity: {item.quantity}
-                                </span>
-                              </div>
-                              <div className="flex justify-end">
-                                <LineItemPrice
-                                  item={item}
-                                  style="tight"
-                                  currencyCode={cartState.currency_code}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <DeleteButton
-                            id={item.id}
-                            className="mt-1"
-                            data-testid="cart-item-remove-button"
-                          >
-                            Remove
-                          </DeleteButton>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-                <div className="p-4 flex flex-col gap-y-4 text-caption">
-                  <div className="flex items-center justify-between">
-                    <span className="text-text-primary font-semibold">
-                      Subtotal{" "}
-                      <span className="font-normal">(excl. taxes)</span>
-                    </span>
-                    <span
-                      className="text-body font-semibold"
-                      data-testid="cart-subtotal"
-                      data-value={subtotal}
-                    >
-                      {convertToLocale({
-                        amount: subtotal,
-                        currency_code: cartState.currency_code,
-                      })}
-                    </span>
-                  </div>
-                  <LocalizedClientLink
-                    href="/cart"
-                    data-testid="go-to-cart-button"
-                    className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[48px] px-6 text-body-lg w-full bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active"
-                  >
-                    Go to cart
-                  </LocalizedClientLink>
-                </div>
-              </>
-            ) : (
-              <div>
-                <div className="flex py-16 flex-col gap-y-4 items-center justify-center">
-                  <div className="bg-ink-900 text-caption flex items-center justify-center w-6 h-6 rounded-full text-surface-elevated">
-                    <span>0</span>
-                  </div>
-                  <span>Your shopping bag is empty.</span>
-                  <div>
-                    <LocalizedClientLink
-                      href="/store"
-                      onClick={close}
-                      className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium min-h-[44px] px-4 text-body bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active"
-                    >
-                      Explore products
-                    </LocalizedClientLink>
-                  </div>
-                </div>
-              </div>
-            )}
-          </PopoverPanel>
-        </Transition>
-      </Popover>
-    </div>
+            {totalItems}
+          </span>
+        )}
+      </span>
+      <span aria-hidden="true" className="hidden small:inline">
+        Cart
+      </span>
+    </button>
   )
 }
 
