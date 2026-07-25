@@ -97,6 +97,16 @@
   --color-focus-glow: color-mix(in srgb, var(--color-primary) 22%, transparent);
   /* The selected-item wash behind an active navigation row. */
   --color-interactive-tint: color-mix(in srgb, var(--color-interactive) 10%, white);
+  /*
+   * The label color for text sitting *on* --color-interactive-tint. The
+   * full-strength interactive green clears AA against white (5.51:1) but
+   * only reaches 4.38:1 against its own tint — under the 4.5:1 floor,
+   * and a 10px badge is nowhere near large-text size. Darkened just
+   * enough to clear it with margin (5.08:1); same Tier-3 derivation
+   * pattern --color-primary/--color-interactive themselves use, so the
+   * Tier-1 brand green stays untouched.
+   */
+  --color-interactive-on-tint: color-mix(in srgb, var(--color-interactive) 92%, black);
   --color-success-tint: color-mix(in srgb, var(--color-success) 12%, white);
   --color-danger-tint: color-mix(in srgb, var(--color-danger) 12%, white);
   --color-warning-tint: color-mix(in srgb, var(--color-warning) 12%, white);

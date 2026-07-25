@@ -26,6 +26,25 @@ export const listCategories = async (query?: Record<string, unknown>) => {
     .then(({ product_categories }) => product_categories)
 }
 
+/**
+ * The other children of a category's parent — i.e. its siblings,
+ * including itself. Needed because the store API will not expand
+ * `parent_category.category_children` (verified: the field comes back
+ * empty at that depth), so a leaf category cannot see its own siblings
+ * from its own record. This reuses `listCategories`' force-cached
+ * request with a trimmed field set rather than issuing a second
+ * uncached lookup per page.
+ */
+export const listSiblingCategories = async (parentCategoryId: string) =>
+  listCategories({
+    fields: "handle,name,rank,parent_category_id",
+    limit: 100,
+  }).then((categories) =>
+    categories
+      .filter((category) => category.parent_category_id === parentCategoryId)
+      .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
+  )
+
 export const getCategoryByHandle = async (categoryHandle: string[]) => {
   const handle = `${categoryHandle.join("/")}`
 

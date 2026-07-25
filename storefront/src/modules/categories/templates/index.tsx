@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
+import clsx from "clsx"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
@@ -13,12 +14,15 @@ import { OptionValueIds } from "@lib/util/product-option-filters"
 
 export default function CategoryTemplate({
   category,
+  siblingCategories,
   sortBy,
   page,
   countryCode,
   optionValueIds,
 }: {
   category: HttpTypes.StoreProductCategory
+  /** Only populated for a leaf category — see the page's own comment. */
+  siblingCategories?: HttpTypes.StoreProductCategory[]
   sortBy?: SortOptions
   page?: string
   countryCode: string
@@ -39,6 +43,12 @@ export default function CategoryTemplate({
   }
 
   getParents(category)
+
+  // Children when this category has them, siblings when it is a leaf.
+  const pills = category.category_children?.length
+    ? category.category_children
+    : siblingCategories ?? []
+  const parentName = category.parent_category?.name ?? category.name
 
   const breadcrumbSegments = [
     { label: "Home", href: "/" },
@@ -66,9 +76,13 @@ export default function CategoryTemplate({
             on mobile cost a whole band of vertical space above the grid.
             `min-w-0` lets the heading truncate rather than wrap the sort
             control onto its own line. */}
-        <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          {/* Editorial scale, not the display scale: 25/31px read as a
+              magazine cover line above a grid of small cards. Off the
+              1.25 modular scale on purpose — 20px is too quiet for a
+              page title and 25px too loud. */}
           <h1
-            className="min-w-0 truncate text-heading-3 font-semibold small:text-heading-2"
+            className="min-w-0 truncate text-[22px] font-semibold md:text-[28px]"
             data-testid="category-page-title"
           >
             {category.name}
@@ -76,7 +90,7 @@ export default function CategoryTemplate({
           <SortProducts sortBy={sort} data-testid="sort-by-container" />
         </div>
         {category.description && (
-          <div className="mb-4 text-body">
+          <div className="mb-3 text-body">
             <p>{category.description}</p>
           </div>
         )}
@@ -86,23 +100,43 @@ export default function CategoryTemplate({
             customer saw a single item. The negative margin lets the row
             bleed to the viewport edge so the last pill reads as
             scrollable rather than clipped. */}
-        {!!category.category_children?.length && (
+        {!!pills.length && (
           <nav
-            aria-label={`${category.name} subcategories`}
+            aria-label={`${
+              category.category_children?.length ? category.name : parentName
+            } subcategories`}
             className="mb-5 -mx-4 px-4 small:mx-0 small:px-0"
           >
             <ul className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-              {category.category_children.map((c) => (
-                <li key={c.id} className="shrink-0">
-                  <LocalizedClientLink
-                    href={`/categories/${c.handle}`}
-                    className="inline-flex min-h-[36px] items-center rounded-radius-full bg-ink-100 px-3 text-xs font-medium text-text-secondary transition-colors duration-standard ease-in-out hover:bg-ink-900 hover:text-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                    data-testid="subcategory-pill"
-                  >
-                    {c.name}
-                  </LocalizedClientLink>
-                </li>
-              ))}
+              {pills.map((c) => {
+                const isActive = c.handle === category.handle
+                return (
+                  <li key={c.id} className="shrink-0">
+                    <LocalizedClientLink
+                      href={`/categories/${c.handle}`}
+                      aria-current={isActive ? "page" : undefined}
+                      className={clsx(
+                        // A hairline chip on the page's own surface, not
+                        // a filled grey oval — a row of solid fills read
+                        // as seven competing buttons above the grid.
+                        "inline-flex min-h-[36px] items-center rounded-radius-full border px-3.5 py-1.5 text-xs font-medium transition-colors duration-standard ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus",
+                        isActive
+                          ? // Ink rather than the green tint the spec
+                            // offered as its first option: green on
+                            // interactive-tint measures 4.38:1, under
+                            // AA's 4.5:1 floor for 12px text. Ink is the
+                            // spec's own second option and clears it at
+                            // 16.1:1.
+                            "border-ink-900 bg-ink-900 text-surface-elevated"
+                          : "border-divider bg-surface-elevated text-text-secondary hover:border-text-muted hover:text-text-primary"
+                      )}
+                      data-testid="subcategory-pill"
+                    >
+                      {c.name}
+                    </LocalizedClientLink>
+                  </li>
+                )
+              })}
             </ul>
           </nav>
         )}

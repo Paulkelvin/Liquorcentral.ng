@@ -31,8 +31,13 @@ const StoreTemplate = ({
       <RefinementList />
       <div className="w-full min-w-0">
         {/* Title left, sort right, on one baseline. */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-heading-2 font-semibold" data-testid="store-page-title">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          {/* Same editorial title scale as the category listings — this
+              page was still running the full 31px heading. */}
+          <h1
+            className="min-w-0 truncate text-[22px] font-semibold md:text-[28px]"
+            data-testid="store-page-title"
+          >
             All products
           </h1>
           <SortProducts sortBy={sort} data-testid="sort-by-container" />

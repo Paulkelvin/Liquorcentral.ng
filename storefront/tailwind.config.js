@@ -72,6 +72,7 @@ module.exports = {
           hover: "var(--color-interactive-hover)",
           active: "var(--color-interactive-active)",
           tint: "var(--color-interactive-tint)",
+          "on-tint": "var(--color-interactive-on-tint)",
         },
         disabled: {
           DEFAULT: "var(--color-disabled-text)",

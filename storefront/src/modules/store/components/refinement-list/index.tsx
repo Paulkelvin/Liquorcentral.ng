@@ -139,21 +139,33 @@ const RefinementList = ({
           value={openGroups}
           onValueChange={(v) => setOpenGroups(v as string[])}
         >
-          <Accordion.Item value="category" className="border-b border-divider">
-            <Accordion.Header>
+          {/* Two presentations of one control. On a phone this is a
+              compact pill trigger that opens a panel — a full-bleed
+              label row with a rule under it read as page furniture and
+              cost a whole band above the products. Beside the results on
+              a wide screen it reverts to a quiet sidebar group header,
+              where a pill would be the odd one out. */}
+          <Accordion.Item value="category" className="small:border-b small:border-divider">
+            <Accordion.Header className="flex">
               <Accordion.Trigger
-                className="group flex w-full items-center justify-between gap-2 py-3 text-[11px] font-semibold uppercase tracking-[0.05em] text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                className="group inline-flex items-center gap-1.5 rounded-radius-full border border-divider bg-surface-elevated px-3.5 py-1.5 text-xs font-medium text-text-secondary transition-colors duration-standard ease-in-out hover:border-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus small:w-full small:justify-between small:gap-2 small:rounded-none small:border-0 small:bg-transparent small:px-0 small:py-3 small:text-[11px] small:font-semibold small:uppercase small:tracking-[0.05em] small:text-text-muted small:hover:border-0"
                 data-testid="filter-category-trigger"
               >
-                Category
+                <span className="small:hidden">
+                  Categories ({categories.length})
+                </span>
+                <span className="hidden small:inline">Category</span>
                 <ChevronDownMini
                   aria-hidden="true"
-                  className="text-text-muted transition-transform duration-150 group-data-[state=open]:rotate-180"
+                  className="text-text-secondary transition-transform duration-150 group-data-[state=open]:rotate-180 small:text-text-muted"
                 />
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content className="overflow-hidden">
-              <ul className="flex flex-col gap-1 pb-4">
+              {/* The panel is a surface on mobile so it reads as having
+                  dropped out of the pill above it; inline in the sidebar
+                  on desktop, where it is simply the group's contents. */}
+              <ul className="mt-2 flex flex-col gap-1 rounded-radius-md border border-divider bg-surface-elevated p-2 small:mt-0 small:rounded-none small:border-0 small:bg-transparent small:p-0 small:pb-4">
                 {categories.map((category) => (
                   <li key={category.id}>
                     <LocalizedClientLink

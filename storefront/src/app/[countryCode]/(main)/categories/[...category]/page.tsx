@@ -1,7 +1,11 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { getCategoryByHandle, listCategories } from "@lib/data/categories"
+import {
+  getCategoryByHandle,
+  listCategories,
+  listSiblingCategories,
+} from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
 import { HttpTypes, StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
@@ -88,9 +92,24 @@ export default async function CategoryPage(props: Props) {
     notFound()
   }
 
+  /**
+   * A parent category shows its own children as pills. A leaf category
+   * has none, so it shows its siblings instead — otherwise the pill row
+   * simply vanishes the moment you use it, and there is nowhere for the
+   * selected-pill state to ever appear. Skipped entirely for a top-level
+   * category, whose "siblings" are the departments the header already
+   * covers.
+   */
+  const siblingCategories = productCategory.category_children?.length
+    ? []
+    : productCategory.parent_category_id
+    ? await listSiblingCategories(productCategory.parent_category_id)
+    : []
+
   return (
     <CategoryTemplate
       category={productCategory}
+      siblingCategories={siblingCategories}
       sortBy={sortBy}
       page={page}
       countryCode={params.countryCode}

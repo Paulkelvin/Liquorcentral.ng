@@ -49,16 +49,27 @@ export default async function FoodCentralMenuGrid({
   }
 
   return (
-    <div className="ds-container py-12 small:py-24">
-      <div className="mb-8 flex flex-col gap-y-2">
-        <Heading level="h1" className="txt-xlarge">
+    // `py-6` to match the catalog listings — 48px of dead air above the
+    // title was pushing the menu itself down the screen on a phone.
+    <div className="ds-container py-6 small:py-10">
+      {/* `!` (important) because Heading hardcodes a size per level ahead
+          of any className passed in, so the plain utility never wins.
+          Editorial scale rather than the full display size: at 39px the
+          title alone owned the first screen on a phone. */}
+      <div className="mb-3 flex flex-col gap-y-2">
+        <Heading
+          level="h1"
+          className="!text-[22px] font-semibold md:!text-[28px]"
+        >
           {title}
         </Heading>
         {description && (
           <Text className="text-text-secondary max-w-2xl">{description}</Text>
         )}
       </div>
-      <ul className="grid grid-cols-2 small:grid-cols-4 gap-x-6 gap-y-12">
+      {/* Same grid as every other listing on the platform — this was the
+          one surface still running four columns. */}
+      <ul className="grid w-full grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-8">
         {foodProducts.map((product) => (
           <li key={product.id}>
             <ProductPreview product={product} region={region} />

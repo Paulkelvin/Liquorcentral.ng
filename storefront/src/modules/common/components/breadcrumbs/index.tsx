@@ -46,11 +46,20 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
         <ol className="flex flex-wrap items-center gap-x-2 txt-small text-text-secondary">
           {segments.map((segment, index) => {
             const isLast = index === segments.length - 1
+            // The narrow-viewport truncation hides the whole <li>, not
+            // just its label: hiding the label alone left the leading
+            // separator behind, so a trail two levels deep read as
+            // "Wine & Spirits / / Whisky" on a phone.
+            const truncatesOnMobile = index > 1 && !isLast
 
             return (
               <li
                 key={`${segment.label}-${index}`}
-                className="flex items-center gap-x-2"
+                className={
+                  truncatesOnMobile
+                    ? "hidden items-center gap-x-2 sm:flex"
+                    : "flex items-center gap-x-2"
+                }
               >
                 {index > 0 && (
                   <span aria-hidden="true" className="text-text-muted">
@@ -67,11 +76,7 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
                 ) : (
                   <LocalizedClientLink
                     href={segment.href}
-                    className={
-                      index > 1
-                        ? "hidden sm:inline hover:text-text-primary"
-                        : "hover:text-text-primary"
-                    }
+                    className="hover:text-text-primary"
                   >
                     {segment.label}
                   </LocalizedClientLink>

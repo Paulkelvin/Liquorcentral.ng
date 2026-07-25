@@ -113,18 +113,29 @@ export default async function ProductPreview({
               (Food Central prep time, or the catalog name on a mixed
               search result) and is simply absent otherwise — §9 expects
               it empty more often than not for Wine & Spirits. */}
-          {catalogFact && (
-            <span
-              className="text-[11px] font-medium uppercase tracking-wider text-text-muted"
-              data-testid={
-                showCatalogBadge
-                  ? "product-catalog-badge"
-                  : "product-catalog-fact"
-              }
-            >
-              {catalogFact}
-            </span>
-          )}
+          {catalogFact &&
+            (showCatalogBadge ? (
+              // The mixed-search catalog marker stays a plain eyebrow: it
+              // names which catalog a result came from, it isn't a claim
+              // about the item, so a tinted chip would overstate it.
+              <span
+                className="text-[11px] font-medium uppercase tracking-wider text-text-muted"
+                data-testid="product-catalog-badge"
+              >
+                {catalogFact}
+              </span>
+            ) : (
+              // Prep time is a concrete promise about the dish, so it
+              // reads as a tag rather than a caption. `self-start` keeps
+              // the tint hugging the text instead of stretching the full
+              // card width in this flex column.
+              <span
+                className="self-start rounded-radius-sm bg-interactive-tint px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-interactive-on-tint"
+                data-testid="product-catalog-fact"
+              >
+                {catalogFact}
+              </span>
+            ))}
           {/* Capped at 2 lines so a long name can never push a card's
               own layout apart; equal-height rows plus the button's
               `mt-auto` below keep every card's action on one baseline
