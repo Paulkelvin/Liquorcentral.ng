@@ -37,8 +37,6 @@
   /* Surface Elevated — a distinct value from the page's own Off White */
   --surface-elevated: #ffffff;
   --surface-elevated-75: rgba(255, 255, 255, 0.75);
-  --surface-elevated-65: rgba(255, 255, 255, 0.65);
-  --surface-elevated-16: rgba(255, 255, 255, 0.16);
 
   /* Tier 3 — Semantic Design Tokens (the only vocabulary components use) */
   --color-primary: var(--brand-red);
@@ -73,23 +71,6 @@
    */
   --color-scrim: var(--ink-900-80);
   --color-on-scrim-muted: var(--surface-elevated-75);
-
-  /*
-   * Inverse surface — a deliberately dark ground (the footer today) and
-   * the light type/hairlines that sit on it. The same precomputed-rgba
-   * rule as above applies to the muted/border steps: Tailwind's opacity
-   * modifier emits nothing at all against a bare `var()` color.
-   */
-  --color-surface-inverse: var(--ink-900);
-  --color-text-on-inverse: var(--surface-elevated);
-  --color-text-on-inverse-muted: var(--surface-elevated-65);
-  --color-border-on-inverse: var(--surface-elevated-16);
-  /*
-   * The global :focus-visible outline below uses --color-focus (ink-900),
-   * which is invisible against an inverse ground — anything focusable on
-   * one needs this light counterpart instead.
-   */
-  --color-focus-on-inverse: var(--surface-elevated);
 
   /*
    * Interactive state layer (DESIGN_SYSTEM.md "Interactive States"): hover
