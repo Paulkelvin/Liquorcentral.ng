@@ -298,12 +298,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-describedby={error && inputId ? `${inputId}-error` : undefined}
           className={clsx(
             "flex min-h-[46px] w-full rounded-radius-md border bg-surface-elevated px-4 py-3 text-body text-text-primary placeholder:text-text-muted",
-            "transition-colors duration-standard ease-in-out",
-            // The brand accent marks the focused field, on top of (never
-            // instead of) the ink focus ring the design system applies
-            // platform-wide — the ring is the accessibility affordance,
-            // the border is the aesthetic one.
-            "focus:outline-none focus:border-primary focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
+            "transition-[color,background-color,border-color,box-shadow] duration-standard ease-in-out",
+            // A focused field is marked by its own border turning the
+            // brand accent plus a soft halo, rather than a hard ring —
+            // the halo is what gives the indicator enough visual area to
+            // stay obvious once the heavy outline is gone.
+            "focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-focus-glow)]",
             "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-disabled-surface",
             error ? "border-danger" : "border-border",
             className

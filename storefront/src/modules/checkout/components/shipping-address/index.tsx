@@ -142,6 +142,7 @@ const ShippingAddress = ({
         <Input
           label="First name"
           name="shipping_address.first_name"
+          placeholder="Ada"
           autoComplete="given-name"
           value={formData["shipping_address.first_name"]}
           onChange={handleChange}
@@ -151,6 +152,7 @@ const ShippingAddress = ({
         <Input
           label="Last name"
           name="shipping_address.last_name"
+          placeholder="Okafor"
           autoComplete="family-name"
           value={formData["shipping_address.last_name"]}
           onChange={handleChange}
@@ -161,6 +163,7 @@ const ShippingAddress = ({
           <Input
             label="Delivery address"
             name="shipping_address.address_1"
+            placeholder="12 Adeola Odeku Street"
             autoComplete="address-line1"
             value={formData["shipping_address.address_1"]}
             onChange={handleChange}
@@ -172,6 +175,7 @@ const ShippingAddress = ({
           <Input
             label="Landmark or additional directions (optional)"
             name="shipping_address.address_2"
+            placeholder="Near the blue gate"
             autoComplete="address-line2"
             value={formData["shipping_address.address_2"]}
             onChange={handleChange}
@@ -185,6 +189,7 @@ const ShippingAddress = ({
         <Input
           label="City / Area"
           name="shipping_address.city"
+          placeholder="Victoria Island"
           autoComplete="address-level2"
           value={formData["shipping_address.city"]}
           onChange={handleChange}
@@ -194,6 +199,7 @@ const ShippingAddress = ({
         <Input
           label="State"
           name="shipping_address.province"
+          placeholder="Lagos"
           autoComplete="address-level1"
           value={formData["shipping_address.province"]}
           onChange={handleChange}
@@ -214,6 +220,7 @@ const ShippingAddress = ({
         <Input
           label="Email"
           name="email"
+          placeholder="name@example.com"
           type="email"
           title="Enter a valid email address."
           autoComplete="email"
@@ -225,6 +232,7 @@ const ShippingAddress = ({
         <Input
           label="Delivery contact phone"
           name="shipping_address.phone"
+          placeholder="+234 800 000 0000"
           type="tel"
           autoComplete="tel"
           value={formData["shipping_address.phone"]}

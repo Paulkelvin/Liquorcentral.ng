@@ -38,6 +38,7 @@ const Login = ({ setCurrentView }: Props) => {
             label="Email"
             name="email"
             type="email"
+            placeholder="name@example.com"
             title="Enter a valid email address."
             autoComplete="email"
             required
@@ -46,6 +47,7 @@ const Login = ({ setCurrentView }: Props) => {
           <PasswordInput
             label="Password"
             name="password"
+            placeholder="••••••••"
             autoComplete="current-password"
             required
             data-testid="password-input"

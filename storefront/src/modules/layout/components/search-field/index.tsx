@@ -49,7 +49,7 @@ export default function SearchField() {
         name="q"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search Wine & Spirits, Food Central..."
+        placeholder="Search wines, spirits, food..."
         className="bg-transparent outline-none txt-small text-text-primary placeholder:text-text-muted w-56"
       />
     </form>

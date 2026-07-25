@@ -60,7 +60,8 @@
   --color-text-muted: var(--ink-500);
   --color-border: var(--ink-300);
   --color-divider: var(--ink-200);
-  --color-focus: var(--ink-900);
+  /* Focus is marked in the brand accent, not a heavy ink ring. */
+  --color-focus: var(--color-primary);
   --color-interactive: color-mix(in srgb, var(--brand-green) 84%, black);
   --color-disabled-text: var(--ink-500);
   --color-disabled-surface: var(--ink-100);
@@ -92,6 +93,8 @@
    * that modifier can't reliably decompose a CSS custom property's color
    * channels at build time.
    */
+  /* The soft halo behind a focused control, paired with a 1px accent border. */
+  --color-focus-glow: color-mix(in srgb, var(--color-primary) 22%, transparent);
   /* The selected-item wash behind an active navigation row. */
   --color-interactive-tint: color-mix(in srgb, var(--color-interactive) 10%, white);
   --color-success-tint: color-mix(in srgb, var(--color-success) 12%, white);
@@ -105,10 +108,45 @@
  * #13). Applies platform-wide, not per-component.
  */
 
-/* Visible focus indicator, never removed without a replacement. */
+/*
+ * Visible focus indicator, never removed without a replacement.
+ *
+ * The user agent's own outline is dropped everywhere, but only ever in
+ * exchange for one of two deliberate replacements: buttons, links and
+ * other interactive elements keep a real ring in the brand accent
+ * (below), while form controls opt out of the ring and are marked
+ * instead by a 1px accent border plus a soft halo, defined alongside the
+ * control itself. Removing the outline with nothing in its place would
+ * fail WCAG 2.4.7, so neither branch is allowed to be empty.
+ */
+:focus {
+  outline: none;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* Form controls carry their own accent border + halo instead of a ring. */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none;
+}
+
+/*
+ * Placeholders read as a hint, never as entered text: the muted ink step
+ * at full strength rather than a further-reduced opacity, which would
+ * drop this text under the 4.5:1 contrast floor.
+ */
+::placeholder {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  opacity: 1;
 }
 
 /* Skip-to-content link — hidden until focused, per WCAG 2.4.1. */
@@ -155,15 +193,6 @@
   .no-scrollbar {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
-  }
-
-  input:focus ~ label,
-  input:not(:placeholder-shown) ~ label {
-    @apply -translate-y-2 text-caption font-normal;
-  }
-
-  input:focus ~ label {
-    @apply left-0;
   }
 
   input:-webkit-autofill,

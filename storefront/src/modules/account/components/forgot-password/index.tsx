@@ -44,6 +44,7 @@ const ForgotPassword = ({ setCurrentView }: Props) => {
             <Input
               label="Email"
               name="email"
+              placeholder="name@example.com"
               type="email"
               title="Enter a valid email address."
               autoComplete="email"

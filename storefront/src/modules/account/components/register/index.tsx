@@ -39,6 +39,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="First name"
             name="first_name"
+            placeholder="Ada"
             required
             autoComplete="given-name"
             data-testid="first-name-input"
@@ -46,6 +47,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Last name"
             name="last_name"
+            placeholder="Okafor"
             required
             autoComplete="family-name"
             data-testid="last-name-input"
@@ -53,6 +55,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Email"
             name="email"
+            placeholder="name@example.com"
             required
             type="email"
             autoComplete="email"
@@ -61,6 +64,7 @@ const Register = ({ setCurrentView }: Props) => {
           <Input
             label="Phone"
             name="phone"
+            placeholder="+234 800 000 0000"
             type="tel"
             autoComplete="tel"
             data-testid="phone-input"
@@ -68,6 +72,7 @@ const Register = ({ setCurrentView }: Props) => {
           <PasswordInput
             label="Password"
             name="password"
+            placeholder="••••••••"
             required
             autoComplete="new-password"
             data-testid="password-input"

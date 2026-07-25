@@ -78,6 +78,7 @@ const AddAddress = ({
                 <Input
                   label="First name"
                   name="first_name"
+                  placeholder="Ada"
                   required
                   autoComplete="given-name"
                   data-testid="first-name-input"
@@ -85,6 +86,7 @@ const AddAddress = ({
                 <Input
                   label="Last name"
                   name="last_name"
+                  placeholder="Okafor"
                   required
                   autoComplete="family-name"
                   data-testid="last-name-input"
@@ -93,6 +95,7 @@ const AddAddress = ({
               <Input
                 label="Delivery address"
                 name="address_1"
+                placeholder="12 Adeola Odeku Street"
                 required
                 autoComplete="address-line1"
                 data-testid="address-1-input"
@@ -101,6 +104,7 @@ const AddAddress = ({
                 <Input
                   label="Landmark or additional directions (optional)"
                   name="address_2"
+                  placeholder="Near the blue gate"
                   autoComplete="address-line2"
                   data-testid="address-2-input"
                 />
@@ -113,6 +117,7 @@ const AddAddress = ({
                 <Input
                   label="City / Area"
                   name="city"
+                  placeholder="Victoria Island"
                   required
                   autoComplete="address-level2"
                   data-testid="city-input"
@@ -120,6 +125,7 @@ const AddAddress = ({
                 <Input
                   label="State"
                   name="province"
+                  placeholder="Lagos"
                   required
                   autoComplete="address-level1"
                   data-testid="state-input"
@@ -128,6 +134,7 @@ const AddAddress = ({
               <Input
                 label="Phone"
                 name="phone"
+                placeholder="+234 800 000 0000"
                 type="tel"
                 autoComplete="tel"
                 data-testid="phone-input"

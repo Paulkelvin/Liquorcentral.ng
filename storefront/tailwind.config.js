@@ -63,7 +63,10 @@ module.exports = {
         "text-muted": "var(--color-text-muted)",
         border: "var(--color-border)",
         divider: "var(--color-divider)",
-        focus: "var(--color-focus)",
+        focus: {
+          DEFAULT: "var(--color-focus)",
+          glow: "var(--color-focus-glow)",
+        },
         interactive: {
           DEFAULT: "var(--color-interactive)",
           hover: "var(--color-interactive-hover)",
