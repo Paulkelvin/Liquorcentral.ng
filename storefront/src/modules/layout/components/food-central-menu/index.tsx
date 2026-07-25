@@ -28,7 +28,9 @@ export default function FoodCentralMenu() {
   const hoverIntent = useHoverIntentOpen(triggerRef)
   const pathname = usePathname()
   const isActive = pathname?.includes("/food-central") ?? false
-  const activeClass = isActive ? "text-text-primary font-semibold" : "text-text-secondary"
+  const activeClass = isActive
+    ? "border-b-2 border-b-primary text-text-primary font-semibold"
+    : "border-b-2 border-b-transparent text-text-muted hover:text-text-primary"
 
   return (
     <Popover className="h-full flex relative" as="div">

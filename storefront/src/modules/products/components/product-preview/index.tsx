@@ -92,7 +92,7 @@ export default async function ProductPreview({
     // edge regardless of how many lines the title above it wraps to.
     <div
       data-testid="product-wrapper"
-      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-divider bg-surface-elevated"
+      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-divider bg-surface-elevated shadow-elevation-1"
     >
       {/* §9/§212 — the card's one real link wraps only image/name/price;
           quick-add is a sibling control below, never nested inside it. */}
@@ -130,7 +130,7 @@ export default async function ProductPreview({
               `mt-auto` below keep every card's action on one baseline
               whether the title runs to one line or two. */}
           <Text
-            className="text-[14px] font-medium leading-snug text-text-primary line-clamp-2"
+            className="!text-[14px] font-medium leading-snug text-text-primary line-clamp-2"
             data-testid="product-title"
           >
             {product.title}
@@ -161,7 +161,6 @@ export default async function ProductPreview({
       {!isUnavailable && (
         <QuickAddButton
           product={product}
-          weight={isFoodCentral ? "primary" : "secondary"}
           className="mt-auto mx-3 mb-3 w-auto"
         />
       )}

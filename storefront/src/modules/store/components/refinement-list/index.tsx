@@ -142,7 +142,7 @@ const RefinementList = ({
           <Accordion.Item value="category" className="border-b border-divider">
             <Accordion.Header>
               <Accordion.Trigger
-                className="group flex w-full items-center justify-between gap-2 py-3 text-caption font-medium uppercase tracking-wider text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                className="group flex w-full items-center justify-between gap-2 py-3 text-[11px] font-semibold uppercase tracking-[0.05em] text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                 data-testid="filter-category-trigger"
               >
                 Category
@@ -159,10 +159,10 @@ const RefinementList = ({
                     <LocalizedClientLink
                       href={`/categories/${category.handle}`}
                       className={clsx(
-                        "flex min-h-[36px] items-center rounded-radius-sm -mx-2 px-2 text-caption transition-colors duration-standard ease-in-out",
+                        "flex min-h-[36px] items-center border-l-2 pl-3 text-caption transition-colors duration-standard ease-in-out hover:text-primary",
                         pathname?.includes(`/categories/${category.handle}`)
-                          ? "bg-interactive-tint font-semibold text-text-primary"
-                          : "text-text-secondary hover:bg-ink-100 hover:text-text-primary"
+                          ? "border-l-primary font-semibold text-primary"
+                          : "border-l-transparent text-text-secondary"
                       )}
                       data-testid="filter-category-link"
                     >

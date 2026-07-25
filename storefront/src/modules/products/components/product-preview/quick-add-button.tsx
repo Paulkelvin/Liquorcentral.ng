@@ -47,11 +47,9 @@ const sharedClass =
  */
 export default function QuickAddButton({
   product,
-  weight,
   className,
 }: {
   product: HttpTypes.StoreProduct
-  weight: "primary" | "secondary"
   className?: string
 }) {
   const countryCode = useParams().countryCode as string
@@ -63,13 +61,17 @@ export default function QuickAddButton({
   const singleVariant = variants.length === 1 ? variants[0] : undefined
   const hasMultipleVariants = variants.length > 1
 
-  // §9's Food Central-primary / Wine-secondary visual-weight
-  // distinction: a solid brand fill vs. a quiet filled surface. Neither
-  // carries a heavy outline — a hard ink border read as a second frame
-  // inside the card's own.
-  const primaryClass = clx(sharedClass, "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active", className)
-  const secondaryClass = clx(sharedClass, "bg-ink-100 text-text-primary hover:bg-ink-200 active:bg-ink-200", className)
-  const variantClass = weight === "primary" ? primaryClass : secondaryClass
+  // One high-contrast CTA on every card, in the brand accent. This
+  // deliberately drops §9's Food Central-primary / Wine-secondary
+  // visual-weight split: the quiet fill that carried the "secondary"
+  // half read as washed out against both the card and the page, and the
+  // ink outline that replaced it read as a second frame inside the
+  // card's own border. White on this accent measures 5.40:1.
+  const variantClass = clx(
+    sharedClass,
+    "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
+    className
+  )
 
   if (variants.length === 0 || (singleVariant && !isVariantPurchasable(singleVariant))) {
     return (

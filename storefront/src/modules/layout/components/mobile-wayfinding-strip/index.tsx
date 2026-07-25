@@ -31,10 +31,10 @@ export default function MobileWayfindingStrip() {
         href="/store"
         aria-current={!isFoodCentral ? "page" : undefined}
         className={clx(
-          "txt-small-plus whitespace-nowrap hover:text-interactive",
+          "txt-small-plus whitespace-nowrap border-b-2 pb-1 transition-colors duration-standard ease-in-out",
           !isFoodCentral
-            ? "text-text-primary font-semibold"
-            : "text-text-secondary"
+            ? "border-b-primary text-text-primary font-semibold"
+            : "border-b-transparent text-text-muted hover:text-text-primary"
         )}
       >
         Wine &amp; Spirits
@@ -43,10 +43,10 @@ export default function MobileWayfindingStrip() {
         href="/food-central"
         aria-current={isFoodCentral ? "page" : undefined}
         className={clx(
-          "txt-small-plus whitespace-nowrap hover:text-interactive",
+          "txt-small-plus whitespace-nowrap border-b-2 pb-1 transition-colors duration-standard ease-in-out",
           isFoodCentral
-            ? "text-text-primary font-semibold"
-            : "text-text-secondary"
+            ? "border-b-primary text-text-primary font-semibold"
+            : "border-b-transparent text-text-muted hover:text-text-primary"
         )}
       >
         Food Central

@@ -101,7 +101,7 @@ const SortProducts = ({
           value={sortBy}
           onChange={(event) => handleChange(event.target.value)}
           data-testid={dataTestId}
-          className="min-h-[40px] w-full appearance-none rounded-radius-md border border-border bg-surface-elevated py-2 pl-3 pr-9 text-caption text-text-primary transition-[border-color,box-shadow] duration-standard ease-in-out focus:border-primary focus:outline-none focus:shadow-[0_0_0_3px_var(--color-focus-glow)]"
+          className="min-h-[40px] w-full cursor-pointer appearance-none rounded-radius-md border border-border bg-surface-elevated py-1.5 pl-3 pr-9 text-xs text-text-primary transition-[border-color,box-shadow] duration-standard ease-in-out hover:border-text-muted focus:border-primary focus:outline-none focus:shadow-[0_0_0_3px_var(--color-focus-glow)]"
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>

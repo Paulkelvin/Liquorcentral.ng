@@ -40,7 +40,11 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
   // Everywhere that isn't "/food-central" is Wine & Spirits' own
   // territory, since that's this platform's primary catalog.
   const isActive = !(pathname?.includes("/food-central") ?? false)
-  const activeClass = isActive ? "text-text-primary font-semibold" : "text-text-secondary"
+  // The active department is underlined at the bar's own bottom edge;
+  // the other sits back in the muted step.
+  const activeClass = isActive
+    ? "border-b-2 border-b-primary text-text-primary font-semibold"
+    : "border-b-2 border-b-transparent text-text-muted hover:text-text-primary"
 
   if (columns.length === 0) {
     // §24 — a category-tree fetch/empty failure falls back to the plain
