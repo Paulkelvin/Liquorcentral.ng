@@ -159,12 +159,17 @@ const Item = ({
               />
               {updating && <Spinner />}
             </div>
-            <Text
+            {/* Not a <Text>: that renders a <p>, and LineItemPrice's own
+                markup is a <div>, so the pair produced a <div> inside a
+                <p> — invalid HTML that React repairs during hydration,
+                which threw away and re-rendered the whole cart tree on
+                every load. */}
+            <div
               className="txt-medium-plus text-text-primary"
               data-testid="product-line-total"
             >
               <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
-            </Text>
+            </div>
           </div>
 
           <ErrorMessage error={error} data-testid="product-error-message" />
