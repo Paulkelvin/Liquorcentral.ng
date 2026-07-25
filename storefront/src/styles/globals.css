@@ -36,8 +36,20 @@
   /* Surface Elevated — a distinct value from the page's own Off White */
   --surface-elevated: #ffffff;
 
-  /* Tier 3 — Semantic Design Tokens (the only vocabulary components use) */
-  --color-primary: var(--brand-red);
+  /*
+   * Tier 3 — Semantic Design Tokens (the only vocabulary components use)
+   *
+   * `primary` and `interactive` are deliberately a shade deeper than the
+   * Tier 1 brand hues they derive from, because those hues are used as a
+   * *fill behind white text* and as *body-sized link text* respectively,
+   * and at full strength neither clears WCAG AA. Measured against the
+   * rendered page: white on brand red gave 4.24:1 and brand green on
+   * white gave 3.74:1, both short of the 4.5:1 floor this design system
+   * commits to (§B11). The Tier 1 values above are untouched — the whole
+   * point of this layer is that a hue can be adjusted for legibility
+   * here without redefining the brand.
+   */
+  --color-primary: color-mix(in srgb, var(--brand-red) 87%, black);
   --color-secondary: var(--brand-green);
   --color-accent: var(--brand-gold);
   --color-surface: var(--brand-off-white);
@@ -49,7 +61,7 @@
   --color-border: var(--ink-300);
   --color-divider: var(--ink-200);
   --color-focus: var(--ink-900);
-  --color-interactive: var(--brand-green);
+  --color-interactive: color-mix(in srgb, var(--brand-green) 84%, black);
   --color-disabled-text: var(--ink-500);
   --color-disabled-surface: var(--ink-100);
   --color-success: var(--brand-green);

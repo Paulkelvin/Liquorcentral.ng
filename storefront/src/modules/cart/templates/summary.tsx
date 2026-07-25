@@ -1,15 +1,15 @@
 "use client"
 
-import { Button, Heading } from "@modules/common/components/ui"
+import { Button, Heading, Text } from "@modules/common/components/ui"
 
 import CartTotals from "@modules/common/components/cart-totals"
-import Divider from "@modules/common/components/divider"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart
+  itemCount?: number
 }
 
 function getCheckoutStep(cart: HttpTypes.StoreCart) {
@@ -22,23 +22,50 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
   }
 }
 
-const Summary = ({ cart }: SummaryProps) => {
+/**
+ * The order summary panel: a titled surface with the item count beside
+ * the heading, the cost breakdown, then the discount field, and finally
+ * the single primary action with a quieter "continue shopping" escape
+ * beneath it — so the strongest visual weight on the page sits on the
+ * one thing the customer is most likely to want next.
+ */
+const Summary = ({ cart, itemCount }: SummaryProps) => {
   const step = getCheckoutStep(cart)
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
-        Summary
-      </Heading>
-      <DiscountCode cart={cart} />
-      <Divider />
+    <div className="flex flex-col gap-5 rounded-radius-md border border-border bg-surface-elevated p-4 small:p-6">
+      <div className="flex items-baseline justify-between gap-3">
+        <Heading level="h2" className="!text-heading-4">
+          Order summary
+        </Heading>
+        {typeof itemCount === "number" && itemCount > 0 && (
+          <Text size="caption" muted data-testid="cart-item-count">
+            {itemCount} {itemCount === 1 ? "item" : "items"}
+          </Text>
+        )}
+      </div>
+
       <CartTotals totals={cart} />
-      <LocalizedClientLink
-        href={"/checkout?step=" + step}
-        data-testid="checkout-button"
-      >
-        <Button className="w-full h-10">Go to checkout</Button>
-      </LocalizedClientLink>
+
+      <DiscountCode cart={cart} />
+
+      <div className="flex flex-col gap-3">
+        <LocalizedClientLink
+          href={"/checkout?step=" + step}
+          data-testid="checkout-button"
+        >
+          <Button size="large" className="w-full">
+            Go to checkout
+          </Button>
+        </LocalizedClientLink>
+        <LocalizedClientLink
+          href="/store"
+          className="text-center text-caption text-text-secondary transition-colors duration-standard ease-in-out hover:text-text-primary"
+          data-testid="continue-shopping-summary"
+        >
+          Continue shopping
+        </LocalizedClientLink>
+      </div>
     </div>
   )
 }

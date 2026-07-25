@@ -1,6 +1,5 @@
 import repeat from "@lib/util/repeat"
 import { HttpTypes } from "@medusajs/types"
-import { Heading } from "@modules/common/components/ui"
 import { MapPin, TruckFast } from "@medusajs/icons"
 
 import FulfillmentGroup from "@modules/cart/components/fulfillment-group"
@@ -25,11 +24,6 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
   if (!items) {
     return (
       <div>
-        <div className="pb-3 flex items-center">
-          <Heading level="h1" className="text-[2rem] leading-[2.75rem]">
-            Cart
-          </Heading>
-        </div>
         {repeat(3).map((i) => (
           <SkeletonLineItem key={i} />
         ))}
@@ -56,11 +50,10 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
 
   return (
     <div className="flex flex-col gap-y-8">
-      <div className="pb-1 flex items-center justify-between">
-        <Heading level="h1" className="text-[2rem] leading-[2.75rem]">
-          Cart
-        </Heading>
-        {wineLines.length > 0 && foodLines.length > 0 && (
+      {/* The page heading lives on the surrounding panel (templates/index.tsx),
+          so this region only carries the split-cart explainer. */}
+      {wineLines.length > 0 && foodLines.length > 0 && (
+        <div className="flex items-center justify-between">
           <details className="text-caption text-text-secondary">
             <summary className="cursor-pointer select-none">Why is my cart split?</summary>
             <p className="mt-2 max-w-sm">
@@ -70,8 +63,8 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
               as one order.
             </p>
           </details>
-        )}
-      </div>
+        </div>
+      )}
 
       <FulfillmentGroup
         title="Wine & Spirits"

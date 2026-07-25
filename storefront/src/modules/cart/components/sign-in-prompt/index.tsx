@@ -5,7 +5,7 @@ const SignInPrompt = () => {
   return (
     <div className="bg-surface-elevated flex items-center justify-between">
       <div>
-        <Heading level="h2" className="txt-xlarge">
+        <Heading level="h2" className="!text-body-lg">
           Already have an account?
         </Heading>
         <Text className="txt-medium text-text-secondary mt-2">

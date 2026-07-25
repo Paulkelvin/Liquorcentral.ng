@@ -73,38 +73,63 @@ const Item = ({
     }
   }
 
-  return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
-        <LocalizedClientLink
-          href={`/products/${item.product_handle}`}
-          aria-label={`View ${item.product_title || item.title || "product"}`}
-          className={clx("flex", {
-            "w-16": type === "preview",
-            "small:w-24 w-12": type === "full",
-          })}
-        >
-          <Thumbnail
-            thumbnail={item.thumbnail}
-            images={item.variant?.product?.images}
-            size="square"
-            alt={item.title || item.product_title || "Product photo"}
-          />
-        </LocalizedClientLink>
-      </Table.Cell>
-
-      <Table.Cell className="text-left">
-        <Text className="txt-medium-plus text-text-primary" data-testid="product-title">
-          {item.product_title}
+  const title = (
+    <>
+      <Text className="txt-medium-plus text-text-primary" data-testid="product-title">
+        {item.product_title}
+      </Text>
+      <LineItemOptions variant={item.variant} data-testid="product-variant" />
+      {isUnavailable && (
+        <Text className="text-danger mt-1" data-testid="product-unavailable-notice">
+          Currently unavailable — remove this item or check back later.
         </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
-        {isUnavailable && (
-          <Text className="text-danger mt-1" data-testid="product-unavailable-notice">
-            Currently unavailable — remove this item or check back later.
-          </Text>
-        )}
-        {giftWrap && type === "full" && (
-          <div className="mt-2">
+      )}
+    </>
+  )
+
+  const thumbnail = (
+    <LocalizedClientLink
+      href={`/products/${item.product_handle}`}
+      aria-label={`View ${item.product_title || item.title || "product"}`}
+      className={clx("flex shrink-0", {
+        "w-16": type === "preview",
+        "w-20 sm:w-24": type === "full",
+      })}
+    >
+      <Thumbnail
+        thumbnail={item.thumbnail}
+        images={item.variant?.product?.images}
+        size="square"
+        alt={item.title || item.product_title || "Product photo"}
+      />
+    </LocalizedClientLink>
+  )
+
+  /**
+   * The cart's own line item is a self-contained card — thumbnail,
+   * details, quantity controls and totals stacked inside a flex row —
+   * rather than a table row. The table it used to render into could not
+   * narrow past its own column widths, so the cart page overflowed
+   * horizontally on a phone (measured at 532px of content in a 390px
+   * viewport). The checkout summary's compact `preview` variant still
+   * renders as a table row, since it genuinely lives inside one.
+   */
+  if (type === "full") {
+    return (
+      <li
+        className="flex gap-3 rounded-radius-md border border-border p-3 sm:gap-4 sm:p-4"
+        data-testid="product-row"
+      >
+        {thumbnail}
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+            <div className="min-w-0">{title}</div>
+            <div className="shrink-0 text-text-secondary sm:text-right">
+              <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
+            </div>
+          </div>
+
+          {giftWrap && (
             <Checkbox
               id={`gift-wrap-${item.id}`}
               checked={!!giftWrapItem}
@@ -116,49 +141,48 @@ const Item = ({
               })})`}
               data-testid="cart-gift-wrap-toggle"
             />
-          </div>
-        )}
-      </Table.Cell>
-
-      {type === "full" && (
-        <Table.Cell>
-          <div className="flex gap-2 items-center">
-            <DeleteButton
-              id={item.id}
-              aria-label={`Remove ${item.product_title} from cart`}
-              data-testid="product-delete-button"
-            />
-            <QuantityStepper
-              quantity={item.quantity}
-              onChange={changeQuantity}
-              max={maxQuantity}
-              min={0}
-              disabled={updating}
-            />
-            {updating && <Spinner />}
-          </div>
-          <ErrorMessage error={error} data-testid="product-error-message" />
-        </Table.Cell>
-      )}
-
-      {type === "full" && (
-        <Table.Cell className="hidden small:table-cell">
-          <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
-        </Table.Cell>
-      )}
-
-      <Table.Cell className="!pr-0">
-        <span
-          className={clx("!pr-0", {
-            "flex flex-col items-end h-full justify-center": type === "preview",
-          })}
-        >
-          {type === "preview" && (
-            <span className="flex gap-x-1 ">
-              <Text className="text-text-muted">{item.quantity}x </Text>
-              <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
-            </span>
           )}
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <QuantityStepper
+                quantity={item.quantity}
+                onChange={changeQuantity}
+                max={maxQuantity}
+                min={0}
+                disabled={updating}
+              />
+              <DeleteButton
+                id={item.id}
+                aria-label={`Remove ${item.product_title} from cart`}
+                data-testid="product-delete-button"
+              />
+              {updating && <Spinner />}
+            </div>
+            <Text
+              className="txt-medium-plus text-text-primary"
+              data-testid="product-line-total"
+            >
+              <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+            </Text>
+          </div>
+
+          <ErrorMessage error={error} data-testid="product-error-message" />
+        </div>
+      </li>
+    )
+  }
+
+  return (
+    <Table.Row className="w-full" data-testid="product-row">
+      <Table.Cell className="!pl-0 p-4 w-24">{thumbnail}</Table.Cell>
+      <Table.Cell className="text-left">{title}</Table.Cell>
+      <Table.Cell className="!pr-0">
+        <span className="flex h-full flex-col items-center justify-center !pr-0">
+          <span className="flex gap-x-1 ">
+            <Text className="text-text-muted">{item.quantity}x </Text>
+            <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
+          </span>
           <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
         </span>
       </Table.Cell>

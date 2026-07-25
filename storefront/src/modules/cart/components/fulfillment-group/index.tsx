@@ -1,6 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@lib/util/money"
-import { Heading, Table, Text } from "@modules/common/components/ui"
+import { Heading, Text } from "@modules/common/components/ui"
 import Item from "@modules/cart/components/item"
 
 type FulfillmentGroupProps = {
@@ -45,41 +45,28 @@ const FulfillmentGroup = ({
       <div className="flex items-start gap-2">
         {icon}
         <div>
-          <Heading level="h2" className="txt-medium-plus">
+          <Heading level="h2" className="!text-body font-semibold">
             {title}
           </Heading>
           <Text className="text-text-secondary">{deliveryMessage}</Text>
         </div>
       </div>
-      <Table>
-        <Table.Header className="border-t-0">
-          <Table.Row className="text-text-secondary txt-medium-plus">
-            <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
-            <Table.HeaderCell>
-              <span className="sr-only">Product image</span>
-            </Table.HeaderCell>
-            <Table.HeaderCell>Quantity</Table.HeaderCell>
-            <Table.HeaderCell className="hidden small:table-cell">Price</Table.HeaderCell>
-            <Table.HeaderCell className="!pr-0 text-right">Total</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {items
-            .slice()
-            .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
-            .map((item) => (
-              <Item
-                key={item.id}
-                item={item}
-                giftWrapItem={giftWrapByParent.get(item.id)}
-                giftWrap={giftWrap}
-                maxQuantity={getMaxQuantity?.(item)}
-                isUnavailable={isItemUnavailable?.(item)}
-                currencyCode={currencyCode}
-              />
-            ))}
-        </Table.Body>
-      </Table>
+      <ul className="flex flex-col gap-3">
+        {items
+          .slice()
+          .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
+          .map((item) => (
+            <Item
+              key={item.id}
+              item={item}
+              giftWrapItem={giftWrapByParent.get(item.id)}
+              giftWrap={giftWrap}
+              maxQuantity={getMaxQuantity?.(item)}
+              isUnavailable={isItemUnavailable?.(item)}
+              currencyCode={currencyCode}
+            />
+          ))}
+      </ul>
       <div className="flex justify-end">
         <div className="flex items-center gap-x-4">
           <Text className="text-text-secondary">{title} subtotal</Text>

@@ -65,15 +65,13 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         rounded ? "!rounded-radius-sm" : "!rounded-none",
         className,
         {
-          // A single uniform 1:1 ratio across every product-card-grid
-          // thumbnail ("full"/"square", used by ProductPreview) — the
-          // previous 9:16/11:14 split rendered every grid card as a very
-          // tall portrait strip. "small"/"medium"/"large" remain
-          // unaffected: those sizes are used for fixed-width line-item
-          // thumbnails (cart, order review), a different context this
-          // task's product-card-grid scope doesn't cover.
+          // "small"/"medium"/"large" are fixed-width line-item
+          // thumbnails (cart, order review) and keep their own ratio.
           "aspect-[9/16]": size === "small" || size === "medium" || size === "large",
-          "aspect-square": size === "full" || size === "square",
+          // A landscape crop for the product grid: a square photo at
+          // one-column mobile width made each card enormously tall.
+          "aspect-[4/3]": size === "full",
+          "aspect-square": size === "square",
           "w-[180px]": size === "small",
           "w-[290px]": size === "medium",
           "w-[440px]": size === "large",
