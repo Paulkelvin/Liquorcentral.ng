@@ -159,10 +159,19 @@ export default async function ProductPreview({
         </div>
       </LocalizedClientLink>
       {!isUnavailable && (
-        <QuickAddButton
-          product={product}
-          className="mt-auto mx-3 mb-3 w-auto"
-        />
+        // The inset comes from a padded wrapper, not margins on the
+        // button itself: quick-add's own `w-full` wins the cascade over
+        // any `w-auto` passed in here (Tailwind orders by stylesheet
+        // position, not class-string order), so a margin-based inset
+        // resolved to 100% width *plus* margins and pushed the button's
+        // right edge past the card, where `overflow-hidden` quietly
+        // clipped it. Padding a wrapper makes 100% mean the right thing.
+        <div className="mt-auto px-3 pb-3">
+          <QuickAddButton
+            product={product}
+            department={isFoodCentral ? "food" : "wine"}
+          />
+        </div>
       )}
     </div>
   )

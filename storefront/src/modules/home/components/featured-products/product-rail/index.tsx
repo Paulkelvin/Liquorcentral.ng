@@ -18,7 +18,10 @@ export default async function ProductRail({
     regionId: region.id,
     queryParams: {
       collection_id: collection.id,
-      fields: "*variants.calculated_price",
+      // `food_details` decides the card's catalog identity (prep-time
+      // fact, quick-add accent) — without it a dish in a mixed
+      // collection rail would render as a Wine & Spirits card.
+      fields: "*variants.calculated_price,+food_details.*",
     },
   })
 

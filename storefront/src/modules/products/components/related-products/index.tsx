@@ -32,6 +32,12 @@ export default async function RelatedProducts({
       .filter(Boolean) as string[]
   }
   queryParams.is_giftcard = false
+  // The card's catalog-dependent bits (Food Central prep-time fact, and
+  // which accent its quick-add CTA takes) resolve off `food_details`;
+  // without asking for it here every dish in this rail would render as a
+  // Wine & Spirits card. Additive — `listProducts` merges this on top of
+  // its base field set rather than replacing it.
+  queryParams.fields = "+food_details.*"
 
   const products = await listProducts({
     queryParams,

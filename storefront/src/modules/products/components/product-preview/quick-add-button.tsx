@@ -39,18 +39,20 @@ const sharedClass =
  * guessing which variant the customer meant — still reachable in one
  * click, just not a silent add.
  *
- * `weight` controls visual weight only (§9's Food Central-primary /
- * Wine-secondary distinction), never whether the control exists or is
- * reachable — both weights stay in the DOM and keyboard/touch-operable at
- * all times (§14/§24: hover-only reveal is never the sole way to reach an
+ * `department` controls the CTA's fill colour only (which catalog the
+ * card belongs to), never whether the control exists or is reachable —
+ * both departments stay in the DOM and keyboard/touch-operable at all
+ * times (§14/§24: hover-only reveal is never the sole way to reach an
  * action).
  */
 export default function QuickAddButton({
   product,
   className,
+  department = "wine",
 }: {
   product: HttpTypes.StoreProduct
   className?: string
+  department?: "wine" | "food"
 }) {
   const countryCode = useParams().countryCode as string
   const [status, setStatus] = useState<"idle" | "added" | "error">(
@@ -61,15 +63,18 @@ export default function QuickAddButton({
   const singleVariant = variants.length === 1 ? variants[0] : undefined
   const hasMultipleVariants = variants.length > 1
 
-  // One high-contrast CTA on every card, in the brand accent. This
-  // deliberately drops §9's Food Central-primary / Wine-secondary
-  // visual-weight split: the quiet fill that carried the "secondary"
-  // half read as washed out against both the card and the page, and the
-  // ink outline that replaced it read as a second frame inside the
-  // card's own border. White on this accent measures 5.40:1.
+  // Both catalogs get the same high-contrast solid CTA — §9's original
+  // primary/secondary weight split is gone, because the quiet fill that
+  // carried the "secondary" half read as washed out against both the
+  // card and the page. The catalogs stay distinguishable by *hue*
+  // instead of by weight: Wine & Spirits in the brand accent (white on
+  // it measures 5.40:1), Food Central in ink-900 (16.1:1). Neither is
+  // subordinate to the other.
   const variantClass = clx(
     sharedClass,
-    "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
+    department === "food"
+      ? "bg-ink-900 text-surface-elevated hover:bg-ink-700 active:bg-ink-700"
+      : "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
     className
   )
 
