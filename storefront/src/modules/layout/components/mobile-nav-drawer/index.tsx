@@ -5,9 +5,19 @@ import { HttpTypes } from "@medusajs/types"
 import {
   ArrowRightMini,
   BarsThree,
+  Beaker,
+  BuildingStorefront,
+  CircleStack,
+  Calendar,
+  ChefHat,
   ChevronDown,
+  Fire,
+  Gift,
   MagnifyingGlassMini,
   ShoppingBag,
+  Sparkles,
+  Tag,
+  Tools,
   User,
   XMark,
 } from "@medusajs/icons"
@@ -28,35 +38,68 @@ type MobileNavDrawerProps = {
 }
 
 const FOOD_CENTRAL_DESTINATIONS = [
-  { label: "Today's Menu", href: "/food-central" },
-  { label: "Scheduled Orders", href: "/food-central/scheduled" },
-  { label: "Pickup", href: "/food-central/pickup" },
+  { label: "Today's Menu", href: "/food-central", Icon: ChefHat },
+  { label: "Scheduled Orders", href: "/food-central/scheduled", Icon: Calendar },
+  { label: "Pickup", href: "/food-central/pickup", Icon: BuildingStorefront },
 ]
 
-/** A top-level category link — accent-bar + bold when it's the current page, never a filled background block. */
-function TopLevelLink({
+type NavIcon = React.ComponentType<{ className?: string }>
+
+/**
+ * Categories come from the backend, so their icons are matched on
+ * handle with a neutral `Tag` fallback — an unmapped or newly-added
+ * category still renders a correctly-aligned row rather than a gap
+ * where an icon should be.
+ */
+const CATEGORY_ICONS: Record<string, NavIcon> = {
+  wines: Beaker,
+  champagne: Sparkles,
+  spirits: Fire,
+  beer: CircleStack,
+  "gift-sets": Gift,
+  accessories: Tools,
+}
+
+const iconFor = (handle?: string | null): NavIcon =>
+  (handle && CATEGORY_ICONS[handle]) || Tag
+
+/**
+ * A top-level navigation row: line icon, then a sentence-case label —
+ * no uppercasing, and deliberately no rule beneath it. The current page
+ * is marked by a filled, rounded, tinted block rather than a divider or
+ * an edge bar.
+ */
+function NavRow({
   href,
   isActive,
   onNavigate,
+  Icon,
   children,
 }: {
   href: string
   isActive: boolean
   onNavigate: () => void
+  Icon: NavIcon
   children: React.ReactNode
 }) {
   return (
     <LocalizedClientLink
       href={href}
       onClick={onNavigate}
+      aria-current={isActive ? "page" : undefined}
       className={clx(
-        "flex-1 flex items-center min-h-[44px] pl-3 -ml-3 border-l-2 uppercase tracking-wide text-caption",
+        "flex-1 flex items-center gap-3 min-h-[44px] px-3 rounded-radius-md text-body transition-colors duration-standard ease-in-out",
         isActive
-          ? "border-l-primary text-text-primary font-semibold"
-          : "border-l-transparent text-text-primary font-semibold hover:border-l-border"
+          // Ink on the tint, not the interactive colour on it: brand
+          // green over its own 10% wash measures ~3.3:1, well under the
+          // 4.5:1 AA floor (axe-core flags it). The filled tinted block
+          // carries the "selected" signal; the label stays legible.
+          ? "bg-interactive-tint text-text-primary font-semibold"
+          : "text-text-primary hover:bg-ink-100"
       )}
     >
-      {children}
+      <Icon className="shrink-0" />
+      <span>{children}</span>
     </LocalizedClientLink>
   )
 }
@@ -148,7 +191,7 @@ export default function MobileNavDrawer({
               data-testid="mobile-nav-drawer"
             >
               {/* Fixed header */}
-              <div className="shrink-0 flex items-center justify-between px-6 py-5 border-b border-border bg-surface-elevated">
+              <div className="shrink-0 flex items-center justify-between px-4 py-4 bg-surface-elevated">
                 <span className="font-display text-heading-4 font-semibold tracking-tight text-text-primary">
                   LiquorCentral
                 </span>
@@ -171,7 +214,7 @@ export default function MobileNavDrawer({
               <form
                 role="search"
                 onSubmit={submitSearch}
-                className="shrink-0 flex items-center gap-2 h-11 mx-6 my-4 px-3 rounded-radius-md border border-border"
+                className="shrink-0 flex items-center gap-2 h-11 mx-4 my-4 px-3 rounded-radius-md bg-ink-100"
               >
                 <MagnifyingGlassMini className="text-text-muted" aria-hidden="true" />
                 <label htmlFor="mobile-nav-search" className="sr-only">
@@ -189,31 +232,31 @@ export default function MobileNavDrawer({
               </form>
 
               {/* Scrollable main navigation — only this region scrolls */}
-              <nav aria-label="Full navigation" className="flex-1 overflow-y-auto px-6 py-6">
-                <div className="flex flex-col">
-                  <div className="pb-6 mb-6 border-b border-border">
-                    <h3 className="text-heading-3 font-display font-semibold text-text-primary mb-4">
+              <nav aria-label="Full navigation" className="flex-1 overflow-y-auto px-4 pb-6">
+                <div className="flex flex-col gap-8">
+                  <div>
+                    {/* A quiet uppercase group label carries the section
+                        break — no horizontal rules anywhere in this list. */}
+                    <h3 className="px-3 mb-2 text-caption font-medium uppercase tracking-wider text-text-muted">
                       Wine &amp; Spirits
                     </h3>
-                    <ul className="flex flex-col">
+                    <ul className="flex flex-col gap-0.5">
                       {topLevel.map((category) => {
                         const hasChildren = !!category.category_children?.length
                         const isExpanded = expandedIds.has(category.id)
                         const active = isCurrentPath(`/categories/${category.handle}`)
 
                         return (
-                          <li
-                            key={category.id}
-                            className="border-b border-divider last:border-b-0 py-1"
-                          >
+                          <li key={category.id} className="flex flex-col">
                             <div className="flex items-center">
-                              <TopLevelLink
+                              <NavRow
                                 href={`/categories/${category.handle}`}
                                 isActive={active}
                                 onNavigate={() => close()}
+                                Icon={iconFor(category.handle)}
                               >
                                 {category.name}
-                              </TopLevelLink>
+                              </NavRow>
                               {hasChildren && (
                                 <button
                                   type="button"
@@ -221,7 +264,7 @@ export default function MobileNavDrawer({
                                   aria-controls={`mobile-nav-subcategory-${category.id}`}
                                   aria-label={`${isExpanded ? "Collapse" : "Expand"} ${category.name}`}
                                   onClick={() => toggleExpanded(category.id)}
-                                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-radius-sm"
+                                  className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-radius-md text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                                 >
                                   <ChevronDown
                                     className={clx(
@@ -233,24 +276,31 @@ export default function MobileNavDrawer({
                               )}
                             </div>
                             {hasChildren && isExpanded && (
+                              /* Subcategories hang off a tree spine: one
+                                 vertical rule down the group, with a short
+                                 tick reaching across to each child row. */
                               <ul
                                 id={`mobile-nav-subcategory-${category.id}`}
-                                className="pl-4 pb-2 flex flex-col"
+                                className="mt-0.5 ml-6 flex flex-col gap-0.5 border-l border-divider"
                               >
                                 {category.category_children!.map((child) => {
                                   const childActive = isCurrentPath(
                                     `/categories/${child.handle}`
                                   )
                                   return (
-                                    <li key={child.id}>
+                                    <li
+                                      key={child.id}
+                                      className="relative before:absolute before:left-0 before:top-1/2 before:h-px before:w-3 before:bg-divider"
+                                    >
                                       <LocalizedClientLink
                                         href={`/categories/${child.handle}`}
                                         onClick={() => close()}
+                                        aria-current={childActive ? "page" : undefined}
                                         className={clx(
-                                          "flex items-center min-h-[40px] pl-3 border-l-2 text-body",
+                                          "flex items-center min-h-[40px] ml-5 px-3 rounded-radius-md text-body transition-colors duration-standard ease-in-out",
                                           childActive
-                                            ? "border-l-primary text-text-primary font-medium"
-                                            : "border-l-transparent text-text-secondary font-normal hover:border-l-border hover:text-text-primary"
+                                            ? "bg-interactive-tint text-text-primary font-semibold"
+                                            : "text-text-secondary hover:bg-ink-100 hover:text-text-primary"
                                         )}
                                       >
                                         {child.name}
@@ -267,24 +317,22 @@ export default function MobileNavDrawer({
                   </div>
 
                   <div>
-                    <h3 className="text-heading-3 font-display font-semibold text-text-primary mb-4">
+                    <h3 className="px-3 mb-2 text-caption font-medium uppercase tracking-wider text-text-muted">
                       Food Central
                     </h3>
-                    <ul className="flex flex-col">
+                    <ul className="flex flex-col gap-0.5">
                       {FOOD_CENTRAL_DESTINATIONS.map((destination) => {
                         const active = isCurrentPath(destination.href)
                         return (
-                          <li
-                            key={destination.href}
-                            className="border-b border-divider last:border-b-0 py-1"
-                          >
-                            <TopLevelLink
+                          <li key={destination.href} className="flex items-center">
+                            <NavRow
                               href={destination.href}
                               isActive={active}
                               onNavigate={() => close()}
+                              Icon={destination.Icon}
                             >
                               {destination.label}
-                            </TopLevelLink>
+                            </NavRow>
                           </li>
                         )
                       })}
@@ -297,7 +345,7 @@ export default function MobileNavDrawer({
                   (delivery region) selector stay anchored and visible
                   regardless of how far the category list above is
                   scrolled. */}
-              <div className="shrink-0 border-t border-border bg-surface-elevated px-6 py-4">
+              <div className="shrink-0 border-t border-border bg-surface-elevated px-4 py-4">
                 <div className="flex flex-col gap-1 pb-3 mb-3 border-b border-divider">
                   <LocalizedClientLink
                     href="/account"
