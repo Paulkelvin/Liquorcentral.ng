@@ -7,11 +7,18 @@ const DeleteButton = ({
   id,
   children,
   className,
+  variant = "icon",
   "aria-label": ariaLabel,
 }: {
   id: string
   children?: React.ReactNode
   className?: string
+  /**
+   * "text" drops the trash glyph and renders the label alone as a quiet
+   * underlined action — used in the cart, where an icon sat too close to
+   * the quantity stepper's "+" to be safe to tap.
+   */
+  variant?: "icon" | "text"
   /**
    * 06_CART_SPECIFICATION.md §23 — "every remove action is labeled
    * specifically... never a bare icon with no accessible name." Required
@@ -38,11 +45,18 @@ const DeleteButton = ({
       )}
     >
       <button
-        className="flex gap-x-1 text-text-secondary hover:text-text-primary cursor-pointer"
+        className={clx(
+          "flex cursor-pointer items-center gap-x-1 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus",
+          variant === "text" && "text-xs underline underline-offset-2"
+        )}
         onClick={() => handleDelete(id)}
         aria-label={!children ? ariaLabel : undefined}
       >
-        {isDeleting ? <Spinner className="animate-spin" /> : <Trash />}
+        {isDeleting ? (
+          <Spinner className="animate-spin" />
+        ) : (
+          variant === "icon" && <Trash />
+        )}
         {children && <span>{children}</span>}
       </button>
     </div>

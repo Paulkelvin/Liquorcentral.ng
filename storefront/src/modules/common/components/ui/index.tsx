@@ -124,7 +124,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // a physical action, not just a color swap.
           "inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-[background-color,transform] duration-standard ease-in-out active:scale-[0.98]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
-          "disabled:pointer-events-none disabled:opacity-50 disabled:bg-disabled-surface disabled:text-disabled",
+          // A disabled button is its own designed state, not the enabled
+          // one faded out: opacity-50 over a red fill produced a washed
+          // pink that read as a rendering fault. Flat neutral surface,
+          // muted label, and a cursor that says why nothing happens.
+          "disabled:cursor-not-allowed disabled:bg-disabled-surface disabled:text-disabled disabled:hover:bg-disabled-surface disabled:active:scale-100 disabled:border-transparent",
           variant === "primary" && "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
           variant === "secondary" &&
             "bg-surface-elevated text-text-primary border border-border hover:bg-ink-100",
@@ -183,10 +187,10 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         ref={ref}
         className={clsx(
           "inline-flex items-center rounded-radius-full px-2 py-1 text-caption font-medium",
-          color === "success" && "bg-success-tint text-success",
-          color === "danger" && "bg-danger-tint text-danger",
-          color === "information" && "bg-information-tint text-information",
-          color === "warning" && "bg-warning-tint text-warning",
+          color === "success" && "bg-success-tint text-success-on-tint",
+          color === "danger" && "bg-danger-tint text-danger-on-tint",
+          color === "information" && "bg-information-tint text-information-on-tint",
+          color === "warning" && "bg-warning-tint text-warning-on-tint",
           color === "neutral" && "bg-ink-100 text-text-secondary",
           // Accent (Gold) is a premium marker only — always on a dark
           // ground, per DESIGN_SYSTEM.md's explicit Gold Usage rule.
@@ -256,7 +260,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
     return (
       <label
         ref={ref}
-        className={clsx("text-caption font-medium text-text-secondary", className)}
+        className={clsx("text-xs font-medium text-text-secondary", className)}
         {...props}
       >
         {children}
@@ -297,15 +301,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-invalid={!!error}
           aria-describedby={error && inputId ? `${inputId}-error` : undefined}
           className={clsx(
-            "flex min-h-[46px] w-full rounded-radius-md border bg-surface-elevated px-4 py-3 text-body text-text-primary placeholder:text-text-muted",
+            // 40px, not 46 — a column of tall fields read as a wireframe
+            // rather than a form. Hairline `divider` rather than the
+            // heavier `border` step, matching the pills and the sort
+            // control.
+            "flex min-h-[40px] w-full rounded-radius-md border bg-surface-elevated px-3 py-2 text-[14px] text-text-primary placeholder:text-text-muted",
             "transition-[color,background-color,border-color,box-shadow] duration-standard ease-in-out",
-            // A focused field is marked by its own border turning the
-            // brand accent plus a soft halo, rather than a hard ring —
-            // the halo is what gives the indicator enough visual area to
-            // stay obvious once the heavy outline is gone.
-            "focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_var(--color-focus-glow)]",
-            "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-disabled-surface",
-            error ? "border-danger" : "border-border",
+            // Ink focus rather than the accent halo used elsewhere: on a
+            // dense form the red glow read as an error state on every
+            // field the customer touched.
+            "focus:outline-none focus:border-ink-900 focus:ring-1 focus:ring-ink-900",
+            "disabled:cursor-not-allowed disabled:bg-disabled-surface disabled:text-text-muted",
+            error ? "border-danger" : "border-divider",
             className
           )}
           {...props}
@@ -466,20 +473,37 @@ type RadioGroupItemProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string
 }
 
+/**
+ * The native control is kept — it carries the semantics, the name/value
+ * pair and keyboard behaviour for free — but its platform rendering is
+ * removed with `appearance-none` and redrawn here, so the indicator looks
+ * the same on every OS and browser instead of inheriting whatever the
+ * platform draws. The checked mark is a sibling positioned over the
+ * input and toggled with `peer-checked`, so no JS state is involved.
+ */
 const RadioGroupItem = forwardRef<HTMLInputElement, RadioGroupItemProps>(
   ({ className, label, id, ...props }, ref) => {
     return (
       <div className="flex items-center gap-2">
-        <input
-          ref={ref}
-          type="radio"
-          id={id}
-          className={clsx(
-            "h-4 w-4 border-border text-primary focus-visible:ring-2 focus-visible:ring-focus",
-            className
-          )}
-          {...props}
-        />
+        <span className="relative inline-flex shrink-0">
+          <input
+            ref={ref}
+            type="radio"
+            id={id}
+            className={clsx(
+              "peer h-[18px] w-[18px] cursor-pointer appearance-none rounded-full border border-divider bg-surface-elevated transition-colors duration-standard ease-in-out",
+              "checked:border-ink-900 checked:ring-1 checked:ring-ink-900",
+              "hover:border-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1",
+              "disabled:cursor-not-allowed disabled:bg-disabled-surface",
+              className
+            )}
+            {...props}
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 m-auto hidden h-2.5 w-2.5 rounded-full bg-ink-900 peer-checked:block"
+          />
+        </span>
         {label && <Label htmlFor={id}>{label}</Label>}
       </div>
     )
@@ -500,16 +524,35 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, label, id, ...props }, ref) => {
     return (
       <div className="flex items-center gap-2">
-        <input
-          ref={ref}
-          type="checkbox"
-          id={id}
-          className={clsx(
-            "h-4 w-4 rounded-radius-sm border-border text-primary focus-visible:ring-2 focus-visible:ring-focus",
-            className
-          )}
-          {...props}
-        />
+        {/* Same approach as RadioGroupItem: native semantics, custom
+            paint. The tick is an inline SVG revealed by `peer-checked`. */}
+        <span className="relative inline-flex shrink-0">
+          <input
+            ref={ref}
+            type="checkbox"
+            id={id}
+            className={clsx(
+              "peer h-[18px] w-[18px] cursor-pointer appearance-none rounded-radius-sm border border-divider bg-surface-elevated transition-colors duration-standard ease-in-out",
+              "checked:border-ink-900 checked:bg-ink-900",
+              "hover:border-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1",
+              "disabled:cursor-not-allowed disabled:bg-disabled-surface",
+              className
+            )}
+            {...props}
+          />
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="pointer-events-none absolute inset-0 m-auto hidden h-3 w-3 text-surface-elevated peer-checked:block"
+          >
+            <path d="M3 8.5 6.5 12 13 4.5" />
+          </svg>
+        </span>
         {label && <Label htmlFor={id}>{label}</Label>}
       </div>
     )

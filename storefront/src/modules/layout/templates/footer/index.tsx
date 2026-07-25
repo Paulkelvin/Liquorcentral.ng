@@ -235,25 +235,12 @@ export default async function Footer() {
           </div>
         </div>
 
-        {/* Hairline with the call to action sitting on it, far right. The
-            pill is 44px tall and pulled up by half that, so it stays
-            centred on the rule at every width; the sections above and
-            below reserve more than that in padding, so it never collides
-            with their content. */}
-        <div className="relative">
-          <div className="h-px w-full bg-divider" />
-          {/* Ink rather than brand red: red-on-white measures ~4.3:1, just
-              under the 4.5:1 AA threshold for text this size, and axe-core
-              flags it. Ink-900 clears it comfortably and gives the same
-              high-contrast-pill-on-its-ground read as the reference. */}
-          <LocalizedClientLink
-            href="/store"
-            className="absolute right-0 -top-[22px] inline-flex h-11 items-center justify-center rounded-radius-full bg-ink-900 px-5 text-caption font-medium text-surface-elevated transition-colors duration-standard ease-in-out hover:bg-ink-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-            data-testid="footer-cta"
-          >
-            Start shopping
-          </LocalizedClientLink>
-        </div>
+        {/* Just the hairline. A "Start shopping" pill used to float on
+            this rule; it read as an unanchored floating button rather
+            than footer furniture, and on the cart and checkout it urged
+            the customer away from the order they were completing. The
+            SHOP column above already leads everywhere it did. */}
+        <div className="h-px w-full bg-divider" />
 
         <div className="flex flex-col gap-y-4 pb-16 pt-12 text-caption sm:flex-row sm:items-center sm:justify-between">
           <Text className="text-caption" as="span" muted>

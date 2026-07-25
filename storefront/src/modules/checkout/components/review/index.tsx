@@ -44,9 +44,9 @@ const Review = ({
           tabIndex={-1}
           level="h2"
           className={clx(
-            "flex flex-row text-heading-1 gap-x-2 items-baseline focus:outline-none",
+            "flex flex-row !text-heading-4 font-semibold gap-x-2 items-center focus:outline-none",
             {
-              "opacity-50 pointer-events-none select-none": !isOpen,
+              "pointer-events-none select-none !text-text-muted": !isOpen,
             }
           )}
         >

@@ -111,6 +111,19 @@
   --color-danger-tint: color-mix(in srgb, var(--color-danger) 12%, white);
   --color-warning-tint: color-mix(in srgb, var(--color-warning) 12%, white);
   --color-information-tint: color-mix(in srgb, var(--color-information) 12%, white);
+  /*
+   * Label colors for text sitting *on* the matching tint above. Each
+   * status color clears AA against white but not against its own tint —
+   * warning measured 4.25:1 on `--color-warning-tint`, which axe-core
+   * flags on the payment step's badge. Darkened one step, the same
+   * derivation `--color-interactive-on-tint` uses, so a Badge is legible
+   * whichever status it carries and the Tier-1 functional colors stay
+   * untouched.
+   */
+  --color-success-on-tint: color-mix(in srgb, var(--color-success) 88%, black);
+  --color-danger-on-tint: color-mix(in srgb, var(--color-danger) 88%, black);
+  --color-warning-on-tint: color-mix(in srgb, var(--color-warning) 88%, black);
+  --color-information-on-tint: color-mix(in srgb, var(--color-information) 88%, black);
 }
 
 /**

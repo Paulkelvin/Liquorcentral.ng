@@ -8,7 +8,7 @@ import {
   splitGiftWrapLines,
 } from "@lib/util/cart-fulfillment"
 import { HttpTypes } from "@medusajs/types"
-import { Table, Text, clx } from "@modules/common/components/ui"
+import { Text, clx } from "@modules/common/components/ui"
 
 import Item from "@modules/cart/components/item"
 import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
@@ -49,45 +49,48 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
     }
     const hasOverflow = lines.length > 4
     return (
-      <div key={title} className="mb-4">
-        <Text className="txt-small-plus text-text-secondary mb-2">{title}</Text>
+      <div key={title}>
+        <Text
+          as="span"
+          className="!text-[11px] font-semibold uppercase tracking-[0.05em] text-text-muted"
+        >
+          {title}
+        </Text>
         <div
-          className={clx({
-            "pl-[1px] overflow-y-scroll overflow-x-hidden no-scrollbar max-h-[420px]":
+          className={clx("mt-1 divide-y divide-divider", {
+            "overflow-y-auto overflow-x-hidden no-scrollbar max-h-[420px]":
               hasOverflow,
           })}
         >
-          <Table>
-            <Table.Body data-testid="items-table">
-              {lines
-                .slice()
-                .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
-                .map((item) => (
-                  <Item
-                    key={item.id}
-                    item={item}
-                    type="preview"
-                    currencyCode={cart.currency_code}
-                  />
-                ))}
-            </Table.Body>
-          </Table>
+          <ul data-testid="items-table" className="divide-y divide-divider">
+            {lines
+              .slice()
+              .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
+              .map((item) => (
+                <Item
+                  key={item.id}
+                  item={item}
+                  type="preview"
+                  currencyCode={cart.currency_code}
+                />
+              ))}
+          </ul>
         </div>
-        <div className="flex justify-end">
-          <Text className="txt-small-plus text-text-secondary">
-            {title} subtotal:{" "}
+        <div className="flex justify-between pt-2 text-[13px]">
+          <span className="text-text-secondary">{title} subtotal</span>
+          <span className="font-medium text-text-primary">
             {convertToLocale({
               amount: groupSubtotal(lines, giftWrapByParent),
               currency_code: cart.currency_code,
             })}
-          </Text>
+          </span>
         </div>
       </div>
     )
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       {renderGroup("Wine & Spirits", wineLines)}
       {renderGroup("Food Central", foodLines)}
     </div>

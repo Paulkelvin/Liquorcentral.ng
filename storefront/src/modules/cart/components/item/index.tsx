@@ -1,6 +1,6 @@
 "use client"
 
-import { Table, Text, Checkbox, clx } from "@modules/common/components/ui"
+import { Text, Checkbox, clx } from "@modules/common/components/ui"
 import { addGiftWrapToLineItem, deleteLineItem, updateLineItem } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
@@ -75,7 +75,13 @@ const Item = ({
 
   const title = (
     <>
-      <Text className="txt-medium-plus text-text-primary" data-testid="product-title">
+      <Text
+        className={clx(
+          "text-text-primary",
+          type === "preview" ? "!text-[14px] font-medium leading-snug" : "txt-medium-plus"
+        )}
+        data-testid="product-title"
+      >
         {item.product_title}
       </Text>
       <LineItemOptions variant={item.variant} data-testid="product-variant" />
@@ -91,8 +97,8 @@ const Item = ({
     <LocalizedClientLink
       href={`/products/${item.product_handle}`}
       aria-label={`View ${item.product_title || item.title || "product"}`}
-      className={clx("flex shrink-0", {
-        "w-16": type === "preview",
+      className={clx("block shrink-0", {
+        "w-14": type === "preview",
         "w-20 sm:w-24": type === "full",
       })}
     >
@@ -111,8 +117,7 @@ const Item = ({
    * rather than a table row. The table it used to render into could not
    * narrow past its own column widths, so the cart page overflowed
    * horizontally on a phone (measured at 532px of content in a 390px
-   * viewport). The checkout summary's compact `preview` variant still
-   * renders as a table row, since it genuinely lives inside one.
+   * viewport).
    */
   if (type === "full") {
     return (
@@ -143,7 +148,7 @@ const Item = ({
             />
           )}
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="flex items-center gap-2">
               <QuantityStepper
                 quantity={item.quantity}
@@ -152,23 +157,29 @@ const Item = ({
                 min={0}
                 disabled={updating}
               />
+              {updating && <Spinner />}
+            </div>
+            {/* Remove reads as a quiet text action under the line total,
+                not a trash glyph wedged against the "+" button where it
+                was one mis-tap away from an accidental deletion. The
+                total itself is a <div>, not a <Text>: Text renders a <p>
+                and LineItemPrice's own markup is a <div>, and that
+                nesting is invalid HTML that broke cart hydration. */}
+            <div className="flex flex-col items-end gap-1">
+              <div
+                className="txt-medium-plus text-text-primary"
+                data-testid="product-line-total"
+              >
+                <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+              </div>
               <DeleteButton
                 id={item.id}
                 aria-label={`Remove ${item.product_title} from cart`}
                 data-testid="product-delete-button"
-              />
-              {updating && <Spinner />}
-            </div>
-            {/* Not a <Text>: that renders a <p>, and LineItemPrice's own
-                markup is a <div>, so the pair produced a <div> inside a
-                <p> — invalid HTML that React repairs during hydration,
-                which threw away and re-rendered the whole cart tree on
-                every load. */}
-            <div
-              className="txt-medium-plus text-text-primary"
-              data-testid="product-line-total"
-            >
-              <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+                variant="text"
+              >
+                Remove
+              </DeleteButton>
             </div>
           </div>
 
@@ -178,20 +189,37 @@ const Item = ({
     )
   }
 
+  /**
+   * The summary's compact row. Also a flex row rather than a table row:
+   * inside a 416px sidebar the table's three columns each fought for
+   * width, so the thumbnail collapsed to a bullet-sized square beside a
+   * title wrapping to four lines. A fixed-width image, a flexible middle
+   * that may wrap, and a right column that never shrinks holds together
+   * at any sidebar width.
+   */
   return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">{thumbnail}</Table.Cell>
-      <Table.Cell className="text-left">{title}</Table.Cell>
-      <Table.Cell className="!pr-0">
-        <span className="flex h-full flex-col items-center justify-center !pr-0">
-          <span className="flex gap-x-1 ">
-            <Text className="text-text-muted">{item.quantity}x </Text>
-            <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
-          </span>
-          <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+    <li className="flex items-start gap-3 py-3" data-testid="product-row">
+      {thumbnail}
+      {/* Two columns, not three. A separate quantity/unit-price column
+          took ~130px of a ~315px panel on a phone, squeezing every title
+          into four wrapped lines. The unit price moves under the title,
+          where it has room to sit on one line, and the right column
+          carries only the line total. */}
+      <div className="min-w-0 flex-1">
+        {title}
+        {/* `whitespace-nowrap` on the row and `shrink-0` on the "n ×"
+            prefix: LineItemUnitPrice renders its own block, so without
+            these the prefix became a separate flex item and wrapped
+            away from the figure it qualifies. */}
+        <span className="mt-0.5 flex items-baseline gap-x-1 whitespace-nowrap text-caption text-text-muted [&_span]:!text-caption">
+          <span className="shrink-0">{item.quantity} ×</span>
+          <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
         </span>
-      </Table.Cell>
-    </Table.Row>
+      </div>
+      <div className="shrink-0 whitespace-nowrap text-right text-[14px] font-medium text-text-primary">
+        <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+      </div>
+    </li>
   )
 }
 

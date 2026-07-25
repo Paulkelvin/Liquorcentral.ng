@@ -3,24 +3,24 @@ import { Heading } from "@modules/common/components/ui"
 import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import CartTotals from "@modules/common/components/cart-totals"
-import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
 
 const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
   return (
-    <div className="sticky top-0 flex flex-col-reverse small:flex-col gap-y-8 py-8 small:py-0 ">
-      <div className="w-full bg-surface-elevated flex flex-col">
-        <Divider className="my-6 small:hidden" />
-        <Heading
-          level="h2"
-          className="flex flex-row text-heading-1 items-baseline"
-        >
-          In your Cart
+    <div className="flex flex-col-reverse small:sticky small:top-6 small:flex-col">
+      {/* An enclosed panel rather than bare content in a column: on
+          desktop the summary now reads as a distinct object beside the
+          form, and the sections inside it get real vertical rhythm
+          instead of stacking flush against one another. */}
+      <div className="flex w-full flex-col gap-6 rounded-radius-md border border-divider bg-surface-elevated p-5 shadow-elevation-1">
+        <Heading level="h2" className="!text-body-lg font-semibold">
+          Order summary
         </Heading>
-        <Divider className="my-6" />
-        <CartTotals totals={cart} />
         <ItemsPreviewTemplate cart={cart} />
-        <div className="my-6">
+        <div className="border-t border-divider pt-5">
+          <CartTotals totals={cart} />
+        </div>
+        <div className="border-t border-divider pt-5">
           <DiscountCode cart={cart} />
         </div>
       </div>

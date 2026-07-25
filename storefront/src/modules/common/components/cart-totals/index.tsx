@@ -41,7 +41,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
 
   return (
     <div role="status" aria-live="polite">
-      <div className="flex flex-col gap-y-2 txt-medium text-text-secondary ">
+      <div className="flex flex-col gap-y-2.5 text-[14px] text-text-secondary">
         <div className="flex items-center justify-between">
           <span>Subtotal (excl. shipping and taxes)</span>
           <span data-testid="cart-subtotal" data-value={item_subtotal || 0}>
@@ -89,23 +89,28 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           )}
         </div>
       </div>
-      <div className="h-px w-full border-b border-divider my-4" />
-      <div className="flex items-center justify-between text-text-primary mb-2 txt-medium ">
-        <span>{shippingKnown ? "Total" : "Item total"}</span>
-        <span
-          className="txt-xlarge-plus"
-          data-testid="cart-total"
-          data-value={total || 0}
-        >
-          {convertToLocale({ amount: shippingKnown ? total ?? 0 : item_subtotal ?? 0, currency_code })}
-        </span>
+      {/* A solid rule directly above the total, and nothing below it —
+          the total is the last thing read, so a second rule underneath
+          only made it look like another row in the breakdown. */}
+      <div className="mt-4 border-t border-divider pt-4">
+        <div className="flex items-baseline justify-between gap-3 text-text-primary">
+          <span className="text-[15px] font-medium">
+            {shippingKnown ? "Total" : "Item total"}
+          </span>
+          <span
+            className="text-[22px] font-semibold leading-none"
+            data-testid="cart-total"
+            data-value={total || 0}
+          >
+            {convertToLocale({ amount: shippingKnown ? total ?? 0 : item_subtotal ?? 0, currency_code })}
+          </span>
+        </div>
+        {!shippingKnown && (
+          <p className="mt-1.5 text-caption text-text-secondary" data-testid="cart-total-caveat">
+            + delivery &amp; tax, calculated at checkout
+          </p>
+        )}
       </div>
-      {!shippingKnown && (
-        <p className="text-text-secondary txt-small mb-2" data-testid="cart-total-caveat">
-          + delivery &amp; tax, calculated at checkout
-        </p>
-      )}
-      <div className="h-px w-full border-b border-divider mt-4" />
     </div>
   )
 }

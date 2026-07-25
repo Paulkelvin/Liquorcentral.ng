@@ -158,9 +158,9 @@ const Shipping: React.FC<ShippingProps> = ({
           tabIndex={-1}
           level="h2"
           className={clx(
-            "flex flex-row text-heading-1 gap-x-2 items-baseline focus:outline-none",
+            "flex flex-row !text-heading-4 font-semibold gap-x-2 items-center focus:outline-none",
             {
-              "opacity-50 pointer-events-none select-none":
+              "pointer-events-none select-none !text-text-muted":
                 !isOpen && cart.shipping_methods?.length === 0,
             }
           )}
@@ -215,9 +215,9 @@ const Shipping: React.FC<ShippingProps> = ({
                       value={PICKUP_OPTION_ON}
                       data-testid="delivery-option-radio"
                       className={clx(
-                        "flex items-center justify-between text-caption cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                        "flex items-center justify-between text-caption cursor-pointer py-4 border border-divider rounded-radius-md px-4 mb-2 transition-colors duration-standard ease-in-out hover:border-text-muted",
                         {
-                          "border-interactive":
+                          "!border-ink-900 ring-1 ring-ink-900 bg-ink-100":
                             showPickupOptions === PICKUP_OPTION_ON,
                         }
                       )}
@@ -257,9 +257,9 @@ const Shipping: React.FC<ShippingProps> = ({
                         data-testid="delivery-option-radio"
                         disabled={isDisabled}
                         className={clx(
-                          "flex items-center justify-between text-caption cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                          "flex items-center justify-between text-caption cursor-pointer py-4 border border-divider rounded-radius-md px-4 mb-2 transition-colors duration-standard ease-in-out hover:border-text-muted",
                           {
-                            "border-interactive":
+                            "!border-ink-900 ring-1 ring-ink-900 bg-ink-100":
                               option.id === shippingMethodId,
                             "hover:shadow-brders-none cursor-not-allowed":
                               isDisabled,
@@ -327,9 +327,9 @@ const Shipping: React.FC<ShippingProps> = ({
                           disabled={option.insufficient_inventory}
                           data-testid="delivery-option-radio"
                           className={clx(
-                            "flex items-center justify-between text-caption cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                            "flex items-center justify-between text-caption cursor-pointer py-4 border border-divider rounded-radius-md px-4 mb-2 transition-colors duration-standard ease-in-out hover:border-text-muted",
                             {
-                              "border-interactive":
+                              "!border-ink-900 ring-1 ring-ink-900 bg-ink-100":
                                 option.id === shippingMethodId,
                               "hover:shadow-brders-none cursor-not-allowed":
                                 option.insufficient_inventory,
@@ -374,7 +374,7 @@ const Shipping: React.FC<ShippingProps> = ({
             />
             <Button
               size="large"
-              className="mt"
+              className="mt-6 w-full sm:w-auto sm:min-w-[260px] px-8"
               onClick={handleSubmit}
               isLoading={isLoading}
               disabled={!cart.shipping_methods?.[0]}

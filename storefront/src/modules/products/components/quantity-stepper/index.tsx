@@ -39,13 +39,17 @@ export default function QuantityStepper({
   return (
     <div className="flex flex-col gap-1">
       <Label htmlFor={inputId}>Quantity</Label>
-      <div className="flex items-center gap-2">
+      {/* One control, not three floating boxes: a single pill with
+          hairline internal dividers. Each segment still holds the 44px
+          touch minimum (§B11) — the pill is 44px tall and each button
+          44px wide, so nothing is lost by grouping them. */}
+      <div className="inline-flex h-11 items-center divide-x divide-divider overflow-hidden rounded-radius-full border border-divider bg-surface-elevated">
         <button
           type="button"
           aria-label="Decrease quantity"
           disabled={disabled || quantity <= min}
           onClick={() => onChange(clamp(quantity - 1))}
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-radius-sm border border-border text-text-primary hover:bg-ink-100 disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex h-full w-11 items-center justify-center text-body text-text-primary transition-colors duration-standard ease-in-out hover:bg-ink-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus disabled:pointer-events-none disabled:text-text-muted"
         >
           −
         </button>
@@ -58,14 +62,16 @@ export default function QuantityStepper({
           value={quantity}
           disabled={disabled}
           onChange={(event) => onChange(clamp(Number(event.target.value) || min))}
-          className="h-11 w-16 rounded-radius-sm border border-border bg-surface-elevated text-center text-body text-text-primary"
+          // The native spinners would put a second set of arrows inside
+          // a control that already has its own.
+          className="h-full w-12 appearance-none border-0 bg-transparent text-center text-[14px] font-medium text-text-primary focus:outline-none focus:ring-0 disabled:text-text-muted [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
         <button
           type="button"
           aria-label="Increase quantity"
           disabled={disabled || (max != null && quantity >= max)}
           onClick={() => onChange(clamp(quantity + 1))}
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-radius-sm border border-border text-text-primary hover:bg-ink-100 disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex h-full w-11 items-center justify-center text-body text-text-primary transition-colors duration-standard ease-in-out hover:bg-ink-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus disabled:pointer-events-none disabled:text-text-muted"
         >
           +
         </button>

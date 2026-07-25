@@ -1,3 +1,5 @@
+import { clx } from "@modules/common/components/ui"
+
 /**
  * Purely a visual indicator — every consumer (Shipping's method/pickup
  * radios, Payment's provider radio, the saved-address Listbox option)
@@ -17,19 +19,23 @@ const Radio = ({ checked, 'data-testid': dataTestId }: { checked: boolean, 'data
     <span
       aria-hidden="true"
       data-state={checked ? "checked" : "unchecked"}
-      className="group relative flex h-5 w-5 items-center justify-center outline-none"
+      className="group relative flex h-[18px] w-[18px] shrink-0 items-center justify-center outline-none"
       data-testid={dataTestId || 'radio-button'}
     >
-      <div className="shadow-borders-base group-hover:shadow-borders-strong-with-shadow bg-surface-elevated group-data-[state=checked]:bg-interactive group-data-[state=checked]:shadow-borders-interactive group-focus:!shadow-borders-interactive-with-focus group-disabled:!bg-disabled-surface group-disabled:!shadow-borders-base flex h-[14px] w-[14px] items-center justify-center rounded-full transition-all">
-        {checked && (
-          <span
-            data-state={checked ? "checked" : "unchecked"}
-            className="group flex items-center justify-center"
-          >
-            <div className="bg-surface-elevated shadow-details-contrast-on-bg-interactive group-disabled:text-disabled rounded-full group-disabled:shadow-none h-1.5 w-1.5"></div>
-          </span>
+      {/* Drawn, not inherited: a hairline ring that tightens to ink and
+          fills with a solid inner dot when selected. The old treatment
+          leaned on the Medusa preset's `shadow-borders-*` stack, which
+          rendered as a soft grey blob at this size. */}
+      <span
+        className={clx(
+          "flex h-[18px] w-[18px] items-center justify-center rounded-full border bg-surface-elevated transition-colors duration-standard ease-in-out",
+          checked
+            ? "border-ink-900 ring-1 ring-ink-900"
+            : "border-divider group-hover:border-text-muted"
         )}
-      </div>
+      >
+        {checked && <span className="h-2.5 w-2.5 rounded-full bg-ink-900" />}
+      </span>
     </span>
   )
 }

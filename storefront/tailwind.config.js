@@ -81,18 +81,22 @@ module.exports = {
         success: {
           DEFAULT: "var(--color-success)",
           tint: "var(--color-success-tint)",
+          "on-tint": "var(--color-success-on-tint)",
         },
         warning: {
           DEFAULT: "var(--color-warning)",
           tint: "var(--color-warning-tint)",
+          "on-tint": "var(--color-warning-on-tint)",
         },
         danger: {
           DEFAULT: "var(--color-danger)",
           tint: "var(--color-danger-tint)",
+          "on-tint": "var(--color-danger-on-tint)",
         },
         information: {
           DEFAULT: "var(--color-information)",
           tint: "var(--color-information-tint)",
+          "on-tint": "var(--color-information-on-tint)",
         },
         overlay: "var(--color-overlay)",
         // Neutral System (DESIGN_SYSTEM.md §B6) — the raw scale the

@@ -70,7 +70,9 @@ export default async function Checkout({ params }: Props) {
   const customer = await retrieveCustomer()
 
   return (
-    <div className="grid grid-cols-1 small:grid-cols-[1fr_416px] ds-container gap-x-40 py-12">
+    // 160px of gutter left the form and the summary reading as two
+    // unrelated pages; 48px keeps them as one layout.
+    <div className="grid grid-cols-1 small:grid-cols-[1fr_400px] ds-container gap-x-12 gap-y-8 py-8 small:py-12">
       <PaymentWrapper cart={cart}>
         <CheckoutForm cart={cart} customer={customer} />
       </PaymentWrapper>

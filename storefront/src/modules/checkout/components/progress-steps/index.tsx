@@ -28,40 +28,64 @@ export default function ProgressSteps() {
   return (
     <ol
       aria-label="Checkout progress"
+      // The row scrolls horizontally on a phone but holds no focusable
+      // children, so a keyboard user had no way to reach the steps past
+      // the right edge (axe: scrollable-region-focusable). Making the
+      // region itself focusable gives it arrow-key scrolling; it already
+      // carries an accessible name from `aria-label`.
+      tabIndex={0}
       // Responsive audit (Phase 4 roadmap item 18) — 4 steps with connector
       // lines don't fit a narrow mobile viewport at full label width; the
       // row scrolls horizontally within itself (no-scrollbar) rather than
       // overflowing the page, which was a real, confirmed layout bug.
-      className="flex items-center gap-2 small:gap-4 text-caption overflow-x-auto no-scrollbar -mx-4 px-4 small:mx-0 small:px-0"
+      className="flex items-center gap-2.5 small:gap-4 text-[13px] overflow-x-auto no-scrollbar -mx-4 px-4 small:mx-0 small:px-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
     >
       {STEPS.map((step, index) => {
         const isActive = index === activeIndex
         const isPast = activeIndex >= 0 && index < activeIndex
         return (
-          <li key={step.key} className="flex items-center gap-2 small:gap-4 shrink-0">
-            <span className="flex items-center gap-1.5">
+          <li key={step.key} className="flex items-center gap-2.5 small:gap-4 shrink-0">
+            <span className="flex items-center gap-2">
+              {/* Brand vocabulary rather than a generic green: the step
+                  you are on takes the accent, steps behind you take ink
+                  with a tick, steps ahead stay a quiet outline. A filled
+                  bright-green "done" chip competed with the active step
+                  for attention. */}
               <span
                 aria-hidden="true"
                 className={clx(
-                  "flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-semibold shrink-0",
+                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold transition-colors duration-standard ease-in-out",
                   isActive
                     ? "bg-primary text-surface-elevated"
                     : isPast
-                    ? "bg-secondary text-surface-elevated"
-                    : "bg-ink-100 text-text-muted"
+                    ? "bg-ink-900 text-surface-elevated"
+                    : "border border-divider bg-surface-elevated text-text-muted"
                 )}
               >
-                {index + 1}
+                {isPast ? (
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                    <path d="M3 8.5 6.5 12 13 4.5" />
+                  </svg>
+                ) : (
+                  index + 1
+                )}
               </span>
               <span
                 aria-current={isActive ? "step" : undefined}
-                className={isActive ? "text-text-primary font-semibold" : "text-text-muted"}
+                className={clx(
+                  "whitespace-nowrap",
+                  isActive
+                    ? "font-semibold text-text-primary"
+                    : isPast
+                    ? "font-medium text-text-secondary"
+                    : "text-text-muted"
+                )}
               >
                 {step.label}
               </span>
             </span>
             {index < STEPS.length - 1 && (
-              <span aria-hidden="true" className="w-4 small:w-8 h-px bg-border" />
+              <span aria-hidden="true" className="h-px w-5 small:w-10 bg-divider" />
             )}
           </li>
         )

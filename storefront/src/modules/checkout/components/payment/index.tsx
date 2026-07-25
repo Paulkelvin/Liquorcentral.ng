@@ -121,9 +121,9 @@ const Payment = ({
           tabIndex={-1}
           level="h2"
           className={clx(
-            "flex flex-row text-heading-1 gap-x-2 items-baseline focus:outline-none",
+            "flex flex-row !text-heading-4 font-semibold gap-x-2 items-center focus:outline-none",
             {
-              "opacity-50 pointer-events-none select-none":
+              "pointer-events-none select-none !text-text-muted":
                 !isOpen && !paymentReady,
             }
           )}
@@ -207,7 +207,7 @@ const Payment = ({
 
           <Button
             size="large"
-            className="mt-6"
+            className="mt-6 w-full sm:w-auto sm:min-w-[260px] px-8"
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={
