@@ -59,7 +59,7 @@ export default async function FoodCentralSpotlight({
       {foodProducts.length === 0 ? (
         <NotTakingOrders title="Today's Menu" />
       ) : (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+        <ul className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-8">
           {foodProducts.map((product) => (
             <li key={product.id}>
               <ProductPreview product={product} region={region} />

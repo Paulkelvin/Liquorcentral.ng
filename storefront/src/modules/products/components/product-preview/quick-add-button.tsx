@@ -25,7 +25,7 @@ function isVariantPurchasable(variant?: QuickAddVariant) {
 }
 
 const sharedClass =
-  "inline-flex items-center justify-center w-full min-h-[44px] py-2 px-4 text-caption font-medium rounded-radius-sm transition-colors duration-standard ease-in-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+  "inline-flex items-center justify-center w-full min-h-[44px] py-2 px-4 text-[13px] font-medium rounded-radius-md transition-colors duration-standard ease-in-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
 
 /**
  * 04_PRODUCT_LISTING_SPECIFICATION.md §9 "Quick actions" — a sibling
@@ -63,13 +63,12 @@ export default function QuickAddButton({
   const singleVariant = variants.length === 1 ? variants[0] : undefined
   const hasMultipleVariants = variants.length > 1
 
-  // Both weights are real buttons, never bare underlined text — §9's
-  // Food Central-primary / Wine-secondary visual-weight distinction is
-  // a solid brand fill vs. a crisp ink outline that inverts on hover.
-  // The outline replaced a soft beige fill that sat almost invisibly
-  // against the card and page behind it.
+  // §9's Food Central-primary / Wine-secondary visual-weight
+  // distinction: a solid brand fill vs. a quiet filled surface. Neither
+  // carries a heavy outline — a hard ink border read as a second frame
+  // inside the card's own.
   const primaryClass = clx(sharedClass, "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active", className)
-  const secondaryClass = clx(sharedClass, "bg-surface-elevated border border-ink-900 text-ink-900 hover:bg-ink-900 hover:text-surface-elevated", className)
+  const secondaryClass = clx(sharedClass, "bg-ink-100 text-text-primary hover:bg-ink-200 active:bg-ink-200", className)
   const variantClass = weight === "primary" ? primaryClass : secondaryClass
 
   if (variants.length === 0 || (singleVariant && !isVariantPurchasable(singleVariant))) {

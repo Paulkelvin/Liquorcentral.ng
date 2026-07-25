@@ -19,15 +19,14 @@ import SearchField from "@modules/layout/components/search-field"
  * 01_NAVIGATION_SPECIFICATION.md §5/§6/§9 — the persistent shell (logo,
  * primary navigation, search, account, cart), identical everywhere,
  * sticky/fixed on scroll, never shrinking or hiding on scroll direction.
- * Replaces the Phase 0c placeholder shell (logo + region/locale menu +
- * Account/Cart only) with this specification's own behavior: the Wine &
- * Spirits mega menu (§10), the Food Central dropdown (§14), a visible
- * search field (§15), and the mobile wayfinding strip (§7.2) beneath the
- * header. §24's graceful-degradation ordering (serve from cache, fall
- * back to the hardcoded two-branch pair, never block page content) is
- * satisfied by `listCategories`/`listCollections` already being
- * `force-cache`d Server Actions (`src/lib/data/categories.ts`,
- * `collections.ts`) and by MegaMenu's own empty-columns fallback.
+ *
+ * Two rows: a primary bar carrying search, the wordmark and the account
+ * and cart controls, then a slim sub-bar beneath it holding the
+ * department switcher centred across the full width. The two departments
+ * previously sat crammed into the primary row's top-left corner, which
+ * both unbalanced that row and buried the single most important choice
+ * on the platform — §2's equal-prominence requirement reads far better
+ * given its own dedicated line.
  */
 export default async function Nav() {
   const [regions, locales, currentLocale, categories, { collections }] =
@@ -41,12 +40,12 @@ export default async function Nav() {
 
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b duration-200 bg-surface-elevated border-border">
+      <header className="relative mx-auto bg-surface-elevated">
         <nav
           aria-label="Main"
-          className="ds-container text-text-secondary flex items-center justify-between w-full h-full text-caption"
+          className="ds-container flex h-16 w-full items-center justify-between text-caption text-text-secondary"
         >
-          <div className="flex-1 basis-0 h-full flex items-center gap-6">
+          <div className="flex h-full flex-1 basis-0 items-center gap-6">
             <div className="h-full sm:hidden">
               <MobileNavDrawer
                 categories={categories}
@@ -55,13 +54,12 @@ export default async function Nav() {
                 currentLocale={currentLocale}
               />
             </div>
-            <div className="hidden sm:flex items-center h-full gap-6">
-              <MegaMenu categories={categories} collections={collections} />
-              <FoodCentralMenu />
+            <div className="hidden h-full items-center sm:flex">
+              <SearchField />
             </div>
           </div>
 
-          <div className="flex items-center h-full">
+          <div className="flex h-full items-center">
             {/* Proposed Design Direction — "even a text-only wordmark with
                 the display face" reads as a considered brand mark rather
                 than generic uppercase body text (no logomark exists yet;
@@ -75,9 +73,8 @@ export default async function Nav() {
             </LocalizedClientLink>
           </div>
 
-          <div className="flex items-center gap-x-4 h-full flex-1 basis-0 justify-end">
-            <SearchField />
-            <div className="hidden small:flex items-center gap-x-6 h-full">
+          <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-4">
+            <div className="hidden h-full items-center gap-x-6 small:flex">
               <LocalizedClientLink
                 className="hover:text-interactive"
                 href="/account"
@@ -106,6 +103,17 @@ export default async function Nav() {
           </div>
         </nav>
       </header>
+
+      {/* Department sub-bar. `relative` because the mega menu's panel is
+          `absolute inset-x-0 top-full` and must resolve against this
+          full-width row, not against its own narrow trigger. */}
+      <div className="relative hidden border-y border-border bg-surface-elevated sm:block">
+        <div className="ds-container flex h-11 items-center justify-center gap-8 text-caption text-text-secondary">
+          <MegaMenu categories={categories} collections={collections} />
+          <FoodCentralMenu />
+        </div>
+      </div>
+
       <MobileWayfindingStrip />
     </div>
   )

@@ -50,7 +50,7 @@ export default async function ProductRail({
           default row stretch) no longer need the old oversized gap-y
           that padded around variable-height cards — a normal gap works
           now that every card in a row lines up on the same baseline. */}
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-8">
         {pricedProducts &&
           pricedProducts.map((product) => (
             <li key={product.id}>

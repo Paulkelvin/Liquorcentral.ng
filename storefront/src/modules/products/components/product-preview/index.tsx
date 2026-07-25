@@ -92,7 +92,7 @@ export default async function ProductPreview({
     // edge regardless of how many lines the title above it wraps to.
     <div
       data-testid="product-wrapper"
-      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-border bg-surface-elevated"
+      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-divider bg-surface-elevated"
     >
       {/* §9/§212 — the card's one real link wraps only image/name/price;
           quick-add is a sibling control below, never nested inside it. */}
@@ -108,12 +108,29 @@ export default async function ProductPreview({
           alt={product.title || "Product photo"}
         />
         <div className="flex flex-col gap-1 px-3 pt-3 pb-3">
+          {/* The eyebrow slot. There is no brand field on the product
+              model, so this carries the catalog's own supporting fact
+              (Food Central prep time, or the catalog name on a mixed
+              search result) and is simply absent otherwise — §9 expects
+              it empty more often than not for Wine & Spirits. */}
+          {catalogFact && (
+            <span
+              className="text-[11px] font-medium uppercase tracking-wider text-text-muted"
+              data-testid={
+                showCatalogBadge
+                  ? "product-catalog-badge"
+                  : "product-catalog-fact"
+              }
+            >
+              {catalogFact}
+            </span>
+          )}
           {/* Capped at 2 lines so a long name can never push a card's
               own layout apart; equal-height rows plus the button's
               `mt-auto` below keep every card's action on one baseline
               whether the title runs to one line or two. */}
           <Text
-            className="text-text-primary font-medium line-clamp-2"
+            className="text-[14px] font-medium leading-snug text-text-primary line-clamp-2"
             data-testid="product-title"
           >
             {product.title}
@@ -124,20 +141,6 @@ export default async function ProductPreview({
             <div className="flex items-baseline gap-x-2">
               <PreviewPrice price={cheapestPrice} />
             </div>
-          )}
-          {catalogFact && (
-            <Text
-              as="span"
-              size="caption"
-              muted
-              data-testid={
-                showCatalogBadge
-                  ? "product-catalog-badge"
-                  : "product-catalog-fact"
-              }
-            >
-              {catalogFact}
-            </Text>
           )}
           {isUnavailable && (
             <Text
@@ -159,7 +162,7 @@ export default async function ProductPreview({
         <QuickAddButton
           product={product}
           weight={isFoodCentral ? "primary" : "secondary"}
-          className="mt-auto"
+          className="mt-auto mx-3 mb-3 w-auto"
         />
       )}
     </div>

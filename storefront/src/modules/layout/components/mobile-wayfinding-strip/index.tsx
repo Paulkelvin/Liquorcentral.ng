@@ -24,7 +24,7 @@ export default function MobileWayfindingStrip() {
 
   return (
     <div
-      className="sm:hidden flex items-center gap-6 overflow-x-auto px-4 py-2 border-b border-border bg-surface-elevated"
+      className="sm:hidden flex items-center justify-center gap-8 overflow-x-auto px-4 py-2 border-b border-border bg-surface-elevated"
       data-testid="mobile-wayfinding-strip"
     >
       <LocalizedClientLink

@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import InteractiveLink from "@modules/common/components/interactive-link"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
+import SortProducts from "@modules/store/components/refinement-list/sort-products"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import Breadcrumbs from "@modules/common/components/breadcrumbs"
@@ -56,17 +57,16 @@ export default function CategoryTemplate({
     <>
       <Breadcrumbs segments={breadcrumbSegments} />
       <div
-        className="flex flex-col small:flex-row small:items-start py-6 ds-container"
+        className="flex flex-col gap-6 small:flex-row small:items-start small:gap-10 py-6 ds-container"
         data-testid="category-container"
       >
-      <RefinementList
-        sortBy={sort}
-        data-testid="sort-by-container"
-        hideOptionsPicker
-      />
-      <div className="w-full">
-        <div className="flex flex-row mb-8 text-heading-2 font-semibold gap-4">
-          <h1 data-testid="category-page-title">{category.name}</h1>
+      <RefinementList hideOptionsPicker />
+      <div className="w-full min-w-0">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-heading-2 font-semibold" data-testid="category-page-title">
+            {category.name}
+          </h1>
+          <SortProducts sortBy={sort} data-testid="sort-by-container" />
         </div>
         {category.description && (
           <div className="mb-8 text-body">

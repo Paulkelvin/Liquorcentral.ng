@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 
 import RefinementList from "@modules/store/components/refinement-list"
+import SortProducts from "@modules/store/components/refinement-list/sort-products"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
@@ -73,14 +74,16 @@ export default async function SearchPage(props: Props) {
       )}
 
       {query && (
-        <div className="flex flex-col small:flex-row small:items-start py-2">
-          <RefinementList
-            sortBy={sort}
-            defaultSortLabel="Relevance"
-            hideOptionsPicker
-            data-testid="sort-by-container"
-          />
-          <div className="w-full">
+        <div className="flex flex-col gap-6 small:flex-row small:items-start small:gap-10 py-2">
+          <RefinementList hideOptionsPicker hideCategories />
+          <div className="w-full min-w-0">
+            <div className="mb-6 flex justify-end">
+              <SortProducts
+                sortBy={sort}
+                defaultSortLabel="Relevance"
+                data-testid="sort-by-container"
+              />
+            </div>
             <Suspense fallback={<SkeletonProductGrid />}>
               <PaginatedProducts
                 sortBy={sort}

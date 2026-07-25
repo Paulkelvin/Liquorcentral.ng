@@ -1,12 +1,13 @@
 "use client"
 
-import FilterRadioGroup from "@modules/common/components/filter-radio-group"
+import { ChevronDownMini } from "@medusajs/icons"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useCallback } from "react"
 
 export type SortOptions = "featured" | "price_asc" | "price_desc" | "created_at"
 
 type SortProductsProps = {
   sortBy: SortOptions
-  setQueryParams: (name: string, value: string) => void
   /**
    * 03_SEARCH_SPECIFICATION.md §14 — search's default sort is labeled
    * "Relevance," distinct from 04_PRODUCT_LISTING_SPECIFICATION.md §11's
@@ -58,21 +59,62 @@ const buildSortOptions = (defaultLabel: string) => [
 const SortProducts = ({
   "data-testid": dataTestId,
   sortBy,
-  setQueryParams,
   defaultSortLabel = "Featured",
 }: SortProductsProps) => {
-  const handleChange = (value: string) => {
-    setQueryParams("sortBy", value as SortOptions)
-  }
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
+  // Owns its own URL write now that it renders beside the results rather
+  // than inside the sidebar. Changing the sort always returns to page 1 —
+  // page 4 of the old ordering means nothing under a new one.
+  const handleChange = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set("sortBy", value)
+      params.delete("page")
+      const query = params.toString()
+      router.push(query ? `${pathname}?${query}` : pathname)
+    },
+    [pathname, router, searchParams]
+  )
+
+  const options = buildSortOptions(defaultSortLabel)
+
+  /**
+   * A real <select> rather than the bulleted radio list this used to
+   * render: sorting is a single-choice control, and a native select
+   * collapses to one line, opens the platform's own picker on touch, and
+   * is keyboard-operable for free.
+   */
   return (
-    <FilterRadioGroup
-      title="Sort by"
-      items={buildSortOptions(defaultSortLabel)}
-      value={sortBy}
-      handleChange={handleChange}
-      data-testid={dataTestId}
-    />
+    <div className="flex items-center gap-2">
+      <label
+        htmlFor="sort-products"
+        className="shrink-0 text-caption text-text-muted"
+      >
+        Sort by
+      </label>
+      <div className="relative">
+        <select
+          id="sort-products"
+          value={sortBy}
+          onChange={(event) => handleChange(event.target.value)}
+          data-testid={dataTestId}
+          className="min-h-[40px] w-full appearance-none rounded-radius-md border border-border bg-surface-elevated py-2 pl-3 pr-9 text-caption text-text-primary transition-[border-color,box-shadow] duration-standard ease-in-out focus:border-primary focus:outline-none focus:shadow-[0_0_0_3px_var(--color-focus-glow)]"
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDownMini
+          aria-hidden="true"
+          className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-text-muted"
+        />
+      </div>
+    </div>
   )
 }
 

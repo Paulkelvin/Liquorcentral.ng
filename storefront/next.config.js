@@ -13,6 +13,10 @@ const S3_PATHNAME = process.env.MEDUSA_CLOUD_S3_PATHNAME
  */
 const nextConfig = {
   reactStrictMode: true,
+  // The floating dev-tools bubble Next.js overlays in development. It
+  // never ships in a production build, but it sat over the UI in every
+  // local screenshot, so it is switched off here too.
+  devIndicators: false,
   logging: {
     fetches: {
       fullUrl: true,
