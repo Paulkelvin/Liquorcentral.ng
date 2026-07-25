@@ -2,7 +2,6 @@ import ItemsTemplate from "./items"
 import Summary from "./summary"
 import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
-import Divider from "@modules/common/components/divider"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import { HttpTypes } from "@medusajs/types"
@@ -70,12 +69,10 @@ const CartTemplate = ({
                 </LocalizedClientLink>
               </div>
 
-              {!customer && (
-                <>
-                  <SignInPrompt />
-                  <Divider />
-                </>
-              )}
+              {/* The prompt is its own tinted strip now, so it no
+                  longer needs a rule under it to separate it from the
+                  items — that just stacked two separators. */}
+              {!customer && <SignInPrompt />}
               <ItemsTemplate
                 cart={cart}
                 giftWrap={giftWrap}

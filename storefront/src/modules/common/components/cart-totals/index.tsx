@@ -41,7 +41,10 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
 
   return (
     <div role="status" aria-live="polite">
-      <div className="flex flex-col gap-y-2.5 text-[14px] text-text-secondary">
+      {/* `gap-y-3` between rows, and each row's own label may wrap to two
+          lines — at 10px apart the breakdown read as one block of text
+          rather than four scannable figures. */}
+      <div className="flex flex-col gap-y-3 text-[14px] text-text-secondary">
         <div className="flex items-center justify-between">
           <span>Subtotal (excl. shipping and taxes)</span>
           <span data-testid="cart-subtotal" data-value={item_subtotal || 0}>
@@ -92,7 +95,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
       {/* A solid rule directly above the total, and nothing below it —
           the total is the last thing read, so a second rule underneath
           only made it look like another row in the breakdown. */}
-      <div className="mt-4 border-t border-divider pt-4">
+      <div className="mt-5 border-t border-divider pt-5">
         <div className="flex items-baseline justify-between gap-3 text-text-primary">
           <span className="text-[15px] font-medium">
             {shippingKnown ? "Total" : "Item total"}

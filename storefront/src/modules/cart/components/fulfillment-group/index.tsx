@@ -41,17 +41,22 @@ const FulfillmentGroup = ({
   }
 
   return (
-    <div className="flex flex-col gap-y-3" data-testid="cart-fulfillment-group">
-      <div className="flex items-start gap-2">
+    <div data-testid="cart-fulfillment-group">
+      {/* The header owns its own space below it, so the group's items
+          read as belonging to it rather than starting immediately under
+          the delivery message. */}
+      <div className="mb-6 flex items-start gap-2">
         {icon}
         <div>
           <Heading level="h2" className="!text-body font-semibold">
             {title}
           </Heading>
-          <Text className="text-text-secondary">{deliveryMessage}</Text>
+          <Text className="!text-[14px] text-text-secondary">
+            {deliveryMessage}
+          </Text>
         </div>
       </div>
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-4">
         {items
           .slice()
           .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
@@ -67,7 +72,7 @@ const FulfillmentGroup = ({
             />
           ))}
       </ul>
-      <div className="flex justify-end">
+      <div className="mt-4 flex justify-end border-t border-divider pt-4">
         <div className="flex items-center gap-x-4">
           <Text className="text-text-secondary">{title} subtotal</Text>
           <Text

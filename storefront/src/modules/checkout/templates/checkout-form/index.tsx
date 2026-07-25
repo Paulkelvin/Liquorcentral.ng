@@ -37,7 +37,10 @@ export default async function CheckoutForm({
     hasRealAddress(cart.shipping_address) && hasUnresolvedDeliveryConflict(cart)
 
   return (
-    <div className="w-full grid grid-cols-1 gap-y-8">
+    // Each step is now an enclosed card (padded, hairline border), so the
+    // gap between them separates real objects rather than butting two
+    // unbounded white areas against each other.
+    <div className="w-full grid grid-cols-1 gap-y-4 small:gap-y-6">
       {/* 07_CHECKOUT_SPECIFICATION.md §22 — no checkout page had a
           top-level heading at all; each step's own heading is an `h2`. */}
       <Heading level="h1" className="sr-only">

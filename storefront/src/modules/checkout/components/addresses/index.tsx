@@ -6,7 +6,6 @@ import compareAddresses from "@lib/util/compare-addresses"
 import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
-import Divider from "@modules/common/components/divider"
 import { Heading, Text } from "@modules/common/components/ui"
 import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -43,7 +42,7 @@ const Addresses = ({
   const [message, formAction] = useActionState(setAddresses, null)
 
   return (
-    <div className="bg-surface-elevated">
+    <div className="rounded-radius-md border border-divider bg-surface-elevated p-4 small:p-6">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           ref={headingRef}
@@ -196,7 +195,6 @@ const Addresses = ({
           </div>
         </div>
       )}
-      <Divider className="mt-8" />
     </div>
   )
 }

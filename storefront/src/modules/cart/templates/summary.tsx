@@ -33,7 +33,7 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
   const step = getCheckoutStep(cart)
 
   return (
-    <div className="flex flex-col gap-5 rounded-radius-md border border-border bg-surface-elevated p-4 small:p-6">
+    <div className="flex flex-col gap-6 rounded-radius-md border border-border bg-surface-elevated p-5 small:p-6">
       <div className="flex items-baseline justify-between gap-3">
         <Heading level="h2" className="!text-heading-4">
           Order summary
@@ -45,9 +45,13 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
         )}
       </div>
 
-      <CartTotals totals={cart} />
+      <div className="border-t border-divider pt-5">
+        <CartTotals totals={cart} />
+      </div>
 
-      <DiscountCode cart={cart} />
+      <div className="border-t border-divider pt-5">
+        <DiscountCode cart={cart} />
+      </div>
 
       <div className="flex flex-col gap-3">
         <LocalizedClientLink

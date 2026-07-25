@@ -37,7 +37,7 @@ const Review = ({
   const hasWineItems = productLines.some((item) => !isFoodCentralItem(item))
 
   return (
-    <div className="bg-surface-elevated">
+    <div className="rounded-radius-md border border-divider bg-surface-elevated p-4 small:p-6">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           ref={headingRef}
