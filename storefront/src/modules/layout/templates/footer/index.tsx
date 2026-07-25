@@ -15,6 +15,18 @@ const COMPANY_LINKS = [{ label: "About", href: "/about" }];
 const SUPPORT_LINKS = [{ label: "Delivery & Returns", href: "/support" }];
 const LEGAL_LINKS = [{ label: "Legal & Compliance", href: "/legal" }];
 
+/** Shared heading for each footer link group — small, uppercase, tracked out. */
+function GroupHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-caption font-medium uppercase tracking-wider text-text-on-inverse">
+      {children}
+    </span>
+  );
+}
+
+const linkClass =
+  "text-text-on-inverse-muted hover:text-text-on-inverse transition-colors duration-standard ease-in-out";
+
 /**
  * 01_NAVIGATION_SPECIFICATION.md §8 — footer navigational content
  * structure: Shop (a secondary sitemap of the category tree, not a
@@ -26,6 +38,18 @@ const LEGAL_LINKS = [{ label: "Legal & Compliance", href: "/legal" }];
  * (§19, §24) rather than a redirect or 404 — their actual copy is
  * outside this specification's and this milestone's scope (brand/legal
  * content, not navigation structure).
+ *
+ * Laid out on an inverse (dark) ground: a wide brand/identity column
+ * beside a block of uppercase-headed link groups, then a full-width
+ * hairline with the primary call to action sitting *on* it at the far
+ * right, then a quiet bottom bar. The reference this follows also
+ * carries a social-icon row and a street address/phone/email block in
+ * its left column; neither is reproduced here, because this project has
+ * no real social accounts or company contact details — /about, /support
+ * and /legal are themselves explicit placeholders for exactly that
+ * still-open business content, so inventing an address or a handle to
+ * fill the slot is not engineering's call. The column is populated with
+ * what the platform genuinely has instead.
  */
 export default async function Footer() {
   const { collections } = await listCollections({
@@ -38,25 +62,42 @@ export default async function Footer() {
     .slice(0, 6);
 
   return (
-    <footer className="border-t border-border w-full">
-      <div className="ds-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-10 xsmall:flex-row items-start justify-between py-24">
-          <div className="flex flex-col gap-y-2">
+    <footer className="w-full bg-surface-inverse text-text-on-inverse">
+      <div className="ds-container flex w-full flex-col">
+        <div className="grid grid-cols-1 gap-12 py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
+          {/* Brand / identity column */}
+          <div className="flex flex-col gap-y-5 lg:col-span-3">
             <LocalizedClientLink
               href="/"
-              className="font-display text-heading-4 font-semibold tracking-tight text-text-primary hover:text-interactive"
+              className="font-display text-heading-4 font-semibold tracking-tight text-text-on-inverse hover:opacity-80"
             >
               LiquorCentral
             </LocalizedClientLink>
-            <Text className="text-caption text-text-muted max-w-[220px]">
+            {/* `!` (important): Text hardcodes `text-text-primary` (ink-900)
+                in its own class list, which on this inverse ground renders
+                the copy invisibly dark-on-dark — Tailwind gives no
+                source-order guarantee that a later className wins. */}
+            <Text className="max-w-[260px] text-caption !text-text-on-inverse-muted">
               Premium wine, spirits, and Nigerian food — sold and delivered
               directly by us, never a stranger.
             </Text>
+            <div className="flex flex-col gap-y-2 text-caption text-text-on-inverse-muted">
+              <span className="flex items-center gap-1.5">
+                <CheckCircleSolid className="shrink-0 text-secondary" />
+                Sold &amp; delivered directly by LiquorCentral
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircleSolid className="shrink-0 text-secondary" />
+                Secure payment
+              </span>
+            </div>
           </div>
-          <div className="text-caption gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-5 w-full sm:w-auto">
+
+          {/* Link groups */}
+          <div className="grid grid-cols-2 gap-8 text-caption sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
             {topLevelCategories.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus text-text-primary">Shop</span>
+              <div className="flex flex-col gap-y-3">
+                <GroupHeading>Shop</GroupHeading>
                 <ul
                   className="grid grid-cols-1 gap-2"
                   data-testid="footer-categories"
@@ -70,26 +111,20 @@ export default async function Footer() {
                       })) || null;
 
                     return (
-                      <li
-                        className="flex flex-col gap-2 text-text-secondary txt-small"
-                        key={c.id}
-                      >
+                      <li className="flex flex-col gap-2" key={c.id}>
                         <LocalizedClientLink
-                          className={clx(
-                            "hover:text-text-primary",
-                            children && "txt-small-plus"
-                          )}
+                          className={clx(linkClass, children && "font-medium")}
                           href={`/categories/${c.handle}`}
                           data-testid="category-link"
                         >
                           {c.name}
                         </LocalizedClientLink>
                         {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
+                          <ul className="ml-3 grid grid-cols-1 gap-2">
                             {children.map((child) => (
                               <li key={child.id}>
                                 <LocalizedClientLink
-                                  className="hover:text-text-primary"
+                                  className={linkClass}
                                   href={`/categories/${child.handle}`}
                                   data-testid="category-link"
                                 >
@@ -106,15 +141,13 @@ export default async function Footer() {
               </div>
             )}
 
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus text-text-primary">
-                Food Central
-              </span>
-              <ul className="grid grid-cols-1 gap-2 text-text-secondary txt-small">
+            <div className="flex flex-col gap-y-3">
+              <GroupHeading>Food Central</GroupHeading>
+              <ul className="grid grid-cols-1 gap-2">
                 {FOOD_CENTRAL_LINKS.map((link) => (
                   <li key={link.href}>
                     <LocalizedClientLink
-                      className="hover:text-text-primary"
+                      className={linkClass}
                       href={link.href}
                       data-testid="footer-link"
                     >
@@ -126,15 +159,13 @@ export default async function Footer() {
             </div>
 
             {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus text-text-primary">
-                  Collections
-                </span>
-                <ul className="grid grid-cols-1 gap-2 text-text-secondary txt-small">
+              <div className="flex flex-col gap-y-3">
+                <GroupHeading>Collections</GroupHeading>
+                <ul className="grid grid-cols-1 gap-2">
                   {collections?.slice(0, 6).map((c) => (
                     <li key={c.id}>
                       <LocalizedClientLink
-                        className="hover:text-text-primary"
+                        className={linkClass}
                         href={`/collections/${c.handle}`}
                         data-testid="footer-link"
                       >
@@ -146,15 +177,13 @@ export default async function Footer() {
               </div>
             )}
 
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus text-text-primary">
-                Company
-              </span>
-              <ul className="grid grid-cols-1 gap-2 text-text-secondary txt-small">
+            <div className="flex flex-col gap-y-3">
+              <GroupHeading>Company</GroupHeading>
+              <ul className="grid grid-cols-1 gap-2">
                 {COMPANY_LINKS.map((link) => (
                   <li key={link.href}>
                     <LocalizedClientLink
-                      className="hover:text-text-primary"
+                      className={linkClass}
                       href={link.href}
                       data-testid="footer-link"
                     >
@@ -165,26 +194,13 @@ export default async function Footer() {
               </ul>
             </div>
 
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus text-text-primary">
-                Support
-              </span>
-              <ul className="grid grid-cols-1 gap-2 text-text-secondary txt-small">
+            <div className="flex flex-col gap-y-3">
+              <GroupHeading>Support</GroupHeading>
+              <ul className="grid grid-cols-1 gap-2">
                 {SUPPORT_LINKS.map((link) => (
                   <li key={link.href}>
                     <LocalizedClientLink
-                      className="hover:text-text-primary"
-                      href={link.href}
-                      data-testid="footer-link"
-                    >
-                      {link.label}
-                    </LocalizedClientLink>
-                  </li>
-                ))}
-                {LEGAL_LINKS.map((link) => (
-                  <li key={link.href}>
-                    <LocalizedClientLink
-                      className="hover:text-text-primary"
+                      className={linkClass}
                       href={link.href}
                       data-testid="footer-link"
                     >
@@ -196,19 +212,38 @@ export default async function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row gap-y-4 w-full mb-16 sm:items-center sm:justify-between text-text-muted border-t border-border pt-8">
-          <Text className="text-caption" as="span">
+
+        {/* Hairline with the call to action sitting on it, far right. The
+            pill is 40px tall and pulled up by half that, so it stays
+            centred on the rule at every width; the sections above and
+            below reserve more than that in padding, so it never collides
+            with their content. */}
+        <div className="relative">
+          <div className="h-px w-full bg-border-on-inverse" />
+          <LocalizedClientLink
+            href="/store"
+            className="absolute right-0 -top-5 inline-flex h-10 items-center justify-center rounded-radius-full bg-surface-elevated px-5 text-caption font-medium text-ink-900 transition-colors duration-standard ease-in-out hover:bg-ink-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-on-inverse"
+            data-testid="footer-cta"
+          >
+            Start shopping
+          </LocalizedClientLink>
+        </div>
+
+        <div className="flex flex-col gap-y-4 pb-16 pt-10 text-caption text-text-on-inverse-muted sm:flex-row sm:items-center sm:justify-between">
+          <Text className="text-caption !text-text-on-inverse-muted" as="span">
             © {new Date().getFullYear()} LiquorCentral. All rights reserved.
           </Text>
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-caption">
-            <span className="flex items-center gap-1.5">
-              <CheckCircleSolid className="text-secondary shrink-0" />
-              Sold &amp; delivered directly by LiquorCentral
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircleSolid className="text-secondary shrink-0" />
-              Secure payment
-            </span>
+          <div className="flex flex-wrap gap-x-8 gap-y-2 uppercase tracking-wider">
+            {LEGAL_LINKS.map((link) => (
+              <LocalizedClientLink
+                key={link.href}
+                className={linkClass}
+                href={link.href}
+                data-testid="footer-link"
+              >
+                {link.label}
+              </LocalizedClientLink>
+            ))}
           </div>
         </div>
       </div>

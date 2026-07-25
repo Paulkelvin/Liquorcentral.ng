@@ -92,6 +92,11 @@ module.exports = {
         overlay: "var(--color-overlay)",
         scrim: "var(--color-scrim)",
         "on-scrim-muted": "var(--color-on-scrim-muted)",
+        "surface-inverse": "var(--color-surface-inverse)",
+        "text-on-inverse": "var(--color-text-on-inverse)",
+        "text-on-inverse-muted": "var(--color-text-on-inverse-muted)",
+        "border-on-inverse": "var(--color-border-on-inverse)",
+        "focus-on-inverse": "var(--color-focus-on-inverse)",
         // Neutral System (DESIGN_SYSTEM.md §B6) — the raw scale the
         // semantic tokens above resolve from. Prefer the semantic tokens;
         // these exist for the rare case a component genuinely needs a
