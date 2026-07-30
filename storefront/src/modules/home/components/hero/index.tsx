@@ -107,24 +107,57 @@ function HeroVisual() {
   )
 }
 
-/** A true claim, not a fabricated statistic. See the note in `Hero` below. */
-function TrustPoint({ children }: { children: React.ReactNode }) {
+/**
+ * The social-proof row from the reference layout: overlapping circular
+ * avatars beside a short trust line.
+ *
+ * ⚠️ **`SOCIAL_PROOF_COUNT` is not a real figure and must be set or removed
+ * before launch.** This platform has no customers and no review mechanism
+ * yet, so any number here is a claim to the public that isn't backed by
+ * anything — which in Nigeria falls under the FCCPA's prohibition on
+ * misleading representations, quite apart from `BRAND_IDENTITY.md` §5's own
+ * "structured honesty" value. It is built because Paul asked for it
+ * directly and twice; the honest number is the only part left to him.
+ *
+ * The circles are brand-toned initials, not stock photographs of people.
+ * Faces of "customers" who never bought anything are a fabrication of a
+ * different order from a number — and swapping in real photos later is a
+ * one-line change to `AVATARS`.
+ */
+const SOCIAL_PROOF_COUNT = "10,000+"
+// Every pairing below clears WCAG AA at this 11px size. Brand green was the
+// obvious fourth colour and was tried first, but white on `#1A9902` measures
+// 3.74:1 against the 4.5:1 small-text threshold — confirmed by a live axe-core
+// run, not estimated. Gold works only because it takes dark text, not light.
+const AVATARS = [
+  { initials: "AO", className: "bg-ink-900 text-surface-elevated" },
+  { initials: "CN", className: "bg-primary text-surface-elevated" },
+  { initials: "FA", className: "bg-ink-700 text-surface-elevated" },
+  { initials: "TB", className: "bg-accent text-ink-900" },
+]
+
+function SocialProof() {
   return (
-    <li className="flex items-center gap-2">
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 20 20"
-        className="h-4 w-4 shrink-0 text-success"
-        fill="currentColor"
-      >
-        <path
-          fillRule="evenodd"
-          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-          clipRule="evenodd"
-        />
-      </svg>
-      <span>{children}</span>
-    </li>
+    <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row small:items-center">
+      {/* Overlap is deliberately looser than the reference's. Its circles are
+          photographs, where overlap costs nothing; initials get their right
+          edge clipped by the next circle and become unreadable. Tighten this
+          back up once real photos replace them. */}
+      <div className="flex -space-x-1.5">
+        {AVATARS.map((a) => (
+          <span
+            key={a.initials}
+            aria-hidden="true"
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-radius-full text-[11px] font-semibold ring-2 ring-surface ${a.className}`}
+          >
+            {a.initials}
+          </span>
+        ))}
+      </div>
+      <p className="text-caption text-text-secondary">
+        Trusted by {SOCIAL_PROOF_COUNT} happy customers
+      </p>
+    </div>
   )
 }
 
@@ -193,17 +226,7 @@ export default function Hero() {
             </LocalizedClientLink>
           </div>
 
-          {/* The reference layout carries a social-proof row here ("Trusted
-              by 10,000+ Happy Customers", with customer avatars). That is
-              deliberately NOT reproduced: this platform has no customers
-              yet and no review mechanism, so both the number and the faces
-              would be fabricated — the one thing `BRAND_IDENTITY.md` §5's
-              "structured honesty" rules out outright. These two claims are
-              structurally true today and occupy the same visual slot. */}
-          <ul className="mt-2 flex flex-col items-center gap-x-6 gap-y-2 text-caption text-text-secondary sm:flex-row small:items-start">
-            <TrustPoint>Nationwide delivery on wine &amp; spirits</TrustPoint>
-            <TrustPoint>Same-day food across Lagos</TrustPoint>
-          </ul>
+          <SocialProof />
         </div>
 
         <div className="order-1 w-full small:order-2">
