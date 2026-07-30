@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 3.9
+**Version:** 4.0
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
@@ -10,6 +10,19 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Homepage gains a "Shop by category" browse row — a new section not in `02_HOMEPAGE_SPECIFICATION.md`
+
+- **Decision:** A circular-tile category browse row is added to the homepage, immediately after the Hero and before Curated Collections. Data-driven from the real Medusa top-level category tree, plus a hand-appended Food Central tile.
+- **Reasoning:** Paul asked for it directly, supplying three reference examples. **This is a genuine change to a frozen specification, not an implementation detail**, and is recorded as such: `02_HOMEPAGE_SPECIFICATION.md` §7 lists nine homepage sections and a category row is not among them; §22's v1 scope does not include it; §23's future enhancements do not name it; and §4 in fact makes the *opposite* choice deliberately, describing the Guided Browser's need as "a curated, low-pressure entry point into wine discovery (an occasion or curated shelf, **not a raw category list**)." `DOCUMENTATION_GOVERNANCE.md` §5 permits a frozen specification to change on an explicit new business decision from Paul, which this is.
+- **Date:** 2026-07-30
+- **Impact:**
+  1. **Placement resolves the tension with §4 rather than ignoring it.** The row sits *before* Curated Collections, so the self-directed visitor who already knows what they want gets a direct path first, and the undecided visitor still meets editorial curation immediately after. §4's intent is preserved; it is no longer the *only* entry point.
+  2. **Data-driven, not hardcoded** — reads the same category tree the mega menu uses, so a category added or removed in Admin is reflected with no code change. Only the icon lookup is local, and an unrecognised handle falls back to a generic icon rather than rendering an empty circle.
+  3. **Food Central is appended by hand**, because Milestone 7 established it as a deliberately static route rather than a Medusa category. Without that it would be missing from a row that implicitly claims to show everything on sale — a whole product line invisible.
+  4. **Line icons, not photography.** No category-level photography exists (`BRAND_GUIDELINES.md`'s open item) and the per-product Wikimedia shots have inconsistent backgrounds that would look poor in uniform circles. Icons follow `BRAND_IDENTITY.md` §18's clarity-first principle and are honest about what the project actually has.
+  5. **Tint encodes product line, using §13's own assigned roles.** Food Central takes the green tint (§13: "Food Central emphasis"); Wine & Spirits categories take a warm neutral rather than §13's red, because red there is reserved for calls to action and seven red circles above the fold would compete directly with the hero's primary button.
+- **Status:** Implemented. **`02_HOMEPAGE_SPECIFICATION.md` is now out of date** — its §7 section list, §22 v1 scope and §8 behaviour sections do not describe this row. The specification is frozen and this session did not amend it; updating it is Paul's call and is flagged in `PROJECT_STATUS.md`.
 
 ### Homepage hero rebuilt as a split layout with a blended product photograph
 

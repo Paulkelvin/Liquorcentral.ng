@@ -1,11 +1,23 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.8
+**Version:** 6.9
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v66 — 2026-07-30 — Homepage "Shop by category" browse row
+
+**Context:** Paul asked for a category section after the hero, with three reference examples. **This is a change to a frozen specification, not just an implementation** — `02_HOMEPAGE_SPECIFICATION.md` §7 lists nine sections and a category row is not one of them; §4 deliberately chose curated shelves *over* "a raw category list."
+
+**Added:** `storefront/src/modules/home/components/category-browse/` — circular tiles built from the real Medusa top-level category tree (so Admin changes flow through with no code change), plus a hand-appended Food Central tile, since Food Central is a static route rather than a Medusa category and would otherwise be missing.
+
+**Changed:** the homepage composes the new section between Hero and Curated Collections, so self-directed browsing comes first and editorial curation second — which leaves §4's intent intact rather than replacing it.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry, → v4.0), `docs/PROJECT_STATUS.md` (→ v6.6, carrying the open item below).
+
+⚠️ **Open item:** `02_HOMEPAGE_SPECIFICATION.md` is now out of date and was **not** amended — it is Approved — Frozen and only Paul can authorise the edit to §7/§8/§22.
 
 ## v65 — 2026-07-30 — Homepage hero rebuilt with a blended product photograph
 

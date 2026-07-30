@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import { Suspense } from "react"
 
 import Hero from "@modules/home/components/hero"
+import CategoryBrowse from "@modules/home/components/category-browse"
 import CuratedCollections from "@modules/home/components/curated-collections"
 import FoodCentralSpotlight from "@modules/home/components/food-central-spotlight"
 import TrustDeliveryBand from "@modules/home/components/trust-delivery-band"
@@ -39,6 +40,13 @@ export default async function Home({ params }: Props) {
   return (
     <>
       <Hero />
+      {/* Not a §7 section — added on Paul's direct instruction; see the
+          component's own note and `DECISION_LOG.md`. Placed before curated
+          collections so self-directed browsing comes first and editorial
+          curation second, which leaves §4's intent intact. */}
+      <Suspense fallback={null}>
+        <CategoryBrowse />
+      </Suspense>
       <Suspense fallback={null}>
         <CuratedCollections countryCode={countryCode} />
       </Suspense>
