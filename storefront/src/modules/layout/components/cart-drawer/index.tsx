@@ -96,8 +96,18 @@ export default function CartDrawer() {
               />
             </div>
           </div>
+          {/* `LineItemPrice` hardcodes `items-end` on its own wrapper, which
+              is right for the desktop row (price flush to the panel edge,
+              under the subtotal) but wrong once the price stacks onto its
+              own line on a phone — there it floated off to the right of
+              the title and variant it belongs to. `[&>div]` re-anchors it
+              to the left below `small`, so the stacked price starts on the
+              same edge as the text above it, and restores `items-end` at
+              the breakpoint where the row layout takes over. Scoped here
+              rather than changed in `LineItemPrice` itself, which the cart
+              page and order confirmation also render. */}
           <div
-            className="shrink-0 whitespace-nowrap text-[14px] font-medium text-text-primary small:text-right"
+            className="shrink-0 whitespace-nowrap text-[14px] font-medium text-text-primary [&>div]:items-start small:[&>div]:items-end"
             data-testid="cart-item-price"
           >
             <LineItemPrice
