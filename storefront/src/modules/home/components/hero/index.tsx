@@ -19,89 +19,40 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
  */
 
 /** Swap this one constant when real photography lands. See `public/brand/IMAGE_CREDITS.md`. */
-const HERO_IMAGE = "/brand/hero-wine.jpg"
-
-const MASK =
-  "linear-gradient(to bottom, transparent 0%, #000 9%, #000 79%, transparent 89%)"
+const HERO_IMAGE = "/brand/hero-food-drink.jpg"
 
 /**
  * The right-hand visual.
  *
- * **The whole reason this reads as one composition rather than a photo
- * pasted onto a page is `mix-blend-mode: multiply`.** The source photo is
- * shot on a seamless near-white studio ground; multiplying it against the
- * section's own off-white surface makes those light pixels take the page
- * colour exactly, so the photograph has no edge, no frame, no box and no
- * corner radius — it simply *is* the background, with a bottle standing on
- * it. The photo's own soft studio shadow survives the blend and lands as a
- * real shadow on the page, which is what grounds the product instead of
- * leaving it floating.
+ * **Note what isn't here: no blend mode, no filter, no mask, no synthetic
+ * shadow.** That is the point. This image was produced to sit on this page,
+ * so its ground was normalised offline to the page's own `#F3F5F0` (measured
+ * afterwards at every corner, within ±2 — JPEG noise, invisible). With the
+ * ground already matching, the photograph has no edge to hide and needs
+ * nothing at runtime to disguise one.
  *
- * This is why the previous version read as a separate tile: it was a dark
- * `rounded-radius-lg` panel with its own fill, so no matter how well
- * composed, the eye still saw a card sitting on a page. A photo with a
- * hard rectangular edge over a differently-coloured background always
- * announces itself as a pasted-in asset.
+ * The previous stand-in needed `mix-blend-mode: multiply` plus a brightness
+ * lift, a two-ended mask and a hand-drawn ellipse purely to fake this
+ * condition, and each of those cost something: the lift washed out the wine
+ * and erased the photo's own contact shadow, which then had to be redrawn.
+ * Here the real shadow under the pedestal survives untouched, because nothing
+ * is being done to the pixels.
  *
- * The trade-off to know before swapping the image: multiply only
- * disappears a background that is genuinely lighter than the surface. A
- * photo cut out on transparency, or shot on a dark or coloured ground,
- * must drop the blend mode or it will muddy — see `IMAGE_CREDITS.md`.
+ * **So if you swap this image, match its background to the section colour
+ * first** (see `HERO_IMAGE_BRIEF.md`). Reaching for a blend mode instead is
+ * the worse version of this, and is what the git history above shows.
  */
 function HeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[420px]">
-      {/* The grounding shadow, and the reason it has to be re-created rather
-          than inherited: the brightness lift below is what erases the photo's
-          grey ground, but it erases the photo's own contact shadow along with
-          it, leaving the bottle visibly floating. This ellipse puts that
-          weight back under the base.
-
-          It sits *behind* the image on purpose. Because the image multiplies
-          against whatever is beneath it, the shadow reads through the light
-          part of the frame and is masked out by the bottle itself — which is
-          exactly how a real shadow behaves, and why compositing it on top
-          would instead smear a grey blob across the glass. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[74%] h-[11%] w-[72%] -translate-x-1/2 rounded-[50%] opacity-30 blur-2xl"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, var(--ink-900) 0%, transparent 72%)",
-        }}
-      />
+    <div className="relative mx-auto w-full max-w-[480px]">
       <Image
         src={HERO_IMAGE}
-        alt="A bottle of red wine beside a poured glass of red wine"
-        width={681}
-        height={1024}
+        alt="A bottle of red wine and a poured glass beside a plate of Nigerian jollof rice with grilled chicken, on a wooden serving pedestal"
+        width={928}
+        height={1152}
         priority
-        sizes="(max-width: 1024px) 80vw, 520px"
-        className="relative mx-auto h-auto w-full mix-blend-multiply"
-        style={{
-          // Measured, not guessed: this photo's ground is not white but a
-          // grey gradient running 190→233, so `multiply` alone leaves a
-          // clearly visible rectangle (the tone is darker than the page, so
-          // it darkens rather than disappears). Lifting brightness first
-          // pushes that ground to effectively white, at which point multiply
-          // erases it completely; `saturate` puts back the small amount of
-          // colour the lift costs, keeping the wine a deep red rather than a
-          // washed pink. Tested against 1.25/1.28/1.32 with and without a
-          // radial mask — a radial mask was rejected because it visibly
-          // clipped the corkscrew and cork at the bottom edge.
-          filter: "brightness(1.28) saturate(1.06)",
-          // Fades at both ends, for two different reasons. The very top is
-          // the one part the brightness lift can't reach (the ground starts
-          // darkest there), so without a fade a faint band survives. The
-          // bottom fade removes the corkscrew, cork and glass base: the lift
-          // erases their own small contact shadows too, and unlike the bottle
-          // they are too scattered for one grounding ellipse to catch, so
-          // they read as debris floating in the margin. Fading beats cropping
-          // here — a hard crop cuts a visible horizontal line straight
-          // through the frame, which was tried and looked worse.
-          WebkitMaskImage: MASK,
-          maskImage: MASK,
-        }}
+        sizes="(max-width: 1024px) 85vw, 480px"
+        className="h-auto w-full"
       />
     </div>
   )
