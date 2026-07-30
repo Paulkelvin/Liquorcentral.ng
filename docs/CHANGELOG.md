@@ -1,11 +1,23 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.7
+**Version:** 6.8
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v65 — 2026-07-30 — Homepage hero rebuilt with a blended product photograph
+
+**Context:** Paul supplied a reference hero layout and asked specifically how its photograph is made to sit cohesively on the page.
+
+**Added:** `storefront/public/brand/hero-wine.jpg` (first real photographic asset on the platform) and `storefront/public/brand/IMAGE_CREDITS.md` (source/author/licence — the asset is CC BY 2.0 and attribution is mandatory).
+
+**Changed:** `storefront/src/modules/home/components/hero/index.tsx` — split layout with eyebrow, display headline, CTA pair, trust row and a `mix-blend-mode: multiply` photograph; `storefront/README.md` — new section documenting the technique and the measurements behind it.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry, → v3.9).
+
+**Not changed:** typefaces and the four frozen foundation documents. Two items await Paul's confirmation — the shortened headline, and whether to move the display face toward the reference's geometric sans.
 
 ## v64 — 2026-07-30 — Cart drawer line-item and footer refinement
 

@@ -659,6 +659,37 @@ Subtotal and its figure now share one size and weight (17px/semibold) so the row
 - **No regression on the shared components' other consumers**, checked live rather than reasoned about: the PDP and `/cart` steppers still render at the default 44px with no hit-area expansion, and `/cart` still shows the "Variant:" label.
 - `tsc --noEmit` clean; all 84 Jest tests across 15 suites pass.
 
+## Homepage hero — rebuilt as a split layout with a blended product photograph
+
+Rebuilt to a reference layout Paul supplied. The change worth understanding is not the layout — it is **why a photograph stops looking pasted onto a page**, since that was his actual question.
+
+### The technique: the photo's background *becomes* the page background
+
+The previous hero put its visual inside a dark `rounded-radius-lg` panel. However well composed, the eye still read a *card sitting on a page*, because a rectangle with its own fill and its own corners always announces itself as a separate object.
+
+The fix is `mix-blend-mode: multiply` on a product shot taken against a seamless light ground. Multiply keeps dark pixels and lets light pixels take the colour beneath them, so the photo's ground adopts the section's own off-white exactly — no edge, no frame, no radius. The product appears to stand *on the page*.
+
+Three things were needed to make that actually work here, each found by measuring rather than assuming:
+
+1. **The ground was not white.** Sampling the source photo's corners gave a grey gradient running 190→233, well below the page's `#F3F5F0`. Multiply therefore *darkened* it into a clearly visible rectangle. A `brightness(1.28)` lift pushes that ground to effectively white before the blend, at which point it disappears; `saturate(1.06)` restores the small amount of colour the lift costs so the wine stays a deep red rather than a washed pink. Values were chosen by rendering 1.25 / 1.28 / 1.32 side by side and comparing, not picked off a hunch.
+2. **The lift erases the photo's own contact shadow**, leaving the bottle floating. A soft elliptical shadow is drawn *behind* the image to put that weight back. Behind, not on top: because the image multiplies against whatever is beneath it, the shadow reads through the light part of the frame and is masked out by the bottle itself — exactly how a real shadow behaves. Composited on top it would smear grey across the glass.
+3. **Both ends of the frame needed fading.** The very top is the one region the lift cannot reach (the ground starts darkest there), so a faint band survives without a fade. The bottom carries a corkscrew, cork and the glass's base whose own small contact shadows the lift also removes; too scattered for one grounding ellipse to catch, they read as debris floating in the margin. A single `mask-image` handles both. **Cropping was tried first and rejected** — a hard crop cut a visible horizontal line straight through the frame and clipped the bottle's base.
+
+**Before swapping the image**, know the constraint this depends on: multiply only dissolves a ground *lighter* than the surface. A cut-out on transparency, or a shot on a dark or coloured ground, must drop the blend mode and its filters or it will muddy. The path is one constant (`HERO_IMAGE`) and the credits/licence live in `public/brand/IMAGE_CREDITS.md`.
+
+### Layout and copy
+
+Split layout: eyebrow pill, display headline, supporting paragraph, a weighted CTA pair, and a trust row, against the photograph. Two deliberate departures from the reference:
+
+- **No fabricated social proof.** The reference carries "Trusted by 10,000+ Happy Customers" over a row of customer avatars. This platform has no customers and no review mechanism, so both the number and the faces would be invented — the exact thing `BRAND_IDENTITY.md` §5's "structured honesty" rules out. Two structurally true claims occupy the same slot instead.
+- **The headline is a shortened form of Paul's approved Positioning Statement** (`BRAND_IDENTITY.md` §10). The full statement is a 20-word sentence that wraps to four lines at display size and loses the impact this layout depends on. The words are his; the trim is not, and needs his confirmation.
+
+**Typefaces were left alone.** The reference uses a geometric sans; this project already loads Source Serif 4 (display) and DM Sans (body) via `next/font`, satisfying `BRAND_IDENTITY.md` §14's approved "warm serif display + humanist sans" direction. Swapping the display face is a brand decision against an approved direction, not an engineering one — flagged for Paul rather than changed unilaterally. The reference's "smoothness" is overwhelmingly the image cohesion and spacing above, not its typeface.
+
+### Validated with real execution
+
+Rendered against the running backend at 1440px and 390px: **axe-core reports 0 WCAG 2 A/AA violations** at both, no horizontal overflow at either, `tsc --noEmit` clean, 84/84 Jest tests pass.
+
 ## What's deliberately not here yet
 
 - **Meilisearch-backed search: ranking/typo-tolerance/synonyms, autocomplete, editorial boosting, and faceted search results** (`03_SEARCH_SPECIFICATION.md` §7, §8, §9, §11, §13) — Meilisearch itself remains unapproved (`DECISION_LOG.md`); `/search` today is a real native results page (unified list, catalog badges, sort, Load More, honest zero-result recovery — Milestone 10) but not this document's full mechanism set. **Search-within-category** (§4, §15/§16) also remains unbuilt — no scoped-search affordance exists on category pages yet.

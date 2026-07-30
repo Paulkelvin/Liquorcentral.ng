@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 3.8
+**Version:** 3.9
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
@@ -10,6 +10,18 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Homepage hero rebuilt as a split layout with a blended product photograph
+
+- **Decision:** Rebuilt `storefront/src/modules/home/components/hero/index.tsx` to a reference layout Paul supplied (eyebrow pill, display headline, supporting paragraph, weighted CTA pair, trust row, product photograph), replacing the abstract dark gradient panel. Introduced the first real photographic asset on the platform, self-hosted at `storefront/public/brand/hero-wine.jpg`.
+- **Reasoning:** Paul asked directly for this layout and specifically for the technique behind its cohesion. Full mechanism and the measurements behind it are in `storefront/README.md`'s own section; in short, `mix-blend-mode: multiply` over a seamless light-ground photo makes the photo's background take the page colour, so it has no edge — plus a brightness lift (the source ground measured 190→233, not white), a re-created grounding shadow drawn behind the image, and a two-ended mask.
+- **Date:** 2026-07-30
+- **Impact:** Four judgement calls recorded because each could otherwise be silently reversed by a later session:
+  1. **No fabricated social proof.** The reference layout carries "Trusted by 10,000+ Happy Customers" over customer avatars. This platform has no customers and no review mechanism, so both would be invented — precisely what `BRAND_IDENTITY.md` §5's "structured honesty" forbids. Two structurally true claims occupy that slot instead. **This is not a styling preference and should not be "filled in" later without real data.**
+  2. **The headline is a shortened form of `BRAND_IDENTITY.md` §10's approved Positioning Statement**, because the full 20-word sentence wraps to four lines at display size and destroys the layout's impact. The words remain Paul's; the trim is not, and is **flagged for his confirmation** — the alternative was inventing new brand copy, which would have been worse.
+  3. **Typefaces deliberately unchanged.** The reference uses a geometric sans. The project already loads Source Serif 4 + DM Sans, satisfying §14's approved direction, so swapping the display face is a brand decision against an approved direction rather than an engineering one — raised with Paul, not made unilaterally.
+  4. **The image is an explicitly-labelled placeholder, and a licensed one.** An unbranded bottle was chosen over any real catalogue product so the homepage cannot appear to endorse, or infringe the trademark of, a third-party producer LiquorCentral does not represent. It is CC BY 2.0 and **requires attribution** — recorded in `storefront/public/brand/IMAGE_CREDITS.md`, which must not be deleted while the asset remains. Real photography stays the open item it already was under `BRAND_GUIDELINES.md`.
+- **Status:** Implemented and verified (axe-core 0 WCAG 2 A/AA violations at 1440px and 390px, no horizontal overflow, tsc clean, 84/84 tests). **Points 2 and 3 await Paul's confirmation**; neither blocks the layout.
 
 ### Cart drawer line-item and footer refinement; `QuantityStepper` gains a compact size
 
