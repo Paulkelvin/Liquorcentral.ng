@@ -30,7 +30,8 @@ Anyone — human or AI — picking up this project should read, in this order:
 | [`DELIVERY_MODEL.md`](./DELIVERY_MODEL.md) | How does delivery/pickup/scheduling actually work? |
 | [`USER_FLOWS.md`](./USER_FLOWS.md) | What are the step-by-step customer journeys? |
 | [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) | What design principles govern the interface (not yet: what it looks like)? |
-| [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | What is LiquorCentral's visual and verbal identity? *(placeholder — not yet defined)* |
+| [`BRAND_IDENTITY.md`](./BRAND_IDENTITY.md) | What is LiquorCentral's personality, voice, and visual/verbal philosophy? *(v1 drafted, awaiting approval)* |
+| [`BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) | Where do the concrete brand assets (logo, chosen typeface, photography library) live? *(partially populated — see `BRAND_IDENTITY.md` for the division of responsibility)* |
 | [`ROADMAP.md`](./ROADMAP.md) | In what order will this get built? |
 | [`DECISION_LOG.md`](./DECISION_LOG.md) | What was decided, when, why, and with what impact? |
 | [`CHANGELOG.md`](./CHANGELOG.md) | What changed in the documentation itself, over time? |

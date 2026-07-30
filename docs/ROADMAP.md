@@ -8,6 +8,15 @@ Prove ordinary commerce first, then layer in scheduling sophistication, then dis
 
 > This roadmap supersedes the marketplace-oriented rollout considered in earlier research (which included vendor onboarding and payout phases). Those phases are removed entirely — see `PRODUCT_BLUEPRINT.md` supersession notice.
 
+## Phase 0 — Brand & design foundation
+
+Precedes all implementation. No code, UI, or wireframes are produced in this phase.
+
+- **Brand Identity** (`BRAND_IDENTITY.md`) — **v1 drafted 2026-07-18, awaiting Paul's review and approval.** Defines personality, voice, emotional direction, and visual/verbal principles (including usage of the four approved brand colors).
+- **Design System** — visual tokens (typeface selection, spacing/type scale applied concretely, component library groundwork). **Blocked until `BRAND_IDENTITY.md` is approved.** `DESIGN_SYSTEM.md` already holds the structural principles this phase will apply; it does not commit to specific tokens yet.
+
+Phase 1 (below) does not depend on Phase 0 completing — backend/architecture work can proceed in parallel, per `PROJECT_STATUS.md`'s blockers list — but no UI or visual implementation work of any kind should begin before both steps in this phase are complete.
+
 ## Phase 1 — Foundation: single-catalog commerce, end to end
 
 - Stand up Medusa on Postgres + Redis (production-mode from day one, never launched on in-memory dev defaults).

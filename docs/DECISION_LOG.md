@@ -6,6 +6,14 @@
 
 ---
 
+### Brand Identity v1 drafted
+
+- **Decision:** `BRAND_IDENTITY.md` v1 created — brand vision, mission, core values, personality, voice, tone, emotional goals, customer perception goals, brand story framework, positioning statement, value proposition, and visual/verbal principles (visual philosophy, color usage, typography direction, photography, art direction, motion, iconography, illustration, white space, trust, accessibility, mobile-first brand experience, do's/don'ts, future evolution). The four brand colors Paul had already approved (Primary Red `#EC2D07`, Green `#1A9902`, Gold `#CFCA43`, Off White `#F3F5F0`) are used as given, unchanged — this decision covers usage hierarchy and accessibility handling of those colors, not the colors themselves.
+- **Reasoning:** Requested as the mandatory step before the Design System phase, so that visual-token work (typeface, component library, etc.) has a durable, principle-level brief to be checked against, rather than being decided ad hoc.
+- **Date:** 2026-07-18
+- **Impact:** `BRAND_GUIDELINES.md` reconciled and re-scoped — it no longer describes the brand as entirely undefined; its remaining scope is asset-level execution only (logo, chosen typeface, finished photography library, tone-of-voice example bank), explicitly coexisting with, not superseded by, `BRAND_IDENTITY.md`. `ROADMAP.md` updated with a new Phase 0 (Brand & Design Foundation) recording Brand Identity as drafted and Design System as the next, currently-blocked step. `AI_HANDOFF.md` and `PROJECT_STATUS.md` updated to reflect the new blocker and approval item.
+- **Status:** Draft v1 — awaiting Paul's review and approval. **The Design System phase must not begin before this approval**, per explicit instruction.
+
 ### Documentation audit: two unmerged branches consolidated into one working branch
 
 - **Decision:** No new business or architecture decision. A requested documentation audit found that this entire `/docs` set (17 files, plus the `medusa` git submodule) existed only on branch `claude/medusa-repo-clone-ut5dl5`, never merged into `main`, while a separately-authored `AI_HANDOFF.md` existed only on another branch — each unaware of the other. The two were merged into one working branch so `/docs` is an actual, single, current source of truth rather than knowledge split across divergent, unmerged history.

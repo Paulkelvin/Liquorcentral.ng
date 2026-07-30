@@ -19,18 +19,19 @@ The project has moved through: (1) initial Medusa architecture research, (2) tec
 - `PRODUCT_BLUEPRINT.md` v1 drafted, covering all 18 required sections with reasoning, business benefit, and Medusa impact for each.
 - Full `/docs` documentation system established (this file plus 16 others — see `README.md` for the index).
 - **Documentation audit (2026-07-18):** this documentation set had been committed on a sibling branch (`claude/medusa-repo-clone-ut5dl5`, alongside the Medusa submodule) but never merged into `main`. A separate onboarding effort had, in parallel, created `AI_HANDOFF.md` on a different branch without knowledge of this set. Both branches have now been merged together; `/docs` (18 documents, including `AI_HANDOFF.md`) is consolidated on one working branch and is the repository's actual single source of truth. See `DECISION_LOG.md` for the full entry.
+- **Brand Identity v1 drafted (2026-07-18):** `BRAND_IDENTITY.md` — brand vision, mission, core values, personality, voice/tone, emotional and customer-perception goals, positioning statement, value proposition, and visual/verbal principles across 25 sections (color usage, typography direction, photography, art direction, motion, iconography, illustration, white space, trust, accessibility, mobile-first brand experience, do's/don'ts, future evolution), each with reasoning, business benefit, customer experience benefit, implementation impact, and risks/trade-offs. Uses the four already-approved brand colors (Primary Red `#EC2D07`, Green `#1A9902`, Gold `#CFCA43`, Off White `#F3F5F0`) without changing them — defines usage hierarchy only. `BRAND_GUIDELINES.md` updated to reconcile: it now holds only the remaining asset-level items (logo, chosen typeface, finished photography, tone-of-voice example bank) not yet produced. **Awaiting Paul's review and approval — the Design System phase must not begin until this is approved.**
 
 ## Work in progress
 
-None currently active. The immediate next step is Paul's review (see below) before any further work — implementation or design — begins.
+None currently active. The immediate next step is Paul's review of `BRAND_IDENTITY.md` (see below) before the Design System phase — or any other further work — begins.
 
 ## Next recommended task
 
-**Paul reviews `PRODUCT_BLUEPRINT.md` v1 and resolves the open questions listed below.** Until at least the payment-provider and delivery-mechanism questions are resolved, Phase 1 of `ROADMAP.md` (foundation build) should not begin, since payment integration is a launch blocker.
+**Paul reviews and approves `BRAND_IDENTITY.md` v1.** This is now the explicit gate on the Design System phase — Design System work (visual tokens, typeface selection, component library groundwork) must not start before this approval, per direct instruction. In parallel, Paul can also review `PRODUCT_BLUEPRINT.md` v1 and resolve the open questions listed below; until at least the payment-provider and delivery-mechanism questions are resolved, Phase 1 of `ROADMAP.md` (foundation build) should not begin, since payment integration is a launch blocker.
 
 ## Blockers
 
-- **Brand identity is entirely undefined** (`BRAND_GUIDELINES.md` is a placeholder). This blocks any visual design work, but does not block backend/architecture work.
+- **Design System visual-token work is blocked** until `BRAND_IDENTITY.md` v1 is reviewed and approved by Paul. This is an explicit instruction, not an inferred dependency.
 - **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1.
 - No other hard blockers — architecture and product-catalog work can proceed in parallel with the open questions below, as long as nothing below is assumed in their place.
 
@@ -63,8 +64,10 @@ Grouped by document, so each can be resolved in context:
 - Formal approval of the Meilisearch search recommendation.
 - Formal approval (or deferral) of the Sanity CMS recommendation — low urgency.
 
-**Brand (`BRAND_GUIDELINES.md`):**
-- The entire visual and verbal identity is undefined and needs a dedicated brand phase before visual design can begin.
+**Brand (`BRAND_IDENTITY.md`, `BRAND_GUIDELINES.md`):**
+- Formal approval of `BRAND_IDENTITY.md` v1 in full — **gates the start of the Design System phase.**
+- The real brand story (`BRAND_IDENTITY.md` §9) — specific founding/narrative facts, to be provided by Paul.
+- Remaining asset-level brand work not yet started: logo/wordmark, final typeface selection, finished photography library, tone-of-voice example bank (tracked in `BRAND_GUIDELINES.md`).
 
 ## How to use this section
 

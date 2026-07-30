@@ -29,7 +29,7 @@
 
 **Business model:** One company, two product lines, no third-party vendors. All inventory (liquor, wine, and food) is company-owned. All delivery is fulfilled by company-owned riders for Food Central — not a gig-economy logistics marketplace. Customers can check out as guests, must confirm legal drinking age before browsing alcohol, and can choose between same-day delivery, scheduled delivery, or pickup depending on product line and location.
 
-**Current project phase:** Product Definition — documentation established, **awaiting Paul's review and approval** of `PRODUCT_BLUEPRINT.md` v1 and a substantial list of open questions (payment provider, delivery mechanics, brand identity, and more — see Section 6). No implementation code, UI, or wireframe work has begun anywhere in this project. Paul has indicated the next phase is **Design System** (see Section 7) — but see Section 7 for an important open dependency on brand identity that this handoff surfaces rather than resolves.
+**Current project phase:** Product Definition — documentation established, **awaiting Paul's review and approval** of `PRODUCT_BLUEPRINT.md` v1, `BRAND_IDENTITY.md` v1, and a substantial list of other open questions (payment provider, delivery mechanics, and more — see Section 6). No implementation code, UI, wireframe, or mockup work has begun anywhere in this project. The next phase is **Design System** (see Section 7) — explicitly gated on `BRAND_IDENTITY.md`'s approval, not yet underway.
 
 **Product vision:** LiquorCentral is the platform Nigerians trust to deliver a bottle of wine and a home-cooked meal with the same care — curated, fast, and confident enough to buy on impulse. Every part of the product, from search to checkout, should reduce friction and increase the customer's confidence that they are buying the right product from a legitimate, premium operator.
 
@@ -94,7 +94,7 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
 
 ## 5. Documentation Guide
 
-`/docs` contains 18 documents. `README.md` (inside `/docs`) is the detailed document map with cross-links; this table adds ownership and update cadence for each.
+`/docs` contains 19 documents. `README.md` (inside `/docs`) is the detailed document map with cross-links; this table adds ownership and update cadence for each.
 
 | Document | Purpose | Owner | Update when |
 |---|---|---|---|
@@ -112,7 +112,8 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
 | `docs/DELIVERY_MODEL.md` | Delivery/pickup/scheduling strategy for both product lines | Paul (ops decisions); engineering (mechanics) | When delivery/ops decisions change |
 | `docs/USER_FLOWS.md` | Step-by-step customer journeys (no visuals) | Product | When a flow's steps change |
 | `docs/DESIGN_SYSTEM.md` | Design *principles* (spacing, type scale, accessibility, grid, motion) — no visual tokens yet | Design/Paul | When principles change, or once visual tokens are ready to be added |
-| `docs/BRAND_GUIDELINES.md` | **Placeholder.** Visual/verbal identity — not yet defined | Paul / a designer, once engaged | Once the brand phase begins — currently blocking all visual design work |
+| `docs/BRAND_IDENTITY.md` | Brand personality, philosophy, emotional direction, and visual/verbal *principles* (v1 drafted) — the durable strategic layer | Paul (approval pending on v1) | When a personality, voice, or principle-level decision changes; new entries logged in `DECISION_LOG.md` |
+| `docs/BRAND_GUIDELINES.md` | **Partially populated.** Asset-level execution (logo, chosen typeface, finished photography library, tone-of-voice example bank) not yet produced — see `BRAND_IDENTITY.md`'s reconciliation note for the full division of responsibility | Paul / a designer, once engaged | As each concrete asset is produced |
 | `docs/ROADMAP.md` | Phased build sequence (no dates) | Paul/engineering | When sequencing or phase scope changes |
 | `docs/DECISION_LOG.md` | Append-only record of every material decision: what, why, when, impact, status | Whoever makes/logs the decision | Every material decision — append a new entry, never edit an old one |
 | `docs/CHANGELOG.md` | Changelog of the documentation set itself (not the product) | Whoever adds/removes/restructures a document | Whenever `/docs` itself changes |
@@ -130,21 +131,24 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
 - Technology recommendations researched (storefront, search, CMS, auth), distilled into `TECH_STACK.md` and `MEDUSA_EXTENSIONS.md`.
 - UX/product research (premium commerce, wine retail, food ordering, Nigerian-market conventions), distilled into `PRODUCT_BLUEPRINT.md`, `USER_FLOWS.md`, `DELIVERY_MODEL.md`.
 - Medusa v2 vendored as a git submodule.
-- Full `/docs` documentation system established and, as of this audit, consolidated onto one working branch (see the provenance note at the top of this document).
+- Full `/docs` documentation system established and, as of the 2026-07-18 audit, consolidated onto one working branch (see the provenance note at the top of this document).
+- **Brand Identity v1 drafted** (`BRAND_IDENTITY.md`) — personality, mission, values, voice/tone, emotional and perception goals, positioning, and visual/verbal principles (including usage guidance for the four approved brand colors). Awaiting Paul's review and approval.
 
 **In Progress**
-- Nothing actively in progress. The next step is Paul's review (below).
+- Nothing actively in progress. The next step is Paul's review of `BRAND_IDENTITY.md` (below).
 
 **Not Started**
 - Any implementation code, UI design, or wireframes — none have been produced anywhere in this project.
-- Visual/brand identity (`BRAND_GUIDELINES.md` is a placeholder).
+- The Design System's visual tokens (typeface selection, finalized component library) — see Section 7; blocked until `BRAND_IDENTITY.md` is approved.
+- Asset-level brand execution (logo, finished photography library, tone-of-voice example bank — tracked in `BRAND_GUIDELINES.md`).
 - All custom Medusa modules listed in `MEDUSA_EXTENSIONS.md` (wine-details, food-details, delivery-slot scheduling, payment provider, notification provider), and the search/CMS integrations.
 
 **Blocked**
-- **Brand identity is entirely undefined**, which blocks any visual design work (but not backend/architecture work).
+- **Design System visual-token work** is blocked until `BRAND_IDENTITY.md` v1 is reviewed and approved by Paul — this is an explicit instruction, not an inferred one.
 - **Payment provider is undecided**, which blocks the start of `ROADMAP.md` Phase 1 (a launch blocker).
 
 **Awaiting Paul's Approval** (full list with document references in `docs/PROJECT_STATUS.md`)
+- **`BRAND_IDENTITY.md` v1 as a whole** — required before the Design System phase may begin.
 - Wine & Spirits' nationwide delivery mechanism (in-house fleet vs. courier partner) and whether cash-on-delivery is offered at all.
 - Local payment provider choice (e.g. Paystack, Flutterwave) — **launch-blocking**.
 - Delivery-update channel(s) (WhatsApp Business API and/or SMS).
@@ -154,22 +158,24 @@ Recorded intentionally, not deleted, so future sessions understand what was cons
 - Delivery-slot operational parameters (slot length, cutoff times, capacity).
 - Exact curated/occasion collections for Wine & Spirits (a merchandising decision).
 - Formal sign-off on the Next.js Starter, Meilisearch, and Sanity recommendations (currently "recommended," not "confirmed").
-- The entire brand phase (visual + verbal identity).
+- The real brand story (`BRAND_IDENTITY.md` §9) and the remaining asset-level brand items in `BRAND_GUIDELINES.md`.
 
 ---
 
 ## 7. Immediate Next Step
 
-Paul has indicated the next phase is **Design System.**
+The next phase is **Design System** — but it has not started, and **must not start until `BRAND_IDENTITY.md` v1 is reviewed and approved by Paul.** This is now an explicit instruction (given when `BRAND_IDENTITY.md` was commissioned), not an inference.
 
-**This is explicitly not:** implementation, coding, UI design, or wireframing. It is a foundations-first step — spacing scale, type scale, accessibility baseline, grid, and motion principles — that precedes all of the above. `docs/DESIGN_SYSTEM.md` already captures these principles at the abstraction level ("one spacing scale," "5–7 type sizes," "WCAG basics from day one," etc.) without committing to any specific colors, typefaces, or visual tokens.
+The tension this document previously flagged (Design System vs. undefined brand identity) is now partially resolved: `BRAND_IDENTITY.md` v1 exists and defines the personality, voice, emotional direction, and visual/verbal *principles* the Design System phase must be consistent with — including usage guidance for the four approved brand colors (`BRAND_IDENTITY.md` §13). What it does not yet provide is the specific typeface, finished photography, or a logo — those remain open, asset-level items in `BRAND_GUIDELINES.md`.
 
-**One thing this handoff must surface rather than quietly resolve:** `docs/PROJECT_STATUS.md` lists brand identity (`BRAND_GUIDELINES.md`, currently a placeholder) as a hard blocker on *any visual design work*, and `docs/DESIGN_SYSTEM.md` states plainly that its own open items — specific visual tokens — depend on `BRAND_GUIDELINES.md` being filled in first. So:
+**This is explicitly not:** implementation, coding, UI design, mockups, or wireframing, at any point in this sequence. Design System work, once it may begin, is still a foundations-first step — spacing scale, type scale, accessibility baseline, grid, and motion principles applied concretely — not screens.
 
-- Reviewing and refining the *principles* in `docs/DESIGN_SYSTEM.md` can proceed now.
-- Producing actual visual tokens (a color palette, chosen typefaces, iconography) cannot proceed until brand identity is defined — which per `docs/BRAND_GUIDELINES.md` requires Paul (or a designer engaged for this purpose) to make those decisions first.
+**Sequence, in order:**
+1. Paul reviews and approves `BRAND_IDENTITY.md` v1. **Do not proceed past this step without that approval.**
+2. Only then does the Design System phase begin: applying `BRAND_IDENTITY.md`'s principles and `DESIGN_SYSTEM.md`'s structural rules into concrete visual tokens (typeface selection, spacing/type scale applied, iconography, component library groundwork).
+3. UI design, wireframes, and implementation follow later, per `ROADMAP.md`.
 
-Do not resolve this tension by assuming an answer. Flag it to Paul at the start of the Design System phase so scope can be set correctly — either brand identity is defined first, or the Design System phase begins at the principles/token-structure level only, with visual tokens filled in once brand identity lands.
+Do not skip step 1 by assuming Paul's approval, and do not treat `BRAND_IDENTITY.md`'s existence as itself sufficient to begin visual token work.
 
 ---
 
@@ -207,7 +213,7 @@ Every future AI assistant working on this project must:
 
 | Field | Value |
 |---|---|
-| Document Version | 2.0 |
+| Document Version | 2.1 |
 | Last Updated | 2026-07-18 |
-| Project Phase | Product Definition — documentation consolidated, awaiting Paul's review and approval of open questions (Section 6) |
-| Next Planned Milestone | Design System phase — principles-level work can start now; visual tokens are blocked on brand identity (`BRAND_GUIDELINES.md`), see Section 7 |
+| Project Phase | Product Definition — documentation consolidated; `BRAND_IDENTITY.md` v1 drafted; awaiting Paul's review and approval of both, plus other open questions (Section 6) |
+| Next Planned Milestone | Design System phase — gated on `BRAND_IDENTITY.md` approval; do not begin visual-token work before then (Section 7) |
