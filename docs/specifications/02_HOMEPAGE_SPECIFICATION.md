@@ -1,9 +1,11 @@
 # Homepage Specification
 
-**Status:** Approved — Frozen (2026-07-18)
-**Version:** 1.0
+**Status:** Approved — Frozen (2026-07-18; amended 2026-07-30)
+**Version:** 1.1
 **Owner:** Product
-**Last Updated:** 2026-07-18
+**Last Updated:** 2026-07-30
+
+> **Amendment history.** v1.1 (2026-07-30) adds the Category Browse row (§7 item 4, behaviour in §8.10), on Paul's explicit instruction — the only thing `DOCUMENTATION_GOVERNANCE.md` §5 permits to change a frozen document. See `DECISION_LOG.md`. **Note the deliberate numbering:** the new section is *fourth in page order* but numbered **§8.10**, appended rather than inserted, because §8.4–§8.9 are cited by five other frozen specifications (`03`, `04`, `05`) and by storefront and backend source. Renumbering them would silently invalidate every one of those references. §7 below is the authority on page order; §8's numbers are stable identifiers, not a sequence.
 
 ## Purpose
 
@@ -70,15 +72,18 @@ This ordering follows current hero-section research directly: above-the-fold con
 
 In page order:
 
-1. **Persistent Header/Shell** — logo, search, cart, account (fully specified in `01_NAVIGATION_SPECIFICATION.md`; referenced, not redefined, here).
-2. **Age Verification Gate** — first-visit interstitial, not a scrollable section (see §8.2).
-3. **Hero — Brand Welcome & Dual Path Entry** — one brand statement, two clearly weighted entry points (Wine & Spirits, Food Central).
-4. **Curated Collections (Wine & Spirits)** — editorial shelves (e.g. Sommelier's Picks, Gifting).
-5. **Food Central Spotlight** — today's menu / fast entry point.
-6. **Wine & Food, Connected** — a cross-sell storytelling moment linking the two catalogs.
-7. **Trust & Delivery Band** — sold-direct claim, delivery coverage clarity, secure payment.
-8. **Returning Customer Strip** — light, non-intrusive reorder shortcut (logged-in visitors only).
-9. **Footer** — legitimacy content, legal/compliance, support, navigation.
+1. **Persistent Header/Shell** (§8.1) — logo, search, cart, account (fully specified in `01_NAVIGATION_SPECIFICATION.md`; referenced, not redefined, here).
+2. **Age Verification Gate** (§8.2) — first-visit interstitial, not a scrollable section.
+3. **Hero — Brand Welcome & Dual Path Entry** (§8.3) — one brand statement, two clearly weighted entry points (Wine & Spirits, Food Central).
+4. **Category Browse** (**§8.10**) — a compact row of every top-level category plus Food Central, for the visitor who already knows what they want.
+5. **Curated Collections (Wine & Spirits)** (§8.4) — editorial shelves (e.g. Sommelier's Picks, Gifting).
+6. **Food Central Spotlight** (§8.5) — today's menu / fast entry point.
+7. **Wine & Food, Connected** (§8.6) — a cross-sell storytelling moment linking the two catalogs.
+8. **Trust & Delivery Band** (§8.7) — sold-direct claim, delivery coverage clarity, secure payment.
+9. **Returning Customer Strip** (§8.8) — light, non-intrusive reorder shortcut (logged-in visitors only).
+10. **Footer** (§8.9) — legitimacy content, legal/compliance, support, navigation.
+
+Each item carries its §8 subsection in brackets because the two no longer run in step — see the amendment note at the top of this document.
 
 ## 8. Behaviour of Each Section
 
@@ -190,6 +195,22 @@ In page order:
 - **Backend dependencies:** none — static content.
 - **Future extensibility:** none specific; a stable, low-change section by design.
 
+### 8.10 Category Browse
+
+*Fourth in page order (§7), between the Hero and Curated Collections. Numbered §8.10 for the cross-reference reason given at the top of this document.*
+
+- **Purpose:** give the Confident Buyer — who already knows the category they want — a direct route into it, without first reading editorial curation aimed at someone who doesn't.
+- **Business rationale:** §3's "reduce time-to-first-meaningful-action (a search, **a category entry**, an add-to-cart) for a first-time visitor" already names a category entry as a target action, but before this amendment the homepage offered no such entry at all — only search or curation. It also makes the platform's full breadth legible in one glance, which curation deliberately does not.
+- **Customer value:** one tap from the homepage to any catalog. For Food Central specifically, it is the only above-the-fold path that does not depend on the Spotlight having available items to show.
+- **Relationship to §4 and §8.4 — read this before moving it.** §4 states the Guided Browser needs "a curated, low-pressure entry point into wine discovery (an occasion or curated shelf, **not a raw category list**)." That still holds and is not overridden. This row is placed *before* Curated Collections so the self-directed visitor is served first and the undecided visitor still meets curation immediately after; it is an *addition* to the entry points, never a replacement for §8.4. **Placing this row after Curated Collections, or removing §8.4 in favour of it, would contradict §4.**
+- **Behaviour:** one tile per **top-level** category, each a link to that category's listing (`04_PRODUCT_LISTING_SPECIFICATION.md`), plus one tile for Food Central linking to its menu. Sub-categories are deliberately excluded — they belong to the mega menu's three-layer structure (`01_NAVIGATION_SPECIFICATION.md`), and flattening them here would produce a row long enough to defeat its own purpose. The set is **data-driven from the category tree**, not a hardcoded list, so it cannot drift out of step with what is actually on sale.
+- **Mobile behaviour:** horizontal scroll with a partial-tile peek as the affordance — the same pattern and reasoning as §8.4, not a second scrolling idiom.
+- **Desktop behaviour:** a single evenly-spread row, no scrolling or interaction needed.
+- **Accessibility considerations:** each tile is a real link with an accessible name (the category name is live text, never baked into an image or conveyed by icon alone); icons are decorative and hidden from assistive technology. The scrollable region is keyboard-reachable, per §8.4's rule. Category identity is never conveyed by tint alone — `BRAND_IDENTITY.md` §13's product-line tint is decoration on top of a text label, not a substitute for one.
+- **Backend dependencies:** the native Medusa Product Category tree via the Store API. No custom module, and no new data — the same source `01_NAVIGATION_SPECIFICATION.md` §12 already reads. Food Central's tile is a static route, consistent with §14 of that document treating Food Central navigation as deliberately not data-driven.
+- **Empty state:** with no categories configured the section does not render at all, rather than showing an empty row or placeholder tiles — the same rule §19 applies to Curated Collections.
+- **Future extensibility:** category imagery could replace the icons once category-level photography exists (`BRAND_GUIDELINES.md`'s open item), with no structural change. Per-visitor ordering is explicitly deferred to §14 along with all other personalization.
+
 ## 9. Backend Data Requirements
 
 | Section | Data needed | Source |
@@ -197,6 +218,7 @@ In page order:
 | Header/Shell | Cart count, session/auth state | Native Medusa Store API |
 | Age Gate | Session verification flag | Storefront session, no backend query |
 | Hero | Static brand copy | Storefront content, not Medusa |
+| Category Browse | Top-level Product Category tree (handle, name, rank) | Native Medusa Store API — same source as `01_NAVIGATION_SPECIFICATION.md` §12 |
 | Curated Collections | Product Collections/Categories | Native Medusa Store API (`PRODUCT_CATALOG.md`) |
 | Food Central Spotlight | Available menu items, prep-time/availability, same-day cutoff | Food-attributes module (`MEDUSA_EXTENSIONS.md` #2) + delivery-slot module (#3) |
 | Wine & Food, Connected | Curated "pairs with" relationship | Small, not-yet-built product-relationship data (flagged above) |
@@ -273,6 +295,7 @@ Each ties back to the business goals in §3 — specifically, time-to-first-mean
 - **Kitchen closed / no available menu items:** the Food Central Spotlight (§8.5) shows a clear "not currently taking orders" message with the next expected opening time, rather than an empty grid.
 - **No prior orders for a logged-in customer:** the Returning Customer Strip (§8.8) does not render at all — it is not shown as an empty state, since a customer with no order history isn't yet a "returning" customer in the sense this section serves.
 - **No pairing content configured:** the "Wine & Food, Connected" section (§8.6) does not render rather than showing a broken or placeholder pairing.
+- **No categories configured:** the Category Browse row (§8.10) does not render at all, rather than showing an empty row or placeholder tiles — the same rule applied to Curated Collections above.
 
 ## 20. Loading States
 
@@ -288,7 +311,7 @@ Each ties back to the business goals in §3 — specifically, time-to-first-mean
 
 ## 22. Version 1 Scope
 
-**In scope for v1:** Persistent header/shell (referencing `01_NAVIGATION_SPECIFICATION.md`), Age Verification Gate, Hero with dual path entry, one or two curated Wine & Spirits collections, Food Central Spotlight, a single "Wine & Food, Connected" pairing moment, Trust & Delivery Band, a minimal Returning Customer Strip (reorder shortcuts only, no other personalization), and a standard footer.
+**In scope for v1:** Persistent header/shell (referencing `01_NAVIGATION_SPECIFICATION.md`), Age Verification Gate, Hero with dual path entry, a Category Browse row (§8.10, added by the v1.1 amendment), one or two curated Wine & Spirits collections, Food Central Spotlight, a single "Wine & Food, Connected" pairing moment, Trust & Delivery Band, a minimal Returning Customer Strip (reorder shortcuts only, no other personalization), and a standard footer.
 
 **Explicitly deferred:** everything named in §14 (Personalization Opportunities), any seasonal/theme-based visual variation (possible later per `DESIGN_SYSTEM.md`'s Future Theme Support, not v1), and a homepage-embedded delivery-area lookup tool (§8.7's future extensibility note).
 
@@ -322,6 +345,8 @@ Each ties back to the business goals in §3 — specifically, time-to-first-mean
 - [ ] The distinction between nationwide Wine & Spirits delivery and Lagos-only Food Central delivery is stated on the homepage, above the footer.
 - [ ] All homepage imagery has descriptive, non-generic alt text.
 - [ ] The Returning Customer Strip does not render for guests or first-time customers.
+- [ ] The Category Browse row lists every top-level category currently configured, plus Food Central, and reflects a category added or removed in Admin without a code change.
+- [ ] Every Category Browse tile exposes its category name as real text to assistive technology; no tile relies on its icon or its tint alone to identify itself.
 - [ ] Every homepage section fails independently — simulating a data failure in one section does not break or blank any other section.
 - [ ] Homepage LCP measures under 2.5 seconds at the 75th percentile under defined mobile test conditions.
 - [ ] Every interactive element on the page is operable by keyboard alone, with a visible focus state.
@@ -330,7 +355,7 @@ Each ties back to the business goals in §3 — specifically, time-to-first-mean
 
 ---
 
-**Document status:** Approved — Frozen (v1.0, approved by Paul 2026-07-18, following review for internal consistency against `01_NAVIGATION_SPECIFICATION.md` and `03_SEARCH_SPECIFICATION.md`, both also frozen). This is the authoritative reference for homepage implementation, alongside `01_NAVIGATION_SPECIFICATION.md` for the shared shell it references and `03_SEARCH_SPECIFICATION.md` for the search results it links out to. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, a Frozen document may only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md` — not as a side effect of downstream specification or implementation work.
+**Document status:** Approved — Frozen (v1.1, amended 2026-07-30 on Paul's explicit instruction to add the Category Browse row — see the amendment note at the top and `DECISION_LOG.md`. Originally v1.0, approved by Paul 2026-07-18, following review for internal consistency against `01_NAVIGATION_SPECIFICATION.md` and `03_SEARCH_SPECIFICATION.md`, both also frozen). This is the authoritative reference for homepage implementation, alongside `01_NAVIGATION_SPECIFICATION.md` for the shared shell it references and `03_SEARCH_SPECIFICATION.md` for the search results it links out to. Per `DOCUMENTATION_GOVERNANCE.md` Section 5, a Frozen document may only be modified in response to an explicit new business decision from Paul, logged in `DECISION_LOG.md` — not as a side effect of downstream specification or implementation work.
 
 ## Sources
 

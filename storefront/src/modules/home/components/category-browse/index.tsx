@@ -6,17 +6,17 @@ import { Heading, Text, clx } from "@modules/common/components/ui"
  * A browse-by-category row: one circular tile per top-level category,
  * plus Food Central.
  *
- * **This section is not in `02_HOMEPAGE_SPECIFICATION.md`.** That document's
- * §7 lists nine sections and this is not among them; §4 in fact deliberately
- * chose curated shelves *over* "a raw category list" for the Guided Browser,
- * and §22's v1 scope doesn't include it. It exists because Paul asked for it
- * directly, which `DOCUMENTATION_GOVERNANCE.md` §5 treats as the one thing
- * that may change a frozen specification. Logged in `DECISION_LOG.md`.
+ * `02_HOMEPAGE_SPECIFICATION.md` **§8.10** — added by that document's v1.1
+ * amendment on Paul's explicit instruction. Note the section number is out of
+ * page order: this row is fourth on the page (§7 item 4) but numbered §8.10
+ * because §8.4–§8.9 are cited by five other frozen specifications and by
+ * source elsewhere in this repo, so inserting would have invalidated them all.
  *
- * It sits between the Hero and Curated Collections on purpose: broad,
- * self-directed entry first for the visitor who already knows what they
- * want, then editorial curation for the one who doesn't. That ordering keeps
- * §4's intent intact rather than replacing it.
+ * It sits between the Hero and Curated Collections on purpose, and §8.10 is
+ * explicit that this must not move: §4 still wants curation to be the Guided
+ * Browser's entry point, so this row is an *addition* ahead of it, never a
+ * replacement for §8.4. Placing it after Curated Collections would contradict
+ * §4.
  *
  * Data-driven from the real Medusa category tree, the same source the mega
  * menu uses — so a category added in Admin appears here with no code change,

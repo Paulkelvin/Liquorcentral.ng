@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 4.0
+**Version:** 4.1
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
@@ -22,7 +22,9 @@
   3. **Food Central is appended by hand**, because Milestone 7 established it as a deliberately static route rather than a Medusa category. Without that it would be missing from a row that implicitly claims to show everything on sale — a whole product line invisible.
   4. **Line icons, not photography.** No category-level photography exists (`BRAND_GUIDELINES.md`'s open item) and the per-product Wikimedia shots have inconsistent backgrounds that would look poor in uniform circles. Icons follow `BRAND_IDENTITY.md` §18's clarity-first principle and are honest about what the project actually has.
   5. **Tint encodes product line, using §13's own assigned roles.** Food Central takes the green tint (§13: "Food Central emphasis"); Wine & Spirits categories take a warm neutral rather than §13's red, because red there is reserved for calls to action and seven red circles above the fold would compete directly with the hero's primary button.
-- **Status:** Implemented. **`02_HOMEPAGE_SPECIFICATION.md` is now out of date** — its §7 section list, §22 v1 scope and §8 behaviour sections do not describe this row. The specification is frozen and this session did not amend it; updating it is Paul's call and is flagged in `PROJECT_STATUS.md`.
+- **Status:** Implemented, and **the specification amendment was authorised by Paul the same day and is applied** — `02_HOMEPAGE_SPECIFICATION.md` is now **v1.1**: §7 carries the row as page-order item 4, §8.10 specifies its behaviour, and §9 (backend data), §19 (empty state), §22 (v1 scope) and §25 (acceptance criteria) are updated to match. Document and shipped homepage agree; no open item remains.
+- **One structural decision inside that amendment, recorded because it is easy to "tidy" later and break things:** the new section is numbered **§8.10** and appended, even though it is *fourth in page order*. Inserting it as §8.4 would have renumbered §8.4–§8.9, which are cited by five other frozen specifications (`03`, `04`, `05`) and by storefront and backend source — every one of those references would have silently started pointing at the wrong section. §7 is therefore now the authority on page order, with each item annotated with its §8 anchor, and §8's numbers are stable identifiers rather than a sequence. **Do not renumber §8 to "fix" the ordering.**
+- **§8.10 also pins the placement, not just the existence:** it states explicitly that moving the row after Curated Collections, or letting it replace §8.4, would contradict §4's curation-first intent for the Guided Browser. The row is an addition ahead of curation, never a substitute for it.
 
 ### Homepage hero rebuilt as a split layout with a blended product photograph
 

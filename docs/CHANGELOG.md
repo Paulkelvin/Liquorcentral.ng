@@ -1,7 +1,7 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.9
+**Version:** 7.0
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
@@ -17,7 +17,7 @@ Tracks changes to the documentation set itself (not the product). For product/bu
 
 **Also updated:** `docs/DECISION_LOG.md` (new entry, → v4.0), `docs/PROJECT_STATUS.md` (→ v6.6, carrying the open item below).
 
-⚠️ **Open item:** `02_HOMEPAGE_SPECIFICATION.md` is now out of date and was **not** amended — it is Approved — Frozen and only Paul can authorise the edit to §7/§8/§22.
+**Specification amended (same day, authorised by Paul):** `02_HOMEPAGE_SPECIFICATION.md` → **v1.1** — §7 gains the row as page-order item 4, new §8.10 specifies its behaviour, and §9/§19/§22/§25 updated to match. The section is numbered §8.10 rather than inserted at §8.4 because §8.4–§8.9 are cited by five other frozen specifications and by source; renumbering would have invalidated them all. No open item remains.
 
 ## v65 — 2026-07-30 — Homepage hero rebuilt with a blended product photograph
 

@@ -40,10 +40,10 @@ export default async function Home({ params }: Props) {
   return (
     <>
       <Hero />
-      {/* Not a §7 section — added on Paul's direct instruction; see the
-          component's own note and `DECISION_LOG.md`. Placed before curated
-          collections so self-directed browsing comes first and editorial
-          curation second, which leaves §4's intent intact. */}
+      {/* §7 item 4, behaviour in §8.10 (numbered out of sequence — see that
+          document's amendment note). Must stay ahead of Curated Collections:
+          §8.10 states that moving it after, or letting it replace §8.4, would
+          contradict §4's curation-first intent for the Guided Browser. */}
       <Suspense fallback={null}>
         <CategoryBrowse />
       </Suspense>
