@@ -168,7 +168,7 @@ export default function Hero() {
     // re-introduce exactly the boxed-in feel the visual above works to
     // avoid; the section below provides its own separation by contrast.
     <div className="w-full bg-surface">
-      <div className="ds-container grid grid-cols-1 items-center gap-12 py-16 small:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] small:gap-16 small:py-24">
+      <div className="ds-container grid grid-cols-1 items-center gap-12 py-16 small:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)] small:gap-16 small:py-24">
         <div className="order-2 flex flex-col items-center gap-6 text-center small:order-1 small:items-start small:text-left">
           {/* Eyebrow. States the platform's single strongest true claim —
               structurally guaranteed by the no-marketplace decision
@@ -184,7 +184,7 @@ export default function Hero() {
           <Heading
             level="h1"
             display
-            className="max-w-[15ch] text-[40px] font-semibold leading-[1.08] tracking-[-0.02em] text-text-primary small:text-[52px] medium:text-[60px]"
+            className="max-w-[24ch] text-balance text-[26px] font-semibold leading-[1.08] tracking-[-0.02em] text-text-primary xsmall:text-[34px] small:text-[42px] medium:text-[50px]"
           >
             Nigeria&rsquo;s premium wine, spirits &amp; kitchen.
           </Heading>
