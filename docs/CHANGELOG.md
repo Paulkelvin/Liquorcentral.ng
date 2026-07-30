@@ -1,11 +1,25 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.0
+**Version:** 7.1
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v67 — 2026-07-30 — Featured Collection: §8.4 given an editorial treatment
+
+**Context:** Paul supplied and approved a design direction for a curated, magazine-like collection section rather than another product grid.
+
+**Added:** `storefront/src/modules/home/components/featured-collection/` — `campaign.ts` (the only file a new campaign touches), `editorial-card.tsx` (full-bleed photograph with a two-stop gradient scrim), `editorial-product-card.tsx` (4:3 landscape imagery, preserving `04_PRODUCT_LISTING_SPECIFICATION.md` §9's information hierarchy), and the section itself. Plus `public/brand/campaigns/weekend-collection.jpg` (CC BY 2.0, attribution recorded).
+
+**Changed:** the homepage renders `FeaturedCollection` in place of the previous `CuratedCollections` rail presentation. `ProductPreview` is deliberately untouched.
+
+**Removed:** `storefront/src/modules/home/components/curated-collections/` and `storefront/src/modules/home/components/featured-products/product-rail/`. Both became unreachable when the homepage stopped rendering `CuratedCollections` — it was the rail's only consumer, and the homepage was its only consumer. They are deleted rather than left in place because a superseded implementation of §8.4 sitting next to the live one is the kind of thing a future session mistakes for the real component. The code remains in git history.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry, → v4.2), `storefront/public/brand/IMAGE_CREDITS.md`.
+
+**No specification amendment needed:** this changes how §8.4 is presented, not what it is for.
 
 ## v66 — 2026-07-30 — Homepage "Shop by category" browse row
 

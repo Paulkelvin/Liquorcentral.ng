@@ -3,7 +3,7 @@ import { Suspense } from "react"
 
 import Hero from "@modules/home/components/hero"
 import CategoryBrowse from "@modules/home/components/category-browse"
-import CuratedCollections from "@modules/home/components/curated-collections"
+import FeaturedCollection from "@modules/home/components/featured-collection"
 import FoodCentralSpotlight from "@modules/home/components/food-central-spotlight"
 import TrustDeliveryBand from "@modules/home/components/trust-delivery-band"
 import ReturningCustomerStrip from "@modules/home/components/returning-customer-strip"
@@ -47,8 +47,12 @@ export default async function Home({ params }: Props) {
       <Suspense fallback={null}>
         <CategoryBrowse />
       </Suspense>
+      {/* §8.4 Curated Collections, in the editorial treatment Paul approved.
+          Replaces the previous plain-rail presentation rather than sitting
+          beside it — two adjacent curated sections would read as exactly the
+          database-driven page the direction exists to avoid. */}
       <Suspense fallback={null}>
-        <CuratedCollections countryCode={countryCode} />
+        <FeaturedCollection countryCode={countryCode} />
       </Suspense>
       <Suspense fallback={null}>
         <FoodCentralSpotlight countryCode={countryCode} />

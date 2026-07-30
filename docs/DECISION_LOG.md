@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 4.1
+**Version:** 4.2
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
@@ -10,6 +10,19 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### §8.4 Curated Collections re-presented as an editorial Featured Collection
+
+- **Decision:** `02_HOMEPAGE_SPECIFICATION.md` §8.4's curated shelves are now rendered as a single editorial composition — one wide campaign card carrying a full-bleed photograph, followed by landscape product cards in a horizontally-scrolling row — replacing the previous plain heading-over-a-rail presentation. Design direction supplied and approved by Paul.
+- **Reasoning:** §8.4's stated purpose is "low-pressure, editorial discovery" for the Guided Browser, and `PRODUCT_BLUEPRINT.md` §3's Product Philosophy is curation over volume. The previous presentation was a product grid with a title above it, which reads as a database query regardless of how the products were chosen. This is a change of presentation, not of what §8.4 is for, so **no specification amendment was required** — unlike the Category Browse row, which genuinely added a section.
+- **Date:** 2026-07-30
+- **Impact:** Four decisions inside it worth recording:
+  1. **It replaces the old presentation rather than sitting beside it.** Two adjacent curated sections would have produced exactly the automated feel the direction exists to remove.
+  2. **A second product card component exists, deliberately.** `04_PRODUCT_LISTING_SPECIFICATION.md` §9 states the product card is "specified once… no page redefines it independently." `EditorialProductCard` does not redefine that document's subject — the *information hierarchy* (image, name, price, at most one supporting fact, quick-add as a genuine sibling of the card's single link) is preserved exactly. What differs is the image presentation: a 4:3 landscape crop instead of `ProductPreview`'s 4:5 portrait, on Paul's explicit direction that the portrait frame was leaving bottles stranded in dead space. **`ProductPreview` itself is untouched**, because it renders every category, collection and search listing — changing it to suit one homepage row would have reached far past the section being designed.
+  3. **The asymmetry and the cut-off card are the design, not a bug.** The row scrolls off the right edge so the first product card is always partly visible at desktop widths; that signals scrollability without an arrow control and prevents the row resolving into a symmetrical grid. A future change that makes every card fit neatly inside the container would be undoing the brief.
+  4. **The campaign is fully data-driven from one file** (`campaign.ts`): image, eyebrow, title, description, CTA, and *which Medusa Collection supplies the products*. Tying the merchandise to the campaign in the same object means the two cannot drift apart. Paul's requirement was that the layout never changes and only the campaign does.
+  5. **The superseded implementation is deleted, not kept.** `curated-collections/` and the `product-rail/` it was the only consumer of are removed; the homepage was in turn the rail's only consumer, so both were unreachable. Leaving a second, older implementation of §8.4 in the tree is how a later session ends up editing the wrong component. Git history keeps it.
+- **Status:** Implemented and verified (axe-core 0 WCAG 2 A/AA violations at 1440px and 390px, no horizontal page overflow at 1440/834/390, tsc clean, 84/84 tests). **Product photography remains the open gap** — see the note in `storefront/public/brand/IMAGE_CREDITS.md` on why the demo imagery used for the review screenshots was deliberately not committed.
 
 ### Homepage gains a "Shop by category" browse row — a new section not in `02_HOMEPAGE_SPECIFICATION.md`
 
