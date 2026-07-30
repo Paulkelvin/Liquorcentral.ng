@@ -44,14 +44,14 @@ const HERO_IMAGE = "/brand/hero-food-drink.jpg"
  */
 function HeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[480px]">
+    <div className="relative mx-auto w-full max-w-[560px]">
       <Image
         src={HERO_IMAGE}
-        alt="A bottle of red wine and a poured glass beside a plate of Nigerian jollof rice with grilled chicken, on a wooden serving pedestal"
-        width={928}
-        height={1152}
+        alt="A bottle of red wine, a poured glass, a linen napkin and a bowl of Nigerian jollof rice with grilled chicken, arranged on a round wooden serving board"
+        width={1024}
+        height={1024}
         priority
-        sizes="(max-width: 1024px) 85vw, 480px"
+        sizes="(max-width: 1024px) 88vw, 560px"
         className="h-auto w-full"
       />
     </div>
@@ -129,13 +129,22 @@ export default function Hero() {
             Sold &amp; delivered directly by us
           </span>
 
-          {/* Tighter leading and a hard size step are what give a display
-              line presence; at the default body leading the same words read
-              as a paragraph that happens to be large. */}
+          {/* Tighter leading and a hard size step are what give a display line
+              presence; at the default body leading the same words read as a
+              paragraph that happens to be large.
+
+              `!` on every size step is load-bearing, not habit. `Heading`
+              hardcodes `text-heading-1` (39px) for an h1 and offers no way to
+              opt out, and a plain `text-[26px]` has *identical* specificity —
+              so which one wins is decided by Tailwind's emitted source order
+              rather than by intent. That silently cost the two-line headline
+              once already: a build ordered it the other way and mobile went
+              back to three lines. Same reason `Thumbnail` overrides
+              `Container` with `!p-0`. */}
           <Heading
             level="h1"
             display
-            className="max-w-[24ch] text-balance text-[26px] font-semibold leading-[1.08] tracking-[-0.02em] text-text-primary xsmall:text-[34px] small:text-[42px] medium:text-[50px]"
+            className="max-w-[24ch] text-balance !text-[26px] font-semibold leading-[1.08] tracking-[-0.02em] text-text-primary xsmall:!text-[34px] small:!text-[42px] medium:!text-[50px]"
           >
             Nigeria&rsquo;s premium wine, spirits &amp; kitchen.
           </Heading>

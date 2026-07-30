@@ -1,7 +1,7 @@
 # Hero image brief — what to make in Canva
 
 Everything needed to produce the homepage hero visual so it drops straight in
-and needs no code change. Replaces `hero-wine.jpg`.
+and needs no code change. Produces `hero-food-drink.jpg`.
 
 ---
 
@@ -31,14 +31,16 @@ In Canva: click the canvas → the colour swatch → type `F3F5F0`.
 **Do not use pure white `#FFFFFF`.** It is brighter than the page and will read
 as a glowing rectangle — this is exactly what went wrong before.
 
-### Better option, if you have Canva Pro
+### Do not ask for a transparent background
 
-Export as **PNG with a transparent background** instead (Share → Download →
-PNG → tick *Transparent background*). Then the image sits on any colour and is
-future-proof if the page tint ever changes. If you do this, keep a soft shadow
-under the objects or they will look like they're floating.
+This was tried and it failed — see the Lessons section at the end. A real
+alpha channel from Canva's own export is fine, but **an AI generator asked for
+transparency will draw a picture of a checkerboard instead**, which is
+unusable. A solid, flat background is the reliable route.
 
-Either option works. Flat `#F3F5F0` is simpler; transparent is more flexible.
+It also does not need to be exactly `#F3F5F0`. Flat and uniform matters far
+more than exact: any even background can be mapped onto the page colour in
+code, which is what the current image went through.
 
 ---
 
@@ -111,15 +113,38 @@ The wine's own deep red is fine — that is a product colour, not UI red.
 
 ## 7. When it's done
 
-Save it as **`hero-wine.jpg`** (or `.png`) into `storefront/public/brand/`,
-replacing the current file. No code change is needed — the path is a single
+Hand the raw file over — it needs a short processing pass before it ships
+(background normalised onto `#F3F5F0`, any decorative sparkle painted out,
+outer edge feathered so no shadow can terminate in a straight line). The
+current image went through exactly that; `IMAGE_CREDITS.md` records the
+numbers used.
+
+Once processed it is saved as **`hero-food-drink.jpg`** in
+`storefront/public/brand/`. No code change is needed — the path is a single
 constant in the hero component.
 
-**One thing to tell whoever installs it:** if you export a *transparent* PNG, or
-a background that is not `#F3F5F0`, the `mix-blend-mode: multiply` and the
-brightness/saturate filters currently on the image must be removed, or the
-image will look muddy. Those filters exist only to rescue the current
-stand-in photo, whose background is grey rather than the page colour. A
-purpose-made image should not need them at all.
+**The component carries no `mix-blend-mode`, no filter and no mask, and it
+should stay that way.** Those were only ever needed to rescue an image whose
+background did not match the page. Fix the background instead.
 
 Record the source and licence in `IMAGE_CREDITS.md` in this folder.
+
+---
+
+## Lessons from the three attempts that produced the current image
+
+Read this before re-generating.
+
+1. **Never ask for a transparent background.** Attempt 2 came back as RGB with
+   no alpha channel — the generator had *drawn* a grey-and-white checkerboard
+   instead. That pattern is baked into the pixels, so where it sits behind the
+   glass, the steam or the shadow it is blended into them and cannot be cleanly
+   removed. Ask for a **solid** background and let it be normalised in code.
+2. **State the margin and shadow rules explicitly.** Attempt 1's contact shadow
+   ran off the left edge and ended in a straight line, which no CSS can repair.
+   The brief now requires every object *and its shadow* to sit fully inside the
+   frame.
+3. **Expect a decorative sparkle** in a corner and plan to paint it out.
+4. **A slightly-off flat background is fine.** The delivered image was
+   `#EDEEE6`, not `#F3F5F0`, and a per-channel gain mapped it exactly onto the
+   page colour. Flat and uniform matters far more than exact.
