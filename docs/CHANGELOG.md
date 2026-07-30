@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.5
+**Version:** 6.6
 **Owner:** Program
-**Last Updated:** 2026-07-20
+**Last Updated:** 2026-07-30
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v63 — 2026-07-30 — Design Audit retroactive documentation, cart-trigger rename, and live cart-drawer verification
+
+**Context:** A 27-commit visual-refinement pass (2026-07-24/25 — "Design Audit" Phases 1–4 plus follow-on redesigns of the mobile nav drawer, header/age-gate, product card grid, footer, and cart/checkout, ending in a slide-out cart drawer, `c89bfe0`) had shipped with zero trace in `/docs`. This session closed that gap and independently verified the cart drawer against a real running instance rather than trusting its commit message alone.
+
+**Added:**
+
+- `storefront/README.md` — a new "Design Audit — Visual Refinement Pass" section summarizing all 27 commits, and a "Live verification of the cart drawer" section recording this session's real, end-to-end test results.
+
+**Changed (code, not part of `/docs` but recorded per this changelog's own convention):**
+
+- `storefront/src/modules/layout/components/cart-dropdown/` renamed to `cart-trigger/`, `CartDropdown` renamed to `CartTrigger` — a stale name left by the cart-drawer commit (behavior was already correct); `cart-button/index.tsx` updated to match. No behavior change.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry, → v3.7), `docs/PROJECT_STATUS.md` (→ v6.5).
+
+**Not changed:** no product/business decision, no specification, and no other document's substantive content — this entry is documentation catch-up plus a cosmetic rename plus verification, not new scope.
 
 ## v62 — 2026-07-20 — Milestone 18: Paystack payment provider and email/WhatsApp notification providers
 

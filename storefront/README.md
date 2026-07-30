@@ -578,6 +578,58 @@ Fires on Medusa's native `order.placed` event (no custom event needed) and sends
 - **Real end-to-end validation**: three separate dev-server boot states (no keys; all three services with real-shaped fake credentials; reverted) each confirmed via `curl`'s health check and direct log inspection. Registered `pp_paystack_paystack` against the Nigeria region via the Admin API, confirmed it appeared in the Store API's payment-providers list, then reverted. Placed two real test orders via the Store API to exercise the `order.placed` subscriber in two different credential states.
 - Three temporary QA admin accounts (one per boot-validation pass) and one temporary QA product were deleted afterward via the established cleanup patterns; the two real test orders were deliberately left in place as ordinary historical records.
 
+## Design Audit — Visual Refinement Pass (2026-07-24–25)
+
+**Not a numbered Milestone** — a separate visual-quality-review pass across the already-implemented storefront, run after Milestone 18, checking rendered UI against `DESIGN_SYSTEM.md` v2.0 and `BRAND_IDENTITY.md` at a level of scrutiny the specification-implementation milestones above didn't individually cover (those validated *behavior* and accessibility; this pass targeted visual polish, spacing, and rendering bugs). 27 commits over two days, each shipped individually with its own detailed message — summarized here, in commit order, since none of this had been reflected in `/docs` until this entry. **This documentation entry was written retroactively, in a later session, specifically to close that gap** — see `docs/DECISION_LOG.md`'s matching entry.
+
+### Phases 1–4: typefaces, legacy-class purge, core/page redesigns, and a real mobile card bug
+
+Four sequential passes: real typefaces and a purge of legacy utility classes down to one container pattern; core shared-component redesigns; key page-level redesigns; then a polish pass that also fixed a critical label bug and a real mobile card-layout bug found along the way.
+
+### Mobile nav drawer, header, and age-gate
+
+The mobile nav drawer — untouched by Phases 1–4 — was rebuilt per a design spec: sticky footer, accordion-nested children, and accessibility fixes. The header's department-switcher and the age-gate were separately refined to match ("refined-classic" restyle), alongside mobile header icon sizing/touch-target/density cleanup.
+
+### Product card grid and catalog header, iterated repeatedly
+
+The product card grid and section headers went through several successive passes rather than one: an initial overhaul, equal-height cards with editorial section headers, an overlay-price layout with real scrim tokens, a single-column mobile / price-below-photo / instant-add layout, sub-category pills and a per-catalog CTA accent, an editorial title scale with hairline pills, and finally mapping card/sidebar/sort/department states onto the semantic design tokens (rather than raw hex/ad hoc classes) and fixing an AA color-contrast failure caught along the way.
+
+### Footer rebuild
+
+Rebuilt on an inverse (dark) ground with a CTA-on-hairline layout, then refined to single-column mobile with its own surface colors, social links, and a Spirits accordion.
+
+### Cart and checkout: form controls, spatial rhythm, then the drawer itself
+
+Three sequential commits, cart/checkout-specific:
+
+1. **Form-control and hierarchy refactor** — native checkboxes/radios replaced with a custom hairline-box/ring treatment (`appearance-none` + a `peer-checked` sibling mark, no JS state); text inputs resized with a corrected focus treatment; the cart's quantity control consolidated into one pill with internal dividers; checkout's progression CTAs, stepper, and disabled-button states redesigned; the order summary's line items rebuilt from a `<table>` into a two-column flex layout. Fixed two accessibility issues surfaced by giving these components real content for the first time (a Badge tint-contrast failure, a non-focusable horizontally-scrolling stepper region).
+2. **Spatial rhythm** — every checkout step and the cart itself went from bare, padding-less `bg-surface-elevated` divs to enclosed cards with consistent padding, borders, and inter-card gaps; trailing `Divider`s removed where cards now provide their own separation; the cart's own group-header/item/subtotal spacing tightened to a consistent scale.
+3. **The cart drawer** (`c89bfe0`, the branch's current tip) — replaced the old hover-only mini-cart (a Headless UI `Popover` with no touch equivalent at all — the icon was just a link to `/cart` on touch) with a right-anchored slide-out drawer opening from the nav icon and after every add-to-cart. State: a `CartProvider` (`storefront/src/lib/context/cart-context.tsx`) using React 19's `useOptimistic` — the server cart flows through as a prop on every render, with pending quantity/removal changes layered on top; a mutation's own failure needs no manual rollback, since the optimistic value is simply discarded when the transition ends. **Deliberately does not optimistically recompute money** — subtotals/totals still come from the server cart (dimmed while `isPending`), since tax/delivery/promotions are computed server-side against region and shipping method. `/cart` itself is untouched (still owns stock re-validation and the quantity auto-adjustment notices). The PDP's separate success toast was removed — the drawer is a strictly stronger confirmation (item, quantity, new subtotal, persists until dismissed) — while the inline polite live region and the failure-path toast both remain, preserving `DESIGN_SYSTEM.md` §B9's "never a toast alone" rule. Verified per the commit's own message at 1440px and 390px (open/close via tap, Escape, and backdrop-click; focus trapped; body scroll locked; badge count reflects optimistic adds) with axe-core reporting zero WCAG 2 A/AA violations with the drawer open.
+
+### A pre-existing naming leftover, found and fixed in a later session (not part of the pass above)
+
+`storefront/src/modules/layout/components/cart-dropdown/` was rewritten in place by the cart-drawer commit into a plain trigger button (reads `totalItems`/`openDrawer` from `CartProvider`) but kept its old `cart-dropdown` folder name and `CartDropdown` export — accurate in behavior, stale in name, confirmed not otherwise broken (correctly imported by `cart-button/index.tsx`, correctly mounted alongside `<CartDrawer />` and `CartProvider` in the `(main)` layout). Renamed to `cart-trigger`/`CartTrigger` in a later session for accuracy; no behavior change. See `docs/DECISION_LOG.md`.
+
+### Deliberately not built, and why
+
+No new specification-level behavior — this entire pass is visual/rendering refinement of already-implemented milestones, not new functionality. No live/deployed verification was recorded for any of these 27 commits beyond each commit's own local testing notes; that gap is closed by the "Live verification" entry below, added in a later session.
+
+## Live verification of the cart drawer (later session, after the Design Audit pass above)
+
+A later session, picking this work back up with no memory of what had or hadn't been confirmed, chose not to trust the cart-drawer commit's own testing notes at face value and instead ran the real application end to end: Postgres 16 + Redis started locally, `backend/apps/backend` installed and migrated against a fresh database, the project's own `initial-data-seed`/`navigation-category-seed`/`product-catalog-seed-v4` scripts run (Nigeria region/store, 36 real products across both catalogs, 4 collections), a real admin user and publishable API key created, both the backend (`medusa develop`, port 9000) and storefront (`next dev`, port 8000) started, then driven with a real headless Chromium browser (Playwright) — not a static code read.
+
+**Confirmed working, at both 1440px and 390px, against real seeded products and a real backend:**
+- Quick-add on the catalog page opens the drawer; the drawer also opens via the nav cart icon.
+- The drawer's subtotal and the nav badge's item count both reflect a real add (`NGN 850,000.00` / badge `1` for one seeded wine).
+- A quantity increment via the drawer's stepper updates the nav badge immediately (React's `useOptimistic`, confirmed working, not just present in the code) and the subtotal correctly settles to the server-computed figure a moment later (`NGN 1,700,000.00` for quantity 2 — correct, not a guess).
+- Escape closes the drawer; backdrop click closes the drawer; the nav icon reopens it.
+- Removing the item takes the cart to its real empty state ("Your cart is empty.").
+- `/cart` itself still renders correctly and independently, unaffected by the drawer's existence.
+
+**One false alarm, caught and ruled out before being reported as a bug:** an initial automated pass appeared to show Escape closing the drawer on mobile viewport but not on desktop viewport. Repeating the desktop case in isolation, with a longer pause before pressing Escape, closed correctly on 3 further attempts — the original result was the test pressing Escape before the drawer's own 300ms open transition had settled, not a real defect. Recorded here so a future session doesn't waste time re-investigating the same non-bug from a stale assumption.
+
+**Conclusion: the cart-drawer commit's own verification claims hold up under independent, real execution.** No bug was found in the feature itself. See `docs/DECISION_LOG.md` for the logged entry and `docs/PROJECT_STATUS.md` for the current-state update.
+
 ## What's deliberately not here yet
 
 - **Meilisearch-backed search: ranking/typo-tolerance/synonyms, autocomplete, editorial boosting, and faceted search results** (`03_SEARCH_SPECIFICATION.md` §7, §8, §9, §11, §13) — Meilisearch itself remains unapproved (`DECISION_LOG.md`); `/search` today is a real native results page (unified list, catalog badges, sort, Load More, honest zero-result recovery — Milestone 10) but not this document's full mechanism set. **Search-within-category** (§4, §15/§16) also remains unbuilt — no scoped-search affordance exists on category pages yet.

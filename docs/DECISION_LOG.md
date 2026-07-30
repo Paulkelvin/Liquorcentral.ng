@@ -1,13 +1,26 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 3.6
+**Version:** 3.7
 **Owner:** Program
-**Last Updated:** 2026-07-20
+**Last Updated:** 2026-07-30
 
 **Purpose:** A running, append-only record of every material business or architecture decision made on this project — what was decided, why, when, and what it affects. This is the authoritative history; chat conversations are not. When a decision changes, add a new entry rather than editing an old one, so the history of *why* things changed is preserved.
 
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
+
+---
+
+### Design Audit visual-refinement pass and cart-drawer feature: retroactive documentation, naming cleanup, and live verification
+
+- **Decision:** No new business or architecture decision. A session picking up this project (via a user request to "understand and finish" earlier cart work) found that a 27-commit visual-refinement pass — "Design Audit" Phases 1–4 plus follow-on redesigns of the mobile nav drawer, header/age-gate, product card grid, footer, and finally cart/checkout, culminating in a slide-out cart drawer with `useOptimistic` state (`c89bfe0`) — had been fully committed on 2026-07-24/25 but never reflected in `/docs`, leaving `docs/PROJECT_STATUS.md` and `docs/ROADMAP.md` silent about two days of real, substantial work. Rather than treat the code as unfinished on that basis alone, this session (1) documented what the commits actually did, (2) fixed the one genuine loose end found (a stale component name), and (3) independently ran the real application end to end to confirm the cart drawer's own verification claims, instead of trusting them at face value.
+- **Reasoning:** `docs/README.md`'s own continuity rule treats outdated documentation as a bug — a large, real body of work with zero documentation trace is exactly that bug, and risks a future session (human or AI) wrongly concluding the work doesn't exist or is unverified, as very nearly happened here.
+- **Date:** 2026-07-30
+- **Impact:**
+  1. **`storefront/README.md`** gains a new "Design Audit — Visual Refinement Pass" section (summarizing all 27 commits) and a "Live verification of the cart drawer" section (see below) — see that file for full detail; not restated here per this log's own convention of pointing to `storefront/README.md`'s per-milestone sections rather than duplicating them.
+  2. **Naming cleanup, no behavior change:** `storefront/src/modules/layout/components/cart-dropdown/` (rewritten by the cart-drawer commit into a plain trigger button, but left with its old folder/export name) renamed to `cart-trigger`/`CartTrigger`. Confirmed, before renaming, that the component was correctly wired (imported by `cart-button/index.tsx`; `CartDrawer` and `CartProvider` correctly mounted together in the `(main)` layout) — the leftover was cosmetic, not a functional bug.
+  3. **Live verification, real execution, not static review:** Postgres 16 + Redis started locally; `backend/apps/backend` installed, migrated, and seeded (Nigeria region/store, 36 real products, 4 collections) against a fresh database; a real admin user and publishable API key created; both apps started (`medusa develop` :9000, `next dev` :8000); driven with a real headless-Chromium browser (Playwright, not installed as a project dependency — used ad hoc from the sandbox's pre-installed browser). Confirmed at 1440px and 390px, against real seeded products: drawer opens via quick-add and via the nav icon; optimistic quantity updates reflect immediately in the nav badge and correctly settle to the server-computed subtotal; Escape, backdrop-click, and the nav icon all correctly open/close it; removing the item reaches the real empty state; `/cart` itself is unaffected. **One apparent bug (Escape not closing the drawer on desktop viewport) was investigated and ruled out as a test-timing artifact** (the automated test pressed Escape before the drawer's 300ms open transition had settled; repeating with a longer pause closed correctly on 3/3 further attempts) — recorded so a future session doesn't re-investigate the same non-bug. **No genuine defect was found in the cart-drawer feature itself.**
+- **Status:** Final. The cart-drawer feature (`c89bfe0`) is confirmed complete and working as its own commit message claimed. The local verification environment (database, `.env`/`.env.local` files, running dev servers) is this session's own scratch setup, not committed to the repository.
 
 ---
 

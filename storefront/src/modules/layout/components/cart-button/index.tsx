@@ -1,4 +1,4 @@
-import CartDropdown from "../cart-dropdown"
+import CartTrigger from "../cart-trigger"
 
 /**
  * The cart is fetched once in the (main) layout and handed to
@@ -9,5 +9,5 @@ import CartDropdown from "../cart-dropdown"
  * boundary and import stay unchanged.
  */
 export default function CartButton() {
-  return <CartDropdown />
+  return <CartTrigger />
 }

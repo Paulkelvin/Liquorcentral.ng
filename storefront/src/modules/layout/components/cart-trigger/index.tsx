@@ -17,7 +17,7 @@ import { useCart } from "@lib/context/cart-context"
  * The count comes from the cart context, so it reflects an optimistic
  * add immediately rather than waiting for the server round trip.
  */
-const CartDropdown = () => {
+const CartTrigger = () => {
   const { totalItems, openDrawer } = useCart()
 
   return (
@@ -48,4 +48,4 @@ const CartDropdown = () => {
   )
 }
 
-export default CartDropdown
+export default CartTrigger
