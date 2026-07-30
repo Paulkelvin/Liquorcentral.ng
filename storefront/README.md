@@ -630,6 +630,35 @@ A later session, picking this work back up with no memory of what had or hadn't 
 
 **Conclusion: the cart-drawer commit's own verification claims hold up under independent, real execution.** No bug was found in the feature itself. See `docs/DECISION_LOG.md` for the logged entry and `docs/PROJECT_STATUS.md` for the current-state update.
 
+## Cart drawer — line-item and footer refinement pass
+
+A follow-on visual refinement of the drawer's line item and footer, to a design direction Paul supplied directly. No behavioral change to the cart: the same `CartProvider`/`useOptimistic` state, the same server-authoritative money, the same open/close model.
+
+### The line item
+
+- **Product photo enlarged and stretched to the text block.** Was a fixed 64px square floating beside a taller column of text; now 80px wide and `self-stretch`, so it spans the full height of the title/variant/price stack (measured: 80×105 desktop, 80×155 mobile) and the two columns read as one block.
+- **The "Variant:" prefix is gone** — the line now reads just "750ml". Done via a new `showLabel` prop on the shared `LineItemOptions` (defaulting to `true`), **not** a global change: the cart page and order-confirmation line items are the component's other two consumers and both sit in denser tables of mixed information where the label genuinely disambiguates, so they render exactly as approved. Verified live that `/cart` still shows "Variant: 750ml".
+- **Title promoted** to 15px/semibold from 14px/medium, with the variant tightened beneath it.
+- **Price stacks below the title on narrow panels.** Keeping the price on the title's row left roughly 85px for the title to wrap in on a ~340px phone drawer, which turned "Château Margaux 2015" into three lines — found by looking at a real 390px render, not predicted. Below the `small` breakpoint the price now takes its own line; at/above it, it stays top-right as designed.
+- **Remove is a trash icon**, not a text link — at this density the word "Remove" competed with the product title. It keeps a real accessible name that *names the product* (`aria-label="Remove Château Margaux 2015 from cart"`, so a screen-reader user knows which line goes), a full 44×44px tap target, and its distance from the "+" button, avoiding the mis-tap-adjacency problem the earlier form-control pass had already fixed once.
+
+### The stepper: smaller drawn, same tap target
+
+`QuantityStepper` gains a `size` prop. `"default"` is byte-for-byte the previous 44px control and remains what the PDP and cart page render. `"compact"` — the drawer only — draws at 36px tall with 36px-wide buttons and a narrower number field.
+
+**The tap target does not shrink with it.** `DESIGN_SYSTEM.md` §B11 fixes a 44×44px minimum "regardless of visual size" and explicitly anticipates this exact case ("a small visual icon can still sit inside a larger tap area"), so each compact button keeps a 44px-tall hit area via an invisible `::before` expansion — verified in the browser, not assumed (`::before` computed height reads `44px` on the compact variant and `auto` on the default one, confirming the expansion is compact-only). One consequence worth knowing before editing this component: the compact pill deliberately **cannot** use `overflow-hidden` the way the default one does, because clipping the overflow would clip the expanded hit area with it and silently undo the accessibility guarantee — its end caps are rounded on the buttons instead.
+
+### The footer
+
+Subtotal and its figure now share one size and weight (17px/semibold) so the row reads as a single statement rather than a small label with a large number bolted on; the "Delivery & tax calculated at checkout" caveat is centred beneath it; the checkout button grows to a 52px minimum height with more balanced surrounding space; and "View full cart" gets real clearance beneath the button.
+
+### Validated with real execution
+
+- Driven in a real browser at 1440px and 390px against the running backend and seeded catalog: drawer opens on quick-add, the compact stepper increments with the subtotal settling to the server's own figure (`NGN 862,000.00` → `NGN 1,712,000.00`), and the trash icon genuinely removes its line.
+- **axe-core: 0 WCAG 2 A/AA violations** at both viewports with the drawer open and populated.
+- **No regression on the shared components' other consumers**, checked live rather than reasoned about: the PDP and `/cart` steppers still render at the default 44px with no hit-area expansion, and `/cart` still shows the "Variant:" label.
+- `tsc --noEmit` clean; all 84 Jest tests across 15 suites pass.
+
 ## What's deliberately not here yet
 
 - **Meilisearch-backed search: ranking/typo-tolerance/synonyms, autocomplete, editorial boosting, and faceted search results** (`03_SEARCH_SPECIFICATION.md` §7, §8, §9, §11, §13) — Meilisearch itself remains unapproved (`DECISION_LOG.md`); `/search` today is a real native results page (unified list, catalog badges, sort, Load More, honest zero-result recovery — Milestone 10) but not this document's full mechanism set. **Search-within-category** (§4, §15/§16) also remains unbuilt — no scoped-search affordance exists on category pages yet.

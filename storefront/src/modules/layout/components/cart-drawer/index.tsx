@@ -6,7 +6,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react"
-import { XMark } from "@medusajs/icons"
+import { Trash, XMark } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@lib/util/money"
 import { useCart } from "@lib/context/cart-context"
@@ -45,28 +45,39 @@ export default function CartDrawer() {
   const isEmpty = productLines.length === 0
 
   const renderLine = (item: HttpTypes.StoreCartLineItem) => (
-    <li key={item.id} className="flex gap-3 py-4" data-testid="cart-item">
+    <li key={item.id} className="flex gap-4 py-5" data-testid="cart-item">
+      {/* `self-stretch` + a fixed width, rather than a fixed square: the
+          photo then spans the full height of the title/variant/price stack
+          beside it, so the two columns read as one block instead of a
+          small icon floating beside a taller column of text. */}
       <LocalizedClientLink
         href={`/products/${item.product_handle}`}
         onClick={closeDrawer}
-        className="block w-16 shrink-0"
+        className="block w-20 shrink-0 self-stretch"
         aria-label={`View ${item.product_title || item.title || "product"}`}
       >
         <Thumbnail
           thumbnail={item.thumbnail}
           images={item.variant?.product?.images}
           size="square"
+          className="!h-full"
           alt={item.title || item.product_title || "Product photo"}
         />
       </LocalizedClientLink>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <div className="flex items-start justify-between gap-3">
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
+        {/* Below `small` the price drops onto its own line rather than
+            sitting beside the title. In a ~340px drawer on a phone, a
+            price on the title's row leaves it about 85px to wrap in,
+            which turned "Château Margaux 2015" into three lines and made
+            the whole row read as cramped — measured, not assumed. With
+            the full width to itself the title holds one or two lines. */}
+        <div className="flex flex-col gap-1 small:flex-row small:items-start small:justify-between small:gap-3">
           <div className="min-w-0">
             <LocalizedClientLink
               href={`/products/${item.product_handle}`}
               onClick={closeDrawer}
-              className="block text-[14px] font-medium leading-snug text-text-primary hover:text-primary"
+              className="block text-[15px] font-semibold leading-snug text-text-primary hover:text-primary"
               data-testid="product-link"
             >
               {item.product_title}
@@ -74,16 +85,19 @@ export default function CartDrawer() {
             {/* `[&_p]` because LineItemOptions renders a <Text>, which
                 hardcodes 16px — at that size the variant competed with
                 the product name and pushed the title to three lines in
-                a 340px panel. */}
-            <div className="[&_p]:!text-caption [&_p]:leading-snug">
+                a 340px panel. `showLabel={false}` drops the "Variant:"
+                prefix: directly beneath the title, the bottle size speaks
+                for itself. */}
+            <div className="mt-0.5 [&_p]:!text-caption [&_p]:leading-snug">
               <LineItemOptions
                 variant={item.variant}
+                showLabel={false}
                 data-testid="cart-item-variant"
               />
             </div>
           </div>
           <div
-            className="shrink-0 whitespace-nowrap text-[14px] font-medium text-text-primary"
+            className="shrink-0 whitespace-nowrap text-[14px] font-medium text-text-primary small:text-right"
             data-testid="cart-item-price"
           >
             <LineItemPrice
@@ -96,20 +110,31 @@ export default function CartDrawer() {
 
         <div className="flex items-center justify-between gap-3">
           {/* `min={0}` so the decrement button removes the line at zero,
-              matching the cart page's own behaviour (§7). */}
+              matching the cart page's own behaviour (§7). `size="compact"`
+              draws a lower-profile pill without shrinking its 44px tap
+              target — see QuantityStepper's own note. */}
           <QuantityStepper
             quantity={item.quantity}
             onChange={(quantity) => setQuantity(item.id, quantity)}
             min={0}
             hideLabel
+            size="compact"
           />
+          {/* Icon, not a text link — at this density "Remove" competed with
+              the product title for attention. The icon keeps a real
+              accessible name (naming the product, so a screen-reader user
+              hears *which* line it removes) and a full 44px tap target,
+              and stays clear of the "+" button rather than sitting one
+              mis-tap away from it. */}
           <button
             type="button"
             onClick={() => setQuantity(item.id, 0)}
-            className="text-xs text-text-secondary underline underline-offset-2 transition-colors duration-standard ease-in-out hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            aria-label={`Remove ${item.product_title || item.title || "item"} from cart`}
+            title="Remove"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-radius-md text-text-muted transition-colors duration-standard ease-in-out hover:bg-ink-100 hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
             data-testid="cart-item-remove-button"
           >
-            Remove
+            <Trash />
           </button>
         </div>
       </div>
@@ -208,14 +233,17 @@ export default function CartDrawer() {
                     until an address and a delivery option exist at
                     checkout, and stating them here would claim more
                     certainty than the cart has (§6, §10). */}
-                <footer className="border-t border-divider px-5 py-4">
-                  <div className="mb-1 flex items-baseline justify-between gap-3">
-                    <span className="text-[14px] font-medium text-text-primary">
+                <footer className="border-t border-divider px-5 pb-5 pt-5">
+                  {/* Subtotal and its figure share a weight and size here:
+                      at a glance this row is one statement, not a small
+                      label with a large number bolted to it. */}
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="text-[17px] font-semibold leading-none text-text-primary">
                       Subtotal
                     </span>
                     <span
                       className={clx(
-                        "text-[20px] font-semibold leading-none text-text-primary transition-opacity duration-standard",
+                        "text-[17px] font-semibold leading-none text-text-primary transition-opacity duration-standard",
                         isPending && "opacity-50"
                       )}
                       data-testid="cart-subtotal"
@@ -227,13 +255,13 @@ export default function CartDrawer() {
                       })}
                     </span>
                   </div>
-                  <p className="mb-4 text-caption text-text-secondary">
+                  <p className="mt-2 text-center text-caption text-text-secondary">
                     Delivery &amp; tax calculated at checkout
                   </p>
                   <LocalizedClientLink
                     href="/checkout?step=address"
                     onClick={closeDrawer}
-                    className="inline-flex min-h-[48px] w-full items-center justify-center rounded-radius-md bg-primary px-6 text-body-lg font-medium text-surface-elevated transition-colors duration-standard ease-in-out hover:bg-primary-hover active:bg-primary-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                    className="mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-radius-md bg-primary px-6 text-body-lg font-medium text-surface-elevated transition-colors duration-standard ease-in-out hover:bg-primary-hover active:bg-primary-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                     data-testid="cart-drawer-checkout-button"
                   >
                     Checkout
@@ -241,7 +269,7 @@ export default function CartDrawer() {
                   <LocalizedClientLink
                     href="/cart"
                     onClick={closeDrawer}
-                    className="mt-3 block text-center text-caption text-text-secondary underline underline-offset-2 transition-colors duration-standard ease-in-out hover:text-text-primary"
+                    className="mt-4 block text-center text-caption text-text-secondary underline underline-offset-2 transition-colors duration-standard ease-in-out hover:text-text-primary"
                     data-testid="cart-drawer-view-cart"
                   >
                     View full cart

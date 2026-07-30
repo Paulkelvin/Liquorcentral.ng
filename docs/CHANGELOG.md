@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 6.6
+**Version:** 6.7
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v64 — 2026-07-30 — Cart drawer line-item and footer refinement
+
+**Context:** A direct design instruction from Paul refining the cart drawer's line item and footer, applied to the already-working feature verified in v63.
+
+**Changed (code, not part of `/docs`):**
+
+- `storefront/src/modules/layout/components/cart-drawer/index.tsx` — larger photo stretched to the text block, promoted title, no "Variant:" prefix, price stacking below the title on narrow panels, compact stepper, trash-icon remove control, rebalanced footer.
+- `storefront/src/modules/products/components/quantity-stepper/index.tsx` — new `size` prop (`"default"` unchanged; `"compact"` draws at 36px while keeping a 44px tap target per `DESIGN_SYSTEM.md` §B11).
+- `storefront/src/modules/common/components/line-item-options/index.tsx` — new `showLabel` prop, defaulting to the existing behavior so the cart page and order confirmation are untouched.
+- `storefront/README.md` — new "Cart drawer — line-item and footer refinement pass" section.
+
+**Also updated:** `docs/DECISION_LOG.md` (new entry, → v3.8).
+
+**Not changed:** `DESIGN_SYSTEM.md` and the other frozen foundation documents — this change is applied under §B11's existing rule, not a revision of it.
 
 ## v63 — 2026-07-30 — Design Audit retroactive documentation, cart-trigger rename, and live cart-drawer verification
 

@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 3.7
+**Version:** 3.8
 **Owner:** Program
 **Last Updated:** 2026-07-30
 
@@ -10,6 +10,19 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Cart drawer line-item and footer refinement; `QuantityStepper` gains a compact size
+
+- **Decision:** Refined the cart drawer's line item and footer to a design direction Paul supplied directly — larger product photo stretched to the text block, the redundant "Variant:" prefix dropped, a promoted title, a visually compact quantity stepper, a trash icon replacing the "Remove" text link, and a rebalanced footer. No behavioral change to the cart itself (same `CartProvider`/`useOptimistic` state, same server-authoritative money, same open/close model).
+- **Reasoning:** A direct design instruction from Paul, applied to an already-working feature. Two decisions within it were judgement calls worth recording rather than burying in a diff:
+  1. **The "Variant:" prefix was made opt-out, not removed globally.** `LineItemOptions` has three consumers; the cart page and order-confirmation line items sit in denser tables of mixed information where the label genuinely disambiguates, and neither was in scope. A `showLabel` prop defaulting to `true` keeps both exactly as approved while the drawer opts out.
+  2. **The compact stepper shrinks visually but not as a tap target.** `DESIGN_SYSTEM.md` §B11 (frozen v2.0) fixes a 44×44px minimum "regardless of visual size" and explicitly anticipates this case ("a small visual icon can still sit inside a larger tap area"), so the compact variant draws at 36px while each button keeps a 44px hit area via an invisible `::before` expansion — honoring both the design instruction and the frozen accessibility standard rather than trading one against the other. A consequence future editors need: the compact pill deliberately cannot use `overflow-hidden`, since clipping the overflow would clip the expanded hit area with it and silently void the guarantee.
+- **Date:** 2026-07-30
+- **Impact:**
+  1. `storefront/src/modules/layout/components/cart-drawer/index.tsx`, `storefront/src/modules/products/components/quantity-stepper/index.tsx` (new `size` prop; `"default"` unchanged), `storefront/src/modules/common/components/line-item-options/index.tsx` (new `showLabel` prop; default unchanged). Full detail in `storefront/README.md`'s own "Cart drawer — line-item and footer refinement pass" section.
+  2. **One genuine mobile layout problem found by looking at a real 390px render, not predicted:** keeping the price on the title's row left the title roughly 85px to wrap in, turning "Château Margaux 2015" into three lines. Fixed by stacking the price onto its own line below the `small` breakpoint.
+  3. **Verified live, including the shared components' other consumers:** axe-core reports 0 WCAG 2 A/AA violations at 1440px and 390px with the drawer open; the compact stepper's 44px `::before` hit area confirmed present on the drawer and absent on the default variant; the PDP and `/cart` steppers confirmed still 44px; `/cart` confirmed still showing "Variant: 750ml"; `tsc --noEmit` clean; 84/84 Jest tests pass.
+- **Status:** Final as implemented. `DESIGN_SYSTEM.md` was **not** modified — this change is applied *under* its frozen §B11 rule, not a revision of it, consistent with the standing instruction that the four frozen foundation documents change only on a business decision.
 
 ### Design Audit visual-refinement pass and cart-drawer feature: retroactive documentation, naming cleanup, and live verification
 
