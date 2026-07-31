@@ -204,8 +204,20 @@ export default async function CategoryBrowse() {
             ragged rows, and becomes an evenly-spread row once there is width
             for it. `-mx-*`/`px-*` let the strip bleed to the screen edge while
             keeping the first and last tile clear of it, so a half-cut tile
-            signals "more this way" instead of looking clipped. */}
-        <ul className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 small:mx-0 small:justify-between small:gap-2 small:overflow-visible small:px-0 small:pb-0">
+            signals "more this way" instead of looking clipped.
+
+            **`pl-[6px]`, not `pl-4`, and the 10px it gives up is arithmetic,
+            not taste.** What the eye lines up against the heading is the
+            *circle*, not the tile column — and on a phone the circle is 72px
+            centred in a 92px column (the column is wider so labels like
+            "Champagne" have room), so it sits (92−72)/2 = 10px inside its own
+            column. Padding the strip by the full 16px therefore lands the
+            column on the grid line and the circle 10px right of it, which is
+            the misalignment this replaces. 16 − 10 = 6. Above `small:` the
+            tiles are `w-auto` and the circle is already flush, so the shift
+            is scoped to mobile and `small:px-0` still clears it. If the
+            circle or column size changes, this number changes with them. */}
+        <ul className="-mx-4 flex gap-4 overflow-x-auto pb-2 pl-[6px] pr-4 small:mx-0 small:justify-between small:gap-2 small:overflow-visible small:px-0 small:pb-0">
           {tiles.map((tile) => (
             <li key={tile.handle}>
               <CategoryTile tile={tile} />

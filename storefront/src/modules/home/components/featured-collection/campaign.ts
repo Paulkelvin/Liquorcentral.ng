@@ -45,5 +45,5 @@ export const ACTIVE_CAMPAIGN: Campaign = {
   ctaLabel: "Explore Collection",
   image: "/brand/campaigns/weekend-collection.jpg",
   imageAlt:
-    "Red wine being poured from a bottle into a glass held over a table",
+    "Friends around a candlelit dinner table set with wine bottles, glasses and a sharing board",
 }

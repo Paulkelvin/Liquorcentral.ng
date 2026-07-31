@@ -1,11 +1,23 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.2
+**Version:** 7.3
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v69 — 2026-07-31 — Row left-edge alignment, accent removed, new campaign photograph
+
+**Context:** Paul reviewed v68 on a phone against production and reported four things.
+
+**Changed:**
+- **The red accent rule above "Featured collection" is removed** — added in v68, not wanted.
+- **Featured Collection's row now bleeds right only** (`-mr-*` + `pr-*`; no left margin, no left padding), so the first card's left edge is the container content edge — the same line the heading starts on. The previous symmetric `-mx-4 px-4` bleed *looked* aligned but was not: with `snap-mandatory`, the browser snaps the first `snap-start` item to the scrollport edge on load, scrolling the left padding away (measured `scrollLeft: 16`) and leaving the card 16px (24px desktop) left of the heading.
+- **Category row's first circle now lands on the same line as its heading.** The tile *column* was already aligned; the circle is 72px centred in a 92px column, so it sat 10px inside. The strip's mobile left padding drops from 16px to 6px (16 − 10). Scoped to mobile — above `small:` tiles are `w-auto` and were already flush.
+- **New campaign photograph** — `campaigns/weekend-collection.jpg` replaced with a Pexels image (friends at a candlelit table with wine and a sharing board). The previous Wikimedia pour shot was wine-only, and this platform sells food *and* drink. Pexels licence: commercial use, no attribution required. A stronger-looking candidate was rejected for legible third-party branding (a restaurant name on the wall, a producer's label to camera) — now written into `IMAGE_CREDITS.md` as a rule for replacements.
+
+**Verified:** first-card/first-circle left edges measure exactly equal to their headings' at 390 and 1440; axe-core 0 WCAG 2 A/AA violations at both; tsc clean; 84/84 tests.
 
 ## v68 — 2026-07-31 — Featured Collection condensed and aligned
 

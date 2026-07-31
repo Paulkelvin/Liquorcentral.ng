@@ -94,13 +94,6 @@ export default async function FeaturedCollection({
             note on the `<ul>` below. */}
         <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <div>
-            {/* Short, thick, brand red — an anchor for the title block.
-                `aria-hidden` because it carries no information a screen
-                reader needs; the heading below already does that job. */}
-            <span
-              aria-hidden="true"
-              className="mb-3 block h-1 w-10 rounded-radius-full bg-primary"
-            />
             <Heading
               level="h2"
               display
@@ -124,10 +117,19 @@ export default async function FeaturedCollection({
           </LocalizedClientLink>
         </div>
 
-        {/* The negative margin plus matching padding lets the row bleed to the
-            screen edge while the first card still lines up with the container
-            — so the cut card reads as "the row continues" rather than as a
-            layout that overflowed by accident.
+        {/* The row bleeds to the right *only* — a negative right margin, no
+            left margin and no left padding. So the first card's left edge is
+            the container's own content edge, the same line the heading and
+            subtitle start on.
+
+            **Do not go back to the symmetric `-mx-4 px-4` bleed.** It looks
+            equivalent and is not: with `snap-mandatory`, the browser snaps
+            the first `snap-start` item's edge to the scrollport edge on load,
+            which scrolls the padding away (measured: `scrollLeft: 16`) and
+            leaves the first card sitting a full 16px — 24px at desktop —
+            left of the heading. Fixing that with `scroll-pl-*` would work
+            too, but only as long as nobody removes it; having no left
+            padding to lose is the version that cannot regress.
 
             `items-stretch` is the whole alignment mechanism: every card is
             sized to the tallest one on the line, so the top and bottom edges
@@ -139,7 +141,7 @@ export default async function FeaturedCollection({
             lift and the card shadow. The lift moves cards up by 4px, so a
             container that only pads the bottom clips them at the top
             mid-animation. */}
-        <ul className="-mx-4 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto px-4 py-4 small:-mx-6 small:px-6">
+        <ul className="-mr-4 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto py-4 pr-4 small:-mr-6 small:pr-6">
           <li className="flex snap-start">
             <EditorialCard campaign={ACTIVE_CAMPAIGN} />
           </li>
