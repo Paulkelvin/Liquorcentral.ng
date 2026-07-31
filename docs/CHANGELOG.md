@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.15
+**Version:** 7.16
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v82 — 2026-07-31 — Pairing copy left-aligned, one line per element
+
+**Context:** Paul: "Left aligned and each on a single line."
+
+**Changed:**
+- Copy panel back to **left-aligned**, still vertically centred as one stack.
+- **`whitespace-nowrap` on eyebrow, title and price at every width** — never overridden. Because `nowrap` *clips* rather than wraps when it does not fit, this is only safe if the sizes are set by measurement, so two things followed:
+  - **The mobile copy column widens from 50% to 62%.** "Smoky Asun & Single Malt" does not fit one line in half a phone screen at any readable size. Paul had already said he does not mind the copy crossing into the photograph, so the column takes the width it needs.
+  - **Desktop title steps come down from 26/30/34px to 22/26/28px.** At 34px the full title measured wider than its 495px column and wrapped to two lines.
+- **The scrim is now two gradients, not one** — the copy column is 62% below 768px and 50% above, and a gradient tuned for one leaves the other's first words on bare photograph.
+
+**⚠️ Standing constraint this creates:** every size in the title/eyebrow/price classes is measured against the longest string on the narrowest viewport it applies to. **Lengthen any `title`, `titleShort` or `eyebrow` in `pairings.ts` and it will clip rather than wrap.** Re-measure when the copy changes; the note is in the component.
+
+**Verified at 320 / 360 / 390 / 430 / 480 / 600 / 767 / 1440:** eyebrow, title and price each render on exactly **one line** on both slides at all eight widths, with no clipping and no button overflow. axe-core 0 WCAG 2 A/AA violations on `/` and `/cart`; tsc clean; 84/84 tests.
 
 ## v81 — 2026-07-31 — Pairing banner copy centred, CTA stacked below the price
 

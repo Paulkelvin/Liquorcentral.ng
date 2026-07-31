@@ -217,9 +217,22 @@ export default function PairingCarousel({
                     priority={i === 0}
                   />
 
+                  {/* Two scrims, not one, because the copy column is a
+                      different width at each breakpoint (62% below 768px,
+                      50% above) and a gradient tuned for one leaves the
+                      other's first words sitting on bare photograph. */}
                   <div
                     aria-hidden="true"
-                    className="absolute inset-0"
+                    className="absolute inset-0 md:hidden"
+                    style={{
+                      background: dark
+                        ? "linear-gradient(to left, rgba(26,22,18,0.94) 0%, rgba(26,22,18,0.9) 52%, rgba(26,22,18,0) 82%)"
+                        : "linear-gradient(to left, rgba(250,247,242,0.96) 0%, rgba(250,247,242,0.92) 52%, rgba(250,247,242,0) 82%)",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 hidden md:block"
                     style={{
                       background: dark
                         ? "linear-gradient(to left, rgba(26,22,18,0.94) 0%, rgba(26,22,18,0.86) 38%, rgba(26,22,18,0) 66%)"
@@ -227,20 +240,28 @@ export default function PairingCarousel({
                     }}
                   />
 
-                  {/* **Centred stack at every width** — eyebrow, headline,
-                      price, button, each centre-aligned and the group as a
-                      whole centred in the column. Paul's direction, replacing
-                      the earlier arrangement that pushed the blocks apart
-                      across the full height with the price and CTA sharing a
-                      row.
+                  {/* **Left-aligned stack, vertically centred** — eyebrow,
+                      headline, price, button, one under the other.
 
-                      `justify-center` rather than `justify-between` is what
-                      makes the group read as one block rather than three
-                      things pinned to the edges of a tall box. */}
-                  <div className="absolute inset-y-0 right-0 flex w-1/2 flex-col items-center justify-center gap-1.5 px-4 text-center md:gap-3 md:px-8 medium:px-14">
+                      **62% wide below 768px, not 50%.** Paul asked for each
+                      line to sit on a single line, and the longer headline
+                      ("Smoky Asun & Single Malt") does not fit one line in
+                      half of a phone screen at any readable size. He also
+                      said he does not mind the copy crossing into the
+                      photograph, so the column takes the width it needs and
+                      the scrim above was widened to match. Above 768px the
+                      body paragraph returns and 50% is right again. */}
+                  <div
+                    data-testid="pairing-panel"
+                    className="absolute inset-y-0 right-0 flex w-[62%] flex-col items-start justify-center gap-1.5 px-4 text-left md:w-1/2 md:gap-3 md:px-8 medium:px-14"
+                  >
                     <span
                       className={clx(
-                        "text-[10px] font-semibold uppercase leading-tight tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]",
+                        // `whitespace-nowrap`: Paul asked for one line each.
+                        // Verified to fit at 320px — if a longer eyebrow is
+                        // ever added, it will clip rather than wrap, so
+                        // re-measure before changing the copy.
+                        "whitespace-nowrap text-[10px] font-semibold uppercase leading-tight tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]",
                         dark ? "text-ink-200" : "text-text-secondary"
                       )}
                     >
@@ -255,7 +276,22 @@ export default function PairingCarousel({
                         the outline stays in order. */}
                     <h3
                       className={clx(
-                        "font-display text-[15px] font-semibold leading-[1.2] tracking-[-0.01em] xsmall:text-[17px] md:text-[26px] md:leading-[1.15] small:text-[30px] medium:text-[34px]",
+                        // One line below 768px (`whitespace-nowrap`), wrapping
+                        // allowed above where the column is wide and the full
+                        // title is long. The compact sizes are set so the
+                        // longest `titleShort` fits at 320px — measured, not
+                        // estimated. Lengthen a `titleShort` and it clips.
+                        // **One line at every width** (`whitespace-nowrap`,
+                        // never overridden). Paul asked for it, so the type
+                        // scale is set by what fits rather than the other way
+                        // round: the desktop steps came down from 26/30/34 to
+                        // 22/26/28 because the full title
+                        // ("Smoky Asun & Aged Single Malt") wrapped to two
+                        // lines at 34px in a 495px column. Every size here is
+                        // measured against the longest title on the narrowest
+                        // viewport it applies to — **lengthen a title and it
+                        // clips rather than wraps.**
+                        "whitespace-nowrap font-display text-[13px] font-semibold leading-[1.2] tracking-[-0.01em] sm:text-[15px] xsmall:text-[17px] md:text-[22px] md:leading-[1.15] small:text-[26px] medium:text-[28px]",
                         dark ? "text-surface-elevated" : "text-text-primary"
                       )}
                     >
@@ -287,10 +323,10 @@ export default function PairingCarousel({
                         going back inside its label, and the button's
                         `aria-label` still carries the total: visual adjacency
                         communicates nothing to a screen reader. */}
-                    <div className="flex flex-col items-center gap-1.5 md:gap-2">
+                    <div className="flex w-full flex-col items-start gap-1.5 md:gap-2">
                       <span
                         className={clx(
-                          "text-[12px] font-semibold md:text-caption md:font-medium",
+                          "whitespace-nowrap text-[12px] font-semibold md:text-caption md:font-medium",
                           dark ? "text-surface-elevated" : "text-text-primary"
                         )}
                         data-testid="pairing-price"
