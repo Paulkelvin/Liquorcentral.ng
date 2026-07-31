@@ -1,11 +1,22 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.13
+**Version:** 7.14
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v80 — 2026-07-31 — Fix: pairing CTA was clipped off the card below 430px
+
+**Bug:** on every common phone width the "Add pairing" button ran past the card's right edge and was **sliced in half by `overflow-hidden`**. Measured: the price/CTA row needed 169px in a column of 111px (320), 131px (360) and 146px (390). The button carried `shrink-0` and the row could not wrap, so it simply overflowed. v79's checks missed it because the overflow assertion compared `scrollHeight`/`clientHeight` — vertical only.
+
+**Fixed, three changes that each remove part of the cause:**
+- **The price is now `₦63,500`, not `NGN 63,500`** (`convertToLocale` gains an opt-in `currencyDisplay`; every other surface keeps the long form it was approved with). The three-letter code alone was eating ~20px of a ~110px row — and `₦` is how Paul writes it in every brief anyway.
+- **The CTA reads `+ Add` below 480px and `Add pairing` from 480px up.** The full phrase needs ~90px, which does not fit beside the price on a phone; the switch is at `sm:` rather than `md:` so a tablet with 300px spare is not left reading "+ Add".
+- **The row wraps and the button may shrink** (`flex-wrap`, `min-w-0` in place of `shrink-0`). At 320px, where nothing fits on one line, the button drops below the price instead of vanishing off the card.
+
+**Verified at 320 / 360 / 390 / 430 / 480 / 767 / 1440:** no clipping and no horizontal overflow at any width on either slide; add-to-cart still produces ₦68,000 + ₦8,500 for the ₦76,500 button; axe-core 0 WCAG 2 A/AA violations on `/` and `/cart`; tsc clean; 84/84 tests.
 
 ## v79 — 2026-07-31 — Pairing banner: 300px mobile card, dots inside, controls stripped
 

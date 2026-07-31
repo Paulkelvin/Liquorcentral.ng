@@ -102,11 +102,15 @@ export default async function PairingBanner({
     return {
       ...slide,
       variantIds: [dishVariant.id, drinkVariant.id],
-      // Whole naira: these totals run to five and six figures, where
-      // trailing kobo is noise rather than precision.
+      // Whole naira, narrow symbol: "₦63,500", not "NGN 63,500.00". These
+      // totals run to five and six figures where trailing kobo is noise,
+      // and the price shares a ~110px row with the CTA on a small phone —
+      // the three-letter code alone consumed most of it and pushed the
+      // button off the card.
       totalLabel: convertToLocale({
         amount: total,
         currency_code: region.currency_code,
+        currencyDisplay: "narrowSymbol",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
       }),
