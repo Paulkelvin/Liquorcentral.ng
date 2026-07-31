@@ -227,14 +227,17 @@ export default function PairingCarousel({
                     }}
                   />
 
-                  {/* Below 768px the three blocks are pushed apart across the
-                      full 300px — eyebrow at the top, headline in the middle,
-                      price and CTA on one row at the bottom — so the height
-                      reads as deliberate composition rather than as a short
-                      block floating in a tall box. From 768px up the copy
-                      re-centres, because there the body paragraph is back and
-                      the column is dense enough to need no spreading. */}
-                  <div className="absolute inset-y-0 right-0 flex w-1/2 flex-col justify-between gap-1.5 py-4 px-4 md:justify-center md:gap-3 md:py-0 md:px-8 medium:px-14">
+                  {/* **Centred stack at every width** — eyebrow, headline,
+                      price, button, each centre-aligned and the group as a
+                      whole centred in the column. Paul's direction, replacing
+                      the earlier arrangement that pushed the blocks apart
+                      across the full height with the price and CTA sharing a
+                      row.
+
+                      `justify-center` rather than `justify-between` is what
+                      makes the group read as one block rather than three
+                      things pinned to the edges of a tall box. */}
+                  <div className="absolute inset-y-0 right-0 flex w-1/2 flex-col items-center justify-center gap-1.5 px-4 text-center md:gap-3 md:px-8 medium:px-14">
                     <span
                       className={clx(
                         "text-[10px] font-semibold uppercase leading-tight tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]",
@@ -277,22 +280,14 @@ export default function PairingCarousel({
                       {slide.body}
                     </p>
 
-                    {/* Price and CTA share one row below 768px, and stack
-                        from 768px up.
+                    {/* Price above, button below — Paul's "then the button
+                        follows below". They were a single row before.
 
                         The price stays a sibling of the button rather than
-                        going back inside its label — but the button's
-                        `aria-label` still carries the total, because visual
-                        adjacency communicates nothing to a screen reader. */}
-                    {/* `flex-wrap` and a button that is allowed to shrink are
-                        the guard against the bug this replaced: at 320–390px
-                        the row needed 169px in a 111–146px column, so with a
-                        `shrink-0` button and no wrapping it simply ran past
-                        the card's right edge, where `overflow-hidden` sliced
-                        the CTA in half. It now wraps instead of clipping —
-                        and at 320px, where nothing fits on one line, the
-                        button drops below the price rather than disappearing. */}
-                    <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 md:flex-col md:items-start md:gap-2">
+                        going back inside its label, and the button's
+                        `aria-label` still carries the total: visual adjacency
+                        communicates nothing to a screen reader. */}
+                    <div className="flex flex-col items-center gap-1.5 md:gap-2">
                       <span
                         className={clx(
                           "text-[12px] font-semibold md:text-caption md:font-medium",
@@ -320,28 +315,14 @@ export default function PairingCarousel({
                         }
                         data-testid="pairing-add-button"
                         aria-label={`${ctaLabelFor(slide)} — ${slide.totalLabel} — ${slide.itemsLabel}`}
-                        className="relative inline-flex h-9 min-w-0 items-center justify-center whitespace-nowrap rounded-radius-full bg-primary px-3 text-[12px] font-medium text-surface-elevated transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] hover:bg-primary-hover active:bg-primary-active disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 md:mt-1 md:h-12 md:rounded-radius-md md:px-6 md:text-[15px]"
+                        className="relative inline-flex h-9 min-w-0 max-w-full items-center justify-center whitespace-nowrap rounded-radius-full bg-primary px-4 text-[12px] font-medium text-surface-elevated transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] hover:bg-primary-hover active:bg-primary-active disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 md:h-12 md:rounded-radius-md md:px-6 md:text-[15px]"
                       >
-                        {/* Two lengths. "Add pairing" needs ~90px, which does
-                            not fit beside the price in this column on a
-                            phone; "+ Add" needs ~58px and does. The switch is
-                            at `sm:` (480px), not `md:` — by 480 the column is
-                            ~208px and the full phrase fits, so a tablet is
-                            not left reading "+ Add" with 300px spare. The
-                            button's
-                            `aria-label` carries the full phrase and the
-                            total either way, so the short form costs a
-                            screen-reader user nothing. A status label
-                            ("Added to cart") replaces both — it is the more
-                            important thing to read at that moment. */}
-                        {status?.slideId === slide.id && status.state !== "adding" ? (
-                          ctaLabelFor(slide)
-                        ) : (
-                          <>
-                            <span className="sm:hidden">+ Add</span>
-                            <span className="hidden sm:inline">Add pairing</span>
-                          </>
-                        )}
+                        {/* One label at every width. The "+ Add" fallback the
+                            previous layout needed is gone: with the button on
+                            its own line instead of beside the price, "Add
+                            pairing" measures ~98px against a 111px column even
+                            at 320px. */}
+                        {ctaLabelFor(slide)}
                       </button>
                     </div>
                   </div>

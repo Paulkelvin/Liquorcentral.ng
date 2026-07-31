@@ -1,11 +1,24 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.14
+**Version:** 7.15
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v81 — 2026-07-31 — Pairing banner copy centred, CTA stacked below the price
+
+**Context:** Paul reviewed the deployed layout and asked for the copy centred, in a single stack — eyebrow, headline, then the button below — noting he does not mind the text sitting over the photograph's subject.
+
+**Changed:**
+- **Everything in the copy panel is centre-aligned and the group is vertically centred**, at every width. It replaces the previous arrangement, which pushed the three blocks apart across the full height (`justify-between`) and put the price and CTA on one row.
+- **Price above, button below**, both centred, instead of sharing a row.
+- **The `+ Add` fallback is gone.** It only existed because the button had to fit *beside* the price in a ~110px column; on its own line "Add pairing" measures ~98px against 111px even at 320px, so one label now serves every width.
+
+**Applied at desktop as well as mobile**, since it is one component and Paul described a single arrangement — flagged for him rather than assumed, and reverting desktop to left-aligned is a one-line change.
+
+**Verified at 320 / 360 / 390 / 430 / 480 / 767 / 1440:** no clipping and no horizontal or vertical overflow on either slide at any width; axe-core 0 WCAG 2 A/AA violations on `/` and `/cart`; tsc clean; 84/84 tests.
 
 ## v80 — 2026-07-31 — Fix: pairing CTA was clipped off the card below 430px
 
