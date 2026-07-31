@@ -1,8 +1,8 @@
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
-import InteractiveLink from "@modules/common/components/interactive-link"
 import { Heading, Text } from "@modules/common/components/ui"
+import SectionLink from "@modules/common/components/section-link"
 import DishCard from "./dish-card"
 
 /**
@@ -56,8 +56,8 @@ export default async function FoodCentralSpotlight({
       className="w-full bg-surface-warm"
       data-testid="todays-menu"
     >
-      <div className="ds-container py-12 small:py-20">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+      <div className="ds-container py-12 small:py-16">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <div>
             <Heading
               level="h2"
@@ -76,9 +76,11 @@ export default async function FoodCentralSpotlight({
               Cooked to order, delivered across Lagos.
             </Text>
           </div>
-          <InteractiveLink href="/food-central">
-            View Food Central
-          </InteractiveLink>
+          {/* The same control as "View all" and "See the collection"
+              above, via `SectionLink`. It was `InteractiveLink` (brand
+              green) — the one section header on the page that looked like a
+              different kind of thing. */}
+          <SectionLink href="/food-central">View Food Central</SectionLink>
         </div>
 
         {foodProducts.length === 0 ? (

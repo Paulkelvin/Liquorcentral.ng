@@ -1,11 +1,24 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.9
+**Version:** 7.10
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v76 — 2026-07-31 — Section headers unified across the homepage
+
+**Context:** Paul noted Today's Menu's header did not match the sections above it.
+
+**Added:** `common/components/section-link/` — the "see more" link beside a section heading, now used by Shop by Category, Featured Collection and Today's Menu. The markup had been copied into three places and had already drifted.
+
+**Changed:**
+- Today's Menu's CTA was still `InteractiveLink` (brand green with a green arrow) — the one section header on the page that looked like a different kind of control. Green is this palette's success/Food Central accent; beside a heading it reads as a status marker rather than navigation. Same reasoning that moved the cart's promotion-code control off green.
+- Shop by Category's subtitle moves from `muted` to `text-secondary`, matching the other two. `muted` passes contrast there (that section is on the untinted page) but not on the tinted bands, so keeping it would have left one of three headers a different colour for a reason invisible on that section.
+- Today's Menu's header margin and section padding matched to the other two (`mb-8`, `py-12 small:py-16`).
+
+**Verified by measurement, all three headers at 1440 and 390:** heading `30px/24px w600 rgb(26,26,26) ls -0.3px/-0.24px`; subtitle `16px w400 rgb(70,68,63)`; link `13px w500 rgb(26,26,26)` underlined with arrow; header margin `32px` — identical across all three. axe-core 0 WCAG 2 A/AA violations on `/` and `/cart` at both; tsc clean; 84/84 tests.
 
 ## v75 — 2026-07-31 — Today's Menu rebuilt as a culinary showcase
 

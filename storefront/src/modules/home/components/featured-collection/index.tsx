@@ -1,7 +1,7 @@
 import { listCollections } from "@lib/data/collections"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import { ACTIVE_CAMPAIGN } from "./campaign"
 import EditorialCard from "./editorial-card"
@@ -106,15 +106,7 @@ export default async function FeaturedCollection({
               Chosen by us, not by an algorithm.
             </Text>
           </div>
-          <LocalizedClientLink
-            href={href}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap text-caption font-medium text-text-primary underline underline-offset-4 transition-colors duration-standard ease-in-out hover:text-interactive"
-          >
-            See the collection
-            <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-3.5 w-3.5">
-              <path d="M4 10h12m0 0-4.5-4.5M16 10l-4.5 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </LocalizedClientLink>
+          <SectionLink href={href}>See the collection</SectionLink>
         </div>
 
         {/* The row bleeds to the right *only* — a negative right margin, no

@@ -1,5 +1,6 @@
 import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text, clx } from "@modules/common/components/ui"
 
 /**
@@ -185,19 +186,16 @@ export default async function CategoryBrowse() {
             >
               Shop by category
             </Heading>
-            <Text muted className="mt-1">
+            {/* `text-secondary`, matching the other two section subtitles.
+                `muted` passes contrast here (this section is on the
+                untinted page) but not on the tinted bands below, so
+                keeping it would have made one of three headers a
+                different colour for a reason invisible on this section. */}
+            <Text className="mt-1 text-text-secondary">
               Everything we sell, sourced and delivered by us.
             </Text>
           </div>
-          <LocalizedClientLink
-            href="/store"
-            className="inline-flex items-center gap-1.5 whitespace-nowrap text-caption font-medium text-text-primary underline underline-offset-4 transition-colors duration-standard ease-in-out hover:text-interactive"
-          >
-            View all
-            <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-3.5 w-3.5">
-              <path d="M4 10h12m0 0-4.5-4.5M16 10l-4.5 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </LocalizedClientLink>
+          <SectionLink href="/store">View all</SectionLink>
         </div>
 
         {/* Scrolls horizontally on a phone rather than wrapping to three
