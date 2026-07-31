@@ -9,6 +9,7 @@ import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner"
 import CartDrawer from "@modules/layout/components/cart-drawer"
 import { CartProvider } from "@lib/context/cart-context"
 import Footer from "@modules/layout/templates/footer"
+import TrustBand from "@modules/layout/components/trust-band"
 import Nav from "@modules/layout/templates/nav"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
 import AgeGate from "@modules/home/components/age-gate"
@@ -71,6 +72,9 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
         />
       )}
       <main id="main-content">{props.children}</main>
+      {/* Directly above the footer, on every page in this layout — not
+          only the homepage, where it used to live. */}
+      <TrustBand />
       <Footer />
     </CartProvider>
   )

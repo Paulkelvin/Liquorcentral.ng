@@ -51,22 +51,18 @@ const CartTemplate = ({
             <div className="flex flex-col gap-6 rounded-radius-md border border-border bg-surface-elevated p-4 small:p-6">
               {/* Panel header: what this page is, and a way back out of
                   it that isn't the browser's back button. */}
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex flex-col gap-1">
-                  <Heading level="h1" className="!text-heading-3">
-                    Your cart
-                  </Heading>
-                  <Text size="caption" muted>
-                    Check everything over before you head to checkout.
-                  </Text>
-                </div>
-                <LocalizedClientLink
-                  href="/store"
-                  className="hidden shrink-0 items-center rounded-radius-full border border-border px-4 py-2 text-caption font-medium text-text-primary transition-colors duration-standard ease-in-out hover:bg-ink-100 xsmall:inline-flex"
-                  data-testid="continue-shopping-top"
-                >
-                  Continue shopping
-                </LocalizedClientLink>
+              {/* The "Continue shopping" pill that sat at this header's right
+                  is gone — the summary already carries a text-link version
+                  directly under "Go to checkout", and two ways out of the
+                  same page competed with the one action this page exists
+                  for. */}
+              <div className="flex flex-col gap-1">
+                <Heading level="h1" className="!text-heading-3">
+                  Your cart
+                </Heading>
+                <Text size="caption" muted>
+                  Check everything over before you head to checkout.
+                </Text>
               </div>
 
               {/* The prompt is its own tinted strip now, so it no

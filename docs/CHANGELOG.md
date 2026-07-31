@@ -1,11 +1,29 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.5
+**Version:** 7.6
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v72 — 2026-07-31 — Trust band, footer architecture, cart clean-up
+
+**Context:** Paul's polish round for the lower page and the cart.
+
+**Added:**
+- `layout/components/trust-band/` — §8.7/§13's four trust statements as a bordered, tinted banner: drawn SVG icons in `ink-900` (no green checks), title + muted subtitle, centred; 2×2 on mobile, one row of four from `small:`. **It now lives in the `(main)` layout above the footer rather than on the homepage**, so it appears on every page. §13's claims are unchanged in substance — including Food Central's "Lagos only", a limitation that must not be softened for the sake of an even row.
+- `layout/components/footer-accordion-group/` — footer columns collapse on mobile, plain columns from `small:` up.
+
+**Changed:**
+- Footer's two green-check trust lines removed (the band above now carries all four).
+- Social icons 44px → 36px with a lighter `divider` ring and tighter gaps; the drawn size shrinks but the tap target stays 44px via an invisible `::before`, per §B11's own allowance. `-ml-[2px]` optical overshoot so the first circle reads flush with the paragraph's left edge (measured: 110 vs 112).
+- Brand column spacing tightened (`gap-y-5` → `gap-y-3`).
+- "Legal & Compliance" gains a hover underline.
+- **Shop's nested "Spirits ⌄" disclosure removed** — flat links only. Nothing becomes unreachable; the parent category page lists its own subcategories. `footer-category-group/` deleted.
+- Cart: the top-right "Continue shopping" pill removed (the summary's text link remains); `LineItemOptions`' `showLabel` **default inverted to `false`** so no cart surface prints "Variant:" — the order-confirmation item now passes `true` explicitly, since an order record is read long after the fact; the promotion-code control moves from interactive green to muted `ink-700` with an underline and a `+`/`−` affordance.
+
+**Verified:** axe-core 0 WCAG 2 A/AA violations at 1440 and 390 on both `/` and `/cart`, including with a footer accordion expanded; band icons measure `rgb(26,26,26)` with uniform 1.5 stroke and no green anywhere; tsc clean; 84/84 tests.
 
 ## v71 — 2026-07-31 — Featured Collection resting shadow removed; Account gains an icon
 

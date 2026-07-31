@@ -91,7 +91,6 @@ export default function CartDrawer() {
             <div className="mt-0.5 [&_p]:!text-caption [&_p]:leading-snug">
               <LineItemOptions
                 variant={item.variant}
-                showLabel={false}
                 data-testid="cart-item-variant"
               />
             </div>

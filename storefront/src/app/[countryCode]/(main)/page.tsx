@@ -5,7 +5,6 @@ import Hero from "@modules/home/components/hero"
 import CategoryBrowse from "@modules/home/components/category-browse"
 import FeaturedCollection from "@modules/home/components/featured-collection"
 import FoodCentralSpotlight from "@modules/home/components/food-central-spotlight"
-import TrustDeliveryBand from "@modules/home/components/trust-delivery-band"
 import ReturningCustomerStrip from "@modules/home/components/returning-customer-strip"
 
 export const metadata: Metadata = {
@@ -57,7 +56,6 @@ export default async function Home({ params }: Props) {
       <Suspense fallback={null}>
         <FoodCentralSpotlight countryCode={countryCode} />
       </Suspense>
-      <TrustDeliveryBand />
       <Suspense fallback={null}>
         <ReturningCustomerStrip />
       </Suspense>

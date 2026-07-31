@@ -58,13 +58,22 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       <div className="txt-medium">
         <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
           <Label className="flex gap-x-1 my-2 items-center">
+            {/* Muted and underlined rather than the interactive green. Green
+                is this palette's success/Food Central accent; on a quiet
+                summary panel it read as a status message rather than a
+                control, and competed with the checkout button beneath it.
+                The `+` states that this opens something, which the colour
+                was previously doing on its own. */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="txt-medium text-interactive hover:text-interactive-hover"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-caption text-text-secondary underline underline-offset-4 transition-colors duration-standard ease-in-out hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
               data-testid="add-discount-button"
             >
-              Add Promotion Code(s)
+              <span aria-hidden="true" className="text-[15px] leading-none">
+                {isOpen ? "\u2212" : "+"}
+              </span>
+              Add promotion code
             </button>
 
             {/* <Tooltip content="You can add multiple promotion codes">

@@ -1,10 +1,9 @@
 import { listCategories } from "@lib/data/categories";
 import { listCollections } from "@lib/data/collections";
-import { CheckCircleSolid } from "@medusajs/icons";
 import { Text } from "@modules/common/components/ui";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import FooterCategoryGroup from "@modules/layout/components/footer-category-group";
+import FooterAccordionGroup from "@modules/layout/components/footer-accordion-group";
 import {
   InstagramIcon,
   TikTokIcon,
@@ -39,17 +38,21 @@ const SOCIAL_LINKS: { label: string; href: string; Icon: React.ComponentType<{ c
   { label: "YouTube", href: "", Icon: YouTubeIcon },
 ];
 
+/**
+ * Scaled down from 44px to 36px on Paul's note that the group was
+ * overpowering, with the ring dropped from `border` (ink-300) to `divider`
+ * (ink-200) so its weight reads closer to the paragraph above it.
+ *
+ * **36px is the drawn size, not the target size.** `DESIGN_SYSTEM.md` §B11
+ * fixes a 44×44px minimum "regardless of visual size" and anticipates
+ * exactly this ("a small visual icon can still sit inside a larger tap
+ * area"), so the invisible `::before` restores the full 44px. Same
+ * technique as the cart drawer's compact quantity stepper. A consequence
+ * worth knowing: this element must never gain `overflow-hidden`, which
+ * would clip the expanded hit area along with everything else.
+ */
 const socialButtonClass =
-  "flex h-11 w-11 items-center justify-center rounded-radius-full border border-border text-text-secondary transition-colors duration-standard ease-in-out";
-
-/** Shared heading for each footer link group — small, uppercase, tracked out. */
-function GroupHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-caption font-medium uppercase tracking-wider text-text-primary">
-      {children}
-    </span>
-  );
-}
+  "relative flex h-9 w-9 items-center justify-center rounded-radius-full border border-divider text-text-secondary transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-11 before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']";
 
 const linkClass =
   "text-text-secondary hover:text-text-primary transition-colors duration-standard ease-in-out";
@@ -88,7 +91,7 @@ export default async function Footer() {
       <div className="ds-container flex w-full flex-col">
         <div className="grid grid-cols-1 gap-12 py-16 lg:grid-cols-12 lg:gap-8 lg:py-20">
           {/* Brand / identity column */}
-          <div className="flex flex-col gap-y-5 lg:col-span-3">
+          <div className="flex flex-col gap-y-3 lg:col-span-3">
             <LocalizedClientLink
               href="/"
               className="font-display text-heading-4 font-semibold tracking-tight text-text-primary hover:text-interactive"
@@ -100,7 +103,13 @@ export default async function Footer() {
               directly by us, never a stranger.
             </Text>
 
-            <ul className="flex flex-wrap items-center gap-3">
+            {/* `-ml-1` is optical, not geometric. The circles' border boxes
+                already start at the column's left edge, but a round outline
+                reads as inset against the flat left edge of the paragraph
+                above; 2px is the standard overshoot for a round shape, and
+                leaves the circle reading flush with the "P" of "Premium"
+                rather than measurably outdented. */}
+            <ul className="-ml-[2px] mt-1 flex flex-wrap items-center gap-1.5">
               {SOCIAL_LINKS.map(({ label, href, Icon }) => (
                 <li key={label}>
                   {href ? (
@@ -122,49 +131,45 @@ export default async function Footer() {
               ))}
             </ul>
 
-            <div className="flex flex-col gap-y-2 text-caption text-text-muted">
-              <span className="flex items-center gap-1.5">
-                <CheckCircleSolid className="shrink-0 text-secondary" />
-                Sold &amp; delivered directly by LiquorCentral
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircleSolid className="shrink-0 text-secondary" />
-                Secure payment
-              </span>
-            </div>
+            {/* The two trust statements that used to sit here are gone —
+                `TrustBand` above the footer now carries all four of §13's
+                claims, and repeating two of them 200px lower said the same
+                thing twice. */}
           </div>
 
-          {/* Link groups — one stacked column on mobile, per direct feedback */}
-          <div className="grid grid-cols-1 gap-8 text-caption sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
+          {/* Link groups. Accordions on a phone, plain columns from
+              `small:` up — see `FooterAccordionGroup` for why the links stay
+              in the DOM either way (this footer is the site's secondary
+              sitemap, and the mobile crawl is the one that counts). */}
+          <div className="grid grid-cols-1 gap-y-0 text-caption small:gap-8 sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
             {topLevelCategories.length > 0 && (
-              <div className="flex flex-col gap-y-3">
-                <GroupHeading>Shop</GroupHeading>
+              <FooterAccordionGroup heading="Shop">
+                {/* Flat links, one per top-level category. The nested
+                    "Spirits ⌄" disclosure that used to live here is gone on
+                    Paul's direction: a dropdown inside a footer is awkward on
+                    touch, and the parent category page already lists its own
+                    subcategories. Nothing becomes unreachable — only one tap
+                    further away. */}
                 <ul
                   className="grid grid-cols-1 gap-2"
                   data-testid="footer-categories"
                 >
                   {topLevelCategories.map((c) => (
-                    <FooterCategoryGroup
-                      key={c.id}
-                      id={c.id}
-                      name={c.name}
-                      handle={c.handle}
-                      linkClassName={linkClass}
-                      subcategories={
-                        c.category_children?.map((child) => ({
-                          id: child.id,
-                          name: child.name,
-                          handle: child.handle,
-                        })) || null
-                      }
-                    />
+                    <li key={c.id}>
+                      <LocalizedClientLink
+                        className={linkClass}
+                        href={`/categories/${c.handle}`}
+                        data-testid="category-link"
+                      >
+                        {c.name}
+                      </LocalizedClientLink>
+                    </li>
                   ))}
                 </ul>
-              </div>
+              </FooterAccordionGroup>
             )}
 
-            <div className="flex flex-col gap-y-3">
-              <GroupHeading>Food Central</GroupHeading>
+            <FooterAccordionGroup heading="Food Central">
               <ul className="grid grid-cols-1 gap-2">
                 {FOOD_CENTRAL_LINKS.map((link) => (
                   <li key={link.href}>
@@ -178,11 +183,10 @@ export default async function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </FooterAccordionGroup>
 
             {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-3">
-                <GroupHeading>Collections</GroupHeading>
+              <FooterAccordionGroup heading="Collections">
                 <ul className="grid grid-cols-1 gap-2">
                   {collections?.slice(0, 6).map((c) => (
                     <li key={c.id}>
@@ -196,11 +200,10 @@ export default async function Footer() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </FooterAccordionGroup>
             )}
 
-            <div className="flex flex-col gap-y-3">
-              <GroupHeading>Company</GroupHeading>
+            <FooterAccordionGroup heading="Company">
               <ul className="grid grid-cols-1 gap-2">
                 {COMPANY_LINKS.map((link) => (
                   <li key={link.href}>
@@ -214,10 +217,9 @@ export default async function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </FooterAccordionGroup>
 
-            <div className="flex flex-col gap-y-3">
-              <GroupHeading>Support</GroupHeading>
+            <FooterAccordionGroup heading="Support">
               <ul className="grid grid-cols-1 gap-2">
                 {SUPPORT_LINKS.map((link) => (
                   <li key={link.href}>
@@ -231,7 +233,7 @@ export default async function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </FooterAccordionGroup>
           </div>
         </div>
 
@@ -250,7 +252,7 @@ export default async function Footer() {
             {LEGAL_LINKS.map((link) => (
               <LocalizedClientLink
                 key={link.href}
-                className={linkClass}
+                className={`${linkClass} underline-offset-4 hover:underline`}
                 href={link.href}
                 data-testid="footer-link"
               >

@@ -4,16 +4,18 @@ import { Text } from "@modules/common/components/ui"
 type LineItemOptionsProps = {
   variant: HttpTypes.StoreProductVariant | undefined
   /**
-   * Whether to prefix the variant with the word "Variant:". Defaults to
-   * true, which is what the order-confirmation and cart-page line items
-   * have always rendered — those sit in denser tables of mixed
-   * information where the label genuinely disambiguates.
+   * Whether to prefix the variant with the word "Variant:".
    *
-   * The cart drawer passes `false`: directly under the product title, in
-   * a panel showing nothing but cart lines, "Variant: 750ml" spends a
-   * word restating what the position already makes obvious, and the bottle
-   * size reads faster on its own. Deliberately opt-out rather than a
-   * global change, so the two other surfaces stay exactly as approved.
+   * **Defaults to `false` now.** It previously defaulted to `true` and the
+   * cart drawer opted out; Paul then asked for the prefix gone from the
+   * cart entirely, so the default is inverted rather than adding a second
+   * opt-out. "750ml" reads faster than "Variant: 750ml", and directly under
+   * a product title the word restates what the position already says.
+   *
+   * The prop survives because the order-confirmation line item still passes
+   * `true`: an order record is a document a customer may need to reason
+   * about long after the fact, and there the label is doing real work
+   * naming what the value is.
    */
   showLabel?: boolean
   "data-testid"?: string
@@ -22,7 +24,7 @@ type LineItemOptionsProps = {
 
 const LineItemOptions = ({
   variant,
-  showLabel = true,
+  showLabel = false,
   "data-testid": dataTestid,
   "data-value": dataValue,
 }: LineItemOptionsProps) => {

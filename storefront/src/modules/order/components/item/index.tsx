@@ -31,7 +31,13 @@ const Item = ({ item, currencyCode }: ItemProps) => {
         >
           {item.product_title}
         </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        <LineItemOptions
+          variant={item.variant}
+          // Explicit: an order record is read long after the fact, so naming
+          // the value is worth the word here. Everywhere else defaults off.
+          showLabel
+          data-testid="product-variant"
+        />
       </Table.Cell>
 
       <Table.Cell className="!pr-0">
