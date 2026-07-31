@@ -76,13 +76,31 @@ export default async function FeaturedCollection({
   const href = ACTIVE_CAMPAIGN.href ?? `/collections/${collection.handle}`
 
   return (
+    // `ink-100` (#eceae3), not the page's own `surface` (#f3f5f0): a warm
+    // cream band, one step deeper and warmer than the page, so the white
+    // (`surface-elevated`) cards read as sitting *on* something. It is an
+    // existing neutral token rather than a new hex — §B6 forbids raw hexes in
+    // components. It also lowers the ceiling for text contrast, which is why
+    // the subtitle below is `text-secondary` and not `muted`.
     <section
       aria-labelledby="featured-collection-heading"
-      className="w-full bg-surface"
+      className="w-full bg-ink-100"
     >
-      <div className="ds-container pt-4 pb-12 small:pt-6 small:pb-20">
+      <div className="ds-container py-12 small:py-16">
+        {/* `justify-between` inside `ds-container` is what right-aligns the
+            link: the container's content box is the same box the card track
+            starts from, so the link's right edge and the track's grid share
+            one line. The track then deliberately bleeds past it — see the
+            note on the `<ul>` below. */}
         <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <div>
+            {/* Short, thick, brand red — an anchor for the title block.
+                `aria-hidden` because it carries no information a screen
+                reader needs; the heading below already does that job. */}
+            <span
+              aria-hidden="true"
+              className="mb-3 block h-1 w-10 rounded-radius-full bg-primary"
+            />
             <Heading
               level="h2"
               display
@@ -91,7 +109,7 @@ export default async function FeaturedCollection({
             >
               Featured collection
             </Heading>
-            <Text muted className="mt-1">
+            <Text className="mt-1 text-text-secondary">
               Chosen by us, not by an algorithm.
             </Text>
           </div>
@@ -109,15 +127,24 @@ export default async function FeaturedCollection({
         {/* The negative margin plus matching padding lets the row bleed to the
             screen edge while the first card still lines up with the container
             — so the cut card reads as "the row continues" rather than as a
-            layout that overflowed by accident. `pb-4` leaves room for the
-            hover lift and the card shadow, which a tight `overflow-x` would
-            otherwise clip mid-animation. */}
-        <ul className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 small:-mx-6 small:px-6">
-          <li className="snap-start">
+            layout that overflowed by accident.
+
+            `items-stretch` is the whole alignment mechanism: every card is
+            sized to the tallest one on the line, so the top and bottom edges
+            of the track are flush. Which card is tallest is not fixed — the
+            product cards win at every real width, so the track height is
+            theirs, exactly as intended.
+
+            `py-4` (not `pb-4`) leaves room on *both* sides for the hover
+            lift and the card shadow. The lift moves cards up by 4px, so a
+            container that only pads the bottom clips them at the top
+            mid-animation. */}
+        <ul className="-mx-4 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto px-4 py-4 small:-mx-6 small:px-6">
+          <li className="flex snap-start">
             <EditorialCard campaign={ACTIVE_CAMPAIGN} />
           </li>
           {products.map((product) => (
-            <li key={product.id} className="snap-start">
+            <li key={product.id} className="flex snap-start">
               <EditorialProductCard product={product} />
             </li>
           ))}

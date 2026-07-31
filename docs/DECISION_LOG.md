@@ -1,15 +1,28 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 4.2
+**Version:** 4.3
 **Owner:** Program
-**Last Updated:** 2026-07-30
+**Last Updated:** 2026-07-31
 
 **Purpose:** A running, append-only record of every material business or architecture decision made on this project — what was decided, why, when, and what it affects. This is the authoritative history; chat conversations are not. When a decision changes, add a new entry rather than editing an old one, so the history of *why* things changed is preserved.
 
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Featured Collection condensed — and two deliberate `DESIGN_SYSTEM.md` deviations
+
+- **Decision:** The Featured Collection section is refined to Paul's follow-up brief: shorter product cards, a track whose card edges are perfectly flush, a tinted section band, softer/deeper shadows, and a button radius matching the card's. Recorded separately from the entry below because two points in it depart from a frozen document.
+- **Reasoning:** A direct design instruction on an already-shipped section. Most of it is unremarkable; three things are not.
+- **Date:** 2026-07-31
+- **Impact:**
+  1. **Card heights are now decided by the row, not by each card.** The editorial card no longer has an aspect ratio at all — it takes its height from the product cards via the row's `align-items: stretch`. This is what makes every top and bottom edge line up, and it is fragile in one specific way: giving the editorial card back an `aspect-[…]` would silently un-align the whole track, because a fixed ratio on a fixed width is a fixed height while the product cards' height is content-driven. Both cards now share one `CARD_SHELL` constant so they cannot drift apart.
+  2. **`DESIGN_SYSTEM.md` §B4 deviation — card shadows step up one level** (rest `elevation-2`, hover `elevation-3`, where §B4's table assigns `elevation-1` to product cards). §B4's `elevation-1` is a tight `0 1px 2px / 0 2px 6px` that all but disappears against this section's tinted background, and Paul asked specifically for a wide, diffused 5–10% shadow — which `elevation-2` already is, exactly. §B4 explicitly permits this ("exact shadow values are a reasonable starting proposal… expect minor tuning once real screens exist"), so this moves within the existing scale rather than inventing a shadow outside it. **No amendment to §B4; it still governs everywhere else.**
+  3. **`DESIGN_SYSTEM.md` §B5 deviation — the quick-add button takes the card's 16px `radius-lg`**, where §B5 assigns 8px `radius-md` to buttons. Paul asked for the button's corners to match the card's exactly. Scoped to this section only, via a prop; `QuickAddButton`'s own default is untouched, so every other listing still renders §B5's 8px. **This one has no allowance in §B5 to lean on — it is a straight deviation on Paul's instruction, and is logged here rather than quietly absorbed.**
+  4. **The description and catalog label are removed from the card, and that stays inside `04_PRODUCT_LISTING_SPECIFICATION.md` §9.** §9 requires image, name and price, and permits *at most one* supporting fact — a ceiling, not a floor. The catalog distinction it protects is not lost: the quick-add control is still coloured by department, so a dish and a bottle remain distinguishable without a text tag.
+- **Status:** Implemented and verified — card tops, bottoms and heights each collapse to a single value at 1440/834/390 (i.e. flush), axe-core 0 WCAG 2 A/AA violations at 1440 and 390, tsc clean, 84/84 tests.
+- **One item Paul should know was not done literally:** he asked for the "See the collection" link to be right-aligned with the right-most edge of the card track. The track has no right-most edge by design — it bleeds off the viewport so the last card is cut (see point 3 of the entry below). The link is instead flush with the container's content edge, which is the same line the first card starts from, so it aligns to the section's grid. Making it align to a literal track edge would require ending the bleed, which would undo the approved composition.
 
 ### §8.4 Curated Collections re-presented as an editorial Featured Collection
 

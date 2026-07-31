@@ -4,6 +4,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "@modules/products/components/thumbnail"
 import PreviewPrice from "@modules/products/components/product-preview/price"
 import QuickAddButton from "@modules/products/components/product-preview/quick-add-button"
+import { CARD_SHELL } from "./card-shell"
 
 type ProductWithCatalogDetails = HttpTypes.StoreProduct & {
   food_details?: { prep_time_minutes?: number | null } | null
@@ -31,6 +32,14 @@ type ProductWithCatalogDetails = HttpTypes.StoreProduct & {
  * `ProductPreview` is deliberately left untouched, because it is what every
  * category, collection and search listing renders — changing it to suit one
  * homepage row would have reached far beyond the section being designed.
+ *
+ * **The card carries only image, name and price.** The description and the
+ * catalog label were removed on Paul's direction to condense the card's
+ * height. §9 requires image, name and price, and permits *at most one*
+ * supporting fact — it does not require one, so dropping both stays inside
+ * the specification. The catalog distinction survives where it still does
+ * work: `department` still colours the quick-add control, so a Food Central
+ * dish and a bottle remain visually distinguishable without a text tag.
  */
 export default function EditorialProductCard({
   product,
@@ -46,20 +55,22 @@ export default function EditorialProductCard({
     // its sibling. Wrapping the whole card in an anchor would nest the button
     // inside it (`nested-interactive`).
     <div
-      className="group flex w-[260px] shrink-0 flex-col overflow-hidden rounded-radius-lg border border-border bg-surface-elevated shadow-elevation-1 transition-[box-shadow,transform] duration-standard ease-in-out hover:-translate-y-1 hover:shadow-elevation-2 small:w-[300px]"
+      className={`${CARD_SHELL} flex w-[260px] flex-col bg-surface-elevated small:w-[300px]`}
       data-testid="editorial-product-card"
     >
       <LocalizedClientLink
         href={`/products/${product.handle}`}
-        className="block overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
+        className="block shrink-0 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
         tabIndex={-1}
         aria-hidden="true"
       >
         {/* 4:3, and roughly two-thirds of the card's height — the ratio Paul
             specified. `rounded={false}` because the card already clips its
             own corners; a second radius inside would show a hairline of card
-            background between the two curves. */}
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink-100">
+            background between the two curves. `shrink-0` stops the image
+            being squeezed when this card is stretched to the track height,
+            which would silently break the 4:3 ratio. */}
+        <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-ink-100">
           <div className="absolute inset-0 transition-transform duration-[600ms] ease-out group-hover:scale-[1.04]">
             <Thumbnail
               thumbnail={product.thumbnail}
@@ -73,28 +84,23 @@ export default function EditorialProductCard({
         </div>
       </LocalizedClientLink>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.09em] text-text-muted">
-          {isFoodCentral ? "Food Central" : "Wine & Spirits"}
-        </span>
-
+      {/* 12px padding, 8px rhythm. Image, name, price, button — nothing else. */}
+      <div className="flex flex-1 flex-col gap-2 p-3">
+        {/* Clamped at two lines, but the second is *not* reserved with a
+            `min-h`. Reserving it keeps prices on one line across the row, at
+            the cost of an obvious dead gap under every one-line title —
+            which is the loose spacing this card was condensed to remove. The
+            row's alignment is carried by the flush card edges and by the
+            buttons' shared baseline (`mt-auto` below) instead. */}
         <LocalizedClientLink
           href={`/products/${product.handle}`}
-          className="text-body font-medium leading-snug text-text-primary transition-colors duration-standard ease-in-out hover:text-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          className="line-clamp-2 text-body font-medium leading-snug text-text-primary transition-colors duration-standard ease-in-out hover:text-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           data-testid="product-link"
         >
           {product.title}
         </LocalizedClientLink>
 
-        {product.description && (
-          // Two lines, then clipped. A rail card is a decision aid, not the
-          // product page — the full description lives one click away.
-          <p className="line-clamp-2 text-caption leading-snug text-text-secondary">
-            {product.description}
-          </p>
-        )}
-
-        <div className="mt-2 text-body font-semibold text-text-primary">
+        <div className="text-body font-semibold text-text-primary">
           {cheapestPrice ? (
             <PreviewPrice price={cheapestPrice} />
           ) : (
@@ -104,10 +110,20 @@ export default function EditorialProductCard({
           )}
         </div>
 
-        <div className="mt-3">
+        {/* `mt-auto` pins the button to the bottom of whatever height the
+            track settles on, so the buttons across the row share one
+            baseline even if a card's content is shorter. */}
+        <div className="mt-auto pt-1">
           <QuickAddButton
             product={product}
             department={isFoodCentral ? "food" : "wine"}
+            // Matches the card's own 16px corner, per Paul's direction.
+            // `!` is required, not decoration: `QuickAddButton` hardcodes
+            // `rounded-radius-md` in its shared class and `clx` is plain
+            // `clsx`, not tailwind-merge — without `!` the two utilities
+            // have identical specificity and Tailwind's emit order silently
+            // decides the winner.
+            className="!rounded-radius-lg"
           />
         </div>
       </div>

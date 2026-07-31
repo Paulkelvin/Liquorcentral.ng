@@ -1,11 +1,26 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.1
+**Version:** 7.2
 **Owner:** Program
-**Last Updated:** 2026-07-30
+**Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v68 — 2026-07-31 — Featured Collection condensed and aligned
+
+**Context:** Paul supplied a refinement brief for the section shipped in v67 — shorter cards, flush edges, more depth, a tinted section band.
+
+**Added:** `featured-collection/card-shell.ts` — the radius/border/shadow/hover classes both card types now share, so the editorial card and the product card cannot drift out of alignment.
+
+**Changed:**
+- The section sits on `ink-100` (#eceae3) rather than the page's own `surface` (#f3f5f0) — a warm cream band so the white cards read as raised. An existing neutral token, not a new hex (§B6 forbids raw hexes in components).
+- Cards are now sized by the row (`align-items: stretch` + `h-full`), not by their own content: the editorial card lost its aspect ratio and takes the product cards' height. Top and bottom edges are flush at every viewport.
+- Product cards drop the description and the catalog label, and condense to 12px padding with an 8px rhythm. §9 requires image/name/price and permits *at most one* supporting fact — it does not require one, so this stays inside the specification. The catalog distinction survives in the quick-add control's colour.
+- A short brand-red accent rule above the section heading; the subtitle moves from `muted` to `text-secondary`.
+- **`DESIGN_SYSTEM.md` deviations, both deliberate and both on Paul's explicit direction.** Card shadows step from `elevation-1`/`elevation-2` to `elevation-2`/`elevation-3`: §B4 assigns `elevation-1` to product cards, but its values are a tight `0 1px 2px / 0 2px 6px` that all but vanishes on the tinted band, and §B4 itself allows tuning ("a reasonable starting proposal… expect minor tuning once real screens exist"). And the quick-add button takes the card's 16px corner rather than §B5's 8px button radius. Neither is a documentation amendment — §B4/§B5 are unchanged and still govern everywhere else.
+
+**Verified:** flush edges confirmed by measurement (card tops, bottoms and heights each collapse to a single value at 1440/834/390); axe-core 0 WCAG 2 A/AA violations at 1440 and 390; tsc clean; 84/84 tests.
 
 ## v67 — 2026-07-30 — Featured Collection: §8.4 given an editorial treatment
 

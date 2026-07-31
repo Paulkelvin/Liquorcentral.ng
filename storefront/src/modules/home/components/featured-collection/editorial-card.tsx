@@ -1,6 +1,7 @@
 import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import type { Campaign } from "./campaign"
+import { CARD_SHELL } from "./card-shell"
 
 /**
  * The editorial card: a full-bleed photograph with the copy sitting on it.
@@ -22,6 +23,14 @@ import type { Campaign } from "./campaign"
  *    `<a>`.** A link inside a link is invalid HTML and axe flags it as
  *    `nested-interactive`; the CTA reads as a button because it is styled as
  *    one and the card announces itself once to a screen reader.
+ *
+ * **This card has no aspect ratio of its own.** It takes its height from the
+ * product cards beside it, via the row's `align-items: stretch` and the
+ * `h-full` in `CARD_SHELL` — that is what makes every top and bottom edge in
+ * the track line up. Giving it back an `aspect-[…]` would immediately
+ * un-align the row, because a fixed ratio on a fixed width is a fixed height
+ * and the product cards' height is content-driven. Only `min-h` is set, as a
+ * floor for the copy.
  */
 export default function EditorialCard({ campaign }: { campaign: Campaign }) {
   const href = campaign.href ?? `/collections/${campaign.collectionHandle}`
@@ -29,7 +38,7 @@ export default function EditorialCard({ campaign }: { campaign: Campaign }) {
   return (
     <LocalizedClientLink
       href={href}
-      className="group relative flex aspect-[4/5] w-[280px] shrink-0 overflow-hidden rounded-radius-lg border border-border shadow-elevation-1 transition-shadow duration-standard ease-in-out hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 xsmall:w-[360px] small:aspect-[16/13] small:w-[520px] medium:w-[560px]"
+      className={`${CARD_SHELL} flex min-h-[280px] w-[280px] xsmall:w-[360px] small:w-[520px] medium:w-[560px]`}
       data-testid="editorial-card"
     >
       <Image
