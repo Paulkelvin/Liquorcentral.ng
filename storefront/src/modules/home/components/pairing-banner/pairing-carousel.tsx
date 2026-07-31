@@ -17,17 +17,25 @@ export type ResolvedPairing = PairingSlide & {
  * The two-slide pairing carousel.
  *
  * **On autoplay and WCAG 2.2.2.** Content that moves automatically, starts on
- * its own and runs longer than five seconds must offer a way to pause it.
- * That is not optional here, so this carousel:
+ * its own and runs longer than five seconds must offer a way to pause, stop or
+ * hide it. The explicit play/pause button that used to sit under the card was
+ * removed on Paul's direction, so **that obligation now rests entirely on the
+ * three behaviours below** — none of them is a nicety, and removing any one
+ * would leave the section non-conformant:
  *
- * - ships a real **pause/play control**, not just the dots;
- * - **stops on hover and on keyboard focus**, so nobody loses a slide mid-read
- *   or mid-tab;
- * - **never starts at all under `prefers-reduced-motion`** — the media query
- *   is checked, not assumed, and the listener keeps it honest if the user
- *   changes the setting while the page is open;
- * - stops permanently once the customer touches a dot, because at that point
- *   they have said which slide they want and moving it again fights them.
+ * - **a dot press stops autoplay permanently** (`userTookOver`), which is the
+ *   "stop" mechanism SC 2.2.2 requires. It is also the right behaviour on its
+ *   own terms: once the customer has said which slide they want, moving it
+ *   again fights them;
+ * - **hover and keyboard focus pause it**, so nobody loses a slide mid-read or
+ *   mid-tab;
+ * - **it never starts under `prefers-reduced-motion`** — the media query is
+ *   checked, not assumed, and a live listener keeps it honest if the setting
+ *   changes while the page is open.
+ *
+ * This is flagged in `DECISION_LOG.md` rather than assumed to be fine: relying
+ * on the dots is defensible, but it is less obvious than a labelled control,
+ * and Paul should know that is the trade he made.
  *
  * **On the inactive slide.** Both slides stay mounted so the copy can cross-
  * fade, which means the hidden one still contains a real button. `inert`
@@ -154,6 +162,8 @@ export default function PairingCarousel({
           The perfect pairing
         </h2>
 
+        {/* The card is the positioning context for the dots, which now live
+            *inside* it (Paul's direction) rather than in a strip below. */}
         <div className="relative overflow-hidden rounded-radius-lg border border-border">
           {slides.map((slide, i) => {
             const isActive = i === index
@@ -190,7 +200,14 @@ export default function PairingCarousel({
                     and on a 390px screen the copy half is only ~195px wide,
                     where an unscrimmed marble or wood grain is the
                     difference between readable and not. */}
-                <div className="relative aspect-[16/9] w-full">
+                {/* **A fixed 300px below 768px, 16:9 above.** Paul asked for
+                    a taller, more generous mobile banner than 16:9 gives at
+                    phone widths — at 390px wide that ratio is only 219px
+                    tall, which is what made the right column feel cramped. A
+                    fixed height also means the copy panel has a known height
+                    to distribute itself down, which the layout below relies
+                    on. */}
+                <div className="relative h-[300px] w-full md:h-auto md:aspect-[16/9]">
                   <Image
                     src={slide.image}
                     alt={slide.imageAlt}
@@ -210,7 +227,14 @@ export default function PairingCarousel({
                     }}
                   />
 
-                  <div className="absolute inset-y-0 right-0 flex w-1/2 flex-col justify-center gap-1.5 px-4 md:gap-3 md:px-8 medium:px-14">
+                  {/* Below 768px the three blocks are pushed apart across the
+                      full 300px — eyebrow at the top, headline in the middle,
+                      price and CTA on one row at the bottom — so the height
+                      reads as deliberate composition rather than as a short
+                      block floating in a tall box. From 768px up the copy
+                      re-centres, because there the body paragraph is back and
+                      the column is dense enough to need no spreading. */}
+                  <div className="absolute inset-y-0 right-0 flex w-1/2 flex-col justify-between gap-1.5 py-4 px-4 md:justify-center md:gap-3 md:py-0 md:px-8 medium:px-14">
                     <span
                       className={clx(
                         "text-[10px] font-semibold uppercase leading-tight tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]",
@@ -253,104 +277,96 @@ export default function PairingCarousel({
                       {slide.body}
                     </p>
 
-                    {/* The price as its own line, no longer inside the
-                        button label. It stays adjacent to the CTA so the
-                        two read as one statement — and the button's
-                        `aria-label` still carries the total, so nothing is
-                        lost for a screen reader when the visual pairing of
-                        the two elements is unavailable. */}
-                    <span
-                      className={clx(
-                        "text-[12px] font-medium md:text-caption",
-                        dark ? "text-ink-200" : "text-text-secondary"
-                      )}
-                      data-testid="pairing-price"
-                    >
-                      {slide.totalLabel}
-                    </span>
+                    {/* Price and CTA share one row below 768px, and stack
+                        from 768px up.
 
-                    {/* 40px drawn on mobile, 48px from `small:`. The 40px is
-                        Paul's compact spec; `DESIGN_SYSTEM.md` §B11's 44px
-                        floor is met by the invisible `::before`, the same
-                        allowance the compact quantity stepper and the footer
-                        social icons already use. Consequence: this button
-                        must never gain `overflow-hidden`, which would clip
-                        the expanded hit area with it. */}
-                    <button
-                      type="button"
-                      onClick={() => handleAdd(slide)}
-                      disabled={
-                        status?.slideId === slide.id &&
-                        status.state === "adding"
-                      }
-                      data-testid="pairing-add-button"
-                      aria-label={`${ctaLabelFor(slide)} — ${slide.totalLabel} — ${slide.itemsLabel}`}
-                      className="relative mt-1 inline-flex h-10 w-full items-center justify-center rounded-radius-md bg-primary px-3 text-[12px] font-medium text-surface-elevated transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] hover:bg-primary-hover active:bg-primary-active disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 md:mt-2 md:h-12 md:w-auto md:self-start md:px-6 md:text-[15px]"
-                    >
-                      {ctaLabelFor(slide)}
-                    </button>
+                        The price stays a sibling of the button rather than
+                        going back inside its label — but the button's
+                        `aria-label` still carries the total, because visual
+                        adjacency communicates nothing to a screen reader. */}
+                    <div className="flex items-center justify-between gap-2 md:flex-col md:items-start md:gap-2">
+                      <span
+                        className={clx(
+                          "text-[12px] font-semibold md:text-caption md:font-medium",
+                          dark ? "text-surface-elevated" : "text-text-primary"
+                        )}
+                        data-testid="pairing-price"
+                      >
+                        {slide.totalLabel}
+                      </span>
+
+                      {/* 36px drawn below 768px per Paul's compact spec, 48px
+                          above. `DESIGN_SYSTEM.md` §B11's 44px floor is met by
+                          the invisible `::before`, the same allowance the
+                          compact quantity stepper, footer social icons and
+                          these carousel dots already use. **This button must
+                          never gain `overflow-hidden`** — it would clip the
+                          expanded hit area along with everything else and
+                          silently void the guarantee. */}
+                      <button
+                        type="button"
+                        onClick={() => handleAdd(slide)}
+                        disabled={
+                          status?.slideId === slide.id &&
+                          status.state === "adding"
+                        }
+                        data-testid="pairing-add-button"
+                        aria-label={`${ctaLabelFor(slide)} — ${slide.totalLabel} — ${slide.itemsLabel}`}
+                        className="relative inline-flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-radius-full bg-primary px-3 text-[12px] font-medium text-surface-elevated transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] hover:bg-primary-hover active:bg-primary-active disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 md:mt-1 md:h-12 md:rounded-radius-md md:px-6 md:text-[15px]"
+                      >
+                        {ctaLabelFor(slide)}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             )
           })}
-        </div>
 
-        {slides.length > 1 && (
-          <div className="mt-4 flex items-center justify-center gap-3">
-            {/* Dots sit at 8px but carry a 44px target via the invisible
-                `::before`, per DESIGN_SYSTEM.md §B11 — a literal 8px control
-                is unusable on a phone. */}
-            {slides.map((slide, i) => (
-              <button
-                key={slide.id}
-                type="button"
-                onClick={() => goTo(i)}
-                aria-label={`Show pairing ${i + 1}: ${slide.title}`}
-                aria-current={i === index ? "true" : undefined}
-                data-testid="pairing-dot"
-                className={clx(
-                  "relative h-2 rounded-radius-full transition-all duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-11 before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
-                  i === index
-                    ? "w-6 bg-text-primary"
-                    : "w-2 bg-ink-300 hover:bg-ink-500"
-                )}
-              />
-            ))}
+          {/* **Inside the card, over the photograph** — Paul's direction, in
+              place of the strip that used to sit below it.
 
-            {/* WCAG 2.2.2. Hidden when autoplay could never run anyway —
-                under reduced motion there is nothing to pause. */}
-            {!reducedMotion && (
-              <button
-                type="button"
-                onClick={() => setUserTookOver((v) => !v)}
-                aria-label={
-                  userTookOver
-                    ? "Resume automatic slideshow"
-                    : "Pause automatic slideshow"
-                }
-                data-testid="pairing-autoplay-toggle"
-                className="relative ml-1 inline-flex h-11 w-11 items-center justify-center rounded-radius-full text-text-secondary transition-colors duration-standard ease-in-out hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-              >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-3.5 w-3.5"
-                >
-                  {userTookOver ? (
-                    <path d="M6 4l10 6-10 6V4Z" />
-                  ) : (
-                    <>
-                      <rect x="5" y="4" width="3.5" height="12" rx="1" />
-                      <rect x="11.5" y="4" width="3.5" height="12" rx="1" />
-                    </>
+              Bottom-left below 768px, bottom-centre from 768px up. Not
+              bottom-right at either width: on a phone the card's bottom-right
+              is exactly where the price and CTA row sits, and dots there would
+              land on the button.
+
+              The capsule is `bg-scrim` (ink-900 at 70%) with `backdrop-blur`,
+              not a translucent white or black: the dots have to stay legible
+              over *both* a near-black wood table and a pale marble worktop,
+              and a single scrim gives them one predictable background instead
+              of two gambles. It is also why the dots themselves use solid
+              tokens — `/50`-style opacity modifiers compile to `transparent`
+              in this design system (see `dish-card.tsx`). */}
+          {slides.length > 1 && (
+            <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-radius-full bg-scrim px-2.5 py-1.5 backdrop-blur-sm md:left-1/2 md:-translate-x-1/2">
+              {slides.map((slide, i) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  aria-label={`Show pairing ${i + 1}: ${slide.title}`}
+                  aria-current={i === index ? "true" : undefined}
+                  data-testid="pairing-dot"
+                  className={clx(
+                    // `before:-inset-x-1`, **not** a fixed 44px-wide box.
+                    // These dots sit 8px apart, so two 44px-wide hit areas
+                    // overlap almost completely and the later one in the DOM
+                    // swallows taps meant for the earlier — caught when a
+                    // click on dot 1 was intercepted by dot 2. Extending each
+                    // dot by 4px a side makes the areas meet exactly at the
+                    // midpoint of the gap: contiguous, never overlapping.
+                    // Height still reaches §B11's 44px.
+                    "relative h-1.5 rounded-radius-full transition-all duration-standard ease-in-out before:absolute before:-inset-x-1 before:top-1/2 before:h-11 before:-translate-y-1/2 before:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
+                    i === index
+                      ? "w-5 bg-surface-elevated"
+                      : "w-1.5 bg-ink-300 hover:bg-surface-elevated"
                   )}
-                </svg>
-              </button>
-            )}
-          </div>
-        )}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Announces the slide change to a screen reader without moving focus.
             `polite`, so it waits for a gap rather than interrupting. */}

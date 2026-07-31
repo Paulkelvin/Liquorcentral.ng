@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 4.4
+**Version:** 4.5
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
@@ -10,6 +10,17 @@
 **Format:** newest entries at the top. Each entry: Decision → Reasoning → Date → Impact → Status.
 
 ---
+
+### Pairing banner's explicit pause control removed — WCAG 2.2.2 now rests on the dots
+
+- **Decision:** The play/pause button under the Perfect Pairing carousel is deleted on Paul's direction, and the pagination dots move inside the card. Autoplay stays.
+- **Reasoning:** Paul asked for it: "Delete the play/pause triangle icon and external container completely." The visual case is fair — a triangle in a strip below a full-bleed editorial card looked like debug furniture.
+- **Date:** 2026-07-31
+- **Impact, and why this is logged rather than absorbed:**
+  1. **WCAG 2.2.2 (Pause, Stop, Hide) applies to this section.** Content that moves automatically, starts on its own and runs more than five seconds must offer a mechanism to pause, stop or hide it. That was the button's job.
+  2. **The obligation now rests on three behaviours, all of which must survive.** A dot press stops autoplay *permanently* (`userTookOver`) — that is the "stop" mechanism; hover and keyboard focus pause it; and it never starts at all under `prefers-reduced-motion`. **Deleting or "simplifying" any one of the three makes the section non-conformant.** The reasoning is written into the component so a future editor meets it before the audit does.
+  3. **This is defensible but weaker than what it replaced.** A dot that stops rotation satisfies the letter of the criterion, but it is not *labelled* as a stop control, so a customer who wants the motion to end has to discover it. If Paul wants belt and braces, a subtle in-card pause control is a small change — offered, not assumed.
+- **Status:** Implemented. Flagged for Paul; no reply required unless he wants the explicit control back.
 
 ### Featured Collection condensed — and two deliberate `DESIGN_SYSTEM.md` deviations
 

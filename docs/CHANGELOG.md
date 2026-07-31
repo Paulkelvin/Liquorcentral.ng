@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.12
+**Version:** 7.13
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v79 — 2026-07-31 — Pairing banner: 300px mobile card, dots inside, controls stripped
+
+**Context:** Paul's final layout pass on the Perfect Pairing banner.
+
+**Changed:**
+- **Fixed 300px height below 768px**, 16:9 above. At 390px the 16:9 frame was only 219px tall, which is what made the right column feel cramped. The fixed height also gives the copy panel a known height to distribute across.
+- **The right column spreads across the full height below 768px** — eyebrow top, headline middle, price and CTA on one row at the bottom (`justify-between`). It re-centres from 768px up, where the body paragraph is back and the column is dense enough not to need it.
+- **Price and CTA share one row on mobile**; price is now `font-semibold`. CTA is a 36px pill, `radius-full`.
+- **Play/pause control deleted; dots moved inside the card** — bottom-left below 768px, bottom-centre above. Not bottom-right at either width: on a phone that is exactly where the price/CTA row sits. The dot capsule uses `bg-scrim` + `backdrop-blur` so the dots stay legible over both a near-black wood table and a pale marble worktop, and solid token colours inside it (`/50`-style opacity modifiers compile to *transparent* in this design system).
+
+**⚠️ WCAG 2.2.2 now rests on the dots, not on a labelled control** — logged in `DECISION_LOG.md` (→ v4.5) rather than absorbed. Autoplay still stops permanently on a dot press, pauses on hover and focus, and never starts under `prefers-reduced-motion`; **removing any one of those three makes the section non-conformant.** A subtle in-card pause control remains available if Paul wants belt and braces.
+
+**A real bug found in verification:** the dots sit 8px apart and each carried a 44px-*wide* invisible hit area, so the two overlapped almost completely and dot 2 swallowed taps meant for dot 1 (caught when a click was intercepted). Each dot's hit area is now `-inset-x-1` — extending 4px a side so the areas meet exactly at the gap's midpoint, contiguous and never overlapping. Height still reaches 44px.
+
+**Verified at 1440 / 767 / 390 / 320:** frame 300px below 768 and 16:9 above; panel exactly 50%; `object-fit: cover` / `object-position: 0% 50%`; body `none` below 768, `block` above; price and CTA share a row below 768; button drawn 36px/48px with an 89×44px hit area; dots inside the card, no overlap with the CTA and none between themselves; no panel or page overflow. axe-core 0 WCAG 2 A/AA violations on `/` and `/cart`; tsc clean; 84/84 tests.
 
 ## v78 — 2026-07-31 — Pairing banner: one side-by-side layout at every width
 
