@@ -1,11 +1,21 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.4
+**Version:** 7.5
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v71 — 2026-07-31 — Featured Collection resting shadow removed; Account gains an icon
+
+**Context:** Paul reviewed the deployed build on a phone.
+
+**Changed:**
+- **Featured Collection cards lose their resting shadow.** `elevation-2` reads as depth on white but, against this section's tinted band, resolved into a grey halo tracing every card. Separation is now carried by the contrast step plus the hairline border (white card, `ink-100` ground, `ink-300` edge). Hover keeps `elevation-2` with the lift. **This closes the §B4 deviation logged in v68 — the section is back inside `DESIGN_SYSTEM.md`'s scale with nothing to except** (`DECISION_LOG.md` → v4.4 records the reversal and why the earlier screenshots missed it).
+- **The desktop "Account" link gains a user icon**, matching `CartTrigger`'s treatment exactly — same 24px glyph, same gap, same 44px minimum target. The glyph is `aria-hidden`; "Account" is already the accessible name.
+
+**Verified:** axe-core 0 WCAG 2 A/AA violations at 1440 and 390; tsc clean; 84/84 tests.
 
 ## v70 — 2026-07-31 — Segmented department switcher; hero refinements
 

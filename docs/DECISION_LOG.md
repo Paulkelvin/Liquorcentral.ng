@@ -1,7 +1,7 @@
 # Decision Log
 
 **Status:** Approved (living, authoritative record)
-**Version:** 4.3
+**Version:** 4.4
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
@@ -18,7 +18,7 @@
 - **Date:** 2026-07-31
 - **Impact:**
   1. **Card heights are now decided by the row, not by each card.** The editorial card no longer has an aspect ratio at all — it takes its height from the product cards via the row's `align-items: stretch`. This is what makes every top and bottom edge line up, and it is fragile in one specific way: giving the editorial card back an `aspect-[…]` would silently un-align the whole track, because a fixed ratio on a fixed width is a fixed height while the product cards' height is content-driven. Both cards now share one `CARD_SHELL` constant so they cannot drift apart.
-  2. **`DESIGN_SYSTEM.md` §B4 deviation — card shadows step up one level** (rest `elevation-2`, hover `elevation-3`, where §B4's table assigns `elevation-1` to product cards). §B4's `elevation-1` is a tight `0 1px 2px / 0 2px 6px` that all but disappears against this section's tinted background, and Paul asked specifically for a wide, diffused 5–10% shadow — which `elevation-2` already is, exactly. §B4 explicitly permits this ("exact shadow values are a reasonable starting proposal… expect minor tuning once real screens exist"), so this moves within the existing scale rather than inventing a shadow outside it. **No amendment to §B4; it still governs everywhere else.**
+  2. ~~**`DESIGN_SYSTEM.md` §B4 deviation — card shadows step up one level**~~ — **reversed 2026-07-31, and the deviation no longer exists.** The cards briefly rested on `elevation-2` (a wide, diffused shadow Paul asked for and approved in review). On a real phone, against this section's own tinted band, it resolved into a visible grey halo around every card and Paul asked for it removed. The cards now carry **no resting shadow at all**; separation comes from the contrast step plus the hairline border (white card, `ink-100` ground, `ink-300` edge). Hover keeps `elevation-2`, which is §B4's own step for a raised surface — so this section is back inside §B4 with nothing to except. **The lesson worth keeping: a wide diffuse shadow that reads as depth on white reads as a halo on a tinted ground.** Screenshots on a light desktop background did not show it; the device did.
   3. **`DESIGN_SYSTEM.md` §B5 deviation — the quick-add button takes the card's 16px `radius-lg`**, where §B5 assigns 8px `radius-md` to buttons. Paul asked for the button's corners to match the card's exactly. Scoped to this section only, via a prop; `QuickAddButton`'s own default is untouched, so every other listing still renders §B5's 8px. **This one has no allowance in §B5 to lean on — it is a straight deviation on Paul's instruction, and is logged here rather than quietly absorbed.**
   4. **The description and catalog label are removed from the card, and that stays inside `04_PRODUCT_LISTING_SPECIFICATION.md` §9.** §9 requires image, name and price, and permits *at most one* supporting fact — a ceiling, not a floor. The catalog distinction it protects is not lost: the quick-add control is still coloured by department, so a dish and a bottle remain distinguishable without a text tag.
 - **Status:** Implemented and verified — card tops, bottoms and heights each collapse to a single value at 1440/834/390 (i.e. flush), axe-core 0 WCAG 2 A/AA violations at 1440 and 390, tsc clean, 84/84 tests.

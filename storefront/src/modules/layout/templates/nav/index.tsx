@@ -6,7 +6,7 @@ import { listRegions } from "@lib/data/regions"
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import { StoreRegion } from "@medusajs/types"
-import { ShoppingBag } from "@medusajs/icons"
+import { ShoppingBag, User } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import MobileNavDrawer from "@modules/layout/components/mobile-nav-drawer"
@@ -76,11 +76,18 @@ export default async function Nav() {
 
           <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-4">
             <div className="hidden h-full items-center gap-x-6 small:flex">
+              {/* Icon + label, matching `CartTrigger` exactly — same 24px
+                  glyph, same 1.5 gap, same 44px minimum target. The two
+                  controls sit side by side, so an icon on one and bare text
+                  on the other read as two different kinds of thing. The
+                  glyph is `aria-hidden`: "Account" is already the accessible
+                  name, and announcing the icon as well would repeat it. */}
               <LocalizedClientLink
-                className="hover:text-interactive"
+                className="inline-flex h-full min-w-[44px] items-center justify-center gap-1.5 transition-colors duration-standard ease-in-out hover:text-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                 href="/account"
                 data-testid="nav-account-link"
               >
+                <User width={24} height={24} aria-hidden="true" />
                 Account
               </LocalizedClientLink>
             </div>

@@ -14,15 +14,21 @@
  * `<li>` actually fill it. Remove it and the cards go back to being sized
  * by their own content, which is the ragged bottom edge this replaced.
  *
- * **On the shadow steps.** `DESIGN_SYSTEM.md` §B4's table assigns
- * `elevation-1` to product cards, but its own values are a tight
- * `0 1px 2px / 0 2px 6px` — which all but disappears against this
- * section's tinted background, and is not the "soft, diffused, wide blur"
- * Paul asked for. `elevation-2` (`0 4px 12px rgba(…,0.10), 0 12px 32px
- * rgba(…,0.08)`) is that shadow exactly, already in the scale. §B4
- * explicitly allows this ("exact shadow values are a reasonable starting
- * proposal… expect minor tuning once real screens exist"), so this steps
- * up the scale rather than inventing a shadow outside it.
+ * **The cards carry no resting shadow, deliberately.** They briefly used
+ * `elevation-2` at rest — a wide, diffuse shadow that reads well on white
+ * but, against this section's own tinted band, resolved into a visible grey
+ * halo tracing every card. Paul saw it on a phone and asked for it gone.
+ *
+ * What separates a card from the band now is the **contrast step plus the
+ * hairline border** — white card, `ink-100` ground, `ink-300` edge — which
+ * is enough on its own and stays clean at any zoom. So do not reintroduce a
+ * resting shadow "for depth": on a tinted ground it costs a halo and buys
+ * nothing the contrast step isn't already providing.
+ *
+ * The hover state keeps `elevation-2` with the lift, since it only ever
+ * appears under a pointer and reads as a response rather than as decoration.
+ * That is also `DESIGN_SYSTEM.md` §B4's own hover step for a raised surface,
+ * so nothing here deviates from the scale any more.
  */
 export const CARD_SHELL =
-  "group relative h-full shrink-0 overflow-hidden rounded-radius-lg border border-border shadow-elevation-2 transition-[box-shadow,transform] duration-standard ease-in-out hover:-translate-y-1 hover:shadow-elevation-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+  "group relative h-full shrink-0 overflow-hidden rounded-radius-lg border border-border transition-[box-shadow,transform] duration-standard ease-in-out hover:-translate-y-1 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
