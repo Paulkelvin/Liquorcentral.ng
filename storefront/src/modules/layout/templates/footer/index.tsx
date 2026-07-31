@@ -117,7 +117,17 @@ export default async function Footer() {
             >
               LiquorCentral
             </LocalizedClientLink>
-            <Text className="max-w-[280px] text-caption" muted>
+            {/* Its own step in the hierarchy, deliberately.
+                Wordmark (20px display) → this (15px) → link lists and
+                headings (13px). At `text-caption`/`muted` it sat at exactly
+                the same size and a *lighter* colour than the link columns
+                beside it, so the brand's one sentence of positioning read as
+                the least important text in the footer. 15px and
+                `text-secondary` (8.9:1, up from muted's 4.77:1) put it
+                between the name above and the navigation beside it, which is
+                where it belongs. `max-w-[32ch]` keeps the measure readable
+                now that the type is larger. */}
+            <Text className="max-w-[32ch] !text-[15px] leading-relaxed text-text-secondary">
               Premium wine, spirits, and Nigerian food — sold and delivered
               directly by us, never a stranger.
             </Text>
