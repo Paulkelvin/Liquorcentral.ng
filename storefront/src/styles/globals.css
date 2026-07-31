@@ -32,9 +32,34 @@
   --ink-200: #d8d5cc;
   --ink-100: #eceae3;
   --ink-900-50: rgba(26, 26, 26, 0.5);
+  /*
+   * A deeper scrim than `--ink-900-50`, for a pill sitting directly on a
+   * photograph. Defined as a literal `rgba` for the same reason `-50` is:
+   * every colour in this file resolves to a hex string, so Tailwind's
+   * `/70` opacity modifier compiles to `rgb(#1a1a1a / 0.7)` and silently
+   * produces **transparent** — measured, not assumed. Alpha has to be
+   * baked into the token.
+   */
+  --ink-900-70: rgba(26, 26, 26, 0.7);
 
   /* Surface Elevated — a distinct value from the page's own Off White */
   --surface-elevated: #ffffff;
+
+  /*
+   * Surface Warm — a warm sand, one step off the page's Off White.
+   *
+   * Added for the Today's Menu band, which needed to read as a *different*
+   * kind of section from the retail rows around it. `ink-100` was the
+   * obvious existing choice and is wrong here for a layout reason: the
+   * Featured Collection band directly above already uses it, so the two
+   * would merge into one long tinted block instead of reading as two
+   * sections.
+   *
+   * It is a neutral surface, not a brand hue — `BRAND_IDENTITY.md`'s four
+   * approved colours are untouched. Flagged for Paul: this is a genuine
+   * addition to the Tier-1 neutral surfaces, not a component-level colour.
+   */
+  --surface-warm: #f2ece1;
 
   /*
    * Tier 3 — Semantic Design Tokens (the only vocabulary components use)
@@ -54,6 +79,7 @@
   --color-accent: var(--brand-gold);
   --color-surface: var(--brand-off-white);
   --color-surface-elevated: var(--surface-elevated);
+  --color-surface-warm: var(--surface-warm);
   --color-background: var(--brand-off-white);
   --color-text-primary: var(--ink-900);
   --color-text-secondary: var(--ink-700);
@@ -70,6 +96,7 @@
   --color-danger: var(--functional-danger);
   --color-information: var(--functional-information);
   --color-overlay: var(--ink-900-50);
+  --color-scrim: var(--ink-900-70);
 
   /*
    * Interactive state layer (DESIGN_SYSTEM.md "Interactive States"): hover

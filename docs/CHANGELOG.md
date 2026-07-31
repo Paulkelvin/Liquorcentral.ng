@@ -1,11 +1,33 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.8
+**Version:** 7.9
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v75 — 2026-07-31 — Today's Menu rebuilt as a culinary showcase
+
+**Context:** Paul asked for the homepage's Food Central section to stop reading as a cold product grid.
+
+**Added:**
+- `home/components/food-central-spotlight/dish-card.tsx` — a third product card, scoped to this row only. 4:3 landscape crop, prep time lifted onto the photograph as an overlay pill, optional one-line description from the product's own `description` field, round icon quick-add. **`04_PRODUCT_LISTING_SPECIFICATION.md` §9's information hierarchy is preserved exactly** (image/name/price always; at most one supporting fact; quick-add a genuine sibling of the card's single link). `ProductPreview` untouched.
+- `QuickAddButton` gains `appearance="icon"` — same optimistic add, same error rollback, same multi-variant hand-off and sold-out cases, drawn as a 44px round control. Each branch carries an `aria-label` naming the product; **sold out stays text**, since no icon says that unambiguously.
+
+**Design-system additions (both need Paul's sign-off):**
+- **`--surface-warm: #f2ece1`** → `bg-surface-warm`. A warm sand band for this section. `ink-100` was the obvious existing choice and is wrong here: the Featured Collection band directly above already uses it, so the two would merge into one long tinted block. It is a neutral surface — `BRAND_IDENTITY.md`'s four approved colours are untouched.
+- **`--ink-900-70` → `bg-scrim`**, for the pill over the photograph. Necessary because **Tailwind's `/70` opacity modifier does not work in this design system**: every colour resolves to a hex string through a CSS variable, so `bg-ink-900/70` compiles to `rgb(#1a1a1a / 0.7)` and renders *transparent*. Measured, not assumed. Alpha must be baked into the token, which is why `--ink-900-50` already was.
+
+**Changed:** the section is a snapping horizontal carousel on mobile (`basis-[78%]` → 1.32 cards visible, next card cut by the viewport edge), a 3-up grid from `small:` and 4-up from `medium:`.
+
+**Two bugs found and fixed during verification, both worth knowing:**
+- `lg:grid-cols-4` silently lost to `small:grid-cols-3` — Tailwind's `lg` and this project's custom `small` are **both 1024px**, so they land in one media query and emit order decides. Use the project's own scale (`medium:`) at that width.
+- The section subtitle at `muted` measured **4.45:1** on the new tint, under the 4.5 floor — caught by a live axe run, not by eye. Any tinted band lowers the contrast ceiling.
+
+**Not done — flagged rather than faked:** "consistent high-res food photography" is a content task, not a code one. The card now guarantees consistent *cropping* (4:3, `object-cover`); the images themselves are seeded Wikimedia stand-ins and are not photographs of these dishes. `BRAND_IDENTITY.md` §15's honest-photography rule means real dish photography has to come from the kitchen.
+
+**Verified:** axe-core 0 WCAG 2 A/AA violations at 1440 and 390 on `/` and `/cart`; 1.32 cards visible at 390 with snap; 4-up at 1440; pill measures `rgba(26,26,26,0.7)`; quick-add 44×44px; tsc clean; 84/84 tests.
 
 ## v74 — 2026-07-31 — Footer brand paragraph gets its own type step
 

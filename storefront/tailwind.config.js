@@ -56,6 +56,9 @@ module.exports = {
         surface: {
           DEFAULT: "var(--color-surface)",
           elevated: "var(--color-surface-elevated)",
+          // A warm sand band, distinct from both the page's Off White and
+          // `ink-100`. See globals.css for why a fourth surface exists.
+          warm: "var(--color-surface-warm)",
         },
         background: "var(--color-background)",
         "text-primary": "var(--color-text-primary)",
@@ -99,6 +102,10 @@ module.exports = {
           "on-tint": "var(--color-information-on-tint)",
         },
         overlay: "var(--color-overlay)",
+        // A deeper scrim for a chip laid over a photograph. Alpha is baked
+        // into the token — Tailwind's `/70` modifier cannot work on these
+        // hex-valued CSS variables and compiles to transparent.
+        scrim: "var(--color-scrim)",
         // Neutral System (DESIGN_SYSTEM.md §B6) — the raw scale the
         // semantic tokens above resolve from. Prefer the semantic tokens;
         // these exist for the rare case a component genuinely needs a
