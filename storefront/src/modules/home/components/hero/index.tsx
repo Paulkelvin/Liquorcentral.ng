@@ -44,15 +44,38 @@ const HERO_IMAGE = "/brand/hero-food-drink.jpg"
  */
 function HeroVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[560px]">
+    // **Full-bleed on a phone, contained from `small:` up.** On mobile the
+    // image previously sat inside the container's own 16px gutters at
+    // `max-w-[560px]`, which left it floating in the middle of a large empty
+    // ground — Paul's "sticker" note. `-mx-4` cancels `ds-container`'s
+    // padding so it runs edge to edge instead.
+    //
+    // **It is deliberately not put in a tinted card, which was the other
+    // option offered.** This file's ground is baked to the page's exact
+    // `#F3F5F0` (see the note above), so *any* card colour behind it —
+    // white, `ink-100`, anything — would make the image's own background
+    // show up as a rectangle inside the card. The thing that makes the photo
+    // sit seamlessly on the page is the same thing that rules out framing
+    // it. Full bleed keeps the seam invisible and still removes the float.
+    //
+    // The rounded corners are therefore `small:` only: they do nothing while
+    // the ground matches, but they are correct if the image is ever swapped
+    // for one with its own background, and rounding a full-bleed edge would
+    // be wrong.
+    // The 5:4 crop is the other half of "tighten the flow." Square at full
+    // bleed the image is 390px tall on a 390px phone, which alone pushes the
+    // headline past the fold. The source has generous empty ground above and
+    // below the board, so cropping to 5:4 takes ~20% off the height without
+    // touching the subject.
+    <div className="relative -mx-4 aspect-[5/4] overflow-hidden small:mx-auto small:aspect-auto small:max-w-[560px] small:rounded-radius-lg">
       <Image
         src={HERO_IMAGE}
         alt="A bottle of red wine, a poured glass, a linen napkin and a bowl of Nigerian jollof rice with grilled chicken, arranged on a round wooden serving board"
         width={1024}
         height={1024}
         priority
-        sizes="(max-width: 1024px) 88vw, 560px"
-        className="h-auto w-full"
+        sizes="(max-width: 1024px) 100vw, 560px"
+        className="h-full w-full object-cover small:h-auto"
       />
     </div>
   )
@@ -89,7 +112,7 @@ const AVATARS = [
 
 function SocialProof() {
   return (
-    <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row small:items-center">
+    <div className="order-5 mt-2 flex flex-col items-center gap-3 sm:flex-row small:items-center">
       {/* Overlap is deliberately looser than the reference's. Its circles are
           photographs, where overlap costs nothing; initials get their right
           edge clipped by the next circle and become unreadable. Tighten this
@@ -119,12 +142,26 @@ export default function Hero() {
     // re-introduce exactly the boxed-in feel the visual above works to
     // avoid; the section below provides its own separation by contrast.
     <div className="w-full bg-surface">
-      <div className="ds-container grid grid-cols-1 items-center gap-12 py-16 small:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)] small:gap-16 small:py-24">
-        <div className="order-2 flex flex-col items-center gap-6 text-center small:order-1 small:items-start small:text-left">
+      {/* Mobile vertical rhythm is tightened hard (`py-8` / `gap-8` against
+          the previous `py-16` / `gap-12`) so the headline is not pushed most
+          of a screen down before it is reached. Desktop keeps its generous
+          `py-24`, where the space is doing something. */}
+      <div className="ds-container grid grid-cols-1 items-center gap-8 py-8 small:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)] small:gap-16 small:py-24">
+        <div className="order-2 flex flex-col items-center gap-5 text-center small:order-1 small:items-start small:gap-6 small:text-left">
           {/* Eyebrow. States the platform's single strongest true claim —
               structurally guaranteed by the no-marketplace decision
-              (`BUSINESS_RULES.md`), so it can never quietly stop being true. */}
-          <span className="inline-flex items-center gap-2 rounded-radius-full border border-border bg-surface-elevated px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
+              (`BUSINESS_RULES.md`), so it can never quietly stop being true.
+
+              **On mobile it sits below the headline** (`order-2`), because
+              above it the badge landed between the photograph and the H1 and
+              read as a divider between them rather than as a claim about the
+              brand — the headline is what the eye should reach first coming
+              off the image. Desktop restores it to the top (`small:order-1`),
+              where it introduces the headline rather than interrupting
+              anything. Every sibling below carries an explicit order for the
+              same reason: once one item is ordered, leaving the rest at the
+              default 0 would float them all above it. */}
+          <span className="order-2 inline-flex items-center gap-2 rounded-radius-full border border-border bg-surface-elevated px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary small:order-1">
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-radius-full bg-success" />
             Sold &amp; delivered directly by us
           </span>
@@ -144,21 +181,28 @@ export default function Hero() {
           <Heading
             level="h1"
             display
-            className="max-w-[24ch] text-balance !text-[26px] font-semibold leading-[1.08] tracking-[-0.02em] text-text-primary xsmall:!text-[34px] small:!text-[42px] medium:!text-[50px]"
+            className="order-1 max-w-[24ch] text-balance !text-[30px] font-semibold leading-[1.15] tracking-[-0.03em] text-text-primary xsmall:!text-[34px] small:order-2 small:!text-[42px] small:tracking-[-0.02em] medium:!text-[50px]"
           >
             Nigeria&rsquo;s premium wine, spirits &amp; kitchen.
           </Heading>
 
-          <Text muted className="max-w-[46ch] text-body-lg leading-relaxed">
+          <Text
+            muted
+            className="order-3 max-w-[46ch] text-body-lg leading-relaxed"
+          >
             Premium wine and spirits, delivered nationwide. Fresh Nigerian
             food, cooked to order and delivered fast in Lagos. Always sold
             and delivered by us — never a stranger.
           </Text>
 
-          <div className="mt-2 flex w-full max-w-[30rem] flex-col gap-3 sm:flex-row">
+          {/* 8px on top of the column's own 20/24px gap — 28px on mobile,
+              32px from `small:` up. The extra step exists to separate the
+              supporting paragraph from the actions rather than letting the
+              whole column read as one evenly-spaced list. */}
+          <div className="order-4 mt-2 flex w-full max-w-[30rem] flex-col gap-3 sm:flex-row">
             <LocalizedClientLink
               href="/store"
-              className="group inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-radius-md bg-primary px-6 py-3.5 font-medium text-surface-elevated transition-colors duration-standard ease-in-out hover:bg-primary-hover active:bg-primary-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+              className="group inline-flex h-[52px] items-center justify-center gap-2 whitespace-nowrap rounded-radius-md bg-primary px-5 font-medium text-surface-elevated transition-colors duration-standard ease-in-out sm:flex-1 hover:bg-primary-hover active:bg-primary-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
               data-testid="hero-wine-spirits-link"
             >
               Shop Wine &amp; Spirits
@@ -179,7 +223,14 @@ export default function Hero() {
             </LocalizedClientLink>
             <LocalizedClientLink
               href="/food-central"
-              className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-radius-md border border-border bg-surface-elevated px-6 py-3.5 font-medium text-text-primary transition-colors duration-standard ease-in-out hover:bg-ink-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+              // `text-[15px]` and the tighter `px-4`: at the shared 16px both
+              // buttons together measured wider than their 480px track at
+              // `small:` (1024px), where the text column is at its narrowest
+              // — with `whitespace-nowrap` that overflows rather than wraps.
+              // One point off the longer label is what buys the crisp single
+              // line. The height is fixed rather than derived from padding so
+              // the two stay identical whatever their labels do.
+              className="inline-flex h-[52px] items-center justify-center whitespace-nowrap rounded-radius-md border border-border bg-surface-elevated px-4 text-[15px] font-medium text-text-primary transition-colors duration-standard ease-in-out sm:flex-1 hover:bg-ink-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
               data-testid="hero-food-central-link"
             >
               Order from Food Central

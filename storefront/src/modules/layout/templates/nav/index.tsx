@@ -13,6 +13,7 @@ import MobileNavDrawer from "@modules/layout/components/mobile-nav-drawer"
 import MobileWayfindingStrip from "@modules/layout/components/mobile-wayfinding-strip"
 import MegaMenu from "@modules/layout/components/mega-menu"
 import FoodCentralMenu from "@modules/layout/components/food-central-menu"
+import DepartmentSwitcherTrack from "@modules/layout/components/department-switcher-track"
 import SearchField from "@modules/layout/components/search-field"
 
 /**
@@ -108,9 +109,19 @@ export default async function Nav() {
           `absolute inset-x-0 top-full` and must resolve against this
           full-width row, not against its own narrow trigger. */}
       <div className="relative hidden border-y border-border bg-surface-elevated sm:block">
-        <div className="ds-container flex h-11 items-center justify-center gap-8 text-caption text-text-secondary">
-          <MegaMenu categories={categories} collections={collections} />
-          <FoodCentralMenu />
+        <div className="ds-container flex items-center justify-center py-1.5 text-caption text-text-secondary">
+          {/* The two departments now share one segmented track rather than
+              sitting as underlined tabs. The track is deliberately *not*
+              `relative` — see `DepartmentSwitcherTrack`, which builds its
+              pill out of grid stacking precisely so the mega-menu panel
+              keeps resolving against the full-width row above. */}
+          <DepartmentSwitcherTrack
+            className="w-[22rem]"
+            wineSlot={
+              <MegaMenu categories={categories} collections={collections} />
+            }
+            foodSlot={<FoodCentralMenu />}
+          />
         </div>
       </div>
 

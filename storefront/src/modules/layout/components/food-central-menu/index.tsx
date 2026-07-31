@@ -4,6 +4,10 @@ import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/re
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useHoverIntentOpen } from "@lib/hooks/use-hover-intent-open"
 import { clx } from "@modules/common/components/ui"
+import {
+  DEPARTMENT_SEGMENT,
+  departmentSegmentState,
+} from "@modules/layout/components/department-switcher-track"
 import { usePathname } from "next/navigation"
 import { Fragment, useRef } from "react"
 
@@ -28,15 +32,14 @@ export default function FoodCentralMenu() {
   const hoverIntent = useHoverIntentOpen(triggerRef)
   const pathname = usePathname()
   const isActive = pathname?.includes("/food-central") ?? false
-  const activeClass = isActive
-    ? "border-b-2 border-b-primary text-text-primary font-semibold"
-    : "border-b-2 border-b-transparent text-text-muted hover:text-text-primary"
+  // See `MegaMenu` — the track draws the pill; this only sets text.
+  const activeClass = departmentSegmentState(isActive)
 
   return (
-    <Popover className="h-full flex relative" as="div">
+    <Popover className="relative flex w-full" as="div">
       {({ open, close }) => (
         <div
-          className="h-full flex"
+          className="flex w-full"
           onMouseEnter={hoverIntent.onMouseEnter(open)}
           onMouseLeave={() => {
             hoverIntent.onMouseLeaveCancel()
@@ -46,10 +49,7 @@ export default function FoodCentralMenu() {
           <PopoverButton
             ref={triggerRef}
             aria-current={isActive ? "page" : undefined}
-            className={clx(
-              "h-full flex items-center hover:text-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-focus",
-              activeClass
-            )}
+            className={clx(DEPARTMENT_SEGMENT, activeClass)}
             data-testid="food-central-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >

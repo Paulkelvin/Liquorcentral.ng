@@ -1,11 +1,28 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.3
+**Version:** 7.4
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v70 — 2026-07-31 — Segmented department switcher; hero refinements
+
+**Context:** Paul's overhaul brief for the department tabs and both hero layouts.
+
+**Added:** `layout/components/department-switcher-track/` — the segmented-control track, sliding pill and shared segment classes, used by *both* the desktop department bar and the mobile wayfinding strip so the two cannot drift apart.
+
+**Changed:**
+- **Department tabs are a segmented control**, replacing the red underline. Faint `ink-100` track, white pill with `elevation-1`, pill slides between segments on client-side navigation. Verified: 0 elements still carry `border-b-primary`; the pill's box matches the active segment's exactly at 1440 and 390, on both `/` and `/food-central`.
+- **The pill is built from grid-cell stacking, not `relative`/`absolute`** — deliberately. A `relative` track would become the nearest positioning context for the mega-menu's `absolute inset-x-0 top-full` panel and squeeze it to ~22rem, a bug this project already hit and documented. Verified the panel still measures 1440px at left 0 with the menu open.
+- **Desktop hero:** H1 leading 1.08 → 1.15; both CTAs fixed at 52px so they cannot mismatch; secondary CTA to 15px/`px-4` so "Order from Food Central" stays on one line at 1024 where the text column is narrowest; paragraph-to-CTA gap measures 32px.
+- **Mobile hero:** image full-bleed edge to edge (0 → 390) and cropped to 5:4; the "Sold & delivered" badge moves below the H1; H1 26px → 30px with tighter tracking, still two lines; section padding 64px → 32px. Headline top moved 583px → 505px.
+- The hero image is deliberately **not** placed in a tinted card — the other option offered. Its ground is baked to the page's exact `#F3F5F0`, so any card colour would make the image's own background show as a rectangle inside the card.
+
+**Not changed, because it is already done:** the brief asked to replace an "abstract, glowing gradient box" in the desktop hero. That panel was replaced with the current photograph earlier on this branch (v65/v67); production is running an older deploy.
+
+**Verified:** axe-core 0 WCAG 2 A/AA violations at 1440 and 390; mega-menu panel width unregressed; tsc clean; 84/84 tests.
 
 ## v69 — 2026-07-31 — Row left-edge alignment, accent removed, new campaign photograph
 

@@ -6,6 +6,10 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { groupCategoriesForMegaMenu } from "@lib/util/mega-menu"
 import { useHoverIntentOpen } from "@lib/hooks/use-hover-intent-open"
 import { clx } from "@modules/common/components/ui"
+import {
+  DEPARTMENT_SEGMENT,
+  departmentSegmentState,
+} from "@modules/layout/components/department-switcher-track"
 import { usePathname } from "next/navigation"
 import { Fragment, useRef } from "react"
 
@@ -40,11 +44,11 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
   // Everywhere that isn't "/food-central" is Wine & Spirits' own
   // territory, since that's this platform's primary catalog.
   const isActive = !(pathname?.includes("/food-central") ?? false)
-  // The active department is underlined at the bar's own bottom edge;
-  // the other sits back in the muted step.
-  const activeClass = isActive
-    ? "border-b-2 border-b-primary text-text-primary font-semibold"
-    : "border-b-2 border-b-transparent text-text-muted hover:text-text-primary"
+  // Presented as a segment inside `DepartmentSwitcherTrack`'s pill, not as
+  // an underlined tab. The white pill behind the active segment is drawn by
+  // the track, so nothing here paints a background — this only sets the
+  // text weight and colour.
+  const activeClass = departmentSegmentState(isActive)
 
   if (columns.length === 0) {
     // §24 — a category-tree fetch/empty failure falls back to the plain
@@ -53,7 +57,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
       <LocalizedClientLink
         href="/store"
         aria-current={isActive ? "page" : undefined}
-        className={clx("h-full flex items-center hover:text-interactive", activeClass)}
+        className={clx(DEPARTMENT_SEGMENT, activeClass)}
       >
         Wine &amp; Spirits
       </LocalizedClientLink>
@@ -69,10 +73,10 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
     // width, squeezing the panel down to "Wine & Spirits" button width
     // instead of the full header — a real bug this project's screenshot
     // validation caught (columns rendered overlapping in a ~110px box).
-    <Popover className="h-full flex" as="div">
+    <Popover className="flex w-full" as="div">
       {({ open, close }) => (
         <div
-          className="h-full flex"
+          className="flex w-full"
           onMouseEnter={hoverIntent.onMouseEnter(open)}
           onMouseLeave={() => {
             hoverIntent.onMouseLeaveCancel()
@@ -82,10 +86,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
           <PopoverButton
             ref={triggerRef}
             aria-current={isActive ? "page" : undefined}
-            className={clx(
-              "h-full flex items-center hover:text-interactive focus:outline-none focus-visible:ring-2 focus-visible:ring-focus",
-              activeClass
-            )}
+            className={clx(DEPARTMENT_SEGMENT, activeClass)}
             data-testid="mega-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >
