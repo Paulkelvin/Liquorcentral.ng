@@ -147,13 +147,16 @@ export default function TrustBand() {
   return (
     <section
       aria-label="Why shop with LiquorCentral"
-      // Bordered top and bottom, on the same warm `ink-100` used elsewhere
-      // for a recessed band. It separates the page above from the footer
-      // below without introducing a new colour.
-      className="w-full border-y border-border bg-ink-100"
+      // `ink-900` (#1a1a1a) — the dark end of the neutral scale, not a new
+      // colour. It is the only dark full-width block on the page, which is
+      // what makes it read as a breaker between the content above and the
+      // footer below; the borders it used to carry are gone because a dark
+      // band needs no help separating itself, and a light hairline on it
+      // would read as a frame.
+      className="w-full bg-ink-900"
       data-testid="trust-band"
     >
-      <div className="ds-container py-8 small:py-10">
+      <div className="ds-container py-12 small:py-14">
         {/* 2×2 on a phone, one row of four from `small:` up. `grid-cols-2`
             at the smallest size is deliberate — four stacked rows is most
             of a screen spent on reassurance the customer has not asked
@@ -164,13 +167,24 @@ export default function TrustBand() {
               key={title}
               className="flex flex-col items-center gap-2 text-center"
             >
-              <span className="text-text-primary">
+              {/* **Icons are white, not the brand red the brief offered as
+                  an option.** Measured on this background: `--color-primary`
+                  gives 3.22:1 and full-strength brand red 4.10:1, against
+                  WCAG 1.4.11's 3:1 floor for non-text — the first only just
+                  clears it, and neither leaves headroom if the shade is ever
+                  tuned. White measures 15.9:1. If an accent is wanted here,
+                  `accent` (brand gold) is the one that survives on a dark
+                  ground; red is not. */}
+              <span className="text-surface-elevated">
                 <Icon />
               </span>
-              <span className="text-caption font-semibold text-text-primary">
+              <span className="text-caption font-semibold text-surface-elevated">
                 {title}
               </span>
-              <Text className="max-w-[24ch] !text-[12px] leading-snug text-text-secondary">
+              {/* `ink-200`, not a translucent white: 11.75:1 here, and an
+                  opacity value would change meaning if the background ever
+                  did. */}
+              <Text className="max-w-[24ch] !text-[12px] leading-snug text-ink-200">
                 {subtitle}
               </Text>
             </li>

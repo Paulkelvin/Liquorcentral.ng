@@ -1,11 +1,23 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.6
+**Version:** 7.7
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v73 — 2026-07-31 — Trust band inverted to dark; footer accordions reverted
+
+**Context:** Paul asked for contrast in the lower page, and for the mobile footer columns to be visible rather than collapsed.
+
+**Changed:**
+- **Trust band is now `ink-900` (#1a1a1a)** with white icons and titles and `ink-200` subtitles, and it has lost its borders — a dark full-width block needs no hairline to separate itself, and a light rule on it reads as a frame. Vertical padding increased so it acts as a breaker. Measured: icons/titles **17.4:1**, subtitles **11.86:1**.
+- **Icons are white, not the brand red the brief offered as an option.** Measured on this background, `--color-primary` gives **3.22:1** and full-strength brand red **4.10:1**, against WCAG 1.4.11's 3:1 floor for non-text graphics — the first only just clears it and neither leaves headroom. White measures 17.4:1. **If an accent is wanted here, `accent` (brand gold) is the brand colour that survives on a dark ground; red is not.**
+- **Footer accordions removed** (added in v72, one message earlier). All five link groups render expanded at every width, `gap-y-8` between stacked groups. `footer-accordion-group/` deleted — the disclosure is gone rather than defaulted open, since a control that never collapses anything is worse than no control.
+- **Footer link text darkened** from `text-secondary` (ink-700, 8.9:1) to `text-primary` (ink-900, **15.85:1**). Hover moves to the interactive green, since the resting colour is now the darkest step and needed a legible state change.
+
+**Verified:** axe-core 0 WCAG 2 A/AA violations at 1440 and 390 on both `/` and `/cart`; all 5 link lists visible at both widths; 0 accordion toggles remain; tsc clean; 84/84 tests.
 
 ## v72 — 2026-07-31 — Trust band, footer architecture, cart clean-up
 

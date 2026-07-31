@@ -3,7 +3,7 @@ import { listCollections } from "@lib/data/collections";
 import { Text } from "@modules/common/components/ui";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import FooterAccordionGroup from "@modules/layout/components/footer-accordion-group";
+
 import {
   InstagramIcon,
   TikTokIcon,
@@ -54,8 +54,27 @@ const SOCIAL_LINKS: { label: string; href: string; Icon: React.ComponentType<{ c
 const socialButtonClass =
   "relative flex h-9 w-9 items-center justify-center rounded-radius-full border border-divider text-text-secondary transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-11 before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']";
 
+/** Shared heading for each footer link group — small, uppercase, tracked out. */
+function GroupHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-caption font-medium uppercase tracking-wider text-text-primary">
+      {children}
+    </span>
+  );
+}
+
+/**
+ * Footer links sit at `text-primary`, not `text-secondary`.
+ *
+ * The whole footer is small type on a low-contrast ground, and at
+ * `text-secondary` (ink-700) the link lists read as disabled next to their
+ * own headings — 8.9:1 is technically fine and still looked washed out.
+ * ink-900 measures 15.7:1 and makes the lists read as the navigation they
+ * are. Hover moves to the interactive green so the state change is still
+ * legible now that the resting colour is the darkest step.
+ */
 const linkClass =
-  "text-text-secondary hover:text-text-primary transition-colors duration-standard ease-in-out";
+  "text-text-primary hover:text-interactive transition-colors duration-standard ease-in-out";
 
 /**
  * 01_NAVIGATION_SPECIFICATION.md §8 — footer navigational content
@@ -137,13 +156,16 @@ export default async function Footer() {
                 thing twice. */}
           </div>
 
-          {/* Link groups. Accordions on a phone, plain columns from
-              `small:` up — see `FooterAccordionGroup` for why the links stay
-              in the DOM either way (this footer is the site's secondary
-              sitemap, and the mobile crawl is the one that counts). */}
-          <div className="grid grid-cols-1 gap-y-0 text-caption small:gap-8 sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
+          {/* Link groups, fully expanded at every width. They were briefly
+              accordions on mobile; Paul asked for the lists visible instead,
+              so the disclosure is gone rather than merely defaulted open —
+              a control that never collapses anything is worse than no
+              control. `gap-y-8` keeps the stacked groups reading as separate
+              blocks now that nothing delimits them. */}
+          <div className="grid grid-cols-1 gap-x-8 gap-y-8 text-caption sm:grid-cols-3 lg:col-span-9 lg:grid-cols-5">
             {topLevelCategories.length > 0 && (
-              <FooterAccordionGroup heading="Shop">
+              <div className="flex flex-col gap-y-3">
+                <GroupHeading>Shop</GroupHeading>
                 {/* Flat links, one per top-level category. The nested
                     "Spirits ⌄" disclosure that used to live here is gone on
                     Paul's direction: a dropdown inside a footer is awkward on
@@ -166,10 +188,11 @@ export default async function Footer() {
                     </li>
                   ))}
                 </ul>
-              </FooterAccordionGroup>
+              </div>
             )}
 
-            <FooterAccordionGroup heading="Food Central">
+            <div className="flex flex-col gap-y-3">
+                <GroupHeading>Food Central</GroupHeading>
               <ul className="grid grid-cols-1 gap-2">
                 {FOOD_CENTRAL_LINKS.map((link) => (
                   <li key={link.href}>
@@ -183,10 +206,11 @@ export default async function Footer() {
                   </li>
                 ))}
               </ul>
-            </FooterAccordionGroup>
+            </div>
 
             {collections && collections.length > 0 && (
-              <FooterAccordionGroup heading="Collections">
+              <div className="flex flex-col gap-y-3">
+                <GroupHeading>Collections</GroupHeading>
                 <ul className="grid grid-cols-1 gap-2">
                   {collections?.slice(0, 6).map((c) => (
                     <li key={c.id}>
@@ -200,10 +224,11 @@ export default async function Footer() {
                     </li>
                   ))}
                 </ul>
-              </FooterAccordionGroup>
+              </div>
             )}
 
-            <FooterAccordionGroup heading="Company">
+            <div className="flex flex-col gap-y-3">
+                <GroupHeading>Company</GroupHeading>
               <ul className="grid grid-cols-1 gap-2">
                 {COMPANY_LINKS.map((link) => (
                   <li key={link.href}>
@@ -217,9 +242,10 @@ export default async function Footer() {
                   </li>
                 ))}
               </ul>
-            </FooterAccordionGroup>
+            </div>
 
-            <FooterAccordionGroup heading="Support">
+            <div className="flex flex-col gap-y-3">
+                <GroupHeading>Support</GroupHeading>
               <ul className="grid grid-cols-1 gap-2">
                 {SUPPORT_LINKS.map((link) => (
                   <li key={link.href}>
@@ -233,7 +259,7 @@ export default async function Footer() {
                   </li>
                 ))}
               </ul>
-            </FooterAccordionGroup>
+            </div>
           </div>
         </div>
 
