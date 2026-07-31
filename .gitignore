@@ -1,0 +1,4 @@
+# Local Redis snapshot. Written into the repo root by `redis-server` when it
+# is started from here for local development, and committed once by accident
+# (ce3210a, removed in 77363f7).
+dump.rdb
