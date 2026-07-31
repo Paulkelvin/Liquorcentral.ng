@@ -1,11 +1,19 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.16
+**Version:** 7.17
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v83 — 2026-07-31 — Pairing copy sits lower on mobile
+
+**Context:** Paul likes the desktop layout and asked for the mobile copy to come down a bit.
+
+**Changed:** `pt-20` on the copy panel below 768px only. Padding rather than `justify-end`, so the group stays centred inside a shorter box and moves by a predictable half of the padding — **40px** — instead of pinning to the bottom edge where it would crowd the pagination dots. Desktop is untouched.
+
+**Verified at 320 / 390 / 767 / 1440:** the copy block now spans 140–240px of the 300px card (was 100–200), leaving 60px clear beneath it; no overlap with the dots, no clipping, desktop still symmetrically centred (223.7px above and below). axe-core 0 WCAG 2 A/AA violations on `/` and `/cart`; tsc clean; 84/84 tests.
 
 ## v82 — 2026-07-31 — Pairing copy left-aligned, one line per element
 

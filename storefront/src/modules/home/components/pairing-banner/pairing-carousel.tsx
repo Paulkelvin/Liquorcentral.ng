@@ -253,7 +253,14 @@ export default function PairingCarousel({
                       body paragraph returns and 50% is right again. */}
                   <div
                     data-testid="pairing-panel"
-                    className="absolute inset-y-0 right-0 flex w-[62%] flex-col items-start justify-center gap-1.5 px-4 text-left md:w-1/2 md:gap-3 md:px-8 medium:px-14"
+                    // `pt-20` below 768px sits the copy lower in the card
+                    // (Paul: "bring the text down a bit"). It is padding
+                    // rather than `justify-end` on purpose: the group stays
+                    // centred, just inside a shorter box, so it shifts by a
+                    // predictable half of the padding — 40px here — instead
+                    // of pinning to the bottom edge where it would crowd the
+                    // pagination dots. Desktop is untouched; Paul likes it.
+                    className="absolute inset-y-0 right-0 flex w-[62%] flex-col items-start justify-center gap-1.5 px-4 pt-20 text-left md:w-1/2 md:gap-3 md:px-8 md:pt-0 medium:px-14"
                   >
                     <span
                       className={clx(
