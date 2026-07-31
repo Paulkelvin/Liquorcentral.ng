@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.10
+**Version:** 7.11
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v77 — 2026-07-31 — "The Perfect Pairing" dual-slide banner
+
+**Context:** Paul supplied two photographs and copy for an interactive 2-slide editorial banner between the Featured Collection and Today's Menu.
+
+**Added:** `home/components/pairing-banner/` — `pairings.ts` (the only file a new pairing touches), `index.tsx` (server: resolves products, computes totals), `pairing-carousel.tsx` (client: autoplay, dots, fade). Plus `public/brand/pairings/{asun-single-malt,seafood-champagne}.jpg`, re-encoded PNG→JPEG (2.8 MB → 266 KB).
+
+**⚠️ Two content problems in the brief, both found by checking the live catalog:**
+- **Neither stated price exists.** ₦53,500 matches no combination (Asun ₦9,500 + Glenfiddich 12 ₦54,000 = **₦63,500**); ₦113,000 likewise. A CTA announcing one total while putting another in the cart is a misleading price representation under the FCCPA and against §5's structured honesty. **Every price is now computed at render from the exact region-priced variants the button adds** — nothing is hardcoded, in any file. Verified end to end: the ₦76,500 button produced a cart of ₦68,000 + ₦8,500.
+- **"Seafood Okro" is not in the catalog** and never has been. Slide 2 names Grilled Tilapia instead, because a slide headed "Seafood Okro" whose button adds tilapia is the §15 bait-and-switch. **Paul's original copy is preserved in a comment and restoring it is a one-line change** once the dish is seeded.
+
+**Accessibility (WCAG 2.2.2 — autoplay):** a real pause/play control, pauses on hover *and* keyboard focus, never starts under `prefers-reduced-motion` (media query checked with a live listener), and stops permanently once a dot is pressed. The hidden slide uses **`inert`** (React 19), not `aria-hidden` — `aria-hidden` alone would leave a keyboard user able to tab into an invisible "Add pairing" button and add the wrong pairing.
+
+**A bug caught in verification and worth remembering:** the first render used the *active* slide's total for every slide's button, so slide 2 advertised ₦63,500 while adding ₦76,500 — the exact failure this section was built to prevent, reintroduced by the render layer. Both the label and the add handler are now per-slide.
+
+**Verified:** axe-core 0 WCAG 2 A/AA violations at 1440 and 390 on `/` and `/cart`; autoplay advances and manual dots take over at both widths; `inert` present on the hidden slide only; add-to-cart total matches the button; tsc clean; 84/84 tests.
 
 ## v76 — 2026-07-31 — Section headers unified across the homepage
 

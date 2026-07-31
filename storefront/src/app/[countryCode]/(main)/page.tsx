@@ -4,6 +4,7 @@ import { Suspense } from "react"
 import Hero from "@modules/home/components/hero"
 import CategoryBrowse from "@modules/home/components/category-browse"
 import FeaturedCollection from "@modules/home/components/featured-collection"
+import PairingBanner from "@modules/home/components/pairing-banner"
 import FoodCentralSpotlight from "@modules/home/components/food-central-spotlight"
 import ReturningCustomerStrip from "@modules/home/components/returning-customer-strip"
 
@@ -54,7 +55,10 @@ export default async function Home({ params }: Props) {
         <FeaturedCollection countryCode={countryCode} />
       </Suspense>
       <Suspense fallback={null}>
-        <FoodCentralSpotlight countryCode={countryCode} />
+        {/* Between the cellar and the kitchen — the one section that spans
+          both catalogs in a single action. */}
+      <PairingBanner countryCode={countryCode} />
+      <FoodCentralSpotlight countryCode={countryCode} />
       </Suspense>
       <Suspense fallback={null}>
         <ReturningCustomerStrip />
