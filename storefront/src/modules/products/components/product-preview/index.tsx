@@ -85,74 +85,93 @@ export default async function ProductPreview({
   const isUnavailable = foodUnavailable || soldOut
 
   return (
-    // `h-full` + `flex-col` so every card in a CSS Grid row (the parent
-    // <ul>'s own grid, e.g. paginated-products.tsx) stretches to match
-    // its tallest sibling, and quick-add's `mt-auto` (a direct flex
-    // child of this same container) pins itself to the card's bottom
-    // edge regardless of how many lines the title above it wraps to.
+    /**
+     * **A borderless card: tinted image tile, text sitting directly on the
+     * page.** Paul supplied a reference and asked for its treatment in our
+     * own colours — the card had been a white panel with a border and a
+     * shadow, which framed every product in a box.
+     *
+     * What carries the card now is the *contrast step* between the image
+     * tile (`ink-100`) and the page (`surface`), not a border. Two things
+     * follow from that and are easy to undo by accident:
+     *
+     * - **Do not put a background or border back on this wrapper.** The tile
+     *   is the only surface; a second one around it re-boxes the card and
+     *   the tint stops reading as a tile at all.
+     * - **The tile tint only shows where the photograph does not cover it** —
+     *   today that is the placeholder and loading states. It will do real
+     *   visual work once product photography is cut-out or has its own
+     *   neutral ground, which is `BRAND_GUIDELINES.md`'s open item. The
+     *   structure is built for that; it is not waiting on code.
+     *
+     * `h-full` + `flex-col` so every card in a grid row stretches to its
+     * tallest sibling and quick-add's `mt-auto` pins to the bottom edge
+     * regardless of how many lines the title wraps to.
+     */
     <div
       data-testid="product-wrapper"
-      className="group flex h-full flex-col overflow-hidden rounded-radius-md border border-divider bg-surface-elevated shadow-elevation-1"
+      className="group flex h-full flex-col"
     >
       {/* §9/§212 — the card's one real link wraps only image/name/price;
           quick-add is a sibling control below, never nested inside it. */}
-      <LocalizedClientLink href={`/products/${product.handle}`}>
-        {/* The photo runs edge to edge into the card's top corners — no
-            inset on the sides or top — with the card's own
-            `overflow-hidden` doing the corner clipping. */}
-        <Thumbnail
-          thumbnail={product.thumbnail}
-          images={product.images}
-          size="full"
-          rounded={false}
-          alt={product.title || "Product photo"}
-        />
-        <div className="flex flex-col gap-1 px-3 pt-3 pb-3">
-          {/* The eyebrow slot. There is no brand field on the product
-              model, so this carries the catalog's own supporting fact
-              (Food Central prep time, or the catalog name on a mixed
-              search result) and is simply absent otherwise — §9 expects
-              it empty more often than not for Wine & Spirits. */}
-          {catalogFact &&
-            (showCatalogBadge ? (
-              // The mixed-search catalog marker stays a plain eyebrow: it
-              // names which catalog a result came from, it isn't a claim
-              // about the item, so a tinted chip would overstate it.
-              <span
-                className="text-[11px] font-medium uppercase tracking-wider text-text-muted"
-                data-testid="product-catalog-badge"
-              >
-                {catalogFact}
-              </span>
-            ) : (
-              // Prep time is a concrete promise about the dish, so it
-              // reads as a tag rather than a caption. `self-start` keeps
-              // the tint hugging the text instead of stretching the full
-              // card width in this flex column.
-              <span
-                className="self-start rounded-radius-sm bg-interactive-tint px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-interactive-on-tint"
-                data-testid="product-catalog-fact"
-              >
-                {catalogFact}
-              </span>
-            ))}
-          {/* Capped at 2 lines so a long name can never push a card's
-              own layout apart; equal-height rows plus the button's
-              `mt-auto` below keep every card's action on one baseline
-              whether the title runs to one line or two. */}
+      <LocalizedClientLink href={`/products/${product.handle}`} className="flex flex-col">
+        {/* The tile owns the radius, the clipping and the tint; the
+            thumbnail inside is square-cornered and transparent.
+            **Not `className="!rounded-radius-md"` on the Thumbnail** — its
+            own comment explains why radius is a prop there: the base class
+            is already `!important`, so a second `!important` radius from a
+            caller is resolved by Tailwind's emit order rather than by
+            intent. A wrapper sidesteps that entirely. */}
+        <div className="relative overflow-hidden rounded-radius-md bg-ink-100">
+          <Thumbnail
+            thumbnail={product.thumbnail}
+            images={product.images}
+            size="full"
+            rounded={false}
+            alt={product.title || "Product photo"}
+            className="!bg-transparent"
+          />
+
+          {/* The supporting fact moved **onto** the image.
+              `04_PRODUCT_LISTING_SPECIFICATION.md` §9 still allows at most
+              one, and it is still at most one — but keeping it out of the
+              text block is what leaves title and price alone underneath,
+              which is the thing that makes the reference card read as calm.
+              Same overlay treatment as the Today's Menu dish card, so the
+              two agree. */}
+          {catalogFact && (
+            <span
+              className="absolute left-2 top-2 rounded-radius-full bg-scrim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-surface-elevated backdrop-blur-sm"
+              data-testid={
+                showCatalogBadge ? "product-catalog-badge" : "product-catalog-fact"
+              }
+            >
+              {catalogFact}
+            </span>
+          )}
+        </div>
+
+        {/* No side padding — the text aligns to the tile's own edges, which
+            is what makes the column read as one block rather than a card
+            with an inset. */}
+        <div className="flex flex-col gap-0.5 pt-3">
+          {/* Smaller and quieter than before (was 14px medium, primary).
+              Paul: "we have a bit big titles than what is in this product
+              card". The name is the label; the price is the thing being
+              decided on, so the price now carries the weight. */}
           <Text
-            className="!text-[14px] font-medium leading-snug text-text-primary line-clamp-2"
+            className="!text-[13px] font-normal leading-snug text-text-secondary line-clamp-2"
             data-testid="product-title"
           >
             {product.title}
           </Text>
-          {/* Price reads as a line of its own beneath the name, not laid
-              over the photo. */}
+
           {cheapestPrice && (
-            <div className="flex items-baseline gap-x-2">
+            <div className="flex items-baseline gap-x-2 text-[14px] font-semibold text-text-primary">
               <PreviewPrice price={cheapestPrice} />
             </div>
           )}
+
           {isUnavailable && (
             <Text
               as="span"
@@ -161,23 +180,20 @@ export default async function ProductPreview({
               data-testid="product-unavailable-label"
             >
               {/* 09_FOOD_ORDERING_SPECIFICATION.md §6 — Food Central's
-                  kitchen-capacity "Unavailable" is a distinct concept
-                  from Wine & Spirits' stock-based "Sold out", not the
-                  same label reused. */}
+                  kitchen-capacity "Unavailable" is a distinct concept from
+                  Wine & Spirits' stock-based "Sold out", not the same label
+                  reused. */}
               {foodUnavailable ? "Unavailable" : "Sold out"}
             </Text>
           )}
         </div>
       </LocalizedClientLink>
+
       {!isUnavailable && (
-        // The inset comes from a padded wrapper, not margins on the
-        // button itself: quick-add's own `w-full` wins the cascade over
-        // any `w-auto` passed in here (Tailwind orders by stylesheet
-        // position, not class-string order), so a margin-based inset
-        // resolved to 100% width *plus* margins and pushed the button's
-        // right edge past the card, where `overflow-hidden` quietly
-        // clipped it. Padding a wrapper makes 100% mean the right thing.
-        <div className="mt-auto px-3 pb-3">
+        // `mt-auto` pins quick-add to the card's bottom edge, so every
+        // button in a grid row sits on one baseline however many lines the
+        // titles above them wrap to.
+        <div className="mt-auto pt-3">
           <QuickAddButton
             product={product}
             department={isFoodCentral ? "food" : "wine"}

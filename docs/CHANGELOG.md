@@ -1,11 +1,25 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.17
+**Version:** 7.18
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v84 — 2026-07-31 — Product card rebuilt: borderless, tinted image tile
+
+**Context:** Paul supplied a reference card ("smooth, cool, plain… very good contrast with the background of that section") and asked for its treatment in our own colours, with smaller titles.
+
+**Changed — `ProductPreview`, the card `04_PRODUCT_LISTING_SPECIFICATION.md` §9 specifies once and every listing renders:**
+- **The card is no longer a panel.** Border, white background and shadow are gone; the text sits directly on the page. What carries the card is the contrast step between the image tile (`ink-100`) and the page (`surface`) — measured `rgb(236,234,227)` on `rgb(243,245,240)`.
+- **Image sits in a rounded, clipped, tinted tile.** The radius lives on a wrapper, **not** on `Thumbnail` — its own comment explains why radius is a prop there: its base class is already `!important`, so a second `!important` radius from a caller is settled by Tailwind's emit order rather than intent.
+- **Title 14px medium → 13px regular, `text-secondary`** (Paul: "we have a bit big titles"). **Price 14px semibold `text-primary`** — the name is the label, the price is the decision, so the weight moved to the price.
+- **The supporting fact (prep time / catalog badge) moved onto the image** as a `bg-scrim` overlay chip, matching the Today's Menu dish card. §9 still permits at most one and there is still at most one; keeping it out of the text block is what leaves title and price alone underneath.
+
+**Unchanged and deliberately so:** the two homepage cards (`EditorialProductCard`, `DishCard`) keep the treatments Paul approved in earlier rounds. Aligning them to this is a small change but was not asked for — flagged rather than assumed.
+
+**Verified at 1440 and 390 on `/store`:** card background `rgba(0,0,0,0)`, border `0px`, shadow `none`; tile `rgb(236,234,227)` at 8px radius; title 13px/400; price 14px/600; quick-add still 44px. axe-core 0 WCAG 2 A/AA violations on `/`, `/store` and `/cart` at both widths; tsc clean; 84/84 tests.
 
 ## v83 — 2026-07-31 — Pairing copy sits lower on mobile
 
