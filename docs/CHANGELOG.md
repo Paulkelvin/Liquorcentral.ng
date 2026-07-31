@@ -1,11 +1,27 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.11
+**Version:** 7.12
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v78 — 2026-07-31 — Pairing banner: one side-by-side layout at every width
+
+**Context:** Paul asked for the mobile banner to keep the desktop's side-by-side arrangement rather than stacking.
+
+**Changed:**
+- **16:9 at every width**, photograph left, copy panel on the right 50%. The stacked mobile variant is gone. Both source images are 1376×768 (already 16:9), so desktop crops nothing at all.
+- `object-position: left center` — the frame narrows on a phone but the crop anchors left, so the bottle and dish stay whole instead of being centre-cropped out of frame.
+- **The scrim now runs at every width.** It was `small:`-only when the mobile copy sat on its own solid panel; over the photograph it is load-bearing, and at 390px the copy column is only ~195px wide, where unscrimmed marble or wood grain is the difference between readable and not.
+- Below 768px: body copy hidden, short eyebrow and short title variants (`eyebrowShort` / `titleShort` in `pairings.ts` — the full title wraps to five lines in a ~160px column and overruns the frame), price on its own 12px line, 40px compact button.
+- **The visible price moved out of the button label onto its own line.** It remains in the button's `aria-label`: a screen-reader user gets no benefit from two elements merely being visually adjacent.
+- **The breakpoint is Tailwind's `md` (768), not this project's custom `small` (1024)** — Paul specified 768px, and at 834px the full title and body fit comfortably. `md` is unambiguous here; `lg` would not be, since it collides with `small` at 1024 (see v75).
+
+**Touch target:** the button draws at 40px per the compact spec and meets §B11's 44px floor via an invisible `::before` — the same allowance the compact quantity stepper, footer social icons and carousel dots already use. It must never gain `overflow-hidden`, which would clip the expanded hit area.
+
+**Verified at 1440 / 834 / 767 / 390 / 320:** frame ratio 1.78 at all five; panel exactly 50%; `object-fit: cover` with `object-position: 0% 50%`; body `block` at ≥768 and `none` below; button 48px/40px drawn with a 44px hit area throughout; no panel or page overflow at any width. axe-core 0 WCAG 2 A/AA violations on `/` and `/cart`; tsc clean; 84/84 tests.
 
 ## v77 — 2026-07-31 — "The Perfect Pairing" dual-slide banner
 

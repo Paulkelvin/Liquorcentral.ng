@@ -120,17 +120,22 @@ export default function PairingCarousel({
   )
 
   /**
-   * **Each slide labels its own price.** The first version of this file used
+   * **Each slide labels its own price.** An earlier version of this file used
    * the active slide's total for every button, so slide 2 advertised slide
    * 1's ₦63,500 while adding ₦76,500 of goods — the exact misleading-price
    * failure this section was built to avoid, reintroduced by the render.
    * Keep the per-slide argument.
+   *
+   * The visible price moved out of this label and onto its own line beside
+   * the button, so the button reads the same at both widths. The total is
+   * still in the button's `aria-label`, where it must stay: a screen-reader
+   * user gets no benefit from two elements being visually adjacent.
    */
   const ctaLabelFor = (slide: ResolvedPairing) => {
     const state = status?.slideId === slide.id ? status.state : null
     if (state === "added") return "Added to cart"
     if (state === "error") return "Try again"
-    return `Add pairing to cart (${slide.totalLabel})`
+    return "Add pairing"
   }
 
   return (
@@ -168,51 +173,54 @@ export default function PairingCarousel({
                     : "pointer-events-none absolute inset-0 opacity-0"
                 )}
               >
-                {/* Mobile stacks image over copy so nothing sits on the food.
-                    From `small:` the photograph becomes the panel's background
-                    and the copy takes the right half — which is the half both
-                    photographs deliberately leave empty. */}
-                <div className="flex flex-col small:relative small:block">
-                  <div className="relative aspect-[16/10] w-full small:aspect-[1376/620]">
-                    <Image
-                      src={slide.image}
-                      alt={slide.imageAlt}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 1280px"
-                      className="object-cover"
-                      priority={i === 0}
-                    />
-                  </div>
+                {/* **One layout at every width** — side by side, 16:9,
+                    photograph left, copy right. Paul's direction after
+                    seeing the stacked mobile version.
 
-                  {/* A scrim only from `small:` up, and only across the copy's
-                      half. On mobile the copy sits on its own solid panel
-                      below the photograph, so no scrim is needed — and one
-                      would only dim the food for nothing. */}
-                  <div
-                    aria-hidden="true"
-                    className="hidden small:absolute small:inset-0 small:block"
-                    style={{
-                      background: dark
-                        ? "linear-gradient(to left, rgba(26,22,18,0.92) 0%, rgba(26,22,18,0.78) 34%, rgba(26,22,18,0) 62%)"
-                        : "linear-gradient(to left, rgba(250,247,242,0.94) 0%, rgba(250,247,242,0.82) 34%, rgba(250,247,242,0) 62%)",
-                    }}
+                    `object-left` is what makes it survive the squeeze: the
+                    frame narrows on a phone but the crop is anchored to the
+                    left edge, so the bottle and dish stay whole instead of
+                    being centre-cropped out of view. Both source images are
+                    1376×768 — already 16:9 — so at desktop there is no crop
+                    at all.
+
+                    **The scrim now runs at every width, not just on desktop.**
+                    When the copy sat on its own solid panel below the image
+                    on mobile it needed no help; over the photograph it does,
+                    and on a 390px screen the copy half is only ~195px wide,
+                    where an unscrimmed marble or wood grain is the
+                    difference between readable and not. */}
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={slide.image}
+                    alt={slide.imageAlt}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1280px"
+                    className="object-cover object-left"
+                    priority={i === 0}
                   />
 
                   <div
-                    className={clx(
-                      "flex flex-col items-start gap-3 p-6 small:absolute small:inset-y-0 small:right-0 small:w-1/2 small:justify-center small:p-10 medium:p-14",
-                      dark
-                        ? "bg-ink-900 small:bg-transparent"
-                        : "bg-surface-warm small:bg-transparent"
-                    )}
-                  >
+                    aria-hidden="true"
+                    className="absolute inset-0"
+                    style={{
+                      background: dark
+                        ? "linear-gradient(to left, rgba(26,22,18,0.94) 0%, rgba(26,22,18,0.86) 38%, rgba(26,22,18,0) 66%)"
+                        : "linear-gradient(to left, rgba(250,247,242,0.96) 0%, rgba(250,247,242,0.88) 38%, rgba(250,247,242,0) 66%)",
+                    }}
+                  />
+
+                  <div className="absolute inset-y-0 right-0 flex w-1/2 flex-col justify-center gap-1.5 px-4 md:gap-3 md:px-8 medium:px-14">
                     <span
                       className={clx(
-                        "text-[11px] font-semibold uppercase tracking-[0.12em]",
+                        "text-[10px] font-semibold uppercase leading-tight tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]",
                         dark ? "text-ink-200" : "text-text-secondary"
                       )}
                     >
-                      {slide.eyebrow}
+                      {/* Two lengths, one element: the long form would wrap
+                          to three lines in the mobile panel. */}
+                      <span className="md:hidden">{slide.eyebrowShort}</span>
+                      <span className="hidden md:inline">{slide.eyebrow}</span>
                     </span>
 
                     {/* `h3`, not `h2` — the section's own `h2` is the visually
@@ -220,22 +228,54 @@ export default function PairingCarousel({
                         the outline stays in order. */}
                     <h3
                       className={clx(
-                        "font-display text-[24px] font-semibold leading-[1.15] tracking-[-0.01em] small:text-[30px] medium:text-[34px]",
+                        "font-display text-[15px] font-semibold leading-[1.2] tracking-[-0.01em] xsmall:text-[17px] md:text-[26px] md:leading-[1.15] small:text-[30px] medium:text-[34px]",
                         dark ? "text-surface-elevated" : "text-text-primary"
                       )}
                     >
-                      {slide.title}
+                      <span className="md:hidden">{slide.titleShort}</span>
+                      <span className="hidden md:inline">{slide.title}</span>
                     </h3>
 
+                    {/* Hidden below `md:` (768px, Paul's stated breakpoint —
+                        note this is Tailwind's own `md`, *not* this project's
+                        custom `small`, which is 1024). There is
+                        no room for three lines of prose beside the title in
+                        a 195px column. It stays in the DOM rather than being
+                        dropped from the data, so the desktop copy and the
+                        mobile copy are the same content, not two versions
+                        that can drift. */}
                     <p
                       className={clx(
-                        "max-w-[46ch] text-body leading-relaxed",
+                        "hidden max-w-[46ch] text-body leading-relaxed md:block",
                         dark ? "text-ink-200" : "text-text-secondary"
                       )}
                     >
                       {slide.body}
                     </p>
 
+                    {/* The price as its own line, no longer inside the
+                        button label. It stays adjacent to the CTA so the
+                        two read as one statement — and the button's
+                        `aria-label` still carries the total, so nothing is
+                        lost for a screen reader when the visual pairing of
+                        the two elements is unavailable. */}
+                    <span
+                      className={clx(
+                        "text-[12px] font-medium md:text-caption",
+                        dark ? "text-ink-200" : "text-text-secondary"
+                      )}
+                      data-testid="pairing-price"
+                    >
+                      {slide.totalLabel}
+                    </span>
+
+                    {/* 40px drawn on mobile, 48px from `small:`. The 40px is
+                        Paul's compact spec; `DESIGN_SYSTEM.md` §B11's 44px
+                        floor is met by the invisible `::before`, the same
+                        allowance the compact quantity stepper and the footer
+                        social icons already use. Consequence: this button
+                        must never gain `overflow-hidden`, which would clip
+                        the expanded hit area with it. */}
                     <button
                       type="button"
                       onClick={() => handleAdd(slide)}
@@ -244,8 +284,8 @@ export default function PairingCarousel({
                         status.state === "adding"
                       }
                       data-testid="pairing-add-button"
-                      aria-label={`${ctaLabelFor(slide)} — ${slide.itemsLabel}`}
-                      className="mt-2 inline-flex min-h-[48px] items-center justify-center rounded-radius-md bg-primary px-6 text-[15px] font-medium text-surface-elevated transition-colors duration-standard ease-in-out hover:bg-primary-hover active:bg-primary-active disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                      aria-label={`${ctaLabelFor(slide)} — ${slide.totalLabel} — ${slide.itemsLabel}`}
+                      className="relative mt-1 inline-flex h-10 w-full items-center justify-center rounded-radius-md bg-primary px-3 text-[12px] font-medium text-surface-elevated transition-colors duration-standard ease-in-out before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] hover:bg-primary-hover active:bg-primary-active disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 md:mt-2 md:h-12 md:w-auto md:self-start md:px-6 md:text-[15px]"
                     >
                       {ctaLabelFor(slide)}
                     </button>

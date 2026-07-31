@@ -52,7 +52,16 @@ export type PairingSlide = {
   /** Stable key for React and for the dot controls. */
   id: string
   eyebrow: string
+  /** Shorter eyebrow for the ~180px-wide compact panel (below 768px). */
+  eyebrowShort: string
   title: string
+  /**
+   * Shorter title below 768px. The full title wraps to four or five lines in
+   * the compact panel, which is half of a 390px screen minus padding — about
+   * 160px. This is not a nicety; without it the copy overruns the 16:9 frame.
+   */
+  titleShort: string
+  /** Hidden below `md:` (768px) — see the carousel's note on the panel. */
   body: string
   /** Product handles. Both must exist and be purchasable or the slide is skipped. */
   dishHandle: string
@@ -72,7 +81,9 @@ export const PAIRING_SLIDES: PairingSlide[] = [
   {
     id: "asun-single-malt",
     eyebrow: "Sommelier & Chef Selection",
+    eyebrowShort: "Sommelier & Chef",
     title: "Smoky Asun & Aged Single Malt",
+    titleShort: "Smoky Asun & Single Malt",
     body: "The bold, peppered spice of our wood-fired goat meat demands depth. Pair it with an aged single malt to slice through the heat and elevate every bite.",
     dishHandle: "peppered-goat-meat-asun",
     drinkHandle: "glenfiddich-12",
@@ -84,9 +95,11 @@ export const PAIRING_SLIDES: PairingSlide[] = [
   {
     id: "seafood-champagne",
     eyebrow: "The Sunday Special",
+    eyebrowShort: "Sunday Special",
     // Paul's original: "Seafood Okro & Chilled Champagne" — restore once the
     // dish exists. See the file header.
     title: "Grilled Tilapia & Chilled Champagne",
+    titleShort: "Tilapia & Champagne",
     body: "Rich ocean flavours meet crisp luxury. Vibrant citrus notes and fine bubbles cut perfectly through our signature seafood broth.",
     dishHandle: "grilled-tilapia-fried-plantain",
     drinkHandle: "veuve-clicquot-yellow-label",
