@@ -42,10 +42,11 @@
  *
  * The photographs read "High Coast Distillery", "Cristal Vodka", "The Wildwood
  * Botanical Gin", "Caribeño's Reserve", "Château Bordeaux", "Glen Glassaugh",
- * "Obsidian Brewery", "El Tesoro de Agave", "Maison d'Or" and "Domaine du
- * Soleil". The catalog products are named after real brands — Macallan, Grey
- * Goose, Bombay Sapphire, Bacardi, Château Margaux, Heineken, Patrón,
- * Hennessy. So a customer on the live site sees a bottle whose label
+ * "Obsidian Brewery", "El Tesoro de Agave", "Maison d'Or", "Domaine du
+ * Soleil", "The Crown & Key", "Château Val de Paix" and "Barnerine". The
+ * catalog products are named after real brands — Macallan, Grey Goose, Bombay
+ * Sapphire, Bacardi, Château Margaux, Heineken, Patrón, Hennessy, Tanqueray,
+ * Baileys. So a customer on the live site sees a bottle whose label
  * contradicts the product title.
  *
  * That is a real mismatch, not a cosmetic one. **The clean fix is to rename
@@ -87,6 +88,10 @@ const GIN: DemoImage = {
   src: `${P}gin-botanical.webp`,
   alt: "A clear bottle of botanical gin with an illustrated wildflower label, beside its matching tube",
 }
+const GIN_LONDON_DRY: DemoImage = {
+  src: `${P}gin-london-dry.webp`,
+  alt: "A pale green bottle of London dry gin beside its illustrated navy presentation box",
+}
 const RUM: DemoImage = {
   src: `${P}rum-dark.webp`,
   alt: "A bottle of dark aged rum with a cream and burgundy label, beside its presentation tube",
@@ -107,20 +112,46 @@ const RED_WINE: DemoImage = {
   src: `${P}wine-red-bordeaux.webp`,
   alt: "A bottle of red Bordeaux wine with a classic cream château label",
 }
-const WHITE_WINE: DemoImage = {
-  src: `${P}wine-white-sauvignon.webp`,
-  alt: "A chilled bottle of white Sauvignon Blanc with a cream label and green capsule",
+const ROSE_WINE: DemoImage = {
+  src: `${P}wine-rose.webp`,
+  alt: "A tall bottle of pale pink Provence rosé with a cream label",
+}
+/**
+ * A liqueur, but not the *same* liqueur — see the mismatch note above, which
+ * this stretches one step further than the rest. Baileys is an opaque cream
+ * liqueur; this is a clear dark herbal one. It is used anyway because the
+ * alternative is worse: it would be the only spirits card still rendering a
+ * grey Wikimedia snapshot next to twenty studio cut-outs, and a card that
+ * looks broken reads as a broken shop. Replace it the moment there is a real
+ * photograph.
+ */
+const HERBAL_LIQUEUR: DemoImage = {
+  src: `${P}liqueur-herbal.webp`,
+  alt: "A dark amber bottle of herbal liqueur with an ornate cream label",
 }
 
 /**
  * Handle → image. Duplicates are intentional: Paul asked for these to fill
- * every card, and ten photographs cannot cover the catalog uniquely.
+ * every card, and thirteen photographs cannot cover the catalog uniquely.
  *
- * **Still uncovered**, and kept on their existing images until Paul's next
- * batch — listed here so that batch can be aimed rather than guessed:
- *   • Champagne — `dom-perignon-vintage-2013`, `veuve-clicquot-yellow-label`
- *   • Cream liqueur — `baileys-irish-cream`
- *   • Accessories — `sommelier-corkscrew-set`
+ * **Still uncovered**, and kept on their existing images until the next batch
+ * — listed here so that batch can be aimed rather than guessed:
+ *   • Champagne — `dom-perignon-vintage-2013`, `veuve-clicquot-yellow-label`.
+ *     Nothing supplied so far is close: a champagne bottle is unmistakable
+ *     (heavy, wide-shouldered, foil and wire cage), and a still-wine bottle
+ *     standing in for one misrepresents what arrives, not just how it looks.
+ *   • Accessories — `sommelier-corkscrew-set`. Every image supplied is a
+ *     bottle or a can; none is a corkscrew.
+ *
+ * **Supplied but unused**, held out of the repo rather than forced onto the
+ * wrong product: an apple cider and an energy-drink mixer four-pack. The
+ * catalog has no cider and no mixer — they would have to become products
+ * first. See the note to Paul; the cut-out step is scripted and takes a
+ * minute to redo.
+ *
+ * `wine-white-sauvignon.webp` is on disk but no longer referenced: the rosé
+ * below took `pink-moscato`, which is a pink wine and was the only home the
+ * white bottle had. Kept for the first white wine added to the catalog.
  *
  * Food Central dishes are deliberately excluded: they already have real food
  * photography, which is the one part of this catalog that is honest today.
@@ -140,7 +171,7 @@ const DEMO_IMAGES: Record<string, DemoImage> = {
   "grey-goose-vodka": VODKA,
   "absolut-vodka": VODKA,
   "bombay-sapphire-gin": GIN,
-  "tanqueray-gin": GIN,
+  "tanqueray-gin": GIN_LONDON_DRY,
 
   // Aged spirits.
   "bacardi-superior-rum": RUM,
@@ -152,6 +183,9 @@ const DEMO_IMAGES: Record<string, DemoImage> = {
   "patron-silver-tequila": TEQUILA,
   "don-julio-blanco-tequila": TEQUILA,
 
+  // Liqueur. Wrong *kind* of liqueur — see `HERBAL_LIQUEUR` above.
+  "baileys-irish-cream": HERBAL_LIQUEUR,
+
   // Beer. A single stout bottle stands in for a crate — the closest of the
   // ten, and flagged as a stretch.
   "heineken-lager-crate": BEER,
@@ -160,7 +194,7 @@ const DEMO_IMAGES: Record<string, DemoImage> = {
   "chateau-margaux-2015": RED_WINE,
   "casillero-del-diablo-cabernet-sauvignon": RED_WINE,
   "jacobs-creek-shiraz-cabernet": RED_WINE,
-  "pink-moscato": WHITE_WINE,
+  "pink-moscato": ROSE_WINE,
 }
 
 /** The demo photograph for a product handle, or `undefined` to use its own. */
