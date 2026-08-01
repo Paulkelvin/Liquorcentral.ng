@@ -155,19 +155,27 @@ export default async function ProductPreview({
             is what makes the column read as one block rather than a card
             with an inset. */}
         <div className="flex flex-col gap-0.5 pt-3">
-          {/* Smaller and quieter than before (was 14px medium, primary).
-              Paul: "we have a bit big titles than what is in this product
-              card". The name is the label; the price is the thing being
-              decided on, so the price now carries the weight. */}
+          {/* **15px, matched to the reference by measurement.** The card
+              there is 319px wide with a title ink-height of 12px (3.76% of
+              the card) and a price ink-height of 11px (3.45%) — i.e. title
+              and price are the *same size* in the reference, separated by
+              weight and colour rather than by scale. At our ~296px card that
+              works out at ~15px for both.
+              
+              13px (the previous value) measured 3.29% and read undersized
+              next to the reference. The earlier "titles are a bit big" note
+              was about 14px **medium in primary ink** — it was the weight and
+              the darkness, not the size. Regular weight in `text-secondary`
+              is what makes the name recede. */}
           <Text
-            className="!text-[13px] font-normal leading-snug text-text-secondary line-clamp-2"
+            className="!text-[15px] font-normal leading-snug text-text-secondary line-clamp-2"
             data-testid="product-title"
           >
             {product.title}
           </Text>
 
           {cheapestPrice && (
-            <div className="flex items-baseline gap-x-2 text-[14px] font-semibold text-text-primary">
+            <div className="flex items-baseline gap-x-2 text-[15px] font-semibold text-text-primary">
               <PreviewPrice price={cheapestPrice} />
             </div>
           )}
@@ -194,9 +202,15 @@ export default async function ProductPreview({
         // button in a grid row sits on one baseline however many lines the
         // titles above them wrap to.
         <div className="mt-auto pt-3">
+          {/* `compact`: the full-height button was a 44px solid slab under
+              15px type on a ~296px card — the loudest thing in a layout
+              whose whole point is restraint. 38px drawn keeps it in
+              proportion; §B11's 44px floor is met by the hit-area expansion
+              inside the component, not by the drawn box. */}
           <QuickAddButton
             product={product}
             department={isFoodCentral ? "food" : "wine"}
+            size="compact"
           />
         </div>
       )}

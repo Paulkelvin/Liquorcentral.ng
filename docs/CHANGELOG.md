@@ -1,11 +1,23 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.18
+**Version:** 7.19
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v85 — 2026-07-31 — Product card text matched to the reference by measurement
+
+**Context:** Paul: "doesn't the text size match what I sent you. Make it match — and if the button doesn't fit the sizes of things around there, fix it."
+
+**Measured the reference rather than estimating it.** Its card is 319px wide; the title's ink height is 12px (**3.76%** of card width) and the price's is 11px (**3.45%**). Both are therefore the *same* type size there — the title recedes through weight and colour, not scale.
+
+**Changed:**
+- **Title 13px → 15px, price 14px → 15px.** Our card is 296px, so 15px lands at **3.80%** and **3.55%** — within a tenth of a percent of the reference on both. 13px was measuring 3.29% and reading undersized. (The earlier "titles are a bit big" note was about 14px **medium in primary ink**; it was weight and darkness, not size. Regular weight in `text-secondary` is what makes the name recede.)
+- **`QuickAddButton` gains `size="compact"`** — 38px drawn instead of 44px, used by the product card. A full 44px solid slab under 15px type was the loudest element on a page built around restraint. **The drawn box shrinks; the target does not:** §B11's 44px floor is met by an invisible `::before` (measured 296×44px), the same allowance the compact quantity stepper, footer social icons and the pairing dots already use. A compact button must never gain `overflow-hidden` — it would clip the expanded hit area.
+
+**Verified at 1440 and 390 on `/store`:** title 15px/400 `rgb(70,68,63)`, price 15px/600, button 38px drawn with a 44px hit area. axe-core 0 WCAG 2 A/AA violations on `/`, `/store` and `/cart` at both widths; tsc clean; 84/84 tests.
 
 ## v84 — 2026-07-31 — Product card rebuilt: borderless, tinted image tile
 

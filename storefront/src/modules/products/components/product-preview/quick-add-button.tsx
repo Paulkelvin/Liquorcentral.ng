@@ -51,6 +51,7 @@ export default function QuickAddButton({
   className,
   department = "wine",
   appearance = "solid",
+  size = "default",
 }: {
   product: HttpTypes.StoreProduct
   className?: string
@@ -74,6 +75,23 @@ export default function QuickAddButton({
    *   the customer guessing.
    */
   appearance?: "solid" | "icon"
+  /**
+   * `"compact"` draws the button at 38px instead of 44px, for the product
+   * card — where a full 44px solid slab under 15px type was the loudest
+   * element on a page built around restraint.
+   *
+   * **It shrinks the drawing, never the target.** `DESIGN_SYSTEM.md` §B11
+   * fixes a 44×44px minimum "regardless of visual size" and anticipates
+   * exactly this ("a small visual icon can still sit inside a larger tap
+   * area"), so the missing 6px come back as an invisible `::before`. Same
+   * technique as the compact quantity stepper, the footer social icons and
+   * the pairing carousel's dots.
+   *
+   * **Consequence: a compact button must never gain `overflow-hidden`** —
+   * it would clip the expanded hit area along with everything else and
+   * silently void the guarantee.
+   */
+  size?: "default" | "compact"
 }) {
   const countryCode = useParams().countryCode as string
   const { openDrawer } = useCart()
@@ -93,6 +111,16 @@ export default function QuickAddButton({
   // it measures 5.40:1), Food Central in ink-900 (16.1:1). Neither is
   // subordinate to the other.
   const isIcon = appearance === "icon"
+  const isCompact = size === "compact"
+
+  // `min-h-[38px]` needs no `!`: it is applied *after* `sharedClass` in the
+  // same `clx` call, and `min-h-[44px]` there is the only competitor, so
+  // Tailwind's emit order for two `min-h` arbitrary values is the tie —
+  // which is exactly the kind of coin-flip this project has been bitten by
+  // before. Hence the explicit `!` below rather than trusting it.
+  const compactClass = isCompact
+    ? "!min-h-[38px] py-1.5 before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] relative"
+    : ""
 
   // The icon form keeps the full 44px target: it *is* 44px, no expansion
   // trickery needed (DESIGN_SYSTEM.md §B11).
@@ -101,6 +129,7 @@ export default function QuickAddButton({
 
   const variantClass = clx(
     isIcon ? iconShape : sharedClass,
+    !isIcon && compactClass,
     department === "food"
       ? "bg-ink-900 text-surface-elevated hover:bg-ink-700 active:bg-ink-700"
       : "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
