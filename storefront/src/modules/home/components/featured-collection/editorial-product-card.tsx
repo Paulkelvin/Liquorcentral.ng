@@ -1,5 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
 import PreviewPrice from "@modules/products/components/product-preview/price"
@@ -47,6 +48,8 @@ export default function EditorialProductCard({
   product: HttpTypes.StoreProduct
 }) {
   const { cheapestPrice } = getProductPrice({ product })
+  // Temporary: see `demo-product-images.ts`. Delete with that file.
+  const demo = demoImageFor(product.handle)
   const catalogProduct = product as ProductWithCatalogDetails
   const isFoodCentral = !!catalogProduct.food_details
 
@@ -73,11 +76,11 @@ export default function EditorialProductCard({
         <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-ink-100">
           <div className="absolute inset-0 transition-transform duration-[600ms] ease-out group-hover:scale-[1.04]">
             <Thumbnail
-              thumbnail={product.thumbnail}
-              images={product.images}
+              thumbnail={demo?.src ?? product.thumbnail}
+              images={demo ? null : product.images}
               size="full"
               rounded={false}
-              alt={product.title}
+              alt={demo?.alt ?? product.title}
               className="!h-full !rounded-none"
             />
           </div>

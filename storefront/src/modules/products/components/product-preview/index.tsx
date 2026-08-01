@@ -1,5 +1,6 @@
 import { Text } from "@modules/common/components/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -55,6 +56,8 @@ export default async function ProductPreview({
     product,
   })
 
+  // Temporary: see `demo-product-images.ts`. Delete with that file.
+  const demo = demoImageFor(product.handle)
   const catalogProduct = product as ProductWithCatalogDetails
   const isFoodCentral = !!catalogProduct.food_details
 
@@ -124,11 +127,11 @@ export default async function ProductPreview({
             intent. A wrapper sidesteps that entirely. */}
         <div className="relative overflow-hidden rounded-radius-md bg-ink-100">
           <Thumbnail
-            thumbnail={product.thumbnail}
-            images={product.images}
+            thumbnail={demo?.src ?? product.thumbnail}
+            images={demo ? null : product.images}
             size="full"
             rounded={false}
-            alt={product.title || "Product photo"}
+            alt={demo?.alt ?? product.title ?? "Product photo"}
             className="!bg-transparent"
           />
 

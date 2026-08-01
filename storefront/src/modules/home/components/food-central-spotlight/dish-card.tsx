@@ -1,5 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
@@ -53,6 +54,8 @@ function isVariantAvailable(variant: InventoryVariant) {
  */
 export default function DishCard({ product }: { product: HttpTypes.StoreProduct }) {
   const { cheapestPrice } = getProductPrice({ product })
+  // Temporary: see `demo-product-images.ts`. Delete with that file.
+  const demo = demoImageFor(product.handle)
   const dish = product as DishProduct
   const prepMinutes = dish.food_details?.prep_time_minutes
   const variants = (product.variants ?? []) as InventoryVariant[]
@@ -77,11 +80,11 @@ export default function DishCard({ product }: { product: HttpTypes.StoreProduct 
         <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-ink-100">
           <div className="absolute inset-0 transition-transform duration-[600ms] ease-out group-hover:scale-[1.04]">
             <Thumbnail
-              thumbnail={product.thumbnail}
-              images={product.images}
+              thumbnail={demo?.src ?? product.thumbnail}
+              images={demo ? null : product.images}
               size="full"
               rounded={false}
-              alt={product.title || "Dish photo"}
+              alt={demo?.alt ?? product.title ?? "Dish photo"}
               className="!h-full !rounded-none"
             />
           </div>

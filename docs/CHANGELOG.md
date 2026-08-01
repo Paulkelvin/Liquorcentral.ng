@@ -1,11 +1,29 @@
 # Changelog
 
 **Status:** Approved (living record)
-**Version:** 7.19
+**Version:** 7.20
 **Owner:** Program
 **Last Updated:** 2026-07-31
 
 Tracks changes to the documentation set itself (not the product). For product/business decisions, see `DECISION_LOG.md`. For current project state, see `PROJECT_STATUS.md`. **Engineering (code) changes are tracked in `backend/README.md` and the repository's own commit history, not duplicated in full here — this entry records only that the engineering phase began and what it produced, at the level of detail this changelog's other entries use.**
+
+## v86 — 2026-08-01 — Ten product cut-outs wired into every card
+
+**Context:** Paul generated bottle photography and asked for it across the categories and the homepage — "now I will know if you truly did the correct thing about the product cards."
+
+**Added:**
+- `public/brand/products/` — ten transparent WebP cut-outs. **Backgrounds removed by flood-filling inward from the border, not by a global lightness threshold**: every bottle carries a cream or white label and a global threshold punches holes through them. Only edge-connected background is removed, which is why the cognac case's enclosed satin lining survives. Each is trimmed and scaled so the subject occupies the same 70% of a 900px square, so no bottle renders larger than another. 4.49 MB of PNG → **0.38 MB** of WebP.
+- `lib/util/demo-product-images.ts` — handle → image map, applied by `ProductPreview`, `EditorialProductCard` and `DishCard`.
+
+**Why the images ship in the repo rather than in Medusa:** production reads the *production* Medusa database and this environment only has a local one, so Admin-API thumbnails set here would never reach the deployed site. **This is scaffolding — the file documents exactly how to delete it** once the images are uploaded properly.
+
+**A first attempt was wrong and is worth recording:** the cut-outs were initially composited onto a white square. On the card's `ink-100` tile that rendered as a white box around every bottle, and the wine shot — whose ground was `#f5f5f5`, not white — showed a grey box even on white. Transparency is the only version where the tile tint does any work.
+
+**⚠️ The brands on these bottles are invented and do not match the product names** ("High Coast" on Macallan, "Cristal" on Grey Goose, and so on). Flagged in the module, in `IMAGE_CREDITS.md`, and to Paul. Recommended fix: rename the demo products to the invented brands — which also removes real trademarks this business does not represent.
+
+**Still uncovered**, awaiting Paul's next batch: champagne (`dom-perignon-vintage-2013`, `veuve-clicquot-yellow-label`), cream liqueur (`baileys-irish-cream`), accessories (`sommelier-corkscrew-set`).
+
+**Verified:** 10/10 images render on `/store` and 11/11 on `/categories/spirits` with **zero broken**, at 1440 and 390; axe-core 0 WCAG 2 A/AA violations on `/`, `/store` and `/cart` at both widths; tsc clean; 84/84 tests.
 
 ## v85 — 2026-07-31 — Product card text matched to the reference by measurement
 
