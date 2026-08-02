@@ -189,8 +189,56 @@ Independent of the brand palette, chosen solely for accessibility and to communi
 |---|---|---|---|
 | **Success** | Green `#1A9902` (reused from Tier 1) | ~3.4:1 (large text/UI only, per §13) | The one intentional, non-conflicting reuse: `BRAND_IDENTITY.md` §13 already established Green as the brand's "confirmation/go" accent — "success" is that same meaning, not a new one. Inventing a second, unrelated green purely for success states would create two greens in the system with no clear distinction. |
 | **Warning** | `#B45309` (burnt orange) | ~4.6:1 (passes AA for normal text) | Chosen independently of Gold. Despite both sitting loosely in the amber/orange family — a near-universal convention for warning semantics that would be counter-intuitive to abandon entirely — this shade is shifted clearly toward orange (hue ≈ 28°) away from Gold's yellow-green mustard tone (hue ≈ 58–60°), so the two are never visually interchangeable. Gold is never used in a warning context and warning is never described as, or styled like, a variant of Gold. |
-| **Danger / Error** | `#B3261E` (deep red) | ~5.95:1 (passes AA for normal text — better than Primary Red's own ~3.87:1) | Deliberately a *different* shade from Primary Red, not the same color doing double duty. This satisfies Paul's specific concern: Red retains one meaning (primary action) and Danger retains a different, distinct meaning (something's wrong) — related by hue family (red universally reads as "stop/error"), but never the literal same value, and used in entirely different contexts (a button vs. an inline error message). |
+| **Danger / Error** | `#8C1D18` (dark maroon red) | **8.30:1** on the Off White page, 9.11:1 for white text on it (both pass AA comfortably) | Deliberately a *different* shade from Primary Red, not the same color doing double duty. Red retains one meaning (primary action) and Danger a distinct one (something's wrong) — related by hue family, since red reads as "stop/error" without being taught, but never the same value and used in entirely different contexts (a button vs. an inline error message). **Retuned from `#B3261E` in v2.2 — see the amendment note below.** |
 | **Information** | `#2B6CB0` (muted blue) | ~4.9:1 (passes AA for normal text) | A conventional, unambiguous informational blue; no brand color fills this role without conflict, so an independent color is used. |
+
+#### Amendment (v2.2) — Danger retuned from `#B3261E` to `#8C1D18`
+
+**Authorised by Paul directly**, after he raised the question of what the red
+CTA conveys to customers and asked for it to be checked against evidence
+rather than taste.
+
+The original intent recorded above was correct and is unchanged: Primary Red
+means "buy this", Danger means "something is wrong", and they must never be
+the same colour. What the audit found is that **the value did not deliver the
+intent**. Measured:
+
+| | Hue | Saturation | Lightness |
+|---|---|---|---|
+| Primary CTA `#CD2706` | 9.9° | 94% | 41% |
+| Danger `#B3261E` (old) | 3.2° | 71% | 41% |
+| Danger `#8C1D18` (new) | 2.6° | 71% | 32% |
+
+`#B3261E` sat **6.7° of hue from the CTA at identical lightness** — the same
+colour to a customer. Danger red appears in 16 components, so a single
+category grid could show some cards saying *buy me* in red and others saying
+*sold out* in a red indistinguishable from it.
+
+**The separation is carried by lightness and saturation, not hue.** Pushing
+the hue would take Danger out of the red family, and red is the one hue that
+reads as "error" without being taught — the very reason this table gives for
+staying in it. Dark and dulled against bright and vivid is the distinction a
+customer actually perceives.
+
+Every contrast measure improved rather than merely holding: on the page
+5.95:1 → **8.30:1**; white on it 6.54:1 → **9.11:1**; the tint pairing used by
+inline error blocks 6.42:1 → **8.47:1**.
+
+**Known and accepted:** the two reds measure only 1.69:1 *against each other*.
+SC 1.4.11 does not apply between them — they are never adjacent components
+that must be told apart by contrast — and error states carry words ("Sold
+out", "Unavailable") rather than relying on colour alone, satisfying SC 1.4.1.
+
+**On the wider question Paul asked** — whether red as a CTA reads as danger —
+the evidence does not support changing the brand colour. The most-cited CTA
+colour test (red beating green) is generally read as measuring *contrast*, not
+hue; no hue has been established as universally better, and salience is what
+predicts clicks. Red's danger reading is strongest precisely where red also
+marks errors *in the same interface*, which is the condition this amendment
+removes. Red also sits close to a category norm for food and drink retail.
+This remains a reasoned judgement, not a controlled test of this storefront;
+the only way to know what red does to LiquorCentral's conversion is to run one
+once there is traffic.
 
 - **Why (overall):** a complete, accessible UI needs more states than four brand/accent colors can fill without compromising either accessibility (contrast) or the brand's own usage hierarchy. These four are chosen to be accessible on their own terms, not squeezed out of the brand palette.
 - **Business value:** prevents two real failure modes named directly in Paul's feedback — Gold's premium status being cheapened by everyday warning use, and Red's call-to-action meaning being confused with a destructive/error meaning.
@@ -274,7 +322,7 @@ Rather than hard-coding a separate fixed color for every element's hover and pre
 | **Disabled** | `color.disabled` | `ink-500` `#706C63` (text/icon) / `ink-100` `#ECEAE3` (surface) |
 | **Success** | `color.success` | Green `#1A9902` (reused, intentional — see Tier 2) |
 | **Warning** | `color.warning` | `#B45309` (Tier 2) |
-| **Danger** | `color.danger` | `#B3261E` (Tier 2) |
+| **Danger** | `color.danger` | `#8C1D18` (Tier 2) |
 | **Information** | `color.information` | `#2B6CB0` (Tier 2) |
 
 Two supplementary tokens exist beyond this canonical list, for technical completeness: `color.background` (Off White — same value as Surface today, kept as a separate token for forward flexibility) and `color.text.muted` (`ink-500` — a third text tier for placeholders/captions).

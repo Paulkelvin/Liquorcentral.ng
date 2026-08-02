@@ -914,3 +914,12 @@
 - **Date:** 2026-07-18
 - **Impact:** `.gitmodules`, `medusa/` directory. Establishes the hard rule that Medusa core is never edited directly — see `ARCHITECTURE.md`.
 - **Status:** Final.
+
+### Danger red retuned from `#B3261E` to `#8C1D18`
+
+- **Decision:** `--functional-danger` moves from `#B3261E` to `#8C1D18`. Primary Red is unchanged and remains the CTA colour.
+- **Reasoning:** Paul questioned whether a red call-to-action reads as danger, and asked for the answer to come from evidence rather than taste. The evidence does not support changing the brand colour: the most-cited CTA colour test is generally read as measuring contrast rather than hue, no hue has been established as universally better, and red's danger reading is strongest precisely where red *also* marks errors in the same interface. That last condition was true here. `DESIGN_SYSTEM.md` §B6 had always intended Danger to be a distinct red so "buy this" and "something is wrong" never share a colour, but the value did not deliver it — measured, `#B3261E` sat 6.7° of hue from the CTA red at identical 41% lightness, i.e. the same colour to a customer, across the 16 components that use it. The new value separates on lightness and saturation (32%/71% against the CTA's 41%/94%) rather than on hue, because red is the one hue that reads as "error" without being taught.
+- **Date:** 2026-08-02
+- **Impact:** `storefront/src/styles/globals.css`; `DESIGN_SYSTEM.md` §B6 amended to v2.2 (Frozen document, changed on Paul's explicit direction per `DOCUMENTATION_GOVERNANCE.md` §5); `PROJECT_STATUS.md`. Every contrast measure improved: on the page 5.95:1 → 8.30:1, white on it 6.54:1 → 9.11:1, tint pairing 6.42:1 → 8.47:1. The two reds measure 1.69:1 against each other, which is accepted — they are never adjacent components requiring separation, and error states carry words rather than relying on colour alone.
+- **Status:** Final. Open item: whether red is the right CTA colour for LiquorCentral's actual conversion remains untested; that needs an A/B test once there is traffic, not a further judgement call.
+

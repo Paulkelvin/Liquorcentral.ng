@@ -21,7 +21,34 @@
 
   /* Tier 2 — Functional UI Colors (independent of brand palette) */
   --functional-warning: #b45309;
-  --functional-danger: #b3261e;
+  /*
+   * Danger — retuned from #B3261E on Paul's explicit direction.
+   *
+   * `DESIGN_SYSTEM.md` §B6 always intended this to be a *different* red from
+   * the primary CTA, so that "buy this" and "something is wrong" never share
+   * a colour. The intent was right; the value did not deliver it. Measured,
+   * #B3261E sat **6.7° of hue from the CTA red at identical 41% lightness** —
+   * the same colour to a customer. On one category grid that meant some cards
+   * saying *buy me* in red and others saying *you cannot have this* in a red
+   * nobody could tell apart.
+   *
+   * The separation is carried by lightness and saturation rather than hue,
+   * deliberately: pushing the hue would have taken danger out of the red
+   * family, and red is the one hue that reads as "error" without being
+   * taught. Against the CTA's 94% saturation at 41% lightness, this is 71% at
+   * 32% — dark and dulled where the button is bright and vivid.
+   *
+   * Every contrast measure improved rather than merely holding: on the page
+   * 5.95:1 → 8.30:1, white on it 6.54:1 → 9.11:1, and the tint pairing used
+   * by inline error blocks 6.42:1 → 8.47:1.
+   *
+   * The two reds still only measure 1.69:1 *against each other*, which is
+   * fine and worth knowing: they are never adjacent components that must be
+   * told apart by contrast, so SC 1.4.11 does not apply between them. They
+   * are distinguished the way a customer actually reads colour — one is a
+   * bright button, the other is dark text.
+   */
+  --functional-danger: #8c1d18;
   --functional-information: #2b6cb0;
 
   /* Neutral System — a warm-neutral grayscale, not a cold gray */
