@@ -26,7 +26,7 @@ function isVariantPurchasable(variant?: QuickAddVariant) {
 }
 
 const sharedClass =
-  "inline-flex items-center justify-center w-full min-h-[44px] py-2 px-4 text-[13px] font-medium rounded-radius-md transition-colors duration-standard ease-in-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+  "inline-flex items-center justify-center w-full min-h-[44px] py-2 px-4 text-[13px] font-medium rounded-radius-md border transition-colors duration-standard ease-in-out active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
 
 /**
  * 04_PRODUCT_LISTING_SPECIFICATION.md §9 "Quick actions" — a sibling
@@ -50,31 +50,11 @@ export default function QuickAddButton({
   product,
   className,
   department = "wine",
-  appearance = "solid",
   size = "default",
 }: {
   product: HttpTypes.StoreProduct
   className?: string
   department?: "wine" | "food"
-  /**
-   * `"icon"` draws the same control as a round icon button instead of a
-   * full-width labelled one — used by the Today's Menu dish card, where a
-   * heavy solid button competes with the food photography.
-   *
-   * **Only the drawing changes; every state and guarantee is the same
-   * control.** The optimistic add, the error rollback, the hand-off to the
-   * product page when a product has more than one variant, and the sold-out
-   * case all still run. Two consequences that are easy to get wrong if this
-   * is ever extended:
-   *
-   * - **An icon control needs a real accessible name**, so each branch below
-   *   carries an `aria-label` naming the product. Without it a screen reader
-   *   hears "button" four times in a row with nothing to tell them apart.
-   * - **Sold out stays text even in icon mode.** There is no icon that says
-   *   "sold out" unambiguously, and a disabled-looking circle would leave
-   *   the customer guessing.
-   */
-  appearance?: "solid" | "icon"
   /**
    * `"compact"` draws the button at 38px instead of 44px, for the product
    * card — where a full 44px solid slab under 15px type was the loudest
@@ -103,14 +83,6 @@ export default function QuickAddButton({
   const singleVariant = variants.length === 1 ? variants[0] : undefined
   const hasMultipleVariants = variants.length > 1
 
-  // Both catalogs get the same high-contrast solid CTA — §9's original
-  // primary/secondary weight split is gone, because the quiet fill that
-  // carried the "secondary" half read as washed out against both the
-  // card and the page. The catalogs stay distinguishable by *hue*
-  // instead of by weight: Wine & Spirits in the brand accent (white on
-  // it measures 5.40:1), Food Central in ink-900 (16.1:1). Neither is
-  // subordinate to the other.
-  const isIcon = appearance === "icon"
   const isCompact = size === "compact"
 
   // `min-h-[38px]` needs no `!`: it is applied *after* `sharedClass` in the
@@ -122,19 +94,48 @@ export default function QuickAddButton({
     ? "!min-h-[38px] py-1.5 before:absolute before:left-1/2 before:top-1/2 before:h-11 before:w-full before:-translate-x-1/2 before:-translate-y-1/2 before:content-[''] relative"
     : ""
 
-  // The icon form keeps the full 44px target: it *is* 44px, no expansion
-  // trickery needed (DESIGN_SYSTEM.md §B11).
-  const iconShape =
-    "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-radius-full transition-colors duration-standard ease-in-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-
-  const variantClass = clx(
-    isIcon ? iconShape : sharedClass,
-    !isIcon && compactClass,
+  /**
+   * **Outlined at rest, filled on hover and on confirmation.**
+   *
+   * This was a solid fill in both catalogs, and once every listing on the site
+   * moved to the same grid card the result was a page of loud slabs: on a
+   * twelve-card category grid the buttons were the first thing the eye landed
+   * on, ahead of the products. Paul asked for them quieted.
+   *
+   * **Why an outline works where the old "secondary" fill did not.** §9
+   * originally split these into primary and secondary *weights*, and that was
+   * abandoned because the pale fill carrying the secondary half read as washed
+   * out — i.e. as disabled. An outline is a different move: the label keeps
+   * **full-strength** brand colour, so nothing about it reads as unavailable;
+   * only the 40% of the card that was flat colour goes away. Do not "fix" this
+   * by tinting the fill again.
+   *
+   * The catalogs stay distinguishable by hue, as before — Wine & Spirits in
+   * the brand accent, Food Central in `ink-900` — now carried by the border
+   * and the label rather than by a block of colour.
+   *
+   * **The confirmed and failed states stay solid**, deliberately. Quiet is
+   * right for a control at rest and wrong for feedback: "Added" has to be
+   * unmistakable at a glance, and a state change that only swaps a word inside
+   * an outline is easy to miss on a phone. So the button fills in the moment
+   * it has something to tell you, and empties again when it doesn't.
+   *
+   * Contrast holds in both states — the resting label is full-strength colour
+   * on the page, the filled label is white on it — and the border clears
+   * SC 1.4.11's 3:1 for a component boundary because it is the same colour as
+   * the label. Verified with axe on `/`, `/store` and `/categories/spirits`.
+   */
+  const isLoud = status !== "idle"
+  const tone =
     department === "food"
-      ? "bg-ink-900 text-surface-elevated hover:bg-ink-700 active:bg-ink-700"
-      : "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
-    className
-  )
+      ? isLoud
+        ? "border-ink-900 bg-ink-900 text-surface-elevated"
+        : "border-ink-900 bg-transparent text-ink-900 hover:bg-ink-900 hover:text-surface-elevated active:bg-ink-700 active:border-ink-700"
+      : isLoud
+      ? "border-primary bg-primary text-surface-elevated"
+      : "border-primary bg-transparent text-primary hover:bg-primary hover:text-surface-elevated active:bg-primary-active active:border-primary-active"
+
+  const variantClass = clx(sharedClass, compactClass, tone, className)
 
   if (variants.length === 0 || (singleVariant && !isVariantPurchasable(singleVariant))) {
     return (
@@ -152,26 +153,9 @@ export default function QuickAddButton({
       <LocalizedClientLink
         href={`/products/${product.handle}`}
         className={variantClass}
-        aria-label={isIcon ? `Choose options for ${product.title}` : undefined}
         data-testid="quick-add-select-options"
       >
-        {isIcon ? (
-          // An arrow, not a plus. A plus on a product with unchosen options
-          // would promise an add that cannot happen without a size or
-          // vintage — this control goes to the picker, and should look
-          // like it does.
-          <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-5 w-5">
-            <path
-              d="M4 10h12m0 0-4.5-4.5M16 10l-4.5 4.5"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        ) : (
-          "Select options"
-        )}
+        Select options
       </LocalizedClientLink>
     )
   }
@@ -219,46 +203,6 @@ export default function QuickAddButton({
       : status === "error"
       ? "Try again"
       : "Add to cart"
-
-  if (isIcon) {
-    return (
-      <button
-        type="button"
-        onClick={handleClick}
-        data-testid="product-quick-add-button"
-        className={variantClass}
-        // The label carries the state as well as the name, so the change
-        // from "add" to "added" is announced rather than being conveyed by
-        // the glyph alone.
-        aria-label={
-          status === "added"
-            ? `${product.title} added to cart`
-            : status === "error"
-            ? `Adding ${product.title} failed — try again`
-            : `Add ${product.title} to cart`
-        }
-      >
-        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-5 w-5">
-          {status === "added" ? (
-            <path
-              d="m5 10.5 3.2 3.2L15 6.8"
-              stroke="currentColor"
-              strokeWidth="1.9"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          ) : (
-            <path
-              d="M10 4.5v11M4.5 10h11"
-              stroke="currentColor"
-              strokeWidth="1.9"
-              strokeLinecap="round"
-            />
-          )}
-        </svg>
-      </button>
-    )
-  }
 
   return (
     <button

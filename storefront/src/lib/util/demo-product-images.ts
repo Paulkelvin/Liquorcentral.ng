@@ -43,7 +43,8 @@
  * The photographs read "High Coast Distillery", "Cristal Vodka", "The Wildwood
  * Botanical Gin", "Caribeño's Reserve", "Château Bordeaux", "Glen Glassaugh",
  * "Obsidian Brewery", "El Tesoro de Agave", "Maison d'Or", "Domaine du
- * Soleil", "The Crown & Key", "Château Val de Paix", "Barnerine", "Alta
+ * Soleil", "The Crown & Key", "Château Val de Paix", "Barnerine", "Villa
+ * d'Oro", "O'Brien's", "Alta
  * Agave", "Mezcal Artesanal Oaxaqueño" and "Premium Spiced Gold Rum". The
  * catalog products are named after real brands — Macallan, Grey Goose, Bombay
  * Sapphire, Bacardi, Château Margaux, Heineken, Patrón, Hennessy, Tanqueray,
@@ -121,18 +122,28 @@ const RED_WINE: DemoImage = {
   src: `${P}wine-red-bordeaux.webp`,
   alt: "A bottle of red Bordeaux wine with a classic cream château label",
 }
+const SPARKLING: DemoImage = {
+  src: `${P}sparkling-prosecco.webp`,
+  alt: "A green sparkling wine bottle with a gold foil capsule and a caged cork",
+}
 const ROSE_WINE: DemoImage = {
   src: `${P}wine-rose.webp`,
   alt: "A tall bottle of pale pink Provence rosé with a cream label",
 }
+const IRISH_CREAM: DemoImage = {
+  src: `${P}liqueur-irish-cream.webp`,
+  alt: "A dark rounded bottle of Irish cream liqueur with a cream and green label",
+}
 /**
- * A liqueur, but not the *same* liqueur — see the mismatch note above, which
- * this stretches one step further than the rest. Baileys is an opaque cream
- * liqueur; this is a clear dark herbal one. It is used anyway because the
- * alternative is worse: it would be the only spirits card still rendering a
- * grey Wikimedia snapshot next to twenty studio cut-outs, and a card that
- * looks broken reads as a broken shop. Replace it the moment there is a real
- * photograph.
+ * Used for cognac, and that is a stretch worth naming: this is a herbal
+ * liqueur, not a brandy. It earns the slot on *shape and colour* — a dark
+ * amber spirit in a plain bottle with an ornate label — and it exists to stop
+ * the two cognacs sharing one photograph of a presentation case, which read as
+ * a duplicated card rather than as two products.
+ *
+ * It was previously on Baileys, which was worse: an opaque cream liqueur
+ * rendered as a clear dark one. A real Irish cream arrived, so that stretch is
+ * now retired.
  */
 const HERBAL_LIQUEUR: DemoImage = {
   src: `${P}liqueur-herbal.webp`,
@@ -141,24 +152,18 @@ const HERBAL_LIQUEUR: DemoImage = {
 
 /**
  * Handle → image. Duplicates are intentional: Paul asked for these to fill
- * every card, and sixteen photographs cannot cover the catalog uniquely.
+ * every card, and eighteen photographs cannot cover the catalog uniquely.
  *
- * **The last three cards still showing a photograph with its studio
- * background**, which is the thing Paul asked to be rid of. Nothing supplied
- * so far is close enough to stand in, so they are listed here to aim the next
- * batch rather than guess at it:
- *   • `dom-perignon-vintage-2013`, `veuve-clicquot-yellow-label` — champagne.
- *     A champagne bottle is unmistakable: heavy, wide-shouldered, foil capsule
- *     over a wire cage. A still-wine bottle standing in for one misrepresents
- *     what arrives, not just how it looks.
- *   • `sommelier-corkscrew-set` — an accessory. Every image supplied so far is
- *     a bottle or a can.
+ * **One card still shows a photograph with its studio background**, which is
+ * the thing Paul asked to be rid of: `sommelier-corkscrew-set`. Every image
+ * supplied so far is a bottle or a can, so there is nothing to put on it —
+ * named here to aim the next batch rather than guess at it.
  *
  * **Supplied but unused**, held out of the repo rather than forced onto the
- * wrong product: an apple cider, an energy-drink mixer four-pack, and a pink
- * gin. The catalog has no cider, no mixer and no flavoured gin — each would
- * have to become a product first. The cut-out step is scripted, so wiring them
- * up later costs a minute.
+ * wrong product: an apple cider, an energy-drink mixer four-pack, a pink gin,
+ * and a coffee liqueur. The catalog has no cider, no mixer, no flavoured gin
+ * and no coffee liqueur — each would have to become a product first. The
+ * cut-out step is scripted, so wiring them up later costs a minute.
  *
  * **On disk but no longer referenced**, kept for the first product of their
  * kind rather than deleted:
@@ -193,15 +198,15 @@ const DEMO_IMAGES: Record<string, DemoImage> = {
   "bacardi-superior-rum": RUM,
   "captain-morgan-spiced-rum": RUM_SPICED,
   "hennessy-vsop": COGNAC,
-  "courvoisier-cognac": COGNAC,
+  "courvoisier-cognac": HERBAL_LIQUEUR,
 
   // Agave. Both catalog products are *blanco* — unaged and clear — so both
   // now carry a clear bottle. The reposado shot they shared was gold.
   "patron-silver-tequila": TEQUILA_BLANCO,
   "don-julio-blanco-tequila": MEZCAL,
 
-  // Liqueur. Wrong *kind* of liqueur — see `HERBAL_LIQUEUR` above.
-  "baileys-irish-cream": HERBAL_LIQUEUR,
+  // Liqueur.
+  "baileys-irish-cream": IRISH_CREAM,
 
   // Beer. A single stout bottle stands in for a crate — the closest of the
   // ten, and flagged as a stretch.
@@ -212,6 +217,16 @@ const DEMO_IMAGES: Record<string, DemoImage> = {
   "casillero-del-diablo-cabernet-sauvignon": RED_WINE,
   "jacobs-creek-shiraz-cabernet": RED_WINE,
   "pink-moscato": ROSE_WINE,
+
+  // Champagne. One bottle for both, at Paul's explicit direction — he asked
+  // for duplicates wherever a card had no good image, and this is the format
+  // that matters: sloped shoulders, foil capsule, caged mushroom cork. It is
+  // a prosecco rather than a champagne, which is a different region and
+  // method, but the *bottle* is the thing a customer recognises and the thing
+  // that arrives. It replaces a press photograph on a black studio ground
+  // carrying real Dom Pérignon branding — the single worst card on the site.
+  "dom-perignon-vintage-2013": SPARKLING,
+  "veuve-clicquot-yellow-label": SPARKLING,
 }
 
 /** The demo photograph for a product handle, or `undefined` to use its own. */
