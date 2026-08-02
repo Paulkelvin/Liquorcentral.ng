@@ -33,12 +33,14 @@ import EditorialCard from "./editorial-card"
  * item in a track. Keeping it inside the grid rather than floating it above
  * means one set of gaps governs the whole section.
  *
- * **The product limit is 6, down from 8** — a cap, not a count. It is the
- * largest number that fills the shared grid cleanly at both widths (three rows
- * of two on a phone, two rows of three from `small:` up) if the collection is
- * big enough. The seeded campaign collection holds four, so today it renders
- * four and the desktop row is 3+1; that is a content decision, not a layout
- * one, and partial final rows are normal on the category pages too.
+ * **Six products, and they are now named explicitly in `campaign.ts`.** Six
+ * is the number that fills the shared grid cleanly at both widths — three rows
+ * of two on a phone, two rows of three from `small:` up. Sourcing them from
+ * the campaign's Medusa Collection could not guarantee it (the seeded
+ * collection holds four, which left a ragged 3+1 on desktop) and the only way
+ * to change that from the repo would have been to reseed. `productHandles`
+ * makes the row a one-line edit instead, which is what Paul asked for. Remove
+ * that field and this falls back to the collection exactly as before.
  *
  * The campaign — image, title, copy, and which collection's products appear —
  * lives entirely in `campaign.ts`. Nothing in this file needs to change to run
@@ -68,18 +70,31 @@ export default async function FeaturedCollection({
     return null
   }
 
+  const picked = ACTIVE_CAMPAIGN.productHandles
+
   const {
-    response: { products },
+    response: { products: fetched },
   } = await listProducts({
     regionId: region.id,
     queryParams: {
-      collection_id: [collection.id],
-      limit: 6,
+      ...(picked?.length
+        ? { handle: picked, limit: picked.length }
+        : { collection_id: [collection.id], limit: 6 }),
       // `food_details` decides each card's catalog label and quick-add accent;
       // without it a dish in a mixed collection renders as a wine card.
       fields: "*variants.calculated_price,+food_details.*",
     },
   }).catch(() => ({ response: { products: [] as never[] } }))
+
+  // Medusa answers a multi-handle query in its own order, not the order the
+  // handles were asked for. Without this, rearranging `productHandles` would
+  // silently do nothing — the surprise that makes a "just edit this list"
+  // affordance untrustworthy. Handles that matched nothing simply drop out.
+  const products = picked?.length
+    ? picked
+        .map((handle) => fetched.find((p) => p.handle === handle))
+        .filter((p): p is (typeof fetched)[number] => Boolean(p))
+    : fetched
 
   if (!products?.length) {
     return null

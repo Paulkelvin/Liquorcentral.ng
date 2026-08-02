@@ -1,4 +1,5 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { IconChevronDown } from "@modules/common/icons"
 
 export type BreadcrumbSegment = {
   label: string
@@ -49,7 +50,7 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
             // The narrow-viewport truncation hides the whole <li>, not
             // just its label: hiding the label alone left the leading
             // separator behind, so a trail two levels deep read as
-            // "Wine & Spirits / / Whisky" on a phone.
+            // "Wine & Spirits › › Whisky" on a phone.
             const truncatesOnMobile = index > 1 && !isLast
 
             return (
@@ -61,10 +62,20 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
                     : "flex items-center gap-x-2"
                 }
               >
+                {/* A chevron, not a slash — Paul's direction, matching the
+                    reference he sent. Drawn to the house icon spec rather
+                    than typed as "›": a text chevron takes the label's font
+                    and weight, so it changed size with the breadcrumb type
+                    and sat on the text baseline instead of centred between
+                    the two labels. `IconChevronDown` rotated 90° is the same
+                    path the drawer's disclosure uses, so the separator and
+                    the disclosure caret cannot drift apart. */}
                 {index > 0 && (
-                  <span aria-hidden="true" className="text-text-muted">
-                    /
-                  </span>
+                  <IconChevronDown
+                    aria-hidden="true"
+                    size={14}
+                    className="-rotate-90 shrink-0 text-text-muted"
+                  />
                 )}
                 {isLast || !segment.href ? (
                   <span

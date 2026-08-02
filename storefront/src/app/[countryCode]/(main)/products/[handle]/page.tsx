@@ -135,11 +135,37 @@ export default async function ProductPage(props: Props) {
     },
   }).then(({ response }) => response.products[0])
 
-  const images = getImagesForVariant(pricedProduct, selectedVariantId)
-
+  /**
+   * **The null check has to come before `getImagesForVariant`, and this
+   * ordering was a live 500 on production.**
+   *
+   * It used to read the images first. When the lookup returned nothing,
+   * `getImagesForVariant` dereferenced `product.variants` on `undefined` and
+   * threw `TypeError: Cannot read properties of undefined (reading 'images')`
+   * — so a product that simply did not exist produced a **500 Internal Server
+   * Error** instead of a 404, and, worse, so did any condition that left the
+   * lookup empty. Every `/products/*` URL on production was returning 500
+   * while `/categories/*` correctly returned 404 for a bad handle; that
+   * asymmetry is what identified this line.
+   *
+   * A 404 here is not merely tidier than a 500, it is diagnostic: a 500 says
+   * "the code broke" and hides everything, a 404 says "the lookup came back
+   * empty" and points at data or configuration.
+   */
   if (!pricedProduct) {
+    // Named deliberately. Production was returning 500 for *every* product
+    // URL while the same build against the same backend returned 200 here,
+    // so the remaining variable is that environment's data or configuration.
+    // A silent 404 would hide that; this puts the handle and region in the
+    // server log so the next occurrence is one line to diagnose.
+    console.error(
+      `Product lookup returned nothing: handle="${params.handle}" ` +
+        `country="${params.countryCode}" region="${region.id}"`
+    )
     notFound()
   }
+
+  const images = getImagesForVariant(pricedProduct, selectedVariantId)
 
   return (
     <ProductTemplate

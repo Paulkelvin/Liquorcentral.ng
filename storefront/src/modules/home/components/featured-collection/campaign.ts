@@ -20,8 +20,29 @@
  *                    Made Fresh Daily · Family Feast · Weekend Kitchen
  */
 export type Campaign = {
-  /** Medusa Collection handle. Its products fill the rest of the row. */
+  /** Medusa Collection handle. Decides where "See the collection" goes, and
+   *  supplies the products when `productHandles` is not set. */
   collectionHandle: string
+  /**
+   * The exact products shown, in this order.
+   *
+   * **Optional, and it overrides the collection.** Paul asked for six cards
+   * on the homepage, and the seeded campaign collection holds four — so
+   * without this the row could only be fixed by editing the collection in
+   * Medusa Admin, which is not something you can do from the repo. Listing
+   * handles here makes the row editable in one line, which was the explicit
+   * requirement: "the most important thing is that we can easily change them
+   * later."
+   *
+   * Order is honoured. Medusa returns products in its own order, so
+   * `index.tsx` re-sorts the response to match this list — otherwise
+   * rearranging these lines would appear to do nothing.
+   *
+   * A handle that does not exist is skipped rather than rendering a hole, so
+   * a typo costs a card, not the section. Leave this out entirely to go back
+   * to "whatever is in the collection".
+   */
+  productHandles?: string[]
   /** Small label above the title. Keep it to two or three words. */
   eyebrow: string
   title: string
@@ -45,5 +66,17 @@ export const ACTIVE_CAMPAIGN: Campaign = {
   ctaLabel: "Explore Collection",
   image: "/brand/campaigns/weekend-collection.jpg",
   imageAlt:
-    "Friends around a candlelit dinner table set with wine bottles, glasses and a sharing board",
+    "Three unlabelled bottles — whisky, red wine and a clear spirit — grouped on dark stone under low, warm light",
+  // Six, chosen for spread rather than for price: a red, a sparkling, a
+  // cognac, two whiskies and an agave spirit, so the row reads as a range
+  // rather than as one shelf. Reorder or replace freely — the row follows
+  // this list exactly.
+  productHandles: [
+    "chateau-margaux-2015",
+    "dom-perignon-vintage-2013",
+    "hennessy-vsop",
+    "macallan-12-double-cask",
+    "johnnie-walker-blue-label",
+    "patron-silver-tequila",
+  ],
 }
