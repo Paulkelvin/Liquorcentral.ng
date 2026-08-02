@@ -1,6 +1,6 @@
 "use client"
 
-import { ShoppingBag } from "@medusajs/icons"
+import { IconBag } from "@modules/common/icons"
 import { useCart } from "@lib/context/cart-context"
 
 /**
@@ -30,7 +30,7 @@ const CartTrigger = () => {
       data-testid="nav-cart-link"
     >
       <span className="relative inline-flex">
-        <ShoppingBag width={24} height={24} />
+        <IconBag aria-hidden="true" />
         {totalItems > 0 && (
           <span
             aria-hidden="true"

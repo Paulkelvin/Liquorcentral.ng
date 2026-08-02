@@ -2,7 +2,6 @@ import ItemsTemplate from "./items"
 import Summary from "./summary"
 import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import { HttpTypes } from "@medusajs/types"
 

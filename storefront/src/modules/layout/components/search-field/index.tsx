@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
-import { MagnifyingGlassMini } from "@medusajs/icons"
+import { IconSearch } from "@modules/common/icons"
 
 /**
  * 01_NAVIGATION_SPECIFICATION.md §15 — "a visible text input in the
@@ -39,7 +39,7 @@ export default function SearchField() {
       onSubmit={submit}
       className="hidden sm:flex items-center gap-2 h-10 px-3 rounded-radius-md border border-border bg-surface focus-within:ring-2 focus-within:ring-focus"
     >
-      <MagnifyingGlassMini className="text-text-muted" aria-hidden="true" />
+      <IconSearch size={18} className="shrink-0 text-text-muted" aria-hidden="true" />
       <label htmlFor="header-search-desktop" className="sr-only">
         Search products
       </label>

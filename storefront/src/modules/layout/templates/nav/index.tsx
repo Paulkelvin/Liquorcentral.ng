@@ -6,7 +6,7 @@ import { listRegions } from "@lib/data/regions"
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
 import { StoreRegion } from "@medusajs/types"
-import { ShoppingBag, User } from "@medusajs/icons"
+import { IconAccount, IconBag } from "@modules/common/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import MobileNavDrawer from "@modules/layout/components/mobile-nav-drawer"
@@ -87,7 +87,7 @@ export default async function Nav() {
                 href="/account"
                 data-testid="nav-account-link"
               >
-                <User width={24} height={24} aria-hidden="true" />
+                <IconAccount aria-hidden="true" />
                 Account
               </LocalizedClientLink>
             </div>
@@ -99,7 +99,7 @@ export default async function Nav() {
                   aria-label="Cart, 0 items"
                   data-testid="nav-cart-link"
                 >
-                  <ShoppingBag width={24} height={24} />
+                  <IconBag aria-hidden="true" />
                   <span aria-hidden="true" className="hidden small:inline">
                     Cart
                   </span>

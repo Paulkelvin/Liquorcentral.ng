@@ -3,24 +3,18 @@
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react"
 import { HttpTypes } from "@medusajs/types"
 import {
-  ArrowRightMini,
-  BarsThree,
-  Beaker,
-  BuildingStorefront,
-  CircleStack,
-  Calendar,
-  ChefHat,
-  ChevronDown,
-  Fire,
-  Gift,
-  MagnifyingGlassMini,
-  ShoppingBag,
-  Sparkles,
-  Tag,
-  Tools,
-  User,
-  XMark,
-} from "@medusajs/icons"
+  CategoryIcon,
+  IconAccount,
+  IconArrowRight,
+  IconBag,
+  IconCalendar,
+  IconChevronDown,
+  IconCloche,
+  IconClose,
+  IconMenu,
+  IconSearch,
+  IconStorefront,
+} from "@modules/common/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
 import { useParams, usePathname, useRouter } from "next/navigation"
@@ -38,30 +32,42 @@ type MobileNavDrawerProps = {
 }
 
 const FOOD_CENTRAL_DESTINATIONS = [
-  { label: "Today's Menu", href: "/food-central", Icon: ChefHat },
-  { label: "Scheduled Orders", href: "/food-central/scheduled", Icon: Calendar },
-  { label: "Pickup", href: "/food-central/pickup", Icon: BuildingStorefront },
+  { label: "Today's Menu", href: "/food-central", Icon: IconCloche },
+  { label: "Scheduled Orders", href: "/food-central/scheduled", Icon: IconCalendar },
+  { label: "Pickup", href: "/food-central/pickup", Icon: IconStorefront },
 ]
 
 type NavIcon = React.ComponentType<{ className?: string }>
 
 /**
- * Categories come from the backend, so their icons are matched on
- * handle with a neutral `Tag` fallback — an unmapped or newly-added
- * category still renders a correctly-aligned row rather than a gap
- * where an icon should be.
+ * Categories come from the backend, so their icons are matched on handle,
+ * with a wine-glass fallback inside `CategoryIcon` — an unmapped or
+ * newly-added category still renders a correctly-aligned row rather than a
+ * gap where an icon should be.
+ *
+ * **This used to be its own map, pointing at `@medusajs/icons`: a beaker for
+ * wines, a flame for spirits, a database cylinder for beer.** So the same
+ * category carried one glyph in this drawer and a different one in the
+ * homepage's category row, and the drawer's version was also wrong about what
+ * it was selling. Both surfaces now read the single set in
+ * `@modules/common/icons`.
  */
-const CATEGORY_ICONS: Record<string, NavIcon> = {
-  wines: Beaker,
-  champagne: Sparkles,
-  spirits: Fire,
-  beer: CircleStack,
-  "gift-sets": Gift,
-  accessories: Tools,
-}
+const CATEGORY_NAV_ICONS = new Map<string, NavIcon>()
 
-const iconFor = (handle?: string | null): NavIcon =>
-  (handle && CATEGORY_ICONS[handle]) || Tag
+const iconFor = (handle?: string | null): NavIcon => {
+  const key = handle ?? ""
+  // Cached per handle so the component identity is stable across renders —
+  // returning a fresh closure each time would remount the icon on every keystroke
+  // in the search field above it.
+  let Cached = CATEGORY_NAV_ICONS.get(key)
+  if (!Cached) {
+    Cached = function CategoryNavIcon(props: { className?: string }) {
+      return <CategoryIcon handle={key} {...props} />
+    }
+    CATEGORY_NAV_ICONS.set(key, Cached)
+  }
+  return Cached
+}
 
 /**
  * A top-level navigation row: line icon, then a sentence-case label —
@@ -169,7 +175,7 @@ export default function MobileNavDrawer({
             aria-label="Open menu"
             className="h-full min-w-[44px] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           >
-            <BarsThree width={24} height={24} aria-hidden="true" />
+            <IconMenu aria-hidden="true" />
           </PopoverButton>
 
           <Transition
@@ -201,7 +207,7 @@ export default function MobileNavDrawer({
                   className="min-h-[44px] min-w-[44px] flex items-center justify-center -mr-2 text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-radius-sm"
                   onClick={() => close()}
                 >
-                  <XMark />
+                  <IconClose aria-hidden="true" />
                 </button>
               </div>
 
@@ -216,7 +222,7 @@ export default function MobileNavDrawer({
                 onSubmit={submitSearch}
                 className="shrink-0 flex items-center gap-2 h-11 mx-4 my-4 px-3 rounded-radius-md bg-ink-100"
               >
-                <MagnifyingGlassMini className="text-text-muted" aria-hidden="true" />
+                <IconSearch size={18} className="shrink-0 text-text-muted" aria-hidden="true" />
                 <label htmlFor="mobile-nav-search" className="sr-only">
                   Search products
                 </label>
@@ -266,7 +272,7 @@ export default function MobileNavDrawer({
                                   onClick={() => toggleExpanded(category.id)}
                                   className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-radius-md text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                                 >
-                                  <ChevronDown
+                                  <IconChevronDown
                                     className={clx(
                                       "transition-transform duration-150",
                                       isExpanded && "rotate-180"
@@ -352,7 +358,7 @@ export default function MobileNavDrawer({
                     className="flex items-center gap-2 min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:text-interactive"
                     onClick={() => close()}
                   >
-                    <User className="text-text-secondary" aria-hidden="true" />
+                    <IconAccount className="text-text-secondary" aria-hidden="true" />
                     Account
                   </LocalizedClientLink>
                   <LocalizedClientLink
@@ -360,7 +366,7 @@ export default function MobileNavDrawer({
                     className="flex items-center gap-2 min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:text-interactive"
                     onClick={() => close()}
                   >
-                    <ShoppingBag className="text-text-secondary" aria-hidden="true" />
+                    <IconBag className="text-text-secondary" aria-hidden="true" />
                     Cart
                   </LocalizedClientLink>
                 </div>
@@ -377,7 +383,7 @@ export default function MobileNavDrawer({
                         locales={locales}
                         currentLocale={currentLocale}
                       />
-                      <ArrowRightMini
+                      <IconArrowRight
                         className={clx(
                           "transition-transform duration-150",
                           languageToggleState.state ? "-rotate-90" : ""
@@ -398,7 +404,7 @@ export default function MobileNavDrawer({
                         regions={regions}
                       />
                     )}
-                    <ArrowRightMini
+                    <IconArrowRight
                       className={clx(
                         "transition-transform duration-150",
                         countryToggleState.state ? "-rotate-90" : ""

@@ -2,6 +2,7 @@ import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text, clx } from "@modules/common/components/ui"
+import { CategoryIcon } from "@modules/common/icons"
 
 /**
  * A browse-by-category row: one circular tile per top-level category,
@@ -21,89 +22,12 @@ import { Heading, Text, clx } from "@modules/common/components/ui"
  *
  * Data-driven from the real Medusa category tree, the same source the mega
  * menu uses — so a category added in Admin appears here with no code change,
- * and one removed disappears. Only the icon lookup is local, and it falls
- * back gracefully for a handle it doesn't recognise.
+ * and one removed disappears.
+ *
+ * The glyphs used to be drawn inline here. They now live in
+ * `@modules/common/icons`, because the mobile drawer was rendering an entirely
+ * different icon for the same category — see that module's note.
  */
-
-/** Consistent 1.5 stroke, 24px box, no fills — `BRAND_IDENTITY.md` §18. */
-const ICONS: Record<string, React.ReactNode> = {
-  wines: (
-    <>
-      <path d="M9 3h6v5a3 3 0 0 1-3 3 3 3 0 0 1-3-3V3Z" />
-      <path d="M12 11v7" />
-      <path d="M9 21h6" />
-    </>
-  ),
-  // A flute, not a wine glass: tall and narrow, which is the only thing
-  // distinguishing it from `wines` at this size. An earlier version added
-  // bubble ticks beside the bowl and they read as a flag on a pole.
-  champagne: (
-    <>
-      <path d="M9.5 3h5l-.6 8.5a1.9 1.9 0 0 1-3.8 0L9.5 3Z" />
-      <path d="M12 13.5V20" />
-      <path d="M9.5 20h5" />
-    </>
-  ),
-  spirits: (
-    <>
-      <path d="M10 2h4v3l3 5v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V10l3-5V2Z" />
-      <path d="M7 13h10" />
-    </>
-  ),
-  beer: (
-    <>
-      <path d="M5 8h11v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8Z" />
-      <path d="M16 10h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2" />
-      <path d="M5 8a3 3 0 0 1 3-3 3 3 0 0 1 5-1 3 3 0 0 1 3 4" />
-    </>
-  ),
-  "gift-sets": (
-    <>
-      <path d="M3 11h18v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9Z" />
-      <path d="M2 7h20v4H2z" />
-      <path d="M12 7v14" />
-      <path d="M12 7S10.5 3 8.5 3a2 2 0 0 0 0 4H12Zm0 0s1.5-4 3.5-4a2 2 0 0 1 0 4H12Z" />
-    </>
-  ),
-  // A corkscrew: winged handle, shaft, helix. The previous attempt was a
-  // stemmed shape with two uprights and read unmistakably as a plug.
-  accessories: (
-    <>
-      <path d="M12 3v5" />
-      <path d="M7.5 5.5h9" />
-      <path d="M12 8v3" />
-      <path d="M12 11c1.8 0 1.8 2 0 2s-1.8 2 0 2 1.8 2 0 2-1.8 2 0 2" />
-    </>
-  ),
-  "food-central": (
-    <>
-      <path d="M3 12h18a9 9 0 0 1-18 0Z" />
-      <path d="M2 20h20" />
-      <path d="M9 8c0-1.5 1-2 1-3.5" />
-      <path d="M13 8c0-1.5 1-2 1-3.5" />
-    </>
-  ),
-}
-
-/** A handle this file has no icon for still renders — as a wine glass. */
-const FALLBACK_ICON = ICONS.wines
-
-function CategoryIcon({ handle }: { handle: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-8 w-8 small:h-9 small:w-9"
-    >
-      {ICONS[handle] ?? FALLBACK_ICON}
-    </svg>
-  )
-}
 
 type Tile = { handle: string; name: string; href: string; foodCentral?: boolean }
 
@@ -136,7 +60,7 @@ function CategoryTile({ tile }: { tile: Tile }) {
             : "bg-ink-100 text-ink-900 group-hover:bg-ink-900 group-hover:text-surface-elevated"
         )}
       >
-        <CategoryIcon handle={tile.handle} />
+        <CategoryIcon handle={tile.handle} size={32} className="small:h-9 small:w-9" />
       </span>
       <span className="text-center text-caption font-medium leading-snug text-text-primary group-hover:text-interactive">
         {tile.name}
