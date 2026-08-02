@@ -24,13 +24,18 @@ import { CARD_SHELL } from "./card-shell"
  *    `nested-interactive`; the CTA reads as a button because it is styled as
  *    one and the card announces itself once to a screen reader.
  *
- * **This card has no aspect ratio of its own.** It takes its height from the
- * product cards beside it, via the row's `align-items: stretch` and the
- * `h-full` in `CARD_SHELL` — that is what makes every top and bottom edge in
- * the track line up. Giving it back an `aspect-[…]` would immediately
- * un-align the row, because a fixed ratio on a fixed width is a fixed height
- * and the product cards' height is content-driven. Only `min-h` is set, as a
- * floor for the copy.
+ * **This card sets its own height, and that is a change.** It used to take its
+ * height from the product cards beside it in a horizontally-scrolling track,
+ * via `align-items: stretch` and the `h-full` in `CARD_SHELL`. The track is
+ * gone — it is now a full-width banner spanning the grid's first row, with
+ * nothing beside it to inherit from — so the height has to come from
+ * somewhere, and `min-h` is that floor.
+ *
+ * `min-h` rather than `aspect-[…]` on purpose: at full container width a fixed
+ * ratio makes this card enormous on desktop (a 21:9 crop of a 1280px column is
+ * still 550px tall) and the copy inside is what actually needs the room. The
+ * floor grows in two steps instead, and the photograph fills whatever it
+ * settles on.
  */
 export default function EditorialCard({ campaign }: { campaign: Campaign }) {
   const href = campaign.href ?? `/collections/${campaign.collectionHandle}`
@@ -38,14 +43,15 @@ export default function EditorialCard({ campaign }: { campaign: Campaign }) {
   return (
     <LocalizedClientLink
       href={href}
-      className={`${CARD_SHELL} flex min-h-[280px] w-[280px] xsmall:w-[360px] small:w-[520px] medium:w-[560px]`}
+      className={`${CARD_SHELL} flex min-h-[300px] w-full small:min-h-[360px]`}
       data-testid="editorial-card"
     >
       <Image
         src={campaign.image}
         alt={campaign.imageAlt}
         fill
-        sizes="(max-width: 512px) 280px, (max-width: 1024px) 360px, 560px"
+        // Full container width now that this is a banner, not a track item.
+        sizes="(max-width: 1024px) 100vw, 1280px"
         // Slower and shallower than a typical hover zoom: 700ms and 3%. A
         // fast or deep zoom on a photograph this large reads as a web
         // banner, which is the opposite of the calm the section is after.

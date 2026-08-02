@@ -3,6 +3,7 @@ import { getRegion } from "@lib/data/regions"
 import ProductPreview from "@modules/products/components/product-preview"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
 import { Heading, Text } from "@modules/common/components/ui"
+import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
 
 /**
  * 01_NAVIGATION_SPECIFICATION.md §14 / 04_PRODUCT_LISTING_SPECIFICATION.md
@@ -69,7 +70,7 @@ export default async function FoodCentralMenuGrid({
       </div>
       {/* Same grid as every other listing on the platform — this was the
           one surface still running four columns. */}
-      <ul className="grid w-full grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-8">
+      <ul className={PRODUCT_GRID}>
         {foodProducts.map((product) => (
           <li key={product.id}>
             <ProductPreview product={product} region={region} />

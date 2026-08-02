@@ -388,7 +388,7 @@ export default function PairingCarousel({
               and a single scrim gives them one predictable background instead
               of two gambles. It is also why the dots themselves use solid
               tokens — `/50`-style opacity modifiers compile to `transparent`
-              in this design system (see `dish-card.tsx`). */}
+              in this design system (see `globals.css`'s `--ink-900-70`). */}
           {slides.length > 1 && (
             <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2 rounded-radius-full bg-scrim px-2.5 py-1.5 backdrop-blur-sm md:left-1/2 md:-translate-x-1/2">
               {slides.map((slide, i) => (

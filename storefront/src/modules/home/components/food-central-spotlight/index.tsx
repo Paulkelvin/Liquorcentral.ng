@@ -3,7 +3,8 @@ import { getRegion } from "@lib/data/regions"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
 import { Heading, Text } from "@modules/common/components/ui"
 import SectionLink from "@modules/common/components/section-link"
-import DishCard from "./dish-card"
+import ProductPreview from "@modules/products/components/product-preview"
+import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
 
 /**
  * 02_HOMEPAGE_SPECIFICATION.md §8.5 — a small snapshot of today's menu,
@@ -43,14 +44,18 @@ export default async function FoodCentralSpotlight({
     .filter(
       (product) => (product as unknown as { food_details?: unknown }).food_details
     )
-    .slice(0, 4)
+    // Six, not four: the shared grid is 2-up on a phone and 3-up from
+    // `small:`, and six is the smallest count that fills both cleanly. Four
+    // left a 3+1 row on desktop.
+    .slice(0, 6)
 
   return (
     // A warm sand band, so the kitchen reads as a different kind of section
     // from the retail rows around it. It is `surface-warm` rather than
-    // `ink-100` because the Featured Collection band directly above already
-    // uses `ink-100` — reusing it would merge the two into one long tinted
-    // block instead of two sections.
+    // `ink-100` for a reason that now matters more than when it was written:
+    // every card here draws its image on an `ink-100` tile, and a band in the
+    // same colour erases it. `surface-warm` is kept deliberately lighter than
+    // the tile — see the token's own note in `globals.css`.
     <section
       aria-labelledby="todays-menu-heading"
       className="w-full bg-surface-warm"
@@ -86,34 +91,23 @@ export default async function FoodCentralSpotlight({
         {foodProducts.length === 0 ? (
           <NotTakingOrders title="Today's Menu" />
         ) : (
-          /* A snapping horizontal row on a phone, a plain grid from
-             `small:` up.
+          /* **This was a swipeable 1.2-card carousel on a phone, to Paul's
+             own earlier brief, and is now the shared grid.** He reversed it:
+             horizontal scrolling for products is out site-wide and every
+             listing uses the category pages' card. Recorded rather than
+             deleted because the carousel was specified deliberately — the
+             `basis-[78%]` that put the next card half on screen was the
+             scroll affordance, not an accident of sizing.
 
-             `basis-[78%]` is what puts ~1.2 cards on screen: the next card
-             is deliberately cut by the viewport's right edge, which is the
-             affordance telling the customer the row scrolls. `-mr-4` +
-             `pr-4` bleeds it to that edge; there is no matching left
-             margin, because with `snap-mandatory` the browser snaps the
-             first item to the scrollport edge on load and would scroll a
-             left padding away — the same trap the Featured Collection row
-             documents.
-
-             `py-4` (not `pb-4`) leaves room on both sides for the hover
-             lift, which a bottom-only pad clips at the top mid-animation.
-
-             The four-column step is `medium:` (1280), **not** `lg:`.
-             Tailwind's `lg` and this project's custom `small` are both
-             1024px, so the two rules land in the same media query and the
-             winner is decided by emit order, not intent — `lg:grid-cols-4`
-             silently lost to `small:grid-cols-3` and the row rendered 3+1.
-             Use the project's own scale here. */
-          <ul className="-mr-4 flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto py-4 pr-4 small:mr-0 small:grid small:grid-cols-3 small:overflow-visible small:pr-0 medium:grid-cols-4">
+             Dishes keep everything that made them dishes: `ProductPreview`
+             already renders the prep-time fact as the same overlay pill, and
+             already tints quick-add green for anything carrying
+             `food_details`. Nothing about Food Central's identity depended on
+             a separate card component. */
+          <ul className={PRODUCT_GRID}>
             {foodProducts.map((product) => (
-              <li
-                key={product.id}
-                className="flex shrink-0 basis-[78%] snap-start xsmall:basis-[46%] small:basis-auto"
-              >
-                <DishCard product={product} />
+              <li key={product.id}>
+                <ProductPreview product={product} region={region} />
               </li>
             ))}
           </ul>

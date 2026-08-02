@@ -13,9 +13,9 @@
  * the only route that actually puts them in front of Paul.
  *
  * **This is scaffolding, not architecture. Delete it** once the images are
- * uploaded to Medusa properly: remove this file, drop the three call sites
- * (`ProductPreview`, `EditorialProductCard`, `DishCard`), and delete
- * `public/brand/products/`. Nothing else depends on it.
+ * uploaded to Medusa properly: remove this file, drop its single call site
+ * (`ProductPreview` — every listing on the site now renders that one card),
+ * and delete `public/brand/products/`. Nothing else depends on it.
  *
  * ---
  *

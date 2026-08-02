@@ -7,6 +7,7 @@ import LoadMore from "@modules/store/components/load-more"
 import EmptyState from "@modules/common/components/empty-state"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
 
 const PRODUCT_LIMIT = 12
 
@@ -154,7 +155,7 @@ export default async function PaginatedProducts({
         {countLabel}
       </div>
       <ul
-        className="grid grid-cols-2 w-full gap-3 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-8"
+        className={PRODUCT_GRID}
         data-testid="products-list"
         aria-label={countLabel}
       >

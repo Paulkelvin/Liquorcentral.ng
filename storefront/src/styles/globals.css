@@ -58,8 +58,17 @@
    * It is a neutral surface, not a brand hue — `BRAND_IDENTITY.md`'s four
    * approved colours are untouched. Flagged for Paul: this is a genuine
    * addition to the Tier-1 neutral surfaces, not a component-level colour.
+   *
+   * **It must stay lighter than `ink-100`, and by a clear margin.** Every
+   * product card on the site draws its image on an `ink-100` tile, and the
+   * card has no border — the *step* between tile and page is the only thing
+   * that makes it read as a card at all. The first value here was `#f2ece1`,
+   * which is only a few points off `ink-100`: once the product grid moved
+   * onto this band the tiles all but disappeared. The current value sits
+   * about as far from `ink-100` as the page's own `surface` does, which is
+   * the relationship the card was designed against.
    */
-  --surface-warm: #f2ece1;
+  --surface-warm: #f9f3e8;
 
   /*
    * Tier 3 — Semantic Design Tokens (the only vocabulary components use)
