@@ -8,16 +8,22 @@ export const metadata: Metadata = {
 
 type Props = {
   params: Promise<{ countryCode: string }>
+  searchParams: Promise<{ page?: string }>
 }
 
-export default async function FoodCentralTodaysMenuPage({ params }: Props) {
+export default async function FoodCentralTodaysMenuPage({
+  params,
+  searchParams,
+}: Props) {
   const { countryCode } = await params
+  const { page } = await searchParams
 
   return (
     <FoodCentralMenuGrid
       countryCode={countryCode}
       title="Today's Menu"
       description="Cooked to order. Same-day delivery or pickup, chosen at checkout."
+      page={page ? parseInt(page) : 1}
     />
   )
 }

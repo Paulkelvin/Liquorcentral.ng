@@ -2,8 +2,11 @@ import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import ProductPreview from "@modules/products/components/product-preview"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
+import LoadMoreLink from "@modules/food-central/components/load-more-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
+
+const MENU_PAGE_SIZE = 12
 
 /**
  * 01_NAVIGATION_SPECIFICATION.md §14 / 04_PRODUCT_LISTING_SPECIFICATION.md
@@ -25,10 +28,15 @@ export default async function FoodCentralMenuGrid({
   countryCode,
   title,
   description,
+  page = 1,
 }: {
   countryCode: string
   title: string
   description?: string
+  /** Cumulative "Load more" page — same URL-driven convention as
+   * `store/templates/paginated-products`: every render shows every dish
+   * from the start through this many pages. */
+  page?: number
 }) {
   const region = await getRegion(countryCode)
 
@@ -41,13 +49,19 @@ export default async function FoodCentralMenuGrid({
     queryParams: { limit: 100, fields: "+food_details.*" },
   })
 
-  const foodProducts = response.products.filter(
+  const allFoodProducts = response.products.filter(
     (product) => (product as unknown as { food_details?: unknown }).food_details
   )
 
-  if (foodProducts.length === 0) {
+  if (allFoodProducts.length === 0) {
     return <NotTakingOrders title={title} />
   }
+
+  const visibleCount = page * MENU_PAGE_SIZE
+  const previousCount = Math.min((page - 1) * MENU_PAGE_SIZE, allFoodProducts.length)
+  const foodProducts = allFoodProducts.slice(0, visibleCount)
+  const hasMore = allFoodProducts.length > foodProducts.length
+  const newlyLoadedCount = page > 1 ? foodProducts.length - previousCount : 0
 
   return (
     // `py-6` to match the catalog listings — 48px of dead air above the
@@ -77,6 +91,11 @@ export default async function FoodCentralMenuGrid({
           </li>
         ))}
       </ul>
+      <LoadMoreLink
+        hasMore={hasMore}
+        nextPage={page + 1}
+        newlyLoadedCount={newlyLoadedCount}
+      />
     </div>
   )
 }
