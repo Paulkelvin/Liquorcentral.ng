@@ -1,9 +1,7 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { getCollectionByHandle, listCollections } from "@lib/data/collections"
-import { listRegions } from "@lib/data/regions"
-import { StoreCollection, StoreRegion } from "@medusajs/types"
+import { getCollectionByHandle } from "@lib/data/collections"
 import CollectionTemplate from "@modules/collections/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { parseOptionValueIds } from "@lib/util/product-option-filters"
@@ -21,48 +19,16 @@ type Props = {
 
 export const PRODUCT_LIMIT = 12
 
-export async function generateStaticParams() {
-  try {
-    const { collections } = await listCollections({
-      fields: "*products",
-    })
-
-    if (!collections) {
-      return []
-    }
-
-    const countryCodes = await listRegions().then(
-      (regions: StoreRegion[]) =>
-        regions
-          ?.map((r) => r.countries?.map((c) => c.iso_2))
-          .flat()
-          .filter(Boolean) as string[]
-    )
-
-    const collectionHandles = collections.map(
-      (collection: StoreCollection) => collection.handle
-    )
-
-    const staticParams = countryCodes
-      ?.map((countryCode: string) =>
-        collectionHandles.map((handle: string | undefined) => ({
-          countryCode,
-          handle,
-        }))
-      )
-      .flat()
-
-    return staticParams ?? []
-  } catch (error) {
-    console.error(
-      `Failed to generate static paths for collection pages: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }.`
-    )
-    return []
-  }
-}
-
+/**
+ * Deliberately not statically generated (no `generateStaticParams`) — see
+ * the matching comment on `products/[handle]/page.tsx`. Pairing a
+ * prerendered page with the shared `(main)` layout's `cookies()` call
+ * (the age gate) is the `DYNAMIC_SERVER_USAGE` bailout condition, and it
+ * was taking down every `/collections/*` URL in production the same way
+ * it was taking down every `/products/*` URL — confirmed from the
+ * Railway runtime logs. `/store` and `/categories/*` never hit this
+ * because they were already rendered dynamically.
+ */
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params
   const collection = await getCollectionByHandle(params.handle)
