@@ -25,10 +25,13 @@ import {
  * That is only safe because of the idempotency above, so **keep it that way**.
  * Two rules follow, and breaking either would let a deploy rewrite live data:
  *
- *   1. **Append products, never edit the ones already here.** The refresh loop
- *      below rewrites the thumbnail of any existing product whose
- *      `realImageUrl` has changed, so editing an entry republishes its image
- *      on the next deploy — including over photography someone added in Admin.
+ *   1. **Append products; edit an existing entry only to change its image on
+ *      purpose.** The refresh loop below rewrites the thumbnail of any
+ *      existing product whose `realImageUrl` has changed. That is the
+ *      sanctioned way to replace a photograph — it is how the four Food
+ *      Central dishes moved off their Wikimedia stock shots onto transparent
+ *      cut-outs — but it also means an accidental edit republishes an image
+ *      on the next deploy, over anything added by hand in Admin.
  *   2. **Never delete an entry to remove a product.** Nothing here deletes;
  *      removing an entry just stops managing that product, leaving it live.
  *
@@ -348,7 +351,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "jollof-rice-grilled-chicken",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Jollof_rice_and_veggies.jpg",
+    realImageUrl: "/brand/products/dish-jollof-plantain.webp",
     title: "Jollof Rice with Grilled Chicken",
     description: "Classic smoky-sweet jollof rice served with a grilled chicken quarter.",
     price: 6500,
@@ -366,7 +369,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "suya-platter-beef-skewers",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/54/Suya.jpg",
+    realImageUrl: "/brand/products/dish-suya.webp",
     title: "Suya Platter (Beef Skewers)",
     description: "Spiced grilled beef skewers with yaji suya spice, served with onion and tomato.",
     price: 8000,
@@ -384,7 +387,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "peppered-goat-meat-asun",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/43/Asun.jpg",
+    realImageUrl: "/brand/products/dish-asun.webp",
     title: "Peppered Goat Meat (Asun)",
     description: "Chopped, char-grilled goat meat tossed in a spicy pepper sauce.",
     price: 9500,
@@ -628,7 +631,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "egusi-soup-pounded-yam",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/81/Pounded_Yam_and_Egusi_Soup.jpg",
+    realImageUrl: "/brand/products/dish-egusi-pounded-yam.webp",
     title: "Egusi Soup with Pounded Yam",
     description: "Rich melon-seed soup with assorted meat and fish, served with smooth pounded yam.",
     price: 7500,
@@ -696,6 +699,34 @@ const PRODUCTS: SeedProduct[] = [
       spice_level: 1,
       prep_time_minutes: 30,
       portion_size: "2-piece portion",
+    },
+  },
+
+  {
+    handle: "special-fried-rice-shrimp",
+    realImageUrl: "/brand/products/dish-fried-rice-shrimp.webp",
+    title: "Special Fried Rice with Shrimp",
+    description:
+      "Wok-fried rice with prawns, diced beef, sweet peppers and garden peas.",
+    price: 7500,
+    optionTitle: "Portion",
+    optionValue: "Single portion",
+    food_details: {
+      ingredients: [
+        "Rice",
+        "Prawns",
+        "Beef",
+        "Green peas",
+        "Carrots",
+        "Sweet peppers",
+        "Spring onion",
+      ],
+      allergens: ["Shellfish", "Soy"],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 1,
+      prep_time_minutes: 25,
+      portion_size: "Single portion",
     },
   },
 
