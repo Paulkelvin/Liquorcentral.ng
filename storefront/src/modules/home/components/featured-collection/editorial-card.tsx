@@ -75,7 +75,12 @@ export default function EditorialCard({ campaign }: { campaign: Campaign }) {
         <h3 className="font-display text-[26px] font-semibold leading-[1.1] tracking-[-0.01em] text-white small:text-[34px]">
           {campaign.title}
         </h3>
-        <p className="max-w-[34ch] text-body text-white/85">
+        {/* Hidden below `small:` — Paul's own read of the mobile card:
+            eyebrow, title and CTA already say enough, and this sentence
+            was the difference between a quick scan and something that
+            asked to be read. Kept for desktop, where the card has more
+            room to spare and reads as a proper editorial banner. */}
+        <p className="hidden max-w-[34ch] text-body text-white/85 small:block">
           {campaign.description}
         </p>
         <span className="mt-3 inline-flex items-center gap-2 border-b border-white/40 pb-1 text-caption font-medium text-white transition-colors duration-standard ease-in-out group-hover:border-white">
