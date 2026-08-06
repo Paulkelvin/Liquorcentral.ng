@@ -16,9 +16,14 @@ const EmptyCartMessage = () => {
       <div className="flex items-center justify-center w-14 h-14 rounded-full bg-ink-100 text-text-secondary mb-6" aria-hidden="true">
         <ShoppingBag className="w-6 h-6" />
       </div>
+      {/* Was a fixed `text-heading-1` (39px) at every width — also larger
+          than the filled cart's own "Your cart" heading (`text-heading-3`,
+          25px) for what is conceptually the same page title. Brought both
+          to the same scale: smaller on mobile, matching size from
+          `small:` up. */}
       <Heading
         level="h1"
-        className="flex flex-row text-heading-1 gap-x-2 items-baseline"
+        className="flex flex-row items-baseline gap-x-2 !text-[22px] small:!text-heading-3"
       >
         Cart
       </Heading>

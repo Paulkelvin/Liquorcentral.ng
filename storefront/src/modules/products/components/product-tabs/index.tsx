@@ -40,7 +40,11 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
   return (
     <div className="w-full">
-      <Accordion type="multiple" defaultValue={["fact-sheet"]}>
+      {/* Closed by default — Paul's direction. Open-by-default put the
+          full fact sheet (ingredients, tasting notes, ABV, region) in
+          front of every visitor whether they asked for it or not; a
+          progressively-disclosed accordion should start disclosed. */}
+      <Accordion type="multiple" defaultValue={[]}>
         <Accordion.Item
           title={wineDetails ? "About this wine" : "Ingredients & preparation"}
           headingSize="medium"

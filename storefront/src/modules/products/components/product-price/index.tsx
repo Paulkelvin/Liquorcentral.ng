@@ -23,8 +23,14 @@ export default function ProductPrice({
 
   return (
     <div className="flex flex-col text-text-primary">
+      {/* `text-heading-3` (25px) was fixed at every width — larger than
+          the 22px the product title itself now renders at on mobile
+          (product-info/index.tsx), which put the price ahead of the
+          product's own name in the visual hierarchy on a phone. Scaled
+          down to sit clearly under the title there, full size from
+          `small:` up where the title is also larger. */}
       <span
-        className={clx("text-heading-3 font-semibold", {
+        className={clx("!text-[20px] small:!text-heading-3 font-semibold", {
           "text-interactive": selectedPrice.price_type === "sale",
         })}
       >

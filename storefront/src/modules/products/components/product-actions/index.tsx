@@ -167,6 +167,24 @@ export default function ProductActions({
 
   const inView = useIntersection(actionsRef, "0px")
 
+  /**
+   * `useIntersection` reports whether `actionsRef` is *currently*
+   * on-screen — true both after scrolling past it and before ever
+   * reaching it. On a phone, the gallery image alone often fills the
+   * first screen, so the real inline price/quantity/add-to-cart row
+   * starts below the fold: `inView` is `false` from the very first
+   * frame, and the sticky mobile bar (below) used to read that as
+   * "scrolled past," showing immediately on load — Paul's own
+   * description, a customer landing on the page and immediately being
+   * pushed toward Add to Cart before they've seen anything else. Gating
+   * on `hasBeenInView` as well means the sticky bar only appears once
+   * the real action row has actually been seen and then left upward.
+   */
+  const hasBeenInViewRef = useRef(false)
+  if (inView) {
+    hasBeenInViewRef.current = true
+  }
+
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
@@ -302,7 +320,7 @@ export default function ProductActions({
           inStock={inStock}
           handleAddToCart={handleAddToCart}
           isAdding={isAdding}
-          show={!inView}
+          show={hasBeenInViewRef.current && !inView}
           optionsDisabled={!!disabled || isAdding}
         />
       </div>

@@ -56,7 +56,9 @@ const CartTemplate = ({
                   same page competed with the one action this page exists
                   for. */}
               <div className="flex flex-col gap-1">
-                <Heading level="h1" className="!text-heading-3">
+                {/* Matches the empty-cart state's own "Cart" heading —
+                    same scale, smaller on mobile. */}
+                <Heading level="h1" className="!text-[22px] small:!text-heading-3">
                   Your cart
                 </Heading>
                 <Text size="caption" muted>
