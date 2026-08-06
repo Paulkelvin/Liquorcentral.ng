@@ -62,43 +62,56 @@ const MobileActions: React.FC<MobileActionsProps> = ({
         <Transition
           as={Fragment}
           show={show}
-          enter="ease-in-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-300"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+          enter="ease-out duration-250"
+          enterFrom="opacity-0 translate-y-2"
+          enterTo="opacity-100 translate-y-0"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100 translate-y-0"
+          leaveTo="opacity-0 translate-y-2"
         >
+          {/* Redrawn — Paul's read of the previous version: generic. Two
+              changes move it off a flat, flush toolbar and toward a
+              floating sheet: a soft upward shadow plus a translucent,
+              blurred surface instead of a flat fill behind a hairline
+              border, and rounded top corners so it reads as a distinct
+              panel laid over the page rather than a strip welded to the
+              screen edge. `env(safe-area-inset-bottom)` keeps the last
+              row clear of the home-indicator on notched phones now that
+              the panel draws all the way to the true bottom edge. */}
           <div
-            className="bg-surface-elevated flex flex-col gap-y-3 justify-center items-center text-body p-4 h-full w-full border-t border-divider"
+            className="flex w-full flex-col gap-3 rounded-t-2xl border-t border-divider/60 bg-surface-elevated/95 px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-[0_-12px_32px_-8px_rgba(26,26,26,0.16)] backdrop-blur-md"
             data-testid="mobile-actions"
           >
-            <div className="flex items-center gap-x-2">
-              <span data-testid="mobile-title">{product.title}</span>
-              <span>—</span>
-              {selectedPrice ? (
-                <div className="flex items-end gap-x-2 text-text-primary">
+            {/* Title and price as their own two-line block, matching the
+                PDP's own hierarchy above the fold — a small secondary
+                label, a bold primary number — rather than one run-on
+                sentence joined by an em dash. */}
+            <div className="flex items-baseline justify-between gap-3">
+              <span
+                data-testid="mobile-title"
+                className="truncate text-caption text-text-secondary"
+              >
+                {product.title}
+              </span>
+              {selectedPrice && (
+                <div className="flex shrink-0 items-baseline gap-2">
                   {selectedPrice.price_type === "sale" && (
-                    <p>
-                      <span className="line-through text-caption">
-                        {selectedPrice.original_price}
-                      </span>
-                    </p>
+                    <span className="text-caption text-text-muted line-through">
+                      {selectedPrice.original_price}
+                    </span>
                   )}
                   <span
-                    className={clx({
-                      "text-interactive":
-                        selectedPrice.price_type === "sale",
+                    className={clx("text-body font-semibold", {
+                      "text-interactive": selectedPrice.price_type === "sale",
+                      "text-text-primary": selectedPrice.price_type !== "sale",
                     })}
                   >
                     {selectedPrice.calculated_price}
                   </span>
                 </div>
-              ) : (
-                <div></div>
               )}
             </div>
-            <div className={clx("grid grid-cols-2 w-full gap-x-4", {
+            <div className={clx("grid grid-cols-2 w-full gap-x-3", {
               "!grid-cols-1": isSimple
             })}>
               {!isSimple && <Button
