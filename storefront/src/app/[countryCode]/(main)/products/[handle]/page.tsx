@@ -4,6 +4,7 @@ import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
+import { demoImageFor } from "@lib/util/demo-product-images"
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
@@ -138,7 +139,23 @@ export default async function ProductPage(props: Props) {
     notFound()
   }
 
-  const images = getImagesForVariant(pricedProduct, selectedVariantId)
+  /**
+   * `demoImageFor` (see `demo-product-images.ts`) is what the listing
+   * cards use in place of real (currently mismatched-brand) product
+   * photography — but until this fix it was *only* applied there.
+   * Landing on this page after clicking a card meant the real
+   * `product.images` took over instead, a different bottle than the one
+   * just clicked: exactly the "I clicked a product and saw a different
+   * image" report. Applying the same override here keeps the card and
+   * the page the customer lands on in agreement — still not the
+   * product's real photography (that's the catalog-photography gap
+   * `demo-product-images.ts` documents and Paul already has), but no
+   * longer a second, contradicting mismatch layered on top of it.
+   */
+  const demo = demoImageFor(pricedProduct.handle)
+  const images = demo
+    ? [{ id: `demo-${pricedProduct.handle}`, url: demo.src } as HttpTypes.StoreProductImage]
+    : getImagesForVariant(pricedProduct, selectedVariantId)
 
   return (
     <ProductTemplate

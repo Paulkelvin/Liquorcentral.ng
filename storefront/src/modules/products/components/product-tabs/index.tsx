@@ -24,10 +24,7 @@ type ProductTabsProps = {
  * inapplicable "Shipping & Returns" copy ("no questions asked" refunds,
  * apparel exchanges) — the alcohol return policy is a genuinely open
  * business decision (`PROJECT_STATUS.md`) this document must not invent
- * an answer to, and Food Central's honest return story ("cooked to
- * order") plus real delivery/pickup information now live in
- * `trust-and-delivery`, §19–§21, as their own page section — not a
- * fabricated apparel-store policy tab.
+ * an answer to.
  */
 const ProductTabs = ({ product }: ProductTabsProps) => {
   const catalogProduct = product as ProductWithCatalogDetails

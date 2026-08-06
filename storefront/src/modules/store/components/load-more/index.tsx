@@ -25,6 +25,12 @@ type LoadMoreProps = {
  * Newly-loaded results are announced via a polite live region (§24) —
  * `newlyLoadedCount` is computed server-side (the delta between this
  * page's total and the previous page's total), not inferred client-side.
+ *
+ * **Restyled to match the underlined text-plus-arrow treatment used
+ * everywhere else this pattern appears** (the homepage's "see all"s, the
+ * Food Central menu's own Load More) — this was the one surface still
+ * drawing it as a bordered button, which Paul's own read called "the
+ * former styling" once the rest of the site had moved on from it.
  */
 export default function LoadMore({
   hasMore,
@@ -52,9 +58,23 @@ export default function LoadMore({
           onClick={loadMore}
           disabled={isPending}
           data-testid="load-more-button"
-          className="w-full sm:w-auto min-h-[44px] px-8 rounded-radius-md font-medium border border-border text-text-primary hover:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          className="relative inline-flex items-center gap-1.5 whitespace-nowrap text-body font-medium text-text-primary underline underline-offset-4 transition-colors duration-standard ease-in-out hover:text-interactive disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus before:absolute before:inset-x-0 before:-inset-y-3 before:content-['']"
         >
           {isPending ? "Loading more…" : "Load more"}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 20 20"
+            fill="none"
+            className="h-3.5 w-3.5"
+          >
+            <path
+              d="M4 10h12m0 0-4.5-4.5M16 10l-4.5 4.5"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
       )}
       <div role="status" aria-live="polite" className="sr-only">

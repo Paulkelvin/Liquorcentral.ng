@@ -43,8 +43,17 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="ds-container pt-6">
-        <ol className="flex flex-wrap items-center gap-x-2 txt-small text-text-secondary">
+      <nav aria-label="Breadcrumb" className="ds-container pt-6 overflow-hidden">
+        {/* `flex-nowrap`, not `flex-wrap` — a trail that wrapped read as
+            two stacked, unrelated lines rather than one path. Interior
+            segments keep truncating away on mobile (below) for the
+            common case, but the one segment that can't be dropped — the
+            current page, always last — needs its own escape hatch for
+            when it alone is long enough to overflow a phone width even
+            with everything before it gone: `min-w-0` lets it shrink
+            below its natural size so `truncate` can actually engage,
+            rather than the flex row just overflowing the container. */}
+        <ol className="flex flex-nowrap items-center gap-x-2 txt-small text-text-secondary">
           {segments.map((segment, index) => {
             const isLast = index === segments.length - 1
             // The narrow-viewport truncation hides the whole <li>, not
@@ -58,8 +67,10 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
                 key={`${segment.label}-${index}`}
                 className={
                   truncatesOnMobile
-                    ? "hidden items-center gap-x-2 sm:flex"
-                    : "flex items-center gap-x-2"
+                    ? "hidden shrink-0 items-center gap-x-2 sm:flex"
+                    : isLast
+                    ? "flex min-w-0 items-center gap-x-2"
+                    : "flex shrink-0 items-center gap-x-2"
                 }
               >
                 {/* A chevron, not a slash — Paul's direction, matching the
@@ -80,7 +91,11 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
                 {isLast || !segment.href ? (
                   <span
                     aria-current={isLast ? "location" : undefined}
-                    className="text-text-primary"
+                    className={
+                      isLast
+                        ? "truncate text-text-primary"
+                        : "text-text-primary"
+                    }
                   >
                     {segment.label}
                   </span>

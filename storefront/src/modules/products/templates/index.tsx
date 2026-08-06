@@ -5,7 +5,6 @@ import ProductActions from "@modules/products/components/product-actions"
 import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
-import TrustAndDelivery from "@modules/products/components/trust-and-delivery"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import Breadcrumbs from "@modules/common/components/breadcrumbs"
@@ -142,9 +141,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         <Suspense fallback={<SkeletonRelatedProducts />}>
           <RelatedProducts product={product} countryCode={countryCode} />
         </Suspense>
-      </div>
-      <div className="ds-container mb-16 max-w-2xl">
-        <TrustAndDelivery isFoodCentral={isFoodCentral} />
       </div>
     </>
   )
