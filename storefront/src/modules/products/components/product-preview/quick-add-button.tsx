@@ -2,7 +2,6 @@
 
 import { addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
-import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
@@ -75,7 +74,7 @@ export default function QuickAddButton({
   size?: "default" | "compact"
 }) {
   const countryCode = useParams().countryCode as string
-  const { openDrawer } = useCart()
+  const { openDrawer, addItem } = useCart()
   const [status, setStatus] = useState<"idle" | "added" | "error">(
     "idle"
   )
@@ -181,24 +180,43 @@ export default function QuickAddButton({
 
     setStatus("added")
     // Opened before the request resolves, so the drawer is already
-    // sliding in as the customer lifts their finger — the cart it shows
-    // fills in from the server a moment later.
+    // sliding in as the customer lifts their finger — the line item it
+    // shows is optimistic too (built from data already on this card, no
+    // fetch needed), and both settle against the server together.
     openDrawer()
 
-    try {
-      await addToCart({
-        variantId: singleVariant.id,
-        quantity: 1,
-        countryCode,
-      })
-      // Tell any other open tab this cart just changed — see
-      // cart-broadcast.ts's own comment for the multi-tab bug this closes.
-      broadcastCartChange()
-      window.setTimeout(() => setStatus("idle"), 2000)
-    } catch {
-      setStatus("error")
-      window.setTimeout(() => setStatus("idle"), 2000)
-    }
+    const unitPrice = singleVariant.calculated_price?.calculated_amount ?? 0
+    const unitOriginalPrice =
+      singleVariant.calculated_price?.original_amount ?? unitPrice
+
+    const optimisticItem = {
+      id: `optimistic-${singleVariant.id}-${Date.now()}`,
+      quantity: 1,
+      title: singleVariant.title ?? product.title,
+      product_title: product.title,
+      product_handle: product.handle,
+      thumbnail: product.thumbnail,
+      variant: singleVariant,
+      unit_price: unitPrice,
+      total: unitPrice,
+      original_total: unitOriginalPrice,
+    } as HttpTypes.StoreCartLineItem
+
+    addItem(
+      optimisticItem,
+      () =>
+        addToCart({
+          variantId: singleVariant.id,
+          quantity: 1,
+          countryCode,
+        }).then(() => {
+          window.setTimeout(() => setStatus("idle"), 2000)
+        }),
+      () => {
+        setStatus("error")
+        window.setTimeout(() => setStatus("idle"), 2000)
+      }
+    )
   }
 
   const label =

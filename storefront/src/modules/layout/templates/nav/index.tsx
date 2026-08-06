@@ -35,7 +35,15 @@ export default async function Nav() {
       listRegions().then((regions: StoreRegion[]) => regions),
       listLocales(),
       getLocale(),
-      listCategories().catch(() => []),
+      // One retry before falling back to the "/store" link: a single
+      // transient failure here (a cold connection to the backend, a
+      // dropped request) used to render the mega menu's empty-state
+      // fallback for the whole page — every category click landing on
+      // "all products" instead of a category, until the next full
+      // reload happened to hit a warm connection. A second attempt
+      // covers exactly that class of blip without masking a genuine,
+      // sustained outage (which still falls back after both attempts).
+      listCategories().catch(() => listCategories()).catch(() => []),
       listCollections({ limit: "6" }).catch(() => ({ collections: [] })),
     ])
 

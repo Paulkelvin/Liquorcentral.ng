@@ -2,7 +2,6 @@
 
 import { addGiftWrapToLineItem, addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
-import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
@@ -50,7 +49,7 @@ export default function ProductActions({
   const searchParams = useSearchParams()
   const { showToast } = useToast()
 
-  const { openDrawer } = useCart()
+  const { openDrawer, addItem } = useCart()
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [quantity, setQuantity] = useState(1)
   const [giftWrapSelected, setGiftWrapSelected] = useState(false)
@@ -197,48 +196,73 @@ export default function ProductActions({
    * back and toasts instead of silently succeeding. The one thing this
    * gives up is the intermediate spinner state, never the truth about
    * whether the add actually worked.
+   *
+   * **The drawer's contents are optimistic too, not just its open state.**
+   * Opening the drawer used to be the only optimistic part — the line
+   * item itself only appeared once `addToCart`'s `revalidateTag` round-
+   * tripped a fresh server cart back down, which on a real connection to
+   * the backend was a visible beat of the drawer showing the cart it had
+   * *before* this tap. `addItem` paints a synthetic line (built from data
+   * already on this page — no fetch needed) into the optimistic cart the
+   * same instant the drawer opens; the real `addToCart` call replaces it
+   * with the authoritative line once it resolves.
    */
   const handleAddToCart = () => {
     if (!selectedVariant?.id) return
 
     setConfirmation(`Added ${quantity} × ${product.title} to your cart.`)
     // Opened before the request resolves, so the drawer is already
-    // sliding in as the customer lifts their finger — the cart it shows
-    // fills in from the server a moment later.
+    // sliding in as the customer lifts their finger — the item it shows
+    // is optimistic too (below), and both settle against the server
+    // together.
     openDrawer()
 
-    addToCart({
-      variantId: selectedVariant.id,
+    const unitPrice = selectedVariant.calculated_price?.calculated_amount ?? 0
+    const unitOriginalPrice =
+      selectedVariant.calculated_price?.original_amount ?? unitPrice
+
+    const optimisticItem = {
+      id: `optimistic-${selectedVariant.id}-${Date.now()}`,
       quantity,
-      countryCode,
-    })
-      .then((addedLineItem) => {
-        const giftWrapVariantId = giftWrapProduct?.variants?.[0]?.id
-        if (giftWrapSelected && giftWrapVariantId && addedLineItem) {
-          // §15 — metadata-linked to the product line it wraps, the same
-          // convention the cart's own gift-wrap toggle uses, so a wrap
-          // added here is recognized and grouped identically either way.
-          return addGiftWrapToLineItem({
-            giftWrapVariantId,
-            forLineItemId: addedLineItem.id,
-          })
-        }
-      })
-      .then(() => {
-        // Tell any other open tab this cart just changed — see
-        // cart-broadcast.ts's own comment for the multi-tab bug this
-        // closes (a stale quantity read in a second tab silently
-        // overwriting what this tab just did).
-        broadcastCartChange()
-      })
-      .catch(() => {
+      title: selectedVariant.title ?? product.title,
+      product_title: product.title,
+      product_handle: product.handle,
+      thumbnail: product.thumbnail,
+      variant: selectedVariant,
+      unit_price: unitPrice,
+      total: unitPrice * quantity,
+      original_total: unitOriginalPrice * quantity,
+    } as HttpTypes.StoreCartLineItem
+
+    addItem(
+      optimisticItem,
+      () =>
+        addToCart({
+          variantId: selectedVariant.id,
+          quantity,
+          countryCode,
+        }).then((addedLineItem) => {
+          const giftWrapVariantId = giftWrapProduct?.variants?.[0]?.id
+          if (giftWrapSelected && giftWrapVariantId && addedLineItem) {
+            // §15 — metadata-linked to the product line it wraps, the
+            // same convention the cart's own gift-wrap toggle uses, so a
+            // wrap added here is recognized and grouped identically
+            // either way.
+            return addGiftWrapToLineItem({
+              giftWrapVariantId,
+              forLineItemId: addedLineItem.id,
+            })
+          }
+        }),
+      () => {
         setConfirmation(null)
         showToast({
           title: "Couldn't add to cart",
           description: "Please try again.",
           variant: "danger",
         })
-      })
+      }
+    )
   }
 
   return (

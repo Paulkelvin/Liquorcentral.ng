@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from "react"
+import { useEffect, useRef, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 type LoadMoreProps = {
@@ -41,6 +41,27 @@ export default function LoadMore({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const wasPendingRef = useRef(false)
+
+  /**
+   * `{ scroll: false }` below is supposed to be enough on its own, and
+   * usually is — but the grid this button sits under
+   * (`PaginatedProducts`) lives inside a `Suspense` boundary
+   * (`categories/templates/index.tsx`), and re-suspending it for the
+   * larger cumulative page mid-transition is enough to make Next reset
+   * scroll to the top anyway (a known App Router gap: `scroll: false`
+   * only reliably holds when the boundary doesn't re-suspend). Once the
+   * transition settles, this puts the viewport back where the click
+   * happened — anchored to the button itself, which is exactly where the
+   * newly-loaded row of products now starts.
+   */
+  useEffect(() => {
+    if (wasPendingRef.current && !isPending) {
+      buttonRef.current?.scrollIntoView({ block: "center" })
+    }
+    wasPendingRef.current = isPending
+  }, [isPending])
 
   const loadMore = () => {
     const params = new URLSearchParams(searchParams)
@@ -54,6 +75,7 @@ export default function LoadMore({
     <div className="flex flex-col items-center gap-2 w-full mt-12">
       {hasMore && (
         <button
+          ref={buttonRef}
           type="button"
           onClick={loadMore}
           disabled={isPending}

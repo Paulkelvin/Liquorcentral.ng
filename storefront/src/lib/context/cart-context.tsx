@@ -21,6 +21,7 @@ import {
 type OptimisticAction =
   | { type: "setQuantity"; lineId: string; quantity: number }
   | { type: "remove"; lineId: string }
+  | { type: "add"; item: HttpTypes.StoreCartLineItem }
 
 /**
  * Applies a pending change to the cart the customer is looking at, so a
@@ -39,7 +40,7 @@ function reduceOptimistic(
   cart: HttpTypes.StoreCart | null,
   action: OptimisticAction
 ): HttpTypes.StoreCart | null {
-  if (!cart?.items) {
+  if (!cart) {
     return cart
   }
 
@@ -47,7 +48,7 @@ function reduceOptimistic(
     case "setQuantity":
       return {
         ...cart,
-        items: cart.items.map((item) =>
+        items: (cart.items ?? []).map((item) =>
           item.id === action.lineId
             ? { ...item, quantity: action.quantity }
             : item
@@ -56,7 +57,12 @@ function reduceOptimistic(
     case "remove":
       return {
         ...cart,
-        items: cart.items.filter((item) => item.id !== action.lineId),
+        items: (cart.items ?? []).filter((item) => item.id !== action.lineId),
+      }
+    case "add":
+      return {
+        ...cart,
+        items: [...(cart.items ?? []), action.item],
       }
     default:
       return cart
@@ -82,6 +88,20 @@ type CartContextValue = {
     onError?: (error: unknown) => void
   ) => void
   removeItem: (lineId: string, onError?: (error: unknown) => void) => void
+  /**
+   * Paints a synthetic line item into the cart immediately, then runs
+   * the real `addToCart` (and anything chained after it, like gift
+   * wrap) behind it. Without this the drawer opened on the item it
+   * already knew about — the add itself only appeared once
+   * `revalidateTag` round-tripped a fresh server cart back down, which
+   * on a real connection reads as the drawer opening a beat before the
+   * product does.
+   */
+  addItem: (
+    item: HttpTypes.StoreCartLineItem,
+    run: () => Promise<unknown>,
+    onError?: (error: unknown) => void
+  ) => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
@@ -183,6 +203,17 @@ export function CartProvider({
     [mutate]
   )
 
+  const addItem = useCallback(
+    (
+      item: HttpTypes.StoreCartLineItem,
+      run: () => Promise<unknown>,
+      onError?: (error: unknown) => void
+    ) => {
+      mutate({ type: "add", item }, run, onError)
+    },
+    [mutate]
+  )
+
   const totalItems = useMemo(
     () => cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0,
     [cart]
@@ -198,6 +229,7 @@ export function CartProvider({
       closeDrawer,
       setQuantity,
       removeItem,
+      addItem,
     }),
     [
       cart,
@@ -208,6 +240,7 @@ export function CartProvider({
       closeDrawer,
       setQuantity,
       removeItem,
+      addItem,
     ]
   )
 
