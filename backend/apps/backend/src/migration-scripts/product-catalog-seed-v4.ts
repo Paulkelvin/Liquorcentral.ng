@@ -351,7 +351,11 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "jollof-rice-grilled-chicken",
-    realImageUrl: "/brand/products/dish-jollof-plantain.webp",
+    // Was `dish-jollof-plantain.webp` — jollof and fried plantain with no
+    // chicken visible, contradicting this product's own title. Flagged
+    // when that image first went in; this replacement actually shows a
+    // grilled chicken quarter on the rice.
+    realImageUrl: "/brand/products/dish-jollof-chicken.webp",
     title: "Jollof Rice with Grilled Chicken",
     description: "Classic smoky-sweet jollof rice served with a grilled chicken quarter.",
     price: 6500,
@@ -765,6 +769,83 @@ const PRODUCTS: SeedProduct[] = [
       safety_data_verified: false,
       spice_level: 4,
       prep_time_minutes: 40,
+      portion_size: "1 bowl, serves 1",
+    },
+  },
+
+  {
+    handle: "ewa-agoyin-with-bread",
+    realImageUrl: "/brand/products/dish-ewa-agoyin.webp",
+    title: "Ewa Agoyin with Bread",
+    description:
+      "Mashed honey beans in a smoky pepper-and-palm-oil stew, served with soft agege bread.",
+    price: 4000,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Honey beans", "Palm oil", "Dried pepper", "Onion", "Bread"],
+      allergens: ["Gluten"],
+      dietary_flags: ["Vegetarian"],
+      safety_data_verified: false,
+      spice_level: 3,
+      prep_time_minutes: 30,
+      portion_size: "1 bowl with 5 slices of bread",
+    },
+  },
+  {
+    handle: "chicken-wing-veg-fried-rice",
+    realImageUrl: "/brand/products/dish-fried-rice-wing.webp",
+    title: "Chicken Wing Fried Rice",
+    description:
+      "Wok-fried rice with garden vegetables, topped with a glazed grilled chicken wing.",
+    price: 7000,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Rice", "Chicken wing", "Carrot", "Green peas", "Sweetcorn", "Green beans"],
+      allergens: ["Soy"],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 1,
+      prep_time_minutes: 25,
+      portion_size: "1 plate, serves 1",
+    },
+  },
+  {
+    handle: "gizdodo",
+    realImageUrl: "/brand/products/dish-gizdodo.webp",
+    title: "Gizdodo (Gizzard & Plantain)",
+    description:
+      "Grilled gizzard and fried plantain tossed in a spicy pepper sauce.",
+    price: 5500,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Chicken gizzard", "Plantain", "Bell pepper", "Scotch bonnet", "Onion"],
+      allergens: [],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 3,
+      prep_time_minutes: 30,
+      portion_size: "1 bowl, serves 1",
+    },
+  },
+  {
+    handle: "coconut-rice-grilled-shrimp",
+    realImageUrl: "/brand/products/dish-coconut-rice-shrimp.webp",
+    title: "Coconut Rice with Grilled Shrimp",
+    description:
+      "Rice simmered in coconut milk with sweet peppers, topped with charred grilled shrimp.",
+    price: 8000,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Rice", "Coconut milk", "Shrimp", "Bell pepper", "Onion"],
+      allergens: ["Shellfish"],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 1,
+      prep_time_minutes: 30,
       portion_size: "1 bowl, serves 1",
     },
   },
