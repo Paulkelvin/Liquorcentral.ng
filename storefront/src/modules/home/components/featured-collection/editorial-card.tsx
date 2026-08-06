@@ -69,7 +69,11 @@ export default function EditorialCard({ campaign }: { campaign: Campaign }) {
       />
 
       <div className="relative mt-auto flex flex-col items-start gap-2 p-6 small:p-8">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75">
+        {/* Gold, not white/75 — see curated-mark/index.tsx's rule. This
+            banner is the campaign the Featured Collection section exists
+            to introduce; 11:1 against the scrim here, still comfortably
+            past AA. */}
+        <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-accent">
           {campaign.eyebrow}
         </span>
         <h3 className="font-display text-[26px] font-semibold leading-[1.1] tracking-[-0.01em] text-white small:text-[34px]">

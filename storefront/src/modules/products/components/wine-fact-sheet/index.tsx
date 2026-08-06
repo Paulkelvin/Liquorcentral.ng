@@ -1,4 +1,5 @@
 import { Text } from "@modules/common/components/ui"
+import { CuratedMark } from "@modules/common/components/curated-mark"
 
 export type WineDetails = {
   vintage?: number | null
@@ -56,6 +57,12 @@ export default function WineFactSheet({ details }: { details: WineDetails }) {
       )}
       {tastingRows.length > 0 && (
         <div>
+          {/* Gold, small, above the label — see curated-mark/index.tsx's
+              rule. Tasting notes are the one piece of this fact sheet
+              that's a sommelier's own judgement rather than a
+              specification (vintage, ABV, bottle size are facts; this
+              is a read). */}
+          <CuratedMark className="mb-2 h-[2px] w-5" />
           <Text className="mb-3 font-semibold text-text-primary">Tasting</Text>
           <dl className="flex flex-col gap-3">
             {tastingRows.map((row) => (

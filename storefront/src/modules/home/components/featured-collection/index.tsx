@@ -1,6 +1,7 @@
 import { listCollections } from "@lib/data/collections"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { CuratedMark } from "@modules/common/components/curated-mark"
 import SectionCTAButton from "@modules/common/components/section-cta-button"
 import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text } from "@modules/common/components/ui"
@@ -126,6 +127,11 @@ export default async function FeaturedCollection({
             line. */}
         <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <div>
+            {/* The one gold mark on this page — see curated-mark/index.tsx's
+                own rule. This section's copy is the platform's most direct
+                claim of human curation ("chosen by us, not by an
+                algorithm"), which is exactly what the mark exists for. */}
+            <CuratedMark className="mb-2" />
             <Heading
               level="h2"
               display
