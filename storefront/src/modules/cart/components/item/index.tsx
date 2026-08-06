@@ -2,7 +2,7 @@
 
 import { Text, Checkbox, clx } from "@modules/common/components/ui"
 import { addGiftWrapToLineItem, deleteLineItem } from "@lib/data/cart"
-import { useCart } from "@lib/context/cart-context"
+import { useOptionalCart } from "@lib/context/cart-context"
 import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
@@ -39,7 +39,16 @@ const Item = ({
   type = "full",
   currencyCode,
 }: ItemProps) => {
-  const { cart: optimisticCart, setQuantity, removeItem } = useCart()
+  // Optional — the checkout order-summary preview renders this same
+  // component outside `CartProvider` (see `useOptionalCart`'s own
+  // comment). Only the "full" cart-page branch below ever calls
+  // `setQuantity`/`removeItem`, and that branch only ever renders inside
+  // `CartProvider`, so `?.` here is a type-safety formality, not a real
+  // runtime gap.
+  const cartCtx = useOptionalCart()
+  const optimisticCart = cartCtx?.cart ?? null
+  const setQuantity = cartCtx?.setQuantity
+  const removeItem = cartCtx?.removeItem
   const [error, setError] = useState<string | null>(null)
   const [giftWrapPending, setGiftWrapPending] = useState(false)
 
@@ -62,7 +71,7 @@ const Item = ({
   // round trip instead of reading as instant.
   const changeQuantity = (quantity: number) => {
     setError(null)
-    setQuantity(item.id, quantity, (err) =>
+    setQuantity?.(item.id, quantity, (err) =>
       setError(err instanceof Error ? err.message : "Couldn't update quantity")
     )
   }
@@ -188,7 +197,7 @@ const Item = ({
                 data-testid="product-delete-button"
                 variant="text"
                 onDelete={(id) =>
-                  removeItem(id, (err) =>
+                  removeItem?.(id, (err) =>
                     setError(err instanceof Error ? err.message : "Couldn't remove item")
                   )
                 }

@@ -254,3 +254,20 @@ export function useCart() {
   }
   return context
 }
+
+/**
+ * `useCart` on purpose without the throw — for a component that renders
+ * in more than one tree, only some of which sit under `CartProvider`.
+ * `Item` (`cart/components/item`) is the reason this exists: it renders
+ * both on the `/cart` page (wrapped in `CartProvider` by the `(main)`
+ * layout) and inside checkout's own order-summary preview (the
+ * `(checkout)` route group has its own minimal, distraction-free layout
+ * with no `CartProvider` — deliberately, not an oversight). The preview
+ * row never actually calls `setQuantity`/`removeItem`, so `null` here is
+ * always safe there; a genuine missing-provider bug anywhere `useCart`'s
+ * guarantee actually matters still throws, since every other call site
+ * keeps using that hook, not this one.
+ */
+export function useOptionalCart() {
+  return useContext(CartContext)
+}
