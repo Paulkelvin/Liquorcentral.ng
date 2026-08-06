@@ -1,5 +1,6 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { IconChevronDown } from "@modules/common/icons"
+import { safeJsonLd } from "@lib/util/json-ld"
 
 export type BreadcrumbSegment = {
   label: string
@@ -127,7 +128,7 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
       {/* eslint-disable-next-line react/no-danger */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
       />
     </>
   )

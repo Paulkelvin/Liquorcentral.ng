@@ -10,6 +10,7 @@ import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-relat
 import Breadcrumbs from "@modules/common/components/breadcrumbs"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
+import { safeJsonLd } from "@lib/util/json-ld"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
 
@@ -73,7 +74,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       {/* eslint-disable-next-line react/no-danger */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
       />
       {/* Food Central's navigation is deliberately not category-driven
           (`food-central-menu/index.tsx`'s own comment — no Product
