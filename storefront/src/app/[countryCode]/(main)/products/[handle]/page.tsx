@@ -52,9 +52,18 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound()
   }
 
+  // Same `fields` string the page body's own `listProducts` call below
+  // uses (deliberately — the two used to differ, so Next's fetch
+  // request memoization couldn't recognize them as the same request and
+  // this page paid for two separate `/store/products` round trips per
+  // visit instead of one).
   const product = await listProducts({
     countryCode: params.countryCode,
-    queryParams: { handle, fields: "+categories.*,+wine_details.*,+food_details.*" },
+    queryParams: {
+      handle,
+      fields:
+        "*variants.calculated_price,+variants.inventory_quantity,*variants.images,*variants.options,+metadata,+tags,+categories.*,+wine_details.*,+food_details.*",
+    },
   }).then(({ response }) => response.products[0])
 
   if (!product) {
