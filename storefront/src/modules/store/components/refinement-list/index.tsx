@@ -7,7 +7,6 @@ import { ChevronDownMini } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import clsx from "clsx"
 
-import { sdk } from "@lib/config"
 import {
   OPTION_VALUE_QUERY_KEY,
   parseOptionValueIds,
@@ -19,6 +18,23 @@ type RefinementListProps = {
   search?: boolean
   hideOptionsPicker?: boolean
   hideCategories?: boolean
+  /**
+   * Server-fetched (each caller's own template is a Server Component
+   * already rendering with the region/product data this page needs, so
+   * the category list rides along in the same render rather than a
+   * second, client-only fetch). Top-level categories only — the same
+   * `!parent_category_id` filter this component used to apply itself
+   * after its own `useEffect` fetch resolved.
+   *
+   * **That client-side fetch is gone, on purpose.** This panel used to
+   * render nothing (`showCategories` false) until its own `useEffect`
+   * round-tripped to the backend after hydration — on a real connection
+   * that was a visible pop-in a moment after the rest of the page had
+   * already painted, the same "comes in late" complaint Paul raised
+   * about the mega menu. Passing the list down as a prop means it's
+   * present in the very first HTML the browser receives.
+   */
+  categories?: HttpTypes.StoreProductCategory[]
   "data-testid"?: string
 }
 
@@ -37,55 +53,25 @@ type RefinementListProps = {
 const RefinementList = ({
   hideOptionsPicker = false,
   hideCategories = false,
+  categories = [],
 }: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [categories, setCategories] = useState<
-    HttpTypes.StoreProductCategory[]
-  >([])
   // Open by default where there is room beside the results, collapsed on
   // a phone where an expanded list would push the products themselves
-  // below the fold.
+  // below the fold. Starts closed and is set open post-mount (rather than
+  // computed from `window` in the initial state) so the server-rendered
+  // markup and the client's first hydration pass agree — checking
+  // `window.matchMedia` during the initial render would disagree with the
+  // server's always-closed render and trip a hydration mismatch.
   const [openGroups, setOpenGroups] = useState<string[]>([])
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return
-    }
     if (window.matchMedia("(min-width: 1024px)").matches) {
       setOpenGroups(["category"])
     }
   }, [])
-
-  useEffect(() => {
-    if (hideCategories) {
-      return
-    }
-    let active = true
-    sdk.client
-      .fetch<{ product_categories?: HttpTypes.StoreProductCategory[] }>(
-        "/store/product-categories",
-        {
-          method: "GET",
-          query: { fields: "handle,name,parent_category_id", limit: 100 },
-        }
-      )
-      .then((res) => {
-        if (active && res?.product_categories) {
-          setCategories(
-            res.product_categories.filter((c) => !c.parent_category_id)
-          )
-        }
-      })
-      .catch(() => {
-        // §24's graceful degradation — a category-list failure hides this
-        // group rather than blocking the listing beside it.
-      })
-    return () => {
-      active = false
-    }
-  }, [hideCategories])
 
   const updateQueryParams = useCallback(
     (updater: (params: URLSearchParams) => void) => {

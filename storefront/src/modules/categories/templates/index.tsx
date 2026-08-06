@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import clsx from "clsx"
 
+import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
@@ -12,7 +13,7 @@ import Breadcrumbs from "@modules/common/components/breadcrumbs"
 import { HttpTypes } from "@medusajs/types"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 
-export default function CategoryTemplate({
+export default async function CategoryTemplate({
   category,
   siblingCategories,
   sortBy,
@@ -30,6 +31,15 @@ export default function CategoryTemplate({
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "featured"
+
+  // Fetched here, server-side, rather than by RefinementList itself — see
+  // that component's own comment on the client-side fetch this replaces.
+  const refinementCategories = await listCategories({
+    fields: "handle,name,parent_category_id",
+    limit: 100,
+  })
+    .then((cats) => cats.filter((c) => !c.parent_category_id))
+    .catch(() => [])
 
   if (!category || !countryCode) notFound()
 
@@ -75,7 +85,7 @@ export default function CategoryTemplate({
         className="flex flex-col gap-6 small:flex-row small:items-start small:gap-10 py-6 ds-container"
         data-testid="category-container"
       >
-      <RefinementList hideOptionsPicker />
+      <RefinementList hideOptionsPicker categories={refinementCategories} />
       <div className="w-full min-w-0">
         {/* Title and sort share one row at every width — stacking them
             on mobile cost a whole band of vertical space above the grid.
