@@ -114,15 +114,31 @@ function NavRow({
  * 01_NAVIGATION_SPECIFICATION.md §7.3 — "a drawer (opened from a
  * clearly-labeled 'Menu' or 'All Categories' affordance, not an
  * unlabeled hamburger icon alone)... carries the full category tree
- * depth." Its own structural density/hierarchy pass, per direct
- * feedback against a real mobile screenshot:
- *  - fixed 100vh shell, only the middle category list scrolls — the
- *    header and the Account/Cart/shipping-region footer stay pinned;
- *  - multi-level categories collapse behind a real accordion (chevron
- *    toggle, closed by default), not an always-expanded flat list;
- *  - no decorative icons on section titles — text-only;
- *  - a left-border accent + bold weight marks the current page,
- *    replacing a filled hover/active background block.
+ * depth."
+ *
+ * **Second pass — Paul's read of the previous version: it didn't look
+ * great, and Account/Cart/the shipping selector read as "other stuff"
+ * bolted on below the actual menu rather than part of it.** Two changes:
+ *
+ * 1. **Slides in from the left as a ~90%-width panel over a dimmed scrim,
+ *    not a full-bleed screen that fades in place.** An edge-anchored panel
+ *    that pushes in from off-screen, with the rest of the page visibly
+ *    dimmed behind it, is the pattern most considered mobile storefronts
+ *    settle on — it reads as *a panel opened over the page* rather than
+ *    *a second page*, and the sliver of dimmed content at the right edge
+ *    gives a spatial cue (this closes back to where you were) a full-bleed
+ *    fade doesn't.
+ * 2. **Account, Cart, and the shipping-region selector are rows in the
+ *    same list as the categories, not a separate bordered block in a
+ *    different background colour underneath.** That block was the "those
+ *    ones below" — visually a different section, even though it opened
+ *    with the same drawer. They're the same `NavRow` treatment as
+ *    everything above them, one hairline group break, nothing else marking
+ *    them as a different kind of thing.
+ *
+ * What's unchanged from the first pass: the fixed shell with only the
+ * middle list scrolling, the accordion for multi-level categories, and
+ * text-only section labels.
  */
 export default function MobileNavDrawer({
   categories,
@@ -178,6 +194,9 @@ export default function MobileNavDrawer({
             <IconMenu aria-hidden="true" />
           </PopoverButton>
 
+          {/* The scrim. A separate fade from the panel's own slide — a
+              dimmed page behind an edge-anchored panel is what makes this
+              read as "opened over the page" rather than "a second page." */}
           <Transition
             as={Fragment}
             enter="transition ease-out duration-200"
@@ -187,19 +206,40 @@ export default function MobileNavDrawer({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
+            <div
+              aria-hidden="true"
+              className="fixed inset-0 z-[60] bg-ink-900/50"
+              onClick={() => close()}
+            />
+          </Transition>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-250"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in duration-200"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full"
+          >
             {/* `h-dvh` (dynamic viewport height), not just `inset-0`'s
                 implicit sizing — accounts for mobile Safari/Chrome's
                 collapsing address-bar chrome so the drawer never sits
-                taller than the real visible viewport. */}
+                taller than the real visible viewport. Capped at 22rem and
+                90vw rather than the full screen width, so the dimmed scrim
+                stays visible at the right edge as the "this is a panel,
+                not a new page" cue the redesign is built around. */}
             <PopoverPanel
               focus
-              className="fixed inset-0 h-dvh z-[60] bg-surface flex flex-col overflow-hidden"
+              className="fixed inset-y-0 left-0 h-dvh z-[61] w-[90vw] max-w-[22rem] bg-surface shadow-2xl flex flex-col overflow-hidden"
               data-testid="mobile-nav-drawer"
             >
-              {/* Fixed header */}
-              <div className="shrink-0 flex items-center justify-between px-4 py-4 bg-surface-elevated">
+              {/* Fixed header — the display serif, same weight the wordmark
+                  uses in the header bar underneath, so the panel still
+                  reads as this store's rather than a generic UI drawer. */}
+              <div className="shrink-0 flex items-center justify-between px-5 py-5">
                 <span className="font-display text-heading-4 font-semibold tracking-tight text-text-primary">
-                  LiquorCentral
+                  Menu
                 </span>
                 <button
                   data-testid="close-mobile-nav-drawer"
@@ -344,34 +384,49 @@ export default function MobileNavDrawer({
                       })}
                     </ul>
                   </div>
+
+                  {/* Account and Cart, as rows in this same list — not a
+                      separate bordered block in a different background,
+                      which is what read as "other stuff below the menu."
+                      Same `NavRow`, same group-label treatment as Wine &
+                      Spirits and Food Central above. */}
+                  <div>
+                    <h3 className="px-3 mb-2 text-caption font-medium uppercase tracking-wider text-text-muted">
+                      My Account
+                    </h3>
+                    <ul className="flex flex-col gap-0.5">
+                      <li className="flex items-center">
+                        <NavRow
+                          href="/account"
+                          isActive={isCurrentPath("/account")}
+                          onNavigate={() => close()}
+                          Icon={IconAccount}
+                        >
+                          Account
+                        </NavRow>
+                      </li>
+                      <li className="flex items-center">
+                        <NavRow
+                          href="/cart"
+                          isActive={isCurrentPath("/cart")}
+                          onNavigate={() => close()}
+                          Icon={IconBag}
+                        >
+                          Cart
+                        </NavRow>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </nav>
 
-              {/* Fixed sticky footer — Account, Cart, and the shipping
-                  (delivery region) selector stay anchored and visible
-                  regardless of how far the category list above is
-                  scrolled. */}
-              <div className="shrink-0 border-t border-border bg-surface-elevated px-4 py-4">
-                <div className="flex flex-col gap-1 pb-3 mb-3 border-b border-divider">
-                  <LocalizedClientLink
-                    href="/account"
-                    className="flex items-center gap-2 min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:text-interactive"
-                    onClick={() => close()}
-                  >
-                    <IconAccount className="text-text-secondary" aria-hidden="true" />
-                    Account
-                  </LocalizedClientLink>
-                  <LocalizedClientLink
-                    href="/cart"
-                    className="flex items-center gap-2 min-h-[44px] px-3 -mx-3 rounded-radius-sm txt-medium-plus text-text-primary hover:text-interactive"
-                    onClick={() => close()}
-                  >
-                    <IconBag className="text-text-secondary" aria-hidden="true" />
-                    Cart
-                  </LocalizedClientLink>
-                </div>
-
-                <div className="flex flex-col gap-y-3">
+              {/* Fixed footer — only the shipping-region (and, where
+                  offered, language) selector now lives here, since it's
+                  genuinely a setting rather than a destination. Deliberately
+                  quiet: no distinct background, a hairline top border only,
+                  small type — furniture, not another menu section. */}
+              <div className="shrink-0 border-t border-divider px-4 py-3">
+                <div className="flex flex-col gap-y-2">
                   {!!locales?.length && (
                     <div
                       className="flex justify-between"
