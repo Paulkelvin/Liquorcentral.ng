@@ -1,5 +1,3 @@
-import { Text } from "@modules/common/components/ui"
-
 /**
  * The pre-footer trust band — `02_HOMEPAGE_SPECIFICATION.md` §8.7/§13's four
  * required trust statements, presented as a banner rather than a checklist.
@@ -39,6 +37,19 @@ import { Text } from "@modules/common/components/ui"
  * none of the four shapes needed exist there. Each is `aria-hidden` — every
  * one sits beside its own text, which §8.7 requires (never icon-only), so
  * announcing the icon too would just repeat the title.
+ *
+ * **The subtitle is a plain `<span>`, not the shared `Text` primitive —
+ * this is a fix, not a style choice.** `Text` defaults to `as="p"`, and a
+ * `<p>` nested inside the title/subtitle wrapper `<span>` below is invalid
+ * HTML (`<span>` only permits phrasing content); the browser silently
+ * closes the wrapper and reparents the paragraph out of the stack it was
+ * meant to sit in. `Text` also defaults to `text-text-primary` (near-black)
+ * ahead of any className passed in, and two same-specificity Tailwind
+ * utilities resolve by CSS source order, not JSX prop order — so the
+ * override was never guaranteed to win. On production it didn't: the
+ * subtitle rendered in `text-text-primary` on this dark band and was
+ * effectively invisible. A plain `<span>` with one explicit colour class
+ * sidesteps both problems rather than fighting the primitive's defaults.
  */
 
 const STROKE = 1.25
@@ -166,10 +177,11 @@ export default function TrustBand() {
   return (
     <section
       aria-label="Why shop with LiquorCentral"
-      // `ink-900` — the only dark full-width block on the page, which is
-      // what makes it read as a breaker between the content above and the
-      // footer below. A dark band needs no border to separate itself.
-      className="w-full bg-ink-900"
+      // A faint top-to-bottom gradient rather than flat `ink-900` — from
+      // the token itself down to a hair darker. Too subtle to read as "a
+      // gradient" on its own, which is the point: it gives the band a
+      // little depth without turning it into a visible effect.
+      className="w-full bg-gradient-to-b from-ink-900 to-[#141414]"
       data-testid="trust-band"
     >
       <div className="ds-container py-10 small:py-12">
@@ -186,23 +198,30 @@ export default function TrustBand() {
               {/* The tinted circle is what makes this a designed icon
                   rather than a glyph floating on the background — `white/8`
                   with a hairline `white/15` ring, subtle enough to stay
-                  quiet next to the text it introduces. */}
+                  quiet next to the text it introduces. A faint radial glow
+                  sits behind it (the `::before`, blurred and off to the
+                  upper-left) — the one deliberate "effect" in this section,
+                  kept small and low-opacity enough to read as a light
+                  source rather than a sticker. */}
               <span
                 aria-hidden="true"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-radius-full bg-white/8 text-surface-elevated ring-1 ring-inset ring-white/15"
+                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-radius-full bg-white/8 text-surface-elevated ring-1 ring-inset ring-white/15 before:absolute before:-inset-1 before:-z-10 before:rounded-radius-full before:bg-accent/15 before:blur-md"
               >
                 <Icon />
               </span>
-              <span className="flex flex-col">
+              {/* Both lines vertically centred against the 40px icon as one
+                  block — `justify-center`, not `flex-start` — so a
+                  single-line title doesn't read as pinned to the icon's top
+                  edge with dead space below it. */}
+              <span className="flex flex-col justify-center gap-0.5">
                 <span className="text-caption font-medium text-surface-elevated">
                   {title}
                 </span>
-                {/* `ink-300`, not a translucent white — see the previous
-                    version's own note: an opacity value shifts if the
-                    background ever does, a token does not. */}
-                <Text className="!text-[12px] leading-snug text-ink-300">
+                {/* `ink-300`, not a translucent white — an opacity value
+                    shifts if the background ever does, a token does not. */}
+                <span className="text-[12px] leading-snug text-ink-300">
                   {subtitle}
-                </Text>
+                </span>
               </span>
             </li>
           ))}
