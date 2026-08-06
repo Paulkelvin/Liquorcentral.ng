@@ -445,7 +445,11 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "small-chops-party-pack",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/8/8f/Small_chops.jpg",
+    // Same instruction, same caveat again: no small-chops photograph
+    // exists, so this borrows the nearest thing on hand — assorted
+    // bite-sized pieces in a bowl — rather than a studio-background photo.
+    // It is not small chops. Replace the moment a real one exists.
+    realImageUrl: "/brand/products/dish-gizdodo.webp",
     title: "Small Chops Party Pack",
     description: "An assorted party pack of spring rolls, samosa, puff puff, chicken drumettes, and fish rolls.",
     price: 15000,
@@ -653,7 +657,16 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "moin-moin",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Sliced_Moi_Moi.jpg",
+    // Paul asked for every remaining Wikimedia stock photo replaced, even
+    // where no photograph of the actual dish has been supplied yet — "I
+    // just want all the cards to be filled with this type of image that
+    // have no background." No moin moin cut-out exists, so this borrows
+    // the closest thing on hand by ingredient rather than by looks: ewa
+    // agoyin is also a mashed-bean dish. It is a real mismatch, not a
+    // subtle one — a customer who orders moin moin gets a photo of beans
+    // and bread, not sliced pudding — flagged plainly rather than hidden.
+    // Replace the moment a real moin moin photo exists.
+    realImageUrl: "/brand/products/dish-ewa-agoyin.webp",
     title: "Moin Moin",
     description: "Steamed savoury bean pudding made from blended black-eyed peas, pepper, and spices.",
     price: 3500,
@@ -671,7 +684,12 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "puff-puff",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Puff_Puff.jpg",
+    // Same instruction, same caveat as `moin-moin` above: no puff puff
+    // photograph exists yet, so this borrows the nearest thing on hand —
+    // golden, fried/baked pastry on a dark plate — rather than leaving a
+    // studio-background photo in the grid. It is not puff puff. Replace
+    // the moment a real one exists.
+    realImageUrl: "/brand/products/dish-meat-pie.webp",
     title: "Puff Puff",
     description: "Deep-fried sweet dough balls, golden and fluffy — a classic Nigerian snack.",
     price: 2500,
@@ -847,6 +865,45 @@ const PRODUCTS: SeedProduct[] = [
       spice_level: 1,
       prep_time_minutes: 30,
       portion_size: "1 bowl, serves 1",
+    },
+  },
+
+  {
+    handle: "grilled-chicken-alfredo-pasta",
+    realImageUrl: "/brand/products/dish-chicken-alfredo.webp",
+    title: "Grilled Chicken Alfredo Pasta",
+    description:
+      "Fettuccine in a creamy parmesan sauce, topped with sliced grilled chicken breast.",
+    price: 7500,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Fettuccine", "Chicken breast", "Cream", "Parmesan", "Garlic", "Parsley"],
+      allergens: ["Gluten", "Dairy"],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 0,
+      prep_time_minutes: 25,
+      portion_size: "1 plate, serves 1",
+    },
+  },
+  {
+    handle: "fisherman-soup",
+    realImageUrl: "/brand/products/dish-fisherman-soup.webp",
+    title: "Fisherman Soup",
+    description:
+      "A rich, peppery broth of assorted fish and seafood, served with a side of eba.",
+    price: 8500,
+    optionTitle: "Portion",
+    optionValue: "Regular with eba",
+    food_details: {
+      ingredients: ["Assorted fish", "Stockfish", "Pepper", "Onion", "Scent leaf", "Eba"],
+      allergens: ["Fish"],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 3,
+      prep_time_minutes: 40,
+      portion_size: "1 bowl with eba, serves 1",
     },
   },
 
