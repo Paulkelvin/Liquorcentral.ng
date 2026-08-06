@@ -429,6 +429,105 @@ export async function signout(countryCode: string) {
   redirect(`/${countryCode}/account`)
 }
 
+/**
+ * Reduces checkout friction: a guest is never asked to register, and this
+ * quietly sets up a real account behind a successful guest order instead —
+ * using only the name/phone/email already collected on the order's own
+ * shipping address, no new form, no new step. Called from `placeOrder()`
+ * in `cart.ts` right after a guest order completes.
+ *
+ * **Best-effort and silent by design.** Every step here is wrapped so a
+ * failure — a duplicate email, a flaky auth call — never surfaces to the
+ * customer and never affects the order that already succeeded. This is a
+ * bonus on top of a completed purchase, not a requirement of it.
+ *
+ * **The browser is never logged in.** The customer keeps browsing as a
+ * guest; the account exists for next time, reachable only through the
+ * "set your password" email this triggers.
+ *
+ * Reuses three primitives that already exist for other flows, so this adds
+ * no new backend surface: `sdk.auth.register` (same "identity already
+ * exists" tolerance `signup()` already has — if this email already has an
+ * account, that's treated as "nothing to do," not an error), the
+ * `sdk.store.customer.create` call `completeLogin()` already makes once it
+ * holds a token, and `sdk.auth.resetPassword` — the exact call
+ * `requestPasswordReset()` uses, which already dispatches a real email
+ * through whatever notification provider the backend has configured. No
+ * new email-sending code exists here; it rides the same path a customer
+ * hitting "Forgot password" already takes.
+ */
+export async function createSilentAccount(order: {
+  email: string | null
+  shipping_address?: {
+    first_name?: string
+    last_name?: string
+    phone?: string
+  } | null
+}) {
+  if (!order.email) {
+    return
+  }
+
+  // Only for a genuine guest order — an already-authenticated checkout has
+  // a customer already, and running this again would be redundant at best.
+  const authHeaders = await getAuthHeaders()
+  if ("authorization" in authHeaders) {
+    return
+  }
+
+  const email = order.email
+  // Never shown, never stored anywhere in the storefront — this account is
+  // only ever reachable by the password the customer sets themselves via
+  // the reset-password email sent below.
+  const randomPassword =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2) + Date.now().toString(36)
+
+  try {
+    let token: string
+    try {
+      const result = await sdk.auth.register("customer", "emailpass", {
+        email,
+        password: randomPassword,
+      })
+      if (typeof result !== "string") {
+        // A third-party/location-based provider response — not a shape
+        // this flow can use to create a customer. Nothing to do.
+        return
+      }
+      token = result
+    } catch {
+      // Same "identity already exists" case `signup()` already treats as
+      // expected: this email already has an account, so it already has
+      // everything this function would otherwise set up. Any other
+      // registration failure is treated the same way — stop quietly
+      // rather than send an unsolicited password-reset email or surface
+      // anything to a customer whose order has already succeeded.
+      return
+    }
+
+    await sdk.store.customer.create(
+      {
+        email,
+        first_name: order.shipping_address?.first_name,
+        last_name: order.shipping_address?.last_name,
+        phone: order.shipping_address?.phone,
+      },
+      {},
+      { authorization: `Bearer ${token}` }
+    )
+
+    await sdk.auth.resetPassword("customer", "emailpass", {
+      identifier: email,
+    })
+  } catch {
+    // Best-effort only — see the function's own comment. The order this
+    // was called from has already succeeded regardless of what happens
+    // here.
+  }
+}
+
 export async function transferCart() {
   const cartId = await getCartId()
 

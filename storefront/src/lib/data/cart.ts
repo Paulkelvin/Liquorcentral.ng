@@ -15,6 +15,7 @@ import {
 } from "./cookies"
 import { getRegion } from "./regions"
 import { getLocale } from "./locale-actions"
+import { createSilentAccount } from "./customer"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -408,6 +409,15 @@ export async function placeOrder(cartId?: string) {
 
     const orderCacheTag = await getCacheTag("orders")
     revalidateTag(orderCacheTag)
+
+    // Best-effort, silent — see the function's own comment. Awaited so it
+    // completes before the redirect below (code after `redirect()` never
+    // runs), but never throws: a failure here can't affect an order that
+    // has already succeeded.
+    await createSilentAccount({
+      email: cartRes.order.email,
+      shipping_address: cartRes.order.shipping_address,
+    })
 
     removeCartId()
     redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
