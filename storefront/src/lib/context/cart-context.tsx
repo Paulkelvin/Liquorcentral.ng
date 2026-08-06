@@ -67,8 +67,15 @@ type CartContextValue = {
   isDrawerOpen: boolean
   openDrawer: () => void
   closeDrawer: () => void
-  setQuantity: (lineId: string, quantity: number) => void
-  removeItem: (lineId: string) => void
+  /** `onError` is optional — a caller with somewhere to show a failure
+   *  (a genuine stock/validation error) can pass one; otherwise a failed
+   *  change just rolls back silently, as before. */
+  setQuantity: (
+    lineId: string,
+    quantity: number,
+    onError?: (error: unknown) => void
+  ) => void
+  removeItem: (lineId: string, onError?: (error: unknown) => void) => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
@@ -107,17 +114,25 @@ export function CartProvider({
    * to whatever the server actually holds.
    */
   const mutate = useCallback(
-    (action: OptimisticAction, run: () => Promise<unknown>) => {
+    (
+      action: OptimisticAction,
+      run: () => Promise<unknown>,
+      onError?: (error: unknown) => void
+    ) => {
       setPendingCount((count) => count + 1)
       startTransition(async () => {
         applyOptimistic(action)
         try {
           await run()
-        } catch {
-          // Swallowed on purpose: the optimistic value is dropped when
-          // the transition ends, which is the rollback. Surfacing the
-          // error is the calling component's job where it has somewhere
-          // to show it.
+        } catch (error) {
+          // The optimistic value itself needs no rollback of its own —
+          // React drops it when the transition ends, so the UI snaps
+          // back to whatever the server actually holds. `onError` is
+          // only how a genuine failure (e.g. requested quantity exceeds
+          // stock) reaches a caller that has somewhere to show it; a
+          // caller that passes nothing gets the original silent-rollback
+          // behaviour.
+          onError?.(error)
         } finally {
           setPendingCount((count) => Math.max(0, count - 1))
         }
@@ -127,21 +142,23 @@ export function CartProvider({
   )
 
   const setQuantity = useCallback(
-    (lineId: string, quantity: number) => {
+    (lineId: string, quantity: number, onError?: (error: unknown) => void) => {
       if (quantity <= 0) {
-        mutate({ type: "remove", lineId }, () => deleteLineItem(lineId))
+        mutate({ type: "remove", lineId }, () => deleteLineItem(lineId), onError)
         return
       }
-      mutate({ type: "setQuantity", lineId, quantity }, () =>
-        updateLineItem({ lineId, quantity })
+      mutate(
+        { type: "setQuantity", lineId, quantity },
+        () => updateLineItem({ lineId, quantity }),
+        onError
       )
     },
     [mutate]
   )
 
   const removeItem = useCallback(
-    (lineId: string) => {
-      mutate({ type: "remove", lineId }, () => deleteLineItem(lineId))
+    (lineId: string, onError?: (error: unknown) => void) => {
+      mutate({ type: "remove", lineId }, () => deleteLineItem(lineId), onError)
     },
     [mutate]
   )

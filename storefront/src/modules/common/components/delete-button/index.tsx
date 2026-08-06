@@ -9,6 +9,7 @@ const DeleteButton = ({
   className,
   variant = "icon",
   "aria-label": ariaLabel,
+  onDelete,
 }: {
   id: string
   children?: React.ReactNode
@@ -27,10 +28,24 @@ const DeleteButton = ({
    * pass something like `Remove ${productName}`, not a generic "Remove."
    */
   "aria-label"?: string
+  /**
+   * Optional override for a caller that already has its own optimistic
+   * mutation path (the cart page's `Item`, via `useCart().removeItem`) —
+   * when supplied, this component becomes a plain trigger and stops
+   * managing its own request/spinner entirely, so the removal reads as
+   * instant instead of waiting on this button's own round trip on top of
+   * the caller's. Omit it and the component keeps its original
+   * self-contained behaviour.
+   */
+  onDelete?: (id: string) => void
 }) => {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async (id: string) => {
+    if (onDelete) {
+      onDelete(id)
+      return
+    }
     setIsDeleting(true)
     await deleteLineItem(id).catch((_err) => {
       setIsDeleting(false)

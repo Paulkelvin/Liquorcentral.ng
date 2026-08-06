@@ -1,7 +1,8 @@
 "use client"
 
 import { Text, Checkbox, clx } from "@modules/common/components/ui"
-import { addGiftWrapToLineItem, deleteLineItem, updateLineItem } from "@lib/data/cart"
+import { addGiftWrapToLineItem, deleteLineItem } from "@lib/data/cart"
+import { useCart } from "@lib/context/cart-context"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -10,7 +11,6 @@ import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import QuantityStepper from "@modules/products/components/quantity-stepper"
 import { useState } from "react"
@@ -38,24 +38,32 @@ const Item = ({
   type = "full",
   currencyCode,
 }: ItemProps) => {
-  const [updating, setUpdating] = useState(false)
+  const { cart: optimisticCart, setQuantity, removeItem } = useCart()
   const [error, setError] = useState<string | null>(null)
   const [giftWrapPending, setGiftWrapPending] = useState(false)
 
-  const changeQuantity = async (quantity: number) => {
+  // The `/cart` *page* fetches and renders from its own server cart —
+  // `item` here is that prop, not `useCart()`'s. So `useCart().setQuantity`
+  // paints its change into the *provider's* optimistic cart (which drives
+  // the drawer and the nav badge instantly) but never touches this prop,
+  // and this component would still show the old quantity until the page
+  // itself re-renders with fresh data a full round trip later. Reading
+  // the displayed quantity from whichever optimistic line matches this
+  // item's id — falling back to the prop when there isn't one yet — is
+  // what makes the number on *this* page move immediately too.
+  const optimisticItem = optimisticCart?.items?.find((i) => i.id === item.id)
+  const displayQuantity = optimisticItem?.quantity ?? item.quantity
+
+  // `useCart().setQuantity` (and `removeItem` below) already paint the
+  // change immediately via the provider's own optimistic cart — this used
+  // to run its own separate `await`+spinner on top of that, which is what
+  // made a quantity tap or a remove sit on "loading" for a full server
+  // round trip instead of reading as instant.
+  const changeQuantity = (quantity: number) => {
     setError(null)
-    setUpdating(true)
-
-    const action =
-      quantity <= 0 ? deleteLineItem(item.id) : updateLineItem({ lineId: item.id, quantity })
-
-    await action
-      .catch((err) => {
-        setError(err.message)
-      })
-      .finally(() => {
-        setUpdating(false)
-      })
+    setQuantity(item.id, quantity, (err) =>
+      setError(err instanceof Error ? err.message : "Couldn't update quantity")
+    )
   }
 
   const toggleGiftWrap = async (checked: boolean) => {
@@ -151,13 +159,11 @@ const Item = ({
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="flex items-center gap-2">
               <QuantityStepper
-                quantity={item.quantity}
+                quantity={displayQuantity}
                 onChange={changeQuantity}
                 max={maxQuantity}
                 min={0}
-                disabled={updating}
               />
-              {updating && <Spinner />}
             </div>
             {/* Remove reads as a quiet text action under the line total,
                 not a trash glyph wedged against the "+" button where it
@@ -177,6 +183,11 @@ const Item = ({
                 aria-label={`Remove ${item.product_title} from cart`}
                 data-testid="product-delete-button"
                 variant="text"
+                onDelete={(id) =>
+                  removeItem(id, (err) =>
+                    setError(err instanceof Error ? err.message : "Couldn't remove item")
+                  )
+                }
               >
                 Remove
               </DeleteButton>

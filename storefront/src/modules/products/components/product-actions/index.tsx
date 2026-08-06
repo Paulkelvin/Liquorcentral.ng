@@ -51,7 +51,6 @@ export default function ProductActions({
 
   const { openDrawer } = useCart()
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
-  const [isAdding, setIsAdding] = useState(false)
   const [quantity, setQuantity] = useState(1)
   const [giftWrapSelected, setGiftWrapSelected] = useState(false)
   const [confirmation, setConfirmation] = useState<string | null>(null)
@@ -185,51 +184,53 @@ export default function ProductActions({
     hasBeenInViewRef.current = true
   }
 
-  // add the selected variant to the cart
-  const handleAddToCart = async () => {
-    if (!selectedVariant?.id) return null
+  /**
+   * **Optimistic, matching `QuickAddButton`'s own fix for the same
+   * complaint on the listing cards.** This used to `await` the full
+   * server round trip with the button disabled and reading "Loading…"
+   * the whole time — on a real connection to the Medusa backend that
+   * read as sluggish, and Paul said so plainly: "I don't want to see
+   * loading... the plus button should add immediately." The confirmation
+   * and the drawer now both fire the instant the tap lands; the request
+   * still runs behind them, and a genuine failure rolls the confirmation
+   * back and toasts instead of silently succeeding. The one thing this
+   * gives up is the intermediate spinner state, never the truth about
+   * whether the add actually worked.
+   */
+  const handleAddToCart = () => {
+    if (!selectedVariant?.id) return
 
-    setIsAdding(true)
-    setConfirmation(null)
+    setConfirmation(`Added ${quantity} × ${product.title} to your cart.`)
+    // Opened before the request resolves, so the drawer is already
+    // sliding in as the customer lifts their finger — the cart it shows
+    // fills in from the server a moment later.
+    openDrawer()
 
-    try {
-      const addedLineItem = await addToCart({
-        variantId: selectedVariant.id,
-        quantity,
-        countryCode,
+    addToCart({
+      variantId: selectedVariant.id,
+      quantity,
+      countryCode,
+    })
+      .then((addedLineItem) => {
+        const giftWrapVariantId = giftWrapProduct?.variants?.[0]?.id
+        if (giftWrapSelected && giftWrapVariantId && addedLineItem) {
+          // §15 — metadata-linked to the product line it wraps, the same
+          // convention the cart's own gift-wrap toggle uses, so a wrap
+          // added here is recognized and grouped identically either way.
+          return addGiftWrapToLineItem({
+            giftWrapVariantId,
+            forLineItemId: addedLineItem.id,
+          })
+        }
       })
-
-      const giftWrapVariantId = giftWrapProduct?.variants?.[0]?.id
-      if (giftWrapSelected && giftWrapVariantId && addedLineItem) {
-        // §15 — metadata-linked to the product line it wraps, the same
-        // convention the cart's own gift-wrap toggle uses, so a wrap
-        // added here is recognized and grouped identically either way.
-        await addGiftWrapToLineItem({
-          giftWrapVariantId,
-          forLineItemId: addedLineItem.id,
+      .catch(() => {
+        setConfirmation(null)
+        showToast({
+          title: "Couldn't add to cart",
+          description: "Please try again.",
+          variant: "danger",
         })
-      }
-
-      // §18, §25 — immediate, persistent confirmation. The inline polite
-      // live region stays; the success toast is gone, because the cart
-      // drawer now slides in on every add and is a strictly stronger
-      // confirmation than a toast (it shows the item, the quantity and
-      // the new subtotal, and persists until dismissed). §B9's rule is
-      // "never a toast alone" — a drawer plus a toast sliding in over it
-      // was two notifications for one action. The failure path below
-      // still toasts, since nothing else reports it.
-      const message = `Added ${quantity} × ${product.title} to your cart.`
-      setConfirmation(message)
-      openDrawer()
-    } catch {
-      showToast({
-        title: "Couldn't add to cart",
-        description: "Please try again.",
-        variant: "danger",
       })
-    } finally {
-      setIsAdding(false)
-    }
   }
 
   return (
@@ -247,7 +248,7 @@ export default function ProductActions({
                       updateOption={setOptionValue}
                       title={option.title ?? ""}
                       data-testid="product-options"
-                      disabled={!!disabled || isAdding}
+                      disabled={!!disabled}
                     />
                   </div>
                 )
@@ -264,7 +265,7 @@ export default function ProductActions({
             quantity={quantity}
             onChange={setQuantity}
             max={maxQuantity}
-            disabled={!!disabled || isAdding}
+            disabled={!!disabled}
           />
         )}
 
@@ -291,12 +292,10 @@ export default function ProductActions({
             !inStock ||
             !selectedVariant ||
             !!disabled ||
-            isAdding ||
             !isValidVariant
           }
           variant="primary"
           className="w-full h-10"
-          isLoading={isAdding}
           data-testid="add-product-button"
         >
           {!selectedVariant && !options
@@ -319,9 +318,8 @@ export default function ProductActions({
           updateOptions={setOptionValue}
           inStock={inStock}
           handleAddToCart={handleAddToCart}
-          isAdding={isAdding}
           show={hasBeenInViewRef.current && !inView}
-          optionsDisabled={!!disabled || isAdding}
+          optionsDisabled={!!disabled}
         />
       </div>
     </>
