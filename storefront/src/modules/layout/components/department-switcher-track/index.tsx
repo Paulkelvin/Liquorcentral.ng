@@ -2,7 +2,32 @@
 
 import { clx } from "@modules/common/components/ui"
 import { usePathname } from "next/navigation"
-import type { ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
+
+/**
+ * Whether a path unambiguously belongs to one department, and which.
+ * `null` means the path itself doesn't say — a product page is the
+ * clearest case: `/products/[handle]` is shared by both catalogs, so
+ * nothing about the URL alone reveals which one this particular product
+ * is. Cart, checkout, account, and search are the same kind of neutral
+ * territory.
+ */
+function departmentFor(pathname: string | null): "food" | "wine" | null {
+  if (!pathname) {
+    return null
+  }
+  if (pathname.includes("/food-central")) {
+    return "food"
+  }
+  if (
+    pathname.includes("/store") ||
+    pathname.includes("/categories") ||
+    pathname.includes("/collections")
+  ) {
+    return "wine"
+  }
+  return null
+}
 
 /**
  * The segmented-control track shared by the desktop department bar and the
@@ -39,6 +64,19 @@ import type { ReactNode } from "react"
  * The slide is genuine: the App Router navigates client-side, so this
  * re-renders with the new `pathname` and the transform animates. Colouring
  * the active control instead would cut between states with no movement.
+ *
+ * **Sticky, not recomputed fresh on every path.** The obvious build reads
+ * `isFoodCentral` straight off `usePathname()` on every render — and that
+ * was itself the bug: `/products/[handle]` is shared by both catalogs, so
+ * landing on a Food Central *product* page (no `/food-central` in the
+ * URL) made the pill slide back to Wine & Spirits, then slide again on
+ * the next real navigation. Paul's own report: "it should just stay on
+ * Food Central." This component is mounted once in the persistent
+ * `(main)` layout and never remounts between page navigations, so a
+ * `useState` here survives across them — the pill only moves on a path
+ * that unambiguously says which department it is (`departmentFor`), and
+ * simply holds its position on neutral ground (a product page, cart,
+ * checkout, account, search) rather than snapping to a default.
  */
 export default function DepartmentSwitcherTrack({
   wineSlot,
@@ -49,9 +87,19 @@ export default function DepartmentSwitcherTrack({
   foodSlot: ReactNode
   className?: string
 }) {
-  // Everywhere that isn't "/food-central" is Wine & Spirits' own territory,
-  // since that is this platform's primary catalog.
-  const isFoodCentral = usePathname()?.includes("/food-central") ?? false
+  const pathname = usePathname()
+  const [department, setDepartment] = useState<"food" | "wine">(
+    () => departmentFor(pathname) ?? "wine"
+  )
+
+  useEffect(() => {
+    const next = departmentFor(pathname)
+    if (next) {
+      setDepartment(next)
+    }
+  }, [pathname])
+
+  const isFoodCentral = department === "food"
 
   return (
     <div

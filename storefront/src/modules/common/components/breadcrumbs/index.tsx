@@ -69,7 +69,7 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
                   truncatesOnMobile
                     ? "hidden shrink-0 items-center gap-x-2 sm:flex"
                     : isLast
-                    ? "flex min-w-0 items-center gap-x-2"
+                    ? "flex min-w-0 flex-1 items-center gap-x-2"
                     : "flex shrink-0 items-center gap-x-2"
                 }
               >
@@ -93,7 +93,19 @@ export default function Breadcrumbs({ segments }: BreadcrumbsProps) {
                     aria-current={isLast ? "location" : undefined}
                     className={
                       isLast
-                        ? "truncate text-text-primary"
+                        ? // `block min-w-0`, not just `truncate` — a `<span>`
+                          // is an inline flex item, and a flex item's default
+                          // min-width is its own *content* size, not zero.
+                          // `truncate` alone (overflow-hidden + ellipsis) was
+                          // therefore never actually engaging: the span kept
+                          // sizing itself to the full untruncated text no
+                          // matter how little room the row had left, which
+                          // is what pushed the whole trail onto a second
+                          // line instead of clipping. `min-w-0` here is what
+                          // lets it shrink below that; `block` is what makes
+                          // `text-overflow: ellipsis` apply to an inline
+                          // element reliably across browsers.
+                          "block min-w-0 truncate text-text-primary"
                         : "text-text-primary"
                     }
                   >

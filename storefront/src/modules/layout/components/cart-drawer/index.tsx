@@ -186,9 +186,13 @@ export default function CartDrawer() {
             transition
             // Never quite the full viewport: a full-width sheet leaves no
             // backdrop to tap, so on a phone the only way out would be
-            // the close button. The 3rem gutter keeps tap-outside-to-
-            // close working at every width.
-            className="flex h-full w-[calc(100vw-3rem)] max-w-md transform flex-col bg-surface-elevated shadow-elevation-3 transition duration-300 ease-out data-[closed]:translate-x-full"
+            // the close button. Widened again on Paul's second pass — 3rem,
+            // then 4.5rem, still read as the drawer taking over the
+            // screen. 7rem gutter leaves a clearly tappable strip of the
+            // page down the left edge without cramping the drawer's own
+            // content — its price/title stacking below `small:` doesn't
+            // depend on this exact width.
+            className="flex h-full w-[calc(100vw-7rem)] max-w-md transform flex-col bg-surface-elevated shadow-elevation-3 transition duration-300 ease-out data-[closed]:translate-x-full"
             data-testid="cart-drawer"
           >
             <header className="flex items-center justify-between gap-3 border-b border-divider px-5 py-4">
