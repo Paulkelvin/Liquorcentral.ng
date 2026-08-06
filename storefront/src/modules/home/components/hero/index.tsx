@@ -145,23 +145,41 @@ export default function Hero() {
       {/* Mobile vertical rhythm is tightened hard (`py-8` / `gap-8` against
           the previous `py-16` / `gap-12`) so the headline is not pushed most
           of a screen down before it is reached. Desktop keeps its generous
-          `py-24`, where the space is doing something. */}
+          `py-24`, where the space is doing something.
+
+          **The text column comes before the image on mobile — reversed
+          from the original stacking.** The photo used to run first, and at
+          full-bleed 5:4 that alone is most of a phone screen, so the "Shop
+          Wine & Spirits" button sat below the fold on first paint: nothing
+          answering the headline was visible without scrolling. Paul's own
+          diagnosis — "the button [needs to be] visible from the very first
+          landing on the page" — is exactly the failure mode a hero exists
+          to prevent. Both columns still carry an explicit `order-*` (1 for
+          text, 2 for image) rather than reordering the JSX itself, so the
+          markup's own reading order — text, then image — now matches the
+          visual order at every width; only the desktop grid's own two-up
+          layout (`small:grid-cols-[...]`) puts them side by side again,
+          which `order` also governs there since neither column sets an
+          explicit `grid-column`. */}
       <div className="ds-container grid grid-cols-1 items-center gap-8 py-8 small:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)] small:gap-16 small:py-24">
-        <div className="order-2 flex flex-col items-center gap-5 text-center small:order-1 small:items-start small:gap-6 small:text-left">
+        <div className="order-1 flex flex-col items-center gap-5 text-center small:items-start small:gap-6 small:text-left">
           {/* Eyebrow. States the platform's single strongest true claim —
               structurally guaranteed by the no-marketplace decision
               (`BUSINESS_RULES.md`), so it can never quietly stop being true.
 
-              **On mobile it sits below the headline** (`order-2`), because
-              above it the badge landed between the photograph and the H1 and
-              read as a divider between them rather than as a claim about the
-              brand — the headline is what the eye should reach first coming
-              off the image. Desktop restores it to the top (`small:order-1`),
-              where it introduces the headline rather than interrupting
-              anything. Every sibling below carries an explicit order for the
-              same reason: once one item is ordered, leaving the rest at the
-              default 0 would float them all above it. */}
-          <span className="order-2 inline-flex items-center gap-2 rounded-radius-full border border-border bg-surface-elevated px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary small:order-1">
+              **Sits above the headline at every width**, the same as
+              desktop always has. It used to be pushed below the H1 on
+              mobile specifically because the image sat *above* this whole
+              column back then — the badge landed between the photograph
+              and the H1 and read as a divider between them rather than as
+              a claim about the brand. Now that the column comes before the
+              image (Paul's direction: the CTA has to be reachable without
+              scrolling past a full-screen photo first), there is nothing
+              above it to divide, so it introduces the headline the same
+              way it already did on desktop. Every sibling below still
+              carries an explicit order — once one item is ordered, leaving
+              the rest at the default 0 would float them all above it. */}
+          <span className="order-1 inline-flex items-center gap-2 rounded-radius-full border border-border bg-surface-elevated px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-secondary">
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-radius-full bg-success" />
             Sold &amp; delivered directly by us
           </span>
@@ -181,7 +199,7 @@ export default function Hero() {
           <Heading
             level="h1"
             display
-            className="order-1 max-w-[24ch] text-balance !text-[30px] font-semibold leading-[1.15] tracking-[-0.03em] text-text-primary xsmall:!text-[34px] small:order-2 small:!text-[42px] small:tracking-[-0.02em] medium:!text-[50px]"
+            className="order-2 max-w-[24ch] text-balance !text-[30px] font-semibold leading-[1.15] tracking-[-0.03em] text-text-primary xsmall:!text-[34px] small:!text-[42px] small:tracking-[-0.02em] medium:!text-[50px]"
           >
             Nigeria&rsquo;s premium wine, spirits &amp; kitchen.
           </Heading>
@@ -240,7 +258,7 @@ export default function Hero() {
           <SocialProof />
         </div>
 
-        <div className="order-1 w-full small:order-2">
+        <div className="order-2 w-full">
           <HeroVisual />
         </div>
       </div>
