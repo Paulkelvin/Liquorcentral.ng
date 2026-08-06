@@ -1,6 +1,7 @@
 import { listCollections } from "@lib/data/collections"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import SectionCTAButton from "@modules/common/components/section-cta-button"
 import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import ProductPreview from "@modules/products/components/product-preview"
@@ -154,6 +155,10 @@ export default async function FeaturedCollection({
             </li>
           ))}
         </ul>
+
+        <SectionCTAButton href={href} data-testid="featured-collection-see-all">
+          See the collection
+        </SectionCTAButton>
       </div>
     </section>
   )

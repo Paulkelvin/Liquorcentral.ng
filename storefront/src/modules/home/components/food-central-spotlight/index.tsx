@@ -2,6 +2,7 @@ import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
 import { Heading, Text } from "@modules/common/components/ui"
+import SectionCTAButton from "@modules/common/components/section-cta-button"
 import SectionLink from "@modules/common/components/section-link"
 import ProductPreview from "@modules/products/components/product-preview"
 import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
@@ -91,19 +92,20 @@ export default async function FoodCentralSpotlight({
         {foodProducts.length === 0 ? (
           <NotTakingOrders title="Today's Menu" />
         ) : (
-          /* **This was a swipeable 1.2-card carousel on a phone, to Paul's
-             own earlier brief, and is now the shared grid.** He reversed it:
-             horizontal scrolling for products is out site-wide and every
-             listing uses the category pages' card. Recorded rather than
-             deleted because the carousel was specified deliberately — the
-             `basis-[78%]` that put the next card half on screen was the
-             scroll affordance, not an accident of sizing.
+          <>
+          {/* **This was a swipeable 1.2-card carousel on a phone, to Paul's
+              own earlier brief, and is now the shared grid.** He reversed it:
+              horizontal scrolling for products is out site-wide and every
+              listing uses the category pages' card. Recorded rather than
+              deleted because the carousel was specified deliberately — the
+              `basis-[78%]` that put the next card half on screen was the
+              scroll affordance, not an accident of sizing.
 
-             Dishes keep everything that made them dishes: `ProductPreview`
-             already renders the prep-time fact as the same overlay pill, and
-             already tints quick-add green for anything carrying
-             `food_details`. Nothing about Food Central's identity depended on
-             a separate card component. */
+              Dishes keep everything that made them dishes: `ProductPreview`
+              already renders the prep-time fact as the same overlay pill, and
+              already tints quick-add green for anything carrying
+              `food_details`. Nothing about Food Central's identity depended on
+              a separate card component. */}
           <ul className={PRODUCT_GRID}>
             {foodProducts.map((product) => (
               <li key={product.id}>
@@ -111,6 +113,11 @@ export default async function FoodCentralSpotlight({
               </li>
             ))}
           </ul>
+
+          <SectionCTAButton href="/food-central" data-testid="todays-menu-see-all">
+            View Food Central
+          </SectionCTAButton>
+          </>
         )}
       </div>
     </section>
