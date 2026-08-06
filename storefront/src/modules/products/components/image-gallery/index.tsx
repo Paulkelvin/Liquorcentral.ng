@@ -31,7 +31,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
     return (
       <div className="flex items-start relative">
         <div className="flex flex-col flex-1 gap-y-4">
-          <Container className="relative aspect-[29/34] w-full overflow-hidden bg-surface flex items-center justify-center">
+          <Container className="relative aspect-[29/34] w-full overflow-hidden !bg-ink-100 flex items-center justify-center">
             <PlaceholderImage size={36} />
           </Container>
         </div>
@@ -49,8 +49,13 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
           full-size image one after another. One large image at a time,
           selected from a thumbnail strip — the zoom lightbox (§6) is
           unchanged, now zooming whichever image is currently active. */}
+      {/* `ink-100`, not `surface` — the same tile every other product
+          image on the site draws on (the grid cards, the homepage rows).
+          Paul's own question: this was the page background colour, so a
+          photo with a lot of negative space around the bottle had no
+          defined edge to sit against — it just read as more white page. */}
       <Container
-        className="relative aspect-[29/34] w-full overflow-hidden bg-surface"
+        className="relative aspect-[29/34] w-full overflow-hidden !bg-ink-100"
         id={activeImage.id}
       >
         {!!activeImage.url && (
@@ -92,7 +97,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
                 aria-label={`Show photo ${index + 1} of ${images.length}`}
                 onClick={() => setActiveIndex(index)}
                 className={
-                  "relative aspect-square w-full overflow-hidden rounded-radius-sm bg-surface border transition-colors " +
+                  "relative aspect-square w-full overflow-hidden rounded-radius-sm !bg-ink-100 border transition-colors " +
                   (isActive
                     ? "border-primary"
                     : "border-border hover:border-text-secondary")

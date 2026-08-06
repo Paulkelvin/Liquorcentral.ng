@@ -80,7 +80,21 @@ export default function QuantityStepper({
   )
 
   return (
-    <div className="flex flex-col gap-1">
+    // `w-fit`: the PDP's call site sits inside a `flex flex-col` column
+    // (product actions) whose default `align-items: stretch` was
+    // stretching this component's own root to the column's full width —
+    // and, one level down, stretching the pill itself the same way, since
+    // it is in turn a flex child of this root. The three buttons don't
+    // grow to fill that width, so they packed to the left inside a pill
+    // whose border kept going: the "+" read as pushed toward the far
+    // right edge of a mostly-empty control. `w-fit` sizes this component
+    // to its own content — the same ~136px the "−" button already draws
+    // at — regardless of the parent's stretch. `self-start` would do the
+    // same for a column parent, but the cart line item's call site sits
+    // in a `flex items-center` *row*, where `self-start` means something
+    // else entirely (top-aligned instead of centred beside the spinner);
+    // `w-fit` is the one fix that is inert in both layouts.
+    <div className="flex w-fit flex-col gap-1">
       <Label htmlFor={inputId} className={hideLabel ? "sr-only" : undefined}>
         Quantity
       </Label>

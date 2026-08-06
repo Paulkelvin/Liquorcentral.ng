@@ -59,7 +59,11 @@ export default async function RelatedProducts({
         <span className="text-body text-text-secondary mb-6">
           Related products
         </span>
-        <p className="text-heading-2 text-text-primary max-w-lg">
+        {/* Was a fixed `text-heading-2` (31px) at every width — this
+            sentence wrapped to three heavy lines on a phone. Same scale
+            step as the product title above it: smaller on mobile, full
+            size from `small:` up. */}
+        <p className="!text-[22px] leading-snug text-text-primary max-w-lg small:!text-[31px] small:leading-[1.2]">
           You might also want to check out these products.
         </p>
       </div>
