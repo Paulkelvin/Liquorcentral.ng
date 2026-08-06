@@ -405,7 +405,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "grilled-tilapia-fried-plantain",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Plated_grilled_fish.jpg",
+    realImageUrl: "/brand/products/dish-grilled-tilapia.webp",
     title: "Grilled Tilapia with Fried Plantain",
     description: "Whole grilled tilapia fish with a side of sweet fried plantain and pepper sauce.",
     price: 8500,
@@ -423,7 +423,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "chicken-shawarma-wrap",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/40/Shawarma.png",
+    realImageUrl: "/brand/products/dish-chicken-shawarma.webp",
     title: "Chicken Shawarma Wrap",
     description: "Grilled chicken shawarma wrapped in pita with garlic sauce, lettuce, and pickles.",
     price: 4500,
@@ -685,7 +685,7 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "nigerian-meat-pie",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9b/Homemade_meat_pie.jpg",
+    realImageUrl: "/brand/products/dish-meat-pie.webp",
     title: "Nigerian Meat Pie",
     description: "Flaky pastry filled with seasoned minced meat, potato, and carrot.",
     price: 3000,
@@ -727,6 +727,45 @@ const PRODUCTS: SeedProduct[] = [
       spice_level: 1,
       prep_time_minutes: 25,
       portion_size: "Single portion",
+    },
+  },
+
+  {
+    handle: "nkwobi-spiced-cow-foot",
+    realImageUrl: "/brand/products/dish-nkwobi.webp",
+    title: "Nkwobi (Spiced Cow Foot)",
+    description:
+      "Cow foot simmered in a thick palm-oil pepper sauce, finished with sliced onion and scent leaf.",
+    price: 6500,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Cow foot", "Palm oil", "Ehu", "Potash", "Onion", "Scent leaf", "Scotch bonnet"],
+      allergens: [],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 4,
+      prep_time_minutes: 45,
+      portion_size: "1 bowl, serves 1",
+    },
+  },
+  {
+    handle: "goat-meat-pepper-soup",
+    realImageUrl: "/brand/products/dish-pepper-soup.webp",
+    title: "Goat Meat Pepper Soup",
+    description:
+      "A peppery, aromatic broth with tender goat meat, onion and scent leaf — served hot.",
+    price: 6000,
+    optionTitle: "Portion",
+    optionValue: "Regular",
+    food_details: {
+      ingredients: ["Goat meat", "Pepper soup spice", "Onion", "Scent leaf", "Scotch bonnet"],
+      allergens: [],
+      dietary_flags: [],
+      safety_data_verified: false,
+      spice_level: 4,
+      prep_time_minutes: 40,
+      portion_size: "1 bowl, serves 1",
     },
   },
 
