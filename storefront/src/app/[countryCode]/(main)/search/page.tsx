@@ -92,7 +92,7 @@ export default async function SearchPage(props: Props) {
                 showCatalogBadge
                 countryCode={params.countryCode}
                 itemNoun="result"
-                emptyStateFallbackHref="/categories"
+                emptyStateFallbackHref="/store"  // no route exists for a bare /categories index
                 emptyStateTitle={`No results for "${query}"`}
                 emptyStateDescription="Try a different search term, or browse Wine & Spirits or Food Central from the navigation."
                 emptyStateActionLabel="Browse Wine & Spirits"

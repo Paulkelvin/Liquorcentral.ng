@@ -52,7 +52,12 @@ export default function CategoryTemplate({
 
   const breadcrumbSegments = [
     { label: "Home", href: "/" },
-    { label: "Wine & Spirits", href: "/categories" },
+    // There is no route for a bare `/categories` index — only
+    // `/categories/[handle]` exists — so this dead-ended in a 404 for
+    // every category page's breadcrumb. `/store` is the site's
+    // established "everything, unfiltered" destination (the same one
+    // "Shop by category"'s own "View all" link uses on the homepage).
+    { label: "Wine & Spirits", href: "/store" },
     ...parents
       .slice()
       .reverse()
@@ -153,7 +158,7 @@ export default function CategoryTemplate({
             categoryId={category.id}
             countryCode={countryCode}
             optionValueIds={optionValueIds}
-            emptyStateFallbackHref="/categories"
+            emptyStateFallbackHref="/store"  // no route exists for a bare /categories index
           />
         </Suspense>
       </div>

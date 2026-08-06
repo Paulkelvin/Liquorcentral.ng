@@ -50,7 +50,7 @@ export default function CollectionTemplate({
             collectionId={collection.id}
             countryCode={countryCode}
             optionValueIds={optionValueIds}
-            emptyStateFallbackHref="/categories"
+            emptyStateFallbackHref="/store"  // no route exists for a bare /categories index
           />
         </Suspense>
       </div>
