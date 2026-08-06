@@ -2,6 +2,7 @@
 
 import { addGiftWrapToLineItem, addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
+import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
@@ -222,6 +223,13 @@ export default function ProductActions({
             forLineItemId: addedLineItem.id,
           })
         }
+      })
+      .then(() => {
+        // Tell any other open tab this cart just changed — see
+        // cart-broadcast.ts's own comment for the multi-tab bug this
+        // closes (a stale quantity read in a second tab silently
+        // overwriting what this tab just did).
+        broadcastCartChange()
       })
       .catch(() => {
         setConfirmation(null)

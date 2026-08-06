@@ -2,6 +2,7 @@
 
 import { addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
+import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { clx } from "@modules/common/components/ui"
 import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -117,6 +118,9 @@ export default function PairingCarousel({
         for (const variantId of slide.variantIds) {
           await addToCart({ variantId, quantity: 1, countryCode })
         }
+        // Tell any other open tab this cart just changed — see
+        // cart-broadcast.ts's own comment for the multi-tab bug this closes.
+        broadcastCartChange()
         setStatus({ slideId: slide.id, state: "added" })
         window.setTimeout(() => setStatus(null), 2500)
       } catch {

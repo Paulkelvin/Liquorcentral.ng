@@ -1,12 +1,18 @@
 "use client"
 
 import { deleteLineItem, updateLineItem } from "@lib/data/cart"
+import {
+  broadcastCartChange,
+  onCartChangedInAnotherTab,
+} from "@lib/util/cart-broadcast"
 import { HttpTypes } from "@medusajs/types"
+import { useRouter } from "next/navigation"
 import {
   createContext,
   startTransition,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useOptimistic,
   useState,
@@ -102,9 +108,20 @@ export function CartProvider({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [pendingCount, setPendingCount] = useState(0)
   const [cart, applyOptimistic] = useOptimistic(initialCart, reduceOptimistic)
+  const router = useRouter()
 
   const openDrawer = useCallback(() => setIsDrawerOpen(true), [])
   const closeDrawer = useCallback(() => setIsDrawerOpen(false), [])
+
+  // Cross-tab sync — see cart-broadcast.ts's own comment for the bug this
+  // closes. A *different* tab changing the cart (add-to-cart, quantity,
+  // remove — any of them, including the ones that never touch this
+  // context, like the PDP's add-to-cart button) marks the shared
+  // localStorage key; this tab hears it via `storage` and refreshes the
+  // server data, which re-fetches the real cart and flows back down as
+  // `initialCart` — reconciling this tab the same way its own optimistic
+  // state already reconciles against the server after its own mutations.
+  useEffect(() => onCartChangedInAnotherTab(() => router.refresh()), [router])
 
   /**
    * Every mutation follows the same shape: paint the change, run the
@@ -124,6 +141,9 @@ export function CartProvider({
         applyOptimistic(action)
         try {
           await run()
+          // Tell any other open tab this cart just changed — see the
+          // cross-tab sync note above `useEffect`.
+          broadcastCartChange()
         } catch (error) {
           // The optimistic value itself needs no rollback of its own —
           // React drops it when the transition ends, so the UI snaps

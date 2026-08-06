@@ -2,6 +2,7 @@
 
 import { addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
+import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
@@ -190,6 +191,9 @@ export default function QuickAddButton({
         quantity: 1,
         countryCode,
       })
+      // Tell any other open tab this cart just changed — see
+      // cart-broadcast.ts's own comment for the multi-tab bug this closes.
+      broadcastCartChange()
       window.setTimeout(() => setStatus("idle"), 2000)
     } catch {
       setStatus("error")

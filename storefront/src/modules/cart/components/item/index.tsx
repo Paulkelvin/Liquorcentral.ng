@@ -3,6 +3,7 @@
 import { Text, Checkbox, clx } from "@modules/common/components/ui"
 import { addGiftWrapToLineItem, deleteLineItem } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
+import { broadcastCartChange } from "@lib/util/cart-broadcast"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -74,6 +75,9 @@ const Item = ({
       } else if (!checked && giftWrapItem) {
         await deleteLineItem(giftWrapItem.id)
       }
+      // Tell any other open tab this cart just changed — see
+      // cart-broadcast.ts's own comment for the multi-tab bug this closes.
+      broadcastCartChange()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't update gift wrap")
     } finally {
