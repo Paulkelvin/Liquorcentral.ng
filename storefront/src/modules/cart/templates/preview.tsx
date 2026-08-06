@@ -65,7 +65,17 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
           <ul data-testid="items-table" className="divide-y divide-divider">
             {lines
               .slice()
-              .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
+              // Newest first, `id` as a deterministic tiebreak — the
+              // previous comparator never returned `0` for a tie (equal
+              // or missing `created_at`, common for items added close
+              // together), which breaks `Array.sort`'s stability
+              // contract and let ties visibly swap places on every
+              // re-render (e.g. a "+" tap rebuilding `cart.items`).
+              .sort((a, b) => {
+                const diff =
+                  String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""))
+                return diff !== 0 ? diff : a.id < b.id ? -1 : a.id > b.id ? 1 : 0
+              })
               .map((item) => (
                 <Item
                   key={item.id}

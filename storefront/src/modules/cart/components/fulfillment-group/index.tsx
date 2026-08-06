@@ -59,7 +59,15 @@ const FulfillmentGroup = ({
       <ul className="flex flex-col gap-4">
         {items
           .slice()
-          .sort((a, b) => ((a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1))
+          // Newest first, `id` as a deterministic tiebreak — see
+          // `cart/templates/preview.tsx`'s identical fix for why the
+          // previous comparator (never returning `0` for a tie) let
+          // items visibly swap places on every re-render.
+          .sort((a, b) => {
+            const diff =
+              String(b.created_at ?? "").localeCompare(String(a.created_at ?? ""))
+            return diff !== 0 ? diff : a.id < b.id ? -1 : a.id > b.id ? 1 : 0
+          })
           .map((item) => (
             <Item
               key={item.id}
