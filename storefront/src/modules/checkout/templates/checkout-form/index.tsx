@@ -7,8 +7,8 @@ import Addresses from "@modules/checkout/components/addresses"
 import DeliveryEligibilityConflict from "@modules/checkout/components/delivery-eligibility-conflict"
 import Payment from "@modules/checkout/components/payment"
 import ProgressSteps from "@modules/checkout/components/progress-steps"
-import Review from "@modules/checkout/components/review"
 import Shipping from "@modules/checkout/components/shipping"
+import StepGate from "@modules/checkout/components/step-gate"
 
 export default async function CheckoutForm({
   cart,
@@ -49,15 +49,28 @@ export default async function CheckoutForm({
 
       <ProgressSteps />
 
-      <Addresses cart={cart} customer={customer} />
+      {/* Each step's card is hidden entirely until the customer actually
+          reaches it — see StepGate's own comment for the "the window"
+          complaint this replaces (every step, including ones nowhere
+          near yet, used to always render its own card). Address is
+          step 0, so it's always shown once there's a `?step=` at all. */}
+      <StepGate step="address">
+        <Addresses cart={cart} customer={customer} />
+      </StepGate>
 
       {hasConflict && <DeliveryEligibilityConflict />}
 
-      <Shipping cart={cart} availableShippingMethods={shippingMethods} />
+      <StepGate step="delivery">
+        <Shipping cart={cart} availableShippingMethods={shippingMethods} />
+      </StepGate>
 
-      <Payment cart={cart} availablePaymentMethods={paymentMethods} />
-
-      <Review cart={cart} hasDeliveryConflict={hasConflict} />
+      <StepGate step="payment">
+        <Payment
+          cart={cart}
+          availablePaymentMethods={paymentMethods}
+          hasDeliveryConflict={hasConflict}
+        />
+      </StepGate>
     </div>
   )
 }

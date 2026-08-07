@@ -305,7 +305,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             // rather than a form. Hairline `divider` rather than the
             // heavier `border` step, matching the pills and the sort
             // control.
-            "flex min-h-[40px] w-full rounded-radius-md border bg-surface-elevated px-3 py-2 text-[14px] text-text-primary placeholder:text-text-muted",
+            //
+            // `text-[16px]` below `small:` — iOS Safari zooms the whole
+            // page in on focus for any input under 16px, which is exactly
+            // what was happening on every checkout field on a phone
+            // ("I don't want them zoomed out... even when we click on
+            // input"). 16px is the documented threshold; below `small:`
+            // (1024px, effectively "not a phone") the original 14px
+            // returns, since desktop never triggers this and the tighter
+            // size fits the form's density better there.
+            "flex min-h-[40px] w-full rounded-radius-md border bg-surface-elevated px-3 py-2 text-[16px] small:text-[14px] text-text-primary placeholder:text-text-muted",
             "transition-[color,background-color,border-color,box-shadow] duration-standard ease-in-out",
             // Ink focus rather than the accent halo used elsewhere: on a
             // dense form the red glow read as an error state on every
