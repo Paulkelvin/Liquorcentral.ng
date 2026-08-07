@@ -141,20 +141,28 @@ const Addresses = ({
                   </Text>
                 </div>
 
-                <div
+                {/* Collapsed by default — same native `<details>` pattern
+                    already used in cart/templates/items.tsx for "Why is
+                    my cart split?". Phone and email sat exposed here on
+                    every visit to the Payment step; tucking them behind
+                    a disclosure the customer opens on purpose is a small
+                    privacy courtesy on a shared or public screen, not a
+                    functional change — nothing here is required to
+                    complete checkout. */}
+                <details
                   className="flex flex-col w-full small:w-1/3"
                   data-testid="shipping-contact-summary"
                 >
-                  <Text className="txt-medium-plus text-text-primary mb-1">
+                  <summary className="txt-medium-plus text-text-primary mb-1 cursor-pointer select-none">
                     Delivery contact
-                  </Text>
+                  </summary>
                   <Text className="txt-medium text-text-secondary">
                     {cart.shipping_address.phone}
                   </Text>
                   <Text className="txt-medium text-text-secondary break-all">
                     {cart.email}
                   </Text>
-                </div>
+                </details>
 
                 <div
                   className="flex flex-col w-full small:w-1/3"
