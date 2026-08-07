@@ -27,16 +27,22 @@ export default function PostCard({
       <LocalizedClientLink
         href={`/blog/${post.slug}`}
         className={clx(
-          // The card itself is framed — a gold hairline plus a matting
-          // margin around the image and copy, not the image alone — so
-          // the grid reads as bounded cards rather than photos floating
-          // over text. Brightens on hover along with the elevation.
-          "flex h-full rounded-radius-md border border-accent/25 bg-surface p-4 shadow-elevation-1 transition-[border-color,box-shadow] duration-standard ease-in-out hover:border-accent/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
+          // The frame sits on the card, not around the photo — the image
+          // runs full-bleed to the card's own top and side edges (no
+          // padding, no matting), only the copy below gets breathing
+          // room. `overflow-hidden` is load-bearing: it's what clips the
+          // image's square bottom corners to the card's own rounded
+          // ones instead of them poking past it.
+          "flex h-full overflow-hidden rounded-radius-md border border-accent/25 bg-surface shadow-elevation-1 transition-[border-color,box-shadow] duration-standard ease-in-out hover:border-accent/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
           // The lead reads as a magazine opener: image and headline side
           // by side from `small:` up, stacked like any other card below.
+          // `small:gap-8` only matters in the row layout — the stacked
+          // layout gets its image-to-copy spacing from the text block's
+          // own `pt-4` instead, since there's no padding on this
+          // container to fall back on anymore.
           lead
-            ? "flex-col gap-6 small:flex-row small:items-center small:gap-10 small:p-6"
-            : "flex-col gap-4"
+            ? "flex-col small:flex-row small:items-stretch small:gap-8"
+            : "flex-col"
         )}
         data-testid="blog-post-card"
       >
@@ -48,15 +54,30 @@ export default function PostCard({
               ? "(min-width: 1024px) 55vw, 100vw"
               : "(min-width: 1024px) 33vw, 100vw"
           }
+          // Rounded only where the image actually meets a card corner:
+          // top corners when stacked, left corners once the lead lays
+          // out as a row — see PostCover's own comment on why this
+          // can't just be the component's unconditional default.
+          rounded={
+            lead
+              ? "rounded-t-radius-md small:rounded-l-radius-md small:rounded-tr-none"
+              : "rounded-t-radius-md"
+          }
           className={clx(
-            lead ? "aspect-[4/3] small:w-[55%] small:shrink-0" : "aspect-[4/3]"
+            "shrink-0",
+            lead ? "aspect-[4/3] small:aspect-auto small:w-[55%]" : "aspect-[4/3]"
           )}
         />
 
         <div
           className={clx(
-            "flex flex-1 flex-col gap-2",
-            lead && "small:max-w-[38ch]"
+            "flex flex-1 flex-col gap-2 px-4 pb-4 pt-4",
+            // At small+ the lead lays out as a row (image left, copy
+            // right): the gap that used to separate image from text
+            // when stacked is now handled by this padding instead, so
+            // it needs to reset the left side (the row's own gap
+            // already spaces it from the image) and restore top.
+            lead && "small:max-w-[38ch] small:px-0 small:py-6 small:pr-6"
           )}
         >
           {post.category && (

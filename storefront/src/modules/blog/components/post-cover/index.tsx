@@ -19,6 +19,7 @@ export default function PostCover({
   className,
   sizes = "(min-width: 1024px) 33vw, 100vw",
   hideWhenEmpty = false,
+  rounded = "rounded-radius-md",
 }: {
   post: Pick<PostCard, "title" | "coverUrl" | "coverAlt" | "coverLqip" | "category">
   priority?: boolean
@@ -31,6 +32,16 @@ export default function PostCover({
    * headline and the first paragraph only delays the reading.
    */
   hideWhenEmpty?: boolean
+  /**
+   * A prop rather than baked into the base classes: PostCard sits the
+   * cover flush inside its own bordered frame (no padding — full-bleed
+   * per Paul's direction), so only the edges that land on the card's
+   * actual corners should be rounded. Rounding all four unconditionally
+   * would put two stray rounded notches where the image's bottom meets
+   * the card's straight interior. The standalone article-page hero has
+   * no surrounding frame, so it keeps the default: rounded all over.
+   */
+  rounded?: string
 }) {
   if (!post.coverUrl && hideWhenEmpty) {
     return null
@@ -39,7 +50,8 @@ export default function PostCover({
   return (
     <div
       className={clx(
-        "relative isolate overflow-hidden rounded-radius-md bg-surface-warm",
+        "relative isolate overflow-hidden bg-surface-warm",
+        rounded,
         className
       )}
     >
