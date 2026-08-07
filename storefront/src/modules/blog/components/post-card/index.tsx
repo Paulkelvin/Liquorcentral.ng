@@ -56,7 +56,14 @@ export default function PostCard({
           )}
         >
           {post.category && (
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-text-muted">
+              {/* A gold mark, not gold text: `--color-accent` at 11px on
+                  the card's light surface measures well under AA's 4.5:1
+                  (editorial-card's gold kicker only clears AA because it
+                  sits on an 86%-black photo scrim, not a plain surface).
+                  A decorative dot carries the same accent without putting
+                  copy at a contrast that fails. */}
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
               {post.category.title}
             </span>
           )}
