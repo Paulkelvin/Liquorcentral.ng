@@ -27,13 +27,19 @@ export default function PostCard({
       <LocalizedClientLink
         href={`/blog/${post.slug}`}
         className={clx(
-          // The frame sits on the card, not around the photo — the image
-          // runs full-bleed to the card's own top and side edges (no
-          // padding, no matting), only the copy below gets breathing
-          // room. `overflow-hidden` is load-bearing: it's what clips the
-          // image's square bottom corners to the card's own rounded
-          // ones instead of them poking past it.
-          "flex h-full overflow-hidden rounded-radius-md border border-accent/25 bg-surface shadow-elevation-1 transition-[border-color,box-shadow] duration-standard ease-in-out hover:border-accent/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
+          // No resting border. A gold frame around every card, all the
+          // time, was the opposite of restrained — gold is supposed to
+          // mark a single curated moment (see `curated-mark/index.tsx`'s
+          // own rule), not outline an entire grid of cards, and Paul's
+          // own read ("too bold... try to make it easy and smooth")
+          // called that out directly. A plain, borderless card sitting on
+          // its own shadow is exactly how the product cards elsewhere on
+          // this site already read — this just brings the journal in
+          // line with that, rather than inventing a heavier treatment
+          // just for itself. `overflow-hidden` is still load-bearing: it
+          // clips the image's square bottom corners to the card's own
+          // rounded ones instead of them poking past it.
+          "flex h-full overflow-hidden rounded-radius-md bg-surface shadow-elevation-1 transition-shadow duration-standard ease-in-out hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
           // The lead reads as a magazine opener: image and headline side
           // by side from `small:` up, stacked like any other card below.
           // `small:gap-8` only matters in the row layout — the stacked

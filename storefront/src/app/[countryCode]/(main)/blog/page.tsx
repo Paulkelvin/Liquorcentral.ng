@@ -21,10 +21,15 @@ export default async function BlogIndexPage() {
   const [lead, ...rest] = posts
 
   return (
-    <div className="py-10 small:py-16">
+    <div className="pb-10 small:pb-16">
       {/* The masthead is set on the warm sand surface and bleeds full
           width, so the journal announces itself as a different room in
-          the same house before a single card is read. */}
+          the same house before a single card is read. No top padding on
+          this outer wrapper on purpose — the masthead's own background
+          is what should meet the nav directly, not a band of plain page
+          background sitting between them (Paul: "I don't want any space
+          there"). The masthead's own `py-12`/`py-20` already carries the
+          internal breathing room. */}
       <header className="border-y border-divider bg-surface-warm py-12 small:py-20">
         <div className="ds-container">
           <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-text-muted">
