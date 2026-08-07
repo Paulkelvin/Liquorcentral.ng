@@ -3,6 +3,7 @@
 import { addGiftWrapToLineItem, addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
 import { useIntersection } from "@lib/hooks/use-in-view"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Text } from "@modules/common/components/ui"
@@ -227,7 +228,11 @@ export default function ProductActions({
       title: selectedVariant.title ?? product.title,
       product_title: product.title,
       product_handle: product.handle,
-      thumbnail: product.thumbnail,
+      // demo-product-images.ts's own override — without this the
+      // optimistic line flashed the real (currently mismatched-brand)
+      // `product.thumbnail` for a moment before settling on the demo
+      // image the cart-item components apply once the server cart lands.
+      thumbnail: demoImageFor(product.handle)?.src ?? product.thumbnail,
       variant: selectedVariant,
       unit_price: unitPrice,
       total: unitPrice * quantity,

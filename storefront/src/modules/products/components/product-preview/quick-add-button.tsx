@@ -2,6 +2,7 @@
 
 import { addToCart } from "@lib/data/cart"
 import { useCart } from "@lib/context/cart-context"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { clx } from "@modules/common/components/ui"
@@ -195,7 +196,9 @@ export default function QuickAddButton({
       title: singleVariant.title ?? product.title,
       product_title: product.title,
       product_handle: product.handle,
-      thumbnail: product.thumbnail,
+      // demo-product-images.ts's own override — see product-actions'
+      // identical fix for why the optimistic line needs it too.
+      thumbnail: demoImageFor(product.handle)?.src ?? product.thumbnail,
       variant: singleVariant,
       unit_price: unitPrice,
       total: unitPrice,

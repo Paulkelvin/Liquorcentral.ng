@@ -4,6 +4,7 @@ import { Text, Checkbox, clx } from "@modules/common/components/ui"
 import { addGiftWrapToLineItem, deleteLineItem } from "@lib/data/cart"
 import { useOptionalCart } from "@lib/context/cart-context"
 import { broadcastCartChange } from "@lib/util/cart-broadcast"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -114,6 +115,15 @@ const Item = ({
     </>
   )
 
+  // demo-product-images.ts's own override — see that file's comment.
+  // The listing card and the PDP both already show this in place of the
+  // real (currently mismatched-brand) `product.thumbnail`; the cart was
+  // the one place still falling through to the real image, so a product
+  // shown with the demo bottle everywhere else suddenly turned into a
+  // different-looking bottle the moment it landed in the cart — "I see a
+  // different product... image comes wrong sometimes."
+  const demo = demoImageFor(item.product_handle)
+
   const thumbnail = (
     <LocalizedClientLink
       href={`/products/${item.product_handle}`}
@@ -124,10 +134,10 @@ const Item = ({
       })}
     >
       <Thumbnail
-        thumbnail={item.thumbnail}
+        thumbnail={demo?.src ?? item.thumbnail}
         images={item.variant?.product?.images}
         size="square"
-        alt={item.title || item.product_title || "Product photo"}
+        alt={demo?.alt ?? item.title ?? item.product_title ?? "Product photo"}
       />
     </LocalizedClientLink>
   )

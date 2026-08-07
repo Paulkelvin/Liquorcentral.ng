@@ -14,6 +14,7 @@ import {
   isFoodCentralItem,
   splitGiftWrapLines,
 } from "@lib/util/cart-fulfillment"
+import { demoImageFor } from "@lib/util/demo-product-images"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -44,7 +45,14 @@ export default function CartDrawer() {
   const currencyCode = cart?.currency_code ?? "ngn"
   const isEmpty = productLines.length === 0
 
-  const renderLine = (item: HttpTypes.StoreCartLineItem) => (
+  const renderLine = (item: HttpTypes.StoreCartLineItem) => {
+    // demo-product-images.ts's own override — see cart/components/item's
+    // identical fix for why the drawer needs it too: without this, a
+    // product shown with the demo bottle on the card/PDP turned into a
+    // different-looking bottle the moment it landed here.
+    const demo = demoImageFor(item.product_handle)
+
+    return (
     <li key={item.id} className="flex gap-4 py-5" data-testid="cart-item">
       {/* `self-stretch` + a fixed width, rather than a fixed square: the
           photo then spans the full height of the title/variant/price stack
@@ -57,11 +65,11 @@ export default function CartDrawer() {
         aria-label={`View ${item.product_title || item.title || "product"}`}
       >
         <Thumbnail
-          thumbnail={item.thumbnail}
+          thumbnail={demo?.src ?? item.thumbnail}
           images={item.variant?.product?.images}
           size="square"
           className="!h-full"
-          alt={item.title || item.product_title || "Product photo"}
+          alt={demo?.alt ?? item.title ?? item.product_title ?? "Product photo"}
         />
       </LocalizedClientLink>
 
@@ -148,7 +156,8 @@ export default function CartDrawer() {
         </div>
       </div>
     </li>
-  )
+    )
+  }
 
   const renderGroup = (
     title: string,
