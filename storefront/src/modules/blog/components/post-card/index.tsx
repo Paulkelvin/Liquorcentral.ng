@@ -27,11 +27,15 @@ export default function PostCard({
       <LocalizedClientLink
         href={`/blog/${post.slug}`}
         className={clx(
-          "flex h-full rounded-radius-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
+          // The card itself is framed — a gold hairline plus a matting
+          // margin around the image and copy, not the image alone — so
+          // the grid reads as bounded cards rather than photos floating
+          // over text. Brightens on hover along with the elevation.
+          "flex h-full rounded-radius-md border border-accent/25 bg-surface p-4 shadow-elevation-1 transition-[border-color,box-shadow] duration-standard ease-in-out hover:border-accent/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
           // The lead reads as a magazine opener: image and headline side
           // by side from `small:` up, stacked like any other card below.
           lead
-            ? "flex-col gap-6 small:flex-row small:items-center small:gap-10"
+            ? "flex-col gap-6 small:flex-row small:items-center small:gap-10 small:p-6"
             : "flex-col gap-4"
         )}
         data-testid="blog-post-card"

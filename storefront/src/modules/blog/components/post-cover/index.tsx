@@ -39,11 +39,7 @@ export default function PostCover({
   return (
     <div
       className={clx(
-        // A hairline gold frame around every cover — the journal's one
-        // recurring gold moment, not just the fallback's accent dash.
-        // Border, not ring: a ring needs an offset color to sit against,
-        // which the lead card's transparent gutter doesn't have.
-        "relative isolate overflow-hidden rounded-radius-md bg-surface-warm border border-accent/30 shadow-elevation-1 transition-[border-color,box-shadow] duration-standard ease-in-out group-hover:border-accent/70 group-hover:shadow-elevation-2",
+        "relative isolate overflow-hidden rounded-radius-md bg-surface-warm",
         className
       )}
     >
