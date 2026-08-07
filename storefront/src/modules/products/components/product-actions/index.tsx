@@ -222,6 +222,16 @@ export default function ProductActions({
     const unitOriginalPrice =
       selectedVariant.calculated_price?.original_amount ?? unitPrice
 
+    // A real timestamp, not left undefined — every cart list (drawer,
+    // /cart page, checkout summary) sorts by `created_at` to keep items
+    // in a fixed order, and an undefined value was sorting as the
+    // *oldest* possible item (empty string), landing this line at the
+    // opposite end from where the real server item lands once it
+    // settles a moment later. That end-to-end jump is the "added item
+    // jumps around" bug — giving it "now" up front means it's already
+    // sitting where the settled item will be.
+    const now = new Date().toISOString()
+
     const optimisticItem = {
       id: `optimistic-${selectedVariant.id}-${Date.now()}`,
       quantity,
@@ -237,7 +247,9 @@ export default function ProductActions({
       unit_price: unitPrice,
       total: unitPrice * quantity,
       original_total: unitOriginalPrice * quantity,
-    } as HttpTypes.StoreCartLineItem
+      created_at: now,
+      updated_at: now,
+    } as unknown as HttpTypes.StoreCartLineItem
 
     addItem(
       optimisticItem,

@@ -14,6 +14,7 @@ import Nav from "@modules/layout/templates/nav"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
 import AgeGate from "@modules/home/components/age-gate"
 import { AGE_GATE_COOKIE_NAME } from "@modules/home/components/age-gate/constants"
+import ScrollToTop from "@modules/layout/components/scroll-to-top"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -59,6 +60,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
     // add-to-cart button on the page below all read from this one
     // provider, so they can never disagree about what is in the cart.
     <CartProvider initialCart={cart} standardDeliveryFee={standardDeliveryFee}>
+      <ScrollToTop />
       {/* Skip-to-content link (DESIGN_SYSTEM.md §B11 / WCAG 2.4.1) —
           visually hidden until keyboard-focused. */}
       <a href="#main-content" className="skip-link">

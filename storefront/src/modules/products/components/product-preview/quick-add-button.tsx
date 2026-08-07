@@ -190,6 +190,12 @@ export default function QuickAddButton({
     const unitOriginalPrice =
       singleVariant.calculated_price?.original_amount ?? unitPrice
 
+    // See product-actions' identical fix: an undefined `created_at`
+    // sorted this line as the *oldest* item in every cart list, then it
+    // jumped to wherever the real, freshly-timestamped item belongs once
+    // the server settles — "now" up front means it's already there.
+    const now = new Date().toISOString()
+
     const optimisticItem = {
       id: `optimistic-${singleVariant.id}-${Date.now()}`,
       quantity: 1,
@@ -203,7 +209,9 @@ export default function QuickAddButton({
       unit_price: unitPrice,
       total: unitPrice,
       original_total: unitOriginalPrice,
-    } as HttpTypes.StoreCartLineItem
+      created_at: now,
+      updated_at: now,
+    } as unknown as HttpTypes.StoreCartLineItem
 
     addItem(
       optimisticItem,

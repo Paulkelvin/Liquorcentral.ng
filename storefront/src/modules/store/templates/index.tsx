@@ -1,9 +1,9 @@
 import { Suspense } from "react"
 
-import { listCategories } from "@lib/data/categories"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import RefinementList from "@modules/store/components/refinement-list"
+import CategoriesSidebar from "@modules/store/components/refinement-list/categories-sidebar"
+import RefinementListSkeleton from "@modules/store/components/refinement-list/skeleton"
 import SortProducts, {
   SortOptions,
 } from "@modules/store/components/refinement-list/sort-products"
@@ -24,21 +24,17 @@ const StoreTemplate = async ({
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "featured"
 
-  // Fetched here, server-side, rather than by RefinementList itself — see
-  // that component's own comment on the client-side fetch this replaces.
-  const categories = await listCategories({
-    fields: "handle,name,parent_category_id",
-    limit: 100,
-  })
-    .then((cats) => cats.filter((c) => !c.parent_category_id))
-    .catch(() => [])
-
   return (
     <div
       className="flex flex-col gap-6 small:flex-row small:items-start small:gap-10 py-6 ds-container"
       data-testid="category-container"
     >
-      <RefinementList categories={categories} />
+      {/* Its own boundary — see CategoriesSidebar's own comment for why
+          this can't share the grid's Suspense (or worse, block on
+          nothing at all) any longer. */}
+      <Suspense fallback={<RefinementListSkeleton />}>
+        <CategoriesSidebar />
+      </Suspense>
       <div className="w-full min-w-0">
         {/* Title left, sort right, on one baseline. */}
         <div className="mb-3 flex items-center justify-between gap-3">

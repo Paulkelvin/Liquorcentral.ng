@@ -181,7 +181,27 @@ export default function CartDrawer() {
         <h3 className="text-[11px] font-semibold uppercase tracking-[0.05em] text-text-muted">
           {title}
         </h3>
-        <ul className="divide-y divide-divider">{lines.map(renderLine)}</ul>
+        <ul className="divide-y divide-divider">
+          {lines
+            .slice()
+            // Same "newest first, `id` as a deterministic tiebreak" sort
+            // as fulfillment-group/index.tsx and cart/templates/preview.tsx
+            // — this was the one cart surface still rendering raw array
+            // order, which is exactly what let a line's position drift
+            // between the optimistic add and the settled cart (the array
+            // order the two arrive in isn't guaranteed to match). All
+            // three surfaces now agree on the same order from a fixed
+            // field, so a quantity change never moves a line, and an add
+            // lands in its final position immediately rather than
+            // appearing to jump there.
+            .sort((a, b) => {
+              const diff = String(b.created_at ?? "").localeCompare(
+                String(a.created_at ?? "")
+              )
+              return diff !== 0 ? diff : a.id < b.id ? -1 : a.id > b.id ? 1 : 0
+            })
+            .map(renderLine)}
+        </ul>
       </section>
     )
   }
