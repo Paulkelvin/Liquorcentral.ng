@@ -7,6 +7,7 @@ import FeaturedCollection from "@modules/home/components/featured-collection"
 import PairingBanner from "@modules/home/components/pairing-banner"
 import FoodCentralSpotlight from "@modules/home/components/food-central-spotlight"
 import ReturningCustomerStrip from "@modules/home/components/returning-customer-strip"
+import JournalStrip from "@modules/home/components/journal-strip"
 
 export const metadata: Metadata = {
   title: "LiquorCentral — Nigeria's Premium Wine, Spirits & Food Central",
@@ -59,6 +60,13 @@ export default async function Home({ params }: Props) {
           both catalogs in a single action. */}
       <PairingBanner countryCode={countryCode} />
       <FoodCentralSpotlight countryCode={countryCode} />
+      </Suspense>
+      {/* Editorial before the returning-customer prompt: it earns trust,
+          which is what makes the prompt after it worth answering. Its own
+          boundary, so a Sanity outage cannot blank the commerce sections
+          above it (§21). */}
+      <Suspense fallback={null}>
+        <JournalStrip />
       </Suspense>
       <Suspense fallback={null}>
         <ReturningCustomerStrip />

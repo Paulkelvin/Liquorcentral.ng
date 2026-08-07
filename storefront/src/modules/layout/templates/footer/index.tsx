@@ -17,7 +17,10 @@ const FOOD_CENTRAL_LINKS = [
   { label: "Pickup", href: "/food-central/pickup" },
 ];
 
-const COMPANY_LINKS = [{ label: "About", href: "/about" }];
+const COMPANY_LINKS = [
+  { label: "About", href: "/about" },
+  { label: "Journal", href: "/blog" },
+];
 const SUPPORT_LINKS = [{ label: "Delivery & Returns", href: "/support" }];
 const LEGAL_LINKS = [{ label: "Legal & Compliance", href: "/legal" }];
 

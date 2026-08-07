@@ -39,6 +39,12 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.s3.*.amazonaws.com",
       },
+      // Sanity's image CDN — cover images and in-article images for the
+      // journal and the About page.
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
       {
         protocol: "https",
         hostname: "*.s3.amazonaws.com",
