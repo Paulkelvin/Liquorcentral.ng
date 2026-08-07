@@ -59,11 +59,38 @@ function reduceOptimistic(
         ...cart,
         items: (cart.items ?? []).filter((item) => item.id !== action.lineId),
       }
-    case "add":
+    case "add": {
+      const items = cart.items ?? []
+      const variantId = action.item.variant_id ?? action.item.variant?.id
+      const existingIndex = variantId
+        ? items.findIndex((item) => item.variant_id === variantId)
+        : -1
+
+      // Already in the cart — bump the existing line's quantity in place
+      // (matching only, never touching `total`/`unit_price`, per this
+      // function's own rule above) rather than appending a second line
+      // that would only get merged away again once the real `addToCart`
+      // resolves. Without this, adding a product already in the cart
+      // flashed a duplicate line that then collapsed back into one the
+      // moment the server responded — visible, jarring, and needless: the
+      // server was always going to merge these into a single line, so the
+      // optimistic view should already show that outcome.
+      if (existingIndex !== -1) {
+        return {
+          ...cart,
+          items: items.map((item, index) =>
+            index === existingIndex
+              ? { ...item, quantity: item.quantity + action.item.quantity }
+              : item
+          ),
+        }
+      }
+
       return {
         ...cart,
-        items: [...(cart.items ?? []), action.item],
+        items: [...items, action.item],
       }
+    }
     default:
       return cart
   }
