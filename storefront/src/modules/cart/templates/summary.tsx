@@ -5,6 +5,7 @@ import { Button, Heading, Text } from "@modules/common/components/ui"
 import CartTotals from "@modules/common/components/cart-totals"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { useCart } from "@lib/context/cart-context"
 import { HttpTypes } from "@medusajs/types"
 
 type SummaryProps = {
@@ -31,6 +32,12 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
  */
 const Summary = ({ cart, itemCount }: SummaryProps) => {
   const step = getCheckoutStep(cart)
+  // The cart page's own quantity/remove taps go through this same
+  // provider (`Item`'s `useOptionalCart`), so `isPending` here reflects
+  // exactly the window during which `cart.item_subtotal`/`total` below
+  // are stale — see `CartTotals`'s own comment for why they're dimmed
+  // rather than recomputed.
+  const { isPending } = useCart()
 
   return (
     <div className="flex flex-col gap-6 rounded-radius-md border border-border bg-surface-elevated p-5 small:p-6">
@@ -46,7 +53,7 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
       </div>
 
       <div className="border-t border-divider pt-5">
-        <CartTotals totals={cart} />
+        <CartTotals totals={cart} isPending={isPending} />
       </div>
 
       <div className="border-t border-divider pt-5">

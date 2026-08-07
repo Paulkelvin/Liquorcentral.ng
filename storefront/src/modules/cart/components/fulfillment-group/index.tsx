@@ -1,7 +1,7 @@
 import { HttpTypes } from "@medusajs/types"
-import { convertToLocale } from "@lib/util/money"
 import { Heading, Text } from "@modules/common/components/ui"
 import Item from "@modules/cart/components/item"
+import GroupSubtotal from "./group-subtotal"
 
 type FulfillmentGroupProps = {
   title: string
@@ -83,13 +83,7 @@ const FulfillmentGroup = ({
       <div className="mt-4 flex justify-end border-t border-divider pt-4">
         <div className="flex items-center gap-x-4">
           <Text className="text-text-secondary">{title} subtotal</Text>
-          <Text
-            className="txt-medium-plus text-text-primary"
-            data-testid="cart-fulfillment-group-subtotal"
-            data-value={subtotal}
-          >
-            {convertToLocale({ amount: subtotal, currency_code: currencyCode })}
-          </Text>
+          <GroupSubtotal amount={subtotal} currencyCode={currencyCode} />
         </div>
       </div>
     </div>

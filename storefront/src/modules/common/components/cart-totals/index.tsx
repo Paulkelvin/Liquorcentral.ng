@@ -1,6 +1,7 @@
 "use client"
 
 import { convertToLocale } from "@lib/util/money"
+import { clx } from "@modules/common/components/ui"
 import React from "react"
 
 type CartTotalsProps = {
@@ -15,6 +16,18 @@ type CartTotalsProps = {
     /** §6/§10 — no shipping method exists yet at cart view; delivery is chosen at checkout. */
     shipping_methods?: unknown[] | null
   }
+  /**
+   * True while a quantity/remove change is in flight elsewhere on the
+   * page. These figures come straight from the server cart and are
+   * deliberately never recomputed client-side (see this component's own
+   * comment on why a guessed total is worse than an honest one) — so
+   * immediately after a "+" tap they're still the *previous* totals for
+   * up to a full round trip. Dimming them is the same signal the cart
+   * drawer's own subtotal already gives during that exact window
+   * (`cart-drawer/index.tsx`): "this number is settling," not "nothing
+   * happened."
+   */
+  isPending?: boolean
 }
 
 /**
@@ -26,7 +39,7 @@ type CartTotalsProps = {
  * actually has" failure §8 and the Pricing Transparency table both
  * explicitly forbid; a stated dependency replaces it.
  */
-const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
+const CartTotals: React.FC<CartTotalsProps> = ({ totals, isPending }) => {
   const {
     currency_code,
     total,
@@ -40,7 +53,14 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
   const shippingKnown = (shipping_methods?.length ?? 0) > 0
 
   return (
-    <div role="status" aria-live="polite">
+    <div
+      role="status"
+      aria-live="polite"
+      className={clx(
+        "transition-opacity duration-standard",
+        isPending && "opacity-50"
+      )}
+    >
       {/* `gap-y-3` between rows, and each row's own label may wrap to two
           lines — at 10px apart the breakdown read as one block of text
           rather than four scannable figures. */}
