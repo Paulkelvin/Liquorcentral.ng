@@ -438,7 +438,15 @@ export async function placeOrder(cartId?: string) {
       shipping_address: cartRes.order.shipping_address,
     })
 
-    removeCartId()
+    // Awaited, unlike the bare `removeCartId()` this replaces.
+    // `removeCartId` is itself async (it awaits `next/headers`' `cookies()`
+    // before setting anything), so un-awaited its actual cookie write
+    // landed in a microtask *after* the `redirect()` below had already
+    // thrown and begun unwinding — leaving the browser holding
+    // `_medusa_cart_id` for a cart that has just been completed. The
+    // same shape as `setCartId` in `getOrSetCart`, which was correctly
+    // awaited all along.
+    await removeCartId()
     redirect(`/${countryCode}/order/${cartRes?.order.id}/confirmed`)
   }
 

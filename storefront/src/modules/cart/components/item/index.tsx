@@ -65,6 +65,26 @@ const Item = ({
   const optimisticItem = optimisticCart?.items?.find((i) => i.id === item.id)
   const displayQuantity = optimisticItem?.quantity ?? item.quantity
 
+  /**
+   * The same reasoning one step further, for *removal* rather than
+   * quantity. Reading only the quantity above left a real gap: when a
+   * line is removed — by "Remove", or by stepping quantity down to zero
+   * — it disappears from the provider's optimistic cart entirely, so
+   * `optimisticItem` becomes `undefined` and `displayQuantity` fell back
+   * to the **stale server quantity**. The row therefore sat there
+   * unchanged, showing its old count, until the server round trip
+   * finished and the page re-rendered — no feedback at all from the tap,
+   * on the one surface where the row is big enough for that to be
+   * obvious.
+   *
+   * Guarded on `optimisticCart` being present, not just on the item
+   * being absent: the checkout order-summary preview renders this same
+   * component with no `CartProvider` above it (see `useOptionalCart`),
+   * where `optimisticCart` is `null` and every row would otherwise
+   * vanish.
+   */
+  const isOptimisticallyRemoved = !!optimisticCart && !optimisticItem
+
   // `useCart().setQuantity` (and `removeItem` below) already paint the
   // change immediately via the provider's own optimistic cart — this used
   // to run its own separate `await`+spinner on top of that, which is what
@@ -150,6 +170,13 @@ const Item = ({
    * horizontally on a phone (measured at 532px of content in a 390px
    * viewport).
    */
+  // Drop the row the moment the removal is requested, on both the full
+  // cart row and the compact summary row — the server cart this renders
+  // from won't catch up for a full round trip.
+  if (isOptimisticallyRemoved) {
+    return null
+  }
+
   if (type === "full") {
     return (
       <li

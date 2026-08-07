@@ -15,6 +15,24 @@ export const STEP_ORDER = ["address", "payment"] as const
 export type CheckoutStep = (typeof STEP_ORDER)[number]
 
 /**
+ * Which step a URL with no `?step=` at all means — reaching `/checkout`
+ * directly (a typed URL, a bookmark, the browser's back button from the
+ * order page) rather than through the cart's own link, which always
+ * carries one.
+ *
+ * Exported because three separate components have to agree on it, and
+ * two of them silently didn't: `StepGate` and `ProgressSteps` both
+ * defaulted a missing param to "address", while `Addresses` compared
+ * `searchParams.get("step") === "address"` with no fallback. On
+ * `/checkout` with no param that left the Contact step *rendered but
+ * collapsed* — its card visible and marked active by the stepper, but
+ * showing the read-only recap (a bare spinner, before any address
+ * exists) with no form and no way forward. A dead end reachable by
+ * simply typing the URL.
+ */
+export const DEFAULT_STEP: CheckoutStep = "address"
+
+/**
  * Hides a step's whole card until the customer has actually reached it.
  *
  * Every step component (`Addresses`, `Shipping`, `Payment`) always
@@ -41,7 +59,7 @@ export default function StepGate({
   children: React.ReactNode
 }) {
   const searchParams = useSearchParams()
-  const activeStep = searchParams.get("step") ?? "address"
+  const activeStep = searchParams.get("step") ?? DEFAULT_STEP
   const activeIndex = STEP_ORDER.indexOf(activeStep as CheckoutStep)
   const stepIndex = STEP_ORDER.indexOf(step)
 

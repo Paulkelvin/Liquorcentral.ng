@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useTransition } from "react"
+import { useEffect, useMemo, useRef, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 type LoadMoreLinkProps = {
@@ -55,11 +55,24 @@ export default function LoadMoreLink({
     firstNew.focus({ preventScroll: true })
   }, [isPending])
 
-  const loadMore = () => {
+  const nextUrl = useMemo(() => {
     const params = new URLSearchParams(searchParams)
     params.set("page", nextPage.toString())
+    return `${pathname}?${params.toString()}`
+  }, [pathname, searchParams, nextPage])
+
+  // Warm the next page before it's tapped — see
+  // `store/components/load-more`'s own note for why this is where the
+  // perceived delay actually lives.
+  useEffect(() => {
+    if (hasMore) {
+      router.prefetch(nextUrl)
+    }
+  }, [hasMore, nextUrl, router])
+
+  const loadMore = () => {
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`, { scroll: false })
+      router.push(nextUrl, { scroll: false })
     })
   }
 

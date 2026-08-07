@@ -10,6 +10,7 @@ const DeleteButton = ({
   variant = "icon",
   "aria-label": ariaLabel,
   onDelete,
+  "data-testid": dataTestid,
 }: {
   id: string
   children?: React.ReactNode
@@ -38,6 +39,13 @@ const DeleteButton = ({
    * self-contained behaviour.
    */
   onDelete?: (id: string) => void
+  /**
+   * Forwarded onto the real `<button>`. Callers were already passing
+   * one (`product-delete-button`), but this component never declared or
+   * spread it, so it was silently dropped and the control was
+   * unaddressable from a test or a console selector.
+   */
+  "data-testid"?: string
 }) => {
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -66,6 +74,7 @@ const DeleteButton = ({
         )}
         onClick={() => handleDelete(id)}
         aria-label={!children ? ariaLabel : undefined}
+        data-testid={dataTestid}
       >
         {isDeleting ? (
           <Spinner className="animate-spin" />

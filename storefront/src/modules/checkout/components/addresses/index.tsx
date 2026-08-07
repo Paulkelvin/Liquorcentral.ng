@@ -13,6 +13,7 @@ import { useActionState } from "react"
 import BillingAddress from "../billing_address"
 import ErrorMessage from "../error-message"
 import ShippingAddress from "../shipping-address"
+import { DEFAULT_STEP } from "../step-gate"
 import { SubmitButton } from "../submit-button"
 
 const Addresses = ({
@@ -26,7 +27,10 @@ const Addresses = ({
   const router = useRouter()
   const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "address"
+  // `?? DEFAULT_STEP`, not a bare `=== "address"`: see DEFAULT_STEP's own
+  // comment for the dead-end that omission produced on `/checkout` with
+  // no step param at all.
+  const isOpen = (searchParams.get("step") ?? DEFAULT_STEP) === "address"
   const headingRef = useFocusStepHeading(isOpen)
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(

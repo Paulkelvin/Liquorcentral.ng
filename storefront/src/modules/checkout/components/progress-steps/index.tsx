@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import { clx } from "@modules/common/components/ui"
+import { DEFAULT_STEP } from "../step-gate"
 
 const STEPS = [
   { key: "address", label: "Contact" },
@@ -28,7 +29,7 @@ const STEPS = [
  */
 export default function ProgressSteps() {
   const searchParams = useSearchParams()
-  const activeStep = searchParams.get("step") ?? "address"
+  const activeStep = searchParams.get("step") ?? DEFAULT_STEP
   const activeIndex = STEPS.findIndex((s) => s.key === activeStep)
 
   return (

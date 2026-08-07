@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useTransition } from "react"
+import { useEffect, useMemo, useRef, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 type LoadMoreProps = {
@@ -83,11 +83,35 @@ export default function LoadMore({
     }
   }, [isPending])
 
-  const loadMore = () => {
+  const nextUrl = useMemo(() => {
     const params = new URLSearchParams(searchParams)
     params.set("page", nextPage.toString())
+    return `${pathname}?${params.toString()}`
+  }, [pathname, searchParams, nextPage])
+
+  /**
+   * Warm the next page before it's asked for. Every "Load more" is a real
+   * server round trip (see this component's own note above on why the
+   * window lives in the URL rather than in client state), so without this
+   * the whole request — Medusa fetch, render, RSC payload — only starts
+   * on the tap, and on a real connection that's the entire perceived
+   * delay. Prefetching moves it to page-render time, so the tap usually
+   * only has to swap in a payload that's already arrived.
+   *
+   * Deliberately not `<Link>`: this control has to stay a `<button>`
+   * (§13's keyboard-operable requirement is already satisfied either way,
+   * but the scroll-to-new-batch behaviour below needs the transition's
+   * pending state, which a plain Link navigation doesn't expose).
+   */
+  useEffect(() => {
+    if (hasMore) {
+      router.prefetch(nextUrl)
+    }
+  }, [hasMore, nextUrl, router])
+
+  const loadMore = () => {
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`, { scroll: false })
+      router.push(nextUrl, { scroll: false })
     })
   }
 
