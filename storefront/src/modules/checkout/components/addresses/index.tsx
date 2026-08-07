@@ -107,8 +107,18 @@ const Addresses = ({
           </div>
         </form>
       ) : (
-        <div>
-          <div className="text-caption">
+        // The whole recap is the accordion — collapsed by default, same
+        // native `<details>` pattern already used in
+        // cart/templates/items.tsx for "Why is my cart split?". This
+        // step's own heading above already confirms "Contact ✓"; the
+        // address, phone and email underneath are detail nobody needs
+        // to see on every pass through Payment, not just the phone
+        // number on its own.
+        <details>
+          <summary className="txt-medium-plus text-text-primary cursor-pointer select-none">
+            Contact &amp; address details
+          </summary>
+          <div className="text-caption mt-3">
             {cart && cart.shipping_address && hasRealAddress(cart.shipping_address) ? (
               // Real bug found via a live mobile screenshot: this recap was
               // an unconditional 3-column flex row (`w-1/3` each, no
@@ -141,28 +151,20 @@ const Addresses = ({
                   </Text>
                 </div>
 
-                {/* Collapsed by default — same native `<details>` pattern
-                    already used in cart/templates/items.tsx for "Why is
-                    my cart split?". Phone and email sat exposed here on
-                    every visit to the Payment step; tucking them behind
-                    a disclosure the customer opens on purpose is a small
-                    privacy courtesy on a shared or public screen, not a
-                    functional change — nothing here is required to
-                    complete checkout. */}
-                <details
+                <div
                   className="flex flex-col w-full small:w-1/3"
                   data-testid="shipping-contact-summary"
                 >
-                  <summary className="txt-medium-plus text-text-primary mb-1 cursor-pointer select-none">
+                  <Text className="txt-medium-plus text-text-primary mb-1">
                     Delivery contact
-                  </summary>
+                  </Text>
                   <Text className="txt-medium text-text-secondary">
                     {cart.shipping_address.phone}
                   </Text>
                   <Text className="txt-medium text-text-secondary break-all">
                     {cart.email}
                   </Text>
-                </details>
+                </div>
 
                 <div
                   className="flex flex-col w-full small:w-1/3"
@@ -201,7 +203,7 @@ const Addresses = ({
               </div>
             )}
           </div>
-        </div>
+        </details>
       )}
     </div>
   )
