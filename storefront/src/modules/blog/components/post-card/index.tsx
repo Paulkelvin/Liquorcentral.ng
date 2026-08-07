@@ -27,19 +27,19 @@ export default function PostCard({
       <LocalizedClientLink
         href={`/blog/${post.slug}`}
         className={clx(
-          // No resting border. A gold frame around every card, all the
-          // time, was the opposite of restrained — gold is supposed to
-          // mark a single curated moment (see `curated-mark/index.tsx`'s
-          // own rule), not outline an entire grid of cards, and Paul's
-          // own read ("too bold... try to make it easy and smooth")
-          // called that out directly. A plain, borderless card sitting on
-          // its own shadow is exactly how the product cards elsewhere on
-          // this site already read — this just brings the journal in
-          // line with that, rather than inventing a heavier treatment
-          // just for itself. `overflow-hidden` is still load-bearing: it
-          // clips the image's square bottom corners to the card's own
-          // rounded ones instead of them poking past it.
-          "flex h-full overflow-hidden rounded-radius-md bg-surface shadow-elevation-1 transition-shadow duration-standard ease-in-out hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
+          // The border stays — Paul asked for it back — but it's the
+          // same quiet neutral hairline (`border-divider`) every other
+          // bordered surface in this app uses (the checkout step cards,
+          // the drawer's line items), not the resting gold frame that
+          // prompted "too bold... try to make it easy and smooth" in the
+          // first place. Gold now only shows on hover, as a warmer
+          // acknowledgement rather than a permanent outline — restrained
+          // per `curated-mark/index.tsx`'s own rule (gold marks a single
+          // curated moment, not a standing frame on a whole grid).
+          // `overflow-hidden` is still load-bearing: it clips the image's
+          // square bottom corners to the card's own rounded ones instead
+          // of them poking past it.
+          "flex h-full overflow-hidden rounded-radius-md border border-divider bg-surface shadow-elevation-1 transition-[border-color,box-shadow] duration-standard ease-in-out hover:border-accent/50 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-4",
           // The lead reads as a magazine opener: image and headline side
           // by side from `small:` up, stacked like any other card below.
           // `small:gap-8` only matters in the row layout — the stacked
