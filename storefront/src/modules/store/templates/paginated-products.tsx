@@ -159,9 +159,22 @@ export default async function PaginatedProducts({
         data-testid="products-list"
         aria-label={countLabel}
       >
-        {products.map((p) => {
+        {products.map((p, index) => {
+          // The first card of the batch this click just loaded. Load More
+          // scrolls here afterwards, so the customer lands on the first
+          // new product rather than at the bottom of the page.
+          const startsNewBatch = page > 1 && index === previousCount
+
           return (
-            <li key={p.id}>
+            <li
+              key={p.id}
+              // `scroll-mt-*` clears the sticky header, which would
+              // otherwise sit on top of the very card we just scrolled to.
+              className={startsNewBatch ? "scroll-mt-32 small:scroll-mt-40" : undefined}
+              {...(startsNewBatch
+                ? { "data-new-batch-start": "true", tabIndex: -1 }
+                : {})}
+            >
               <ProductPreview
                 product={p}
                 region={region}

@@ -103,8 +103,90 @@ export const listProducts = async ({
 }
 
 /**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
- * It will then return the paginated products based on the page and limit parameters.
+ * The largest number of products this will ever pull into memory to sort
+ * or filter locally. Only reached on a price sort or an option filter —
+ * see `listProductsWithSort` for why those two cannot be delegated to
+ * the API. At 100 per request that is 10 requests, all cached.
+ *
+ * If a catalog ever grows past this, the fix is to move price sorting
+ * server-side (a Medusa capability gap today, see `sortProducts`), not
+ * to raise this number indefinitely.
+ */
+const MAX_LOCALLY_SORTED_PRODUCTS = 1000
+const API_PAGE_SIZE = 100
+
+/**
+ * Fetches every product matching `queryParams`, following the API's own
+ * pagination rather than assuming one request covers the catalog.
+ *
+ * The first response carries the true total, so the remaining pages are
+ * requested together instead of one after another.
+ */
+export async function listAllProducts({
+  queryParams,
+  countryCode,
+}: {
+  queryParams?: ProductListQueryParams
+  countryCode: string
+}) {
+  const first = await listProducts({
+    pageParam: 1,
+    queryParams: { ...queryParams, limit: API_PAGE_SIZE },
+    countryCode,
+  })
+
+  const total = Math.min(first.response.count, MAX_LOCALLY_SORTED_PRODUCTS)
+
+  if (first.response.products.length >= total) {
+    return { products: first.response.products, count: first.response.count }
+  }
+
+  const remainingPages = []
+  for (
+    let pageParam = 2;
+    (pageParam - 1) * API_PAGE_SIZE < total;
+    pageParam++
+  ) {
+    remainingPages.push(
+      listProducts({
+        pageParam,
+        queryParams: { ...queryParams, limit: API_PAGE_SIZE },
+        countryCode,
+      })
+    )
+  }
+
+  const rest = await Promise.all(remainingPages)
+
+  return {
+    products: [
+      ...first.response.products,
+      ...rest.flatMap((page) => page.response.products),
+    ],
+    count: first.response.count,
+  }
+}
+
+/**
+ * Resolves one "Load More" window.
+ *
+ * Two paths, because they have genuinely different costs:
+ *
+ * - **Price sorts and option filters** have to happen in memory — the
+ *   Store API cannot order by calculated price (`sortProducts`' own
+ *   comment) and option filtering is applied after the fetch. Sorting a
+ *   partial set produces the wrong order, so this path pulls the whole
+ *   matching set (bounded by `MAX_LOCALLY_SORTED_PRODUCTS`).
+ * - **Everything else** — the default order and "newest" — the API can
+ *   do itself, so this asks for exactly the window on screen and takes
+ *   the total from the response.
+ *
+ * The previous implementation always fetched a single page of 100 and
+ * then used `products.length` as the total. That silently capped every
+ * listing at 100 items: past that, `count` equalled the number already
+ * on screen, "Load More" concluded there was nothing left and
+ * disappeared, and the rest of the catalog became unreachable. It also
+ * meant a price sort only ever ordered the first 100 products.
  */
 export const listProductsWithSort = async ({
   page = 0,
@@ -140,35 +222,65 @@ export const listProductsWithSort = async ({
     new Set((optionValueIds || []).filter(Boolean))
   )
 
+  const windowStart = cumulative ? 0 : (page - 1) * limit
+  const windowEnd = page * limit
+
+  const needsLocalSort = sortBy === "price_asc" || sortBy === "price_desc"
+  const needsLocalFilter = optionFilters.length > 0
+
+  if (needsLocalSort || needsLocalFilter) {
+    const { products, count } = await listAllProducts({
+      queryParams: {
+        ...queryParams,
+        ...(needsLocalFilter ? { option_value_id: optionFilters } : {}),
+      },
+      countryCode,
+    })
+
+    const sortedProducts = sortProducts(products, sortBy)
+    // The fetched set is the filtered set — an option filter is applied
+    // by the API, so `products.length` and `count` agree unless the
+    // catalog exceeded the local ceiling above.
+    const filteredCount = Math.max(products.length, Math.min(count, MAX_LOCALLY_SORTED_PRODUCTS))
+
+    return {
+      response: {
+        products: sortedProducts.slice(windowStart, windowEnd),
+        count: filteredCount,
+      },
+      nextPage: filteredCount > windowEnd ? page + 1 : null,
+      queryParams,
+    }
+  }
+
+  /**
+   * The API can order this itself, so ask for exactly the window being
+   * shown. `pageParam: 1` with a window-sized limit yields offset 0 —
+   * which is what cumulative "Load More" wants: every product from the
+   * start through the current page, in one request.
+   */
   const {
-    response: { products },
+    response: { products, count },
   } = await listProducts({
-    pageParam: 0,
+    pageParam: cumulative ? 1 : page,
     queryParams: {
       ...queryParams,
-      ...(optionFilters.length ? { option_value_id: optionFilters } : {}),
-      limit: 100,
+      limit: cumulative ? windowEnd : limit,
     },
     countryCode,
   })
 
   const sortedProducts = sortProducts(products, sortBy)
 
-  const filteredCount = products.length
-
-  const windowStart = cumulative ? 0 : (page - 1) * limit
-  const windowEnd = cumulative ? page * limit : page * limit
-
-  const nextPage = filteredCount > windowEnd ? page + 1 : null
-
-  const paginatedProducts = sortedProducts.slice(windowStart, windowEnd)
-
   return {
     response: {
-      products: paginatedProducts,
-      count: filteredCount,
+      products: sortedProducts,
+      // Medusa's own total for the query — not the number of rows this
+      // request happened to return, which is what made "Load More"
+      // vanish at 100 items.
+      count,
     },
-    nextPage,
+    nextPage: count > windowEnd ? page + 1 : null,
     queryParams,
   }
 }

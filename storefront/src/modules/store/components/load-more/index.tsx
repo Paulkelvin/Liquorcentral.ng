@@ -51,16 +51,36 @@ export default function LoadMore({
    * (`categories/templates/index.tsx`), and re-suspending it for the
    * larger cumulative page mid-transition is enough to make Next reset
    * scroll to the top anyway (a known App Router gap: `scroll: false`
-   * only reliably holds when the boundary doesn't re-suspend). Once the
-   * transition settles, this puts the viewport back where the click
-   * happened — anchored to the button itself, which is exactly where the
-   * newly-loaded row of products now starts.
+   * only reliably holds when the boundary doesn't re-suspend).
+   *
+   * Once the transition settles, land on the **first product of the
+   * batch that was just loaded** — marked `data-new-batch-start` by
+   * `PaginatedProducts`. Anchoring to the button instead (what this did
+   * before) put the customer at the *bottom* of the new products, having
+   * scrolled straight past everything they had just asked for. Focus
+   * moves with the scroll so keyboard and screen-reader users continue
+   * from the same place rather than from the top of the document.
    */
   useEffect(() => {
-    if (wasPendingRef.current && !isPending) {
-      buttonRef.current?.scrollIntoView({ block: "center" })
+    if (!wasPendingRef.current || isPending) {
+      wasPendingRef.current = isPending
+      return
     }
     wasPendingRef.current = isPending
+
+    const firstNew = document.querySelector<HTMLElement>(
+      "[data-new-batch-start]"
+    )
+    const target = firstNew ?? buttonRef.current
+
+    if (!target) {
+      return
+    }
+
+    target.scrollIntoView({ block: "start", behavior: "smooth" })
+    if (firstNew) {
+      firstNew.focus({ preventScroll: true })
+    }
   }, [isPending])
 
   const loadMore = () => {

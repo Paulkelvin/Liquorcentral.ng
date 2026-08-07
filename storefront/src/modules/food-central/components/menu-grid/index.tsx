@@ -1,4 +1,4 @@
-import { listProducts } from "@lib/data/products"
+import { listAllProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import ProductPreview from "@modules/products/components/product-preview"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
@@ -44,12 +44,19 @@ export default async function FoodCentralMenuGrid({
     return null
   }
 
-  const { response } = await listProducts({
+  /**
+   * Every product, then filtered to dishes — not the first 100 products.
+   * The menu is a subset of a catalog it shares with Wine & Spirits, so a
+   * single 100-product request spent most of its budget on bottles and
+   * silently dropped dishes past that point. Load More then concluded the
+   * menu had ended, because as far as it could see, it had.
+   */
+  const { products } = await listAllProducts({
     countryCode,
-    queryParams: { limit: 100, fields: "+food_details.*" },
+    queryParams: { fields: "+food_details.*" },
   })
 
-  const allFoodProducts = response.products.filter(
+  const allFoodProducts = products.filter(
     (product) => (product as unknown as { food_details?: unknown }).food_details
   )
 
@@ -85,11 +92,25 @@ export default async function FoodCentralMenuGrid({
       {/* Same grid as every other listing on the platform — this was the
           one surface still running four columns. */}
       <ul className={PRODUCT_GRID}>
-        {foodProducts.map((product) => (
-          <li key={product.id}>
-            <ProductPreview product={product} region={region} />
-          </li>
-        ))}
+        {foodProducts.map((product, index) => {
+          // First dish of the batch this click loaded — Load More scrolls
+          // here, so the customer lands on the first new dish rather than
+          // below the last one.
+          const startsNewBatch = page > 1 && index === previousCount
+          return (
+            <li
+              key={product.id}
+              className={
+                startsNewBatch ? "scroll-mt-32 small:scroll-mt-40" : undefined
+              }
+              {...(startsNewBatch
+                ? { "data-new-batch-start": "true", tabIndex: -1 }
+                : {})}
+            >
+              <ProductPreview product={product} region={region} />
+            </li>
+          )
+        })}
       </ul>
       <LoadMoreLink
         hasMore={hasMore}

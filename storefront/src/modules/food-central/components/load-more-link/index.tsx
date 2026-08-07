@@ -1,6 +1,6 @@
 "use client"
 
-import { useTransition } from "react"
+import { useEffect, useRef, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 type LoadMoreLinkProps = {
@@ -30,6 +30,30 @@ export default function LoadMoreLink({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const wasPendingRef = useRef(false)
+
+  /**
+   * Land on the first dish of the batch just loaded, not below the last
+   * one. Same behaviour as the catalog listings' own Load More — see
+   * `store/components/load-more` for why `{ scroll: false }` alone is
+   * not enough inside a Suspense boundary.
+   */
+  useEffect(() => {
+    if (!wasPendingRef.current || isPending) {
+      wasPendingRef.current = isPending
+      return
+    }
+    wasPendingRef.current = isPending
+
+    const firstNew = document.querySelector<HTMLElement>(
+      "[data-new-batch-start]"
+    )
+    if (!firstNew) {
+      return
+    }
+    firstNew.scrollIntoView({ block: "start", behavior: "smooth" })
+    firstNew.focus({ preventScroll: true })
+  }, [isPending])
 
   const loadMore = () => {
     const params = new URLSearchParams(searchParams)
