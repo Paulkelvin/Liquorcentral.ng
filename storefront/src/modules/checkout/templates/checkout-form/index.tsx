@@ -7,7 +7,6 @@ import Addresses from "@modules/checkout/components/addresses"
 import DeliveryEligibilityConflict from "@modules/checkout/components/delivery-eligibility-conflict"
 import Payment from "@modules/checkout/components/payment"
 import ProgressSteps from "@modules/checkout/components/progress-steps"
-import Shipping from "@modules/checkout/components/shipping"
 import StepGate from "@modules/checkout/components/step-gate"
 
 export default async function CheckoutForm({
@@ -21,6 +20,10 @@ export default async function CheckoutForm({
     return null
   }
 
+  // No longer rendered as its own step (delivery is automatic — see
+  // setAddresses in cart.ts), but still fetched as a sanity check: if
+  // the store's shipping options can't be reached at all, checkout
+  // shouldn't render as if everything's fine.
   const shippingMethods = await listCartShippingMethods(cart.id)
   const paymentMethods = await listCartPaymentMethods(cart.region?.id ?? "")
 
@@ -52,17 +55,13 @@ export default async function CheckoutForm({
       {/* Each step's card is hidden entirely until the customer actually
           reaches it — see StepGate's own comment for the "the window"
           complaint this replaces (every step, including ones nowhere
-          near yet, used to always render its own card). Address is
+          near yet, used to always render its own card). Contact is
           step 0, so it's always shown once there's a `?step=` at all. */}
       <StepGate step="address">
         <Addresses cart={cart} customer={customer} />
       </StepGate>
 
       {hasConflict && <DeliveryEligibilityConflict />}
-
-      <StepGate step="delivery">
-        <Shipping cart={cart} availableShippingMethods={shippingMethods} />
-      </StepGate>
 
       <StepGate step="payment">
         <Payment

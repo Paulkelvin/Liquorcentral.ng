@@ -16,6 +16,7 @@ import {
 import { getRegion } from "./regions"
 import { getLocale } from "./locale-actions"
 import { createSilentAccount } from "./customer"
+import { listCartShippingMethods } from "./fulfillment"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -332,7 +333,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     if (!formData) {
       throw new Error("No form data found when setting addresses")
     }
-    const cartId = getCartId()
+    const cartId = await getCartId()
     if (!cartId) {
       throw new Error("No existing cart found when setting addresses")
     }
@@ -369,12 +370,30 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         phone: formData.get("billing_address.phone"),
       } as unknown as HttpTypes.StoreUpdateCart["billing_address"]
     await updateCart(data)
+
+    // Delivery is no longer a choice the customer makes — there is
+    // exactly one shipping option site-wide (a flat nationwide rate,
+    // see shipping-options-seed.ts), so asking someone to "select" a
+    // delivery method they have no real alternative to was friction
+    // with nothing behind it. Attaching it automatically here removes
+    // the whole Delivery step: by the time this redirects to Payment,
+    // the cart already has a real shipping method, and Payment's own
+    // `paymentReady` check (which requires one) is satisfied without
+    // the customer doing anything.
+    const shippingOptions = await listCartShippingMethods(cartId)
+    const standardOption = shippingOptions?.[0]
+    if (standardOption) {
+      await setShippingMethod({
+        cartId,
+        shippingMethodId: standardOption.id,
+      })
+    }
   } catch (e) {
     return e instanceof Error ? e.message : String(e)
   }
 
   redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
+    `/${formData.get("shipping_address.country_code")}/checkout?step=payment`
   )
 }
 

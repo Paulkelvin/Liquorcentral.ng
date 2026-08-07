@@ -1,4 +1,4 @@
-import { retrieveCart } from "@lib/data/cart"
+import { listCartOptions, retrieveCart } from "@lib/data/cart"
 import { retrieveCustomer } from "@lib/data/customer"
 import { getVariantInventoryMap } from "@lib/data/products"
 import { isFoodCentralItem, isStockManaged } from "@lib/util/cart-fulfillment"
@@ -69,6 +69,18 @@ export default async function Checkout({ params }: Props) {
 
   const customer = await retrieveCustomer()
 
+  // The (checkout) route group has no CartProvider (deliberately — see
+  // cart-context.tsx's own note), so the summary can't read the flat
+  // delivery rate from context the way the drawer/cart page do; fetched
+  // directly here instead. Cheap and already cached — the same call the
+  // `(main)` layout makes for FreeShippingPriceNudge, just for this route
+  // group's own request. Paul: "on the checkout page... so that users are
+  // notified that this is the exact amount they are going to be paying
+  // for delivery" — needs to show before Contact is even submitted, not
+  // only once shipping_methods is populated.
+  const { shipping_options: shippingOptions } = await listCartOptions()
+  const standardDeliveryFee = shippingOptions[0]?.amount ?? null
+
   return (
     // 160px of gutter left the form and the summary reading as two
     // unrelated pages; 48px keeps them as one layout.
@@ -76,7 +88,7 @@ export default async function Checkout({ params }: Props) {
       <PaymentWrapper cart={cart}>
         <CheckoutForm cart={cart} customer={customer} />
       </PaymentWrapper>
-      <CheckoutSummary cart={cart} />
+      <CheckoutSummary cart={cart} knownDeliveryFee={standardDeliveryFee} />
     </div>
   )
 }

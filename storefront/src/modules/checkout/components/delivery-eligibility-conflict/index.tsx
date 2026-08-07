@@ -48,12 +48,6 @@ export default function DeliveryEligibilityConflict() {
           </button>
         </li>
         <li>
-          <Text as="span">
-            Choose <strong>Pick up your order</strong> in the Delivery step
-            below, or
-          </Text>
-        </li>
-        <li>
           <LocalizedClientLink
             href="/cart"
             className="text-interactive hover:text-interactive-hover underline"

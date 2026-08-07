@@ -4,20 +4,27 @@ import { useSearchParams } from "next/navigation"
 import { clx } from "@modules/common/components/ui"
 
 const STEPS = [
-  { key: "address", label: "Address" },
-  { key: "delivery", label: "Delivery" },
+  { key: "address", label: "Contact" },
   { key: "payment", label: "Payment" },
 ] as const
 
 /**
  * Design Audit Phase 3 roadmap item 14 ("Checkout visual polish... add
  * progress indicator") — a lightweight, read-only stepper showing where the
- * customer is among the 3 accordion steps each already drive independently
+ * customer is among the 2 accordion steps each already drive independently
  * via the same `?step=` URL param (07_CHECKOUT_SPECIFICATION.md's own
  * accordion-step pattern). Purely a visual orientation aid: it does not
  * duplicate or reimplement any step's own open/complete logic, does not
  * navigate on click, and reads the identical `?step=` values each existing
  * step component already reads.
+ *
+ * Down from 3 (and originally 4) — Paul: "it's just contact and then
+ * payment... reduce friction as low as possible." Delivery stopped being
+ * a step the customer takes at all once it became a single automatic
+ * flat-rate option (setAddresses in cart.ts attaches it directly); Review
+ * was folded into Payment's own final screen earlier. The `key` stays
+ * "address" internally — see StepGate's own comment on why only the label
+ * changed.
  */
 export default function ProgressSteps() {
   const searchParams = useSearchParams()

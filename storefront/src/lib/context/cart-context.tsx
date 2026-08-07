@@ -103,6 +103,14 @@ type CartContextValue = {
   totalItems: number
   /** True while a cart mutation is in flight — totals are settling. */
   isPending: boolean
+  /**
+   * The site's one flat "Standard delivery" rate (major units), fetched
+   * once in the `(main)` layout alongside `FreeShippingPriceNudge`'s own
+   * shipping-options call. `null` before that fetch resolves or when
+   * there's no cart yet. See `CartTotals`'s own `knownDeliveryFee` prop
+   * for why this is safe to show before a shipping method is attached.
+   */
+  standardDeliveryFee: number | null
   isDrawerOpen: boolean
   openDrawer: () => void
   closeDrawer: () => void
@@ -147,9 +155,11 @@ const CartContext = createContext<CartContextValue | null>(null)
  */
 export function CartProvider({
   initialCart,
+  standardDeliveryFee = null,
   children,
 }: {
   initialCart: HttpTypes.StoreCart | null
+  standardDeliveryFee?: number | null
   children: React.ReactNode
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -251,6 +261,7 @@ export function CartProvider({
       cart,
       totalItems,
       isPending: pendingCount > 0,
+      standardDeliveryFee,
       isDrawerOpen,
       openDrawer,
       closeDrawer,
@@ -262,6 +273,7 @@ export function CartProvider({
       cart,
       totalItems,
       pendingCount,
+      standardDeliveryFee,
       isDrawerOpen,
       openDrawer,
       closeDrawer,

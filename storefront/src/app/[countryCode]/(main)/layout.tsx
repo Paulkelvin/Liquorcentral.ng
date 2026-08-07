@@ -40,6 +40,13 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
     shippingOptions = shipping_options
   }
 
+  // The site's one flat delivery rate — see CartTotals' own
+  // `knownDeliveryFee` comment for why this is safe to surface (the cart
+  // drawer's footer, via CartContext) before any shipping method is
+  // formally attached. `null` rather than 0 when there's no cart yet, so
+  // the drawer can tell "unknown" apart from "free."
+  const standardDeliveryFee = shippingOptions[0]?.amount ?? null
+
   // 02_HOMEPAGE_SPECIFICATION.md §24 assumes a site-wide gate on first
   // visit (the simpler, conservative default) — mounted here, in the
   // shared (main) layout, rather than only on the homepage, so a visitor
@@ -51,7 +58,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
     // Above the nav on purpose: the cart badge, the drawer and every
     // add-to-cart button on the page below all read from this one
     // provider, so they can never disagree about what is in the cart.
-    <CartProvider initialCart={cart}>
+    <CartProvider initialCart={cart} standardDeliveryFee={standardDeliveryFee}>
       {/* Skip-to-content link (DESIGN_SYSTEM.md §B11 / WCAG 2.4.1) —
           visually hidden until keyboard-focused. */}
       <a href="#main-content" className="skip-link">

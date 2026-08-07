@@ -17,6 +17,20 @@ type CartTotalsProps = {
     shipping_methods?: unknown[] | null
   }
   /**
+   * The flat "Standard delivery" rate (major units, no shipping method
+   * attached yet), fetched by the caller before this cart's own
+   * `shipping_methods` exist — e.g. on `/cart`, or on `/checkout` before
+   * Contact is submitted. Site-wide there is exactly one shipping option
+   * (a flat nationwide rate — see `shipping-options-seed.ts`), so it's
+   * knowable and correct the moment a cart exists, not an estimate. Once
+   * `shipping_methods` is actually populated (`shippingKnown` below), the
+   * real `shipping_subtotal` from the server takes over instead — this is
+   * only a stand-in for the window before that happens. Paul: "so that
+   * users are notified that this is the exact amount they are going to be
+   * paying for delivery."
+   */
+  knownDeliveryFee?: number | null
+  /**
    * True while a quantity/remove change is in flight elsewhere on the
    * page. These figures come straight from the server cart and are
    * deliberately never recomputed client-side (see this component's own
@@ -39,7 +53,11 @@ type CartTotalsProps = {
  * actually has" failure §8 and the Pricing Transparency table both
  * explicitly forbid; a stated dependency replaces it.
  */
-const CartTotals: React.FC<CartTotalsProps> = ({ totals, isPending }) => {
+const CartTotals: React.FC<CartTotalsProps> = ({
+  totals,
+  isPending,
+  knownDeliveryFee,
+}) => {
   const {
     currency_code,
     total,
@@ -51,6 +69,16 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, isPending }) => {
   } = totals
 
   const shippingKnown = (shipping_methods?.length ?? 0) > 0
+  // Delivery reads as known either because a real shipping method is
+  // attached (shippingKnown — the exact server figure) or because the
+  // caller already fetched the site's one flat rate (knownDeliveryFee).
+  // Tax is never estimated this way — it isn't a single site-wide
+  // constant the way delivery is, so it stays "Calculated at checkout"
+  // until shippingKnown.
+  const deliveryAmount = shippingKnown
+    ? shipping_subtotal ?? 0
+    : knownDeliveryFee
+  const deliveryKnown = shippingKnown || knownDeliveryFee != null
 
   return (
     <div
@@ -73,9 +101,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, isPending }) => {
         </div>
         <div className="flex items-center justify-between">
           <span>Delivery fee</span>
-          {shippingKnown ? (
-            <span data-testid="cart-shipping" data-value={shipping_subtotal || 0}>
-              {convertToLocale({ amount: shipping_subtotal ?? 0, currency_code })}
+          {deliveryKnown ? (
+            <span data-testid="cart-shipping" data-value={deliveryAmount || 0}>
+              {convertToLocale({ amount: deliveryAmount ?? 0, currency_code })}
             </span>
           ) : (
             <span data-testid="cart-shipping" data-value="calculated-at-checkout">
@@ -118,19 +146,26 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, isPending }) => {
       <div className="mt-5 border-t border-divider pt-5">
         <div className="flex items-baseline justify-between gap-3 text-text-primary">
           <span className="text-[15px] font-medium">
-            {shippingKnown ? "Total" : "Item total"}
+            {shippingKnown ? "Total" : deliveryKnown ? "Estimated total" : "Item total"}
           </span>
           <span
             className="text-[22px] font-semibold leading-none"
             data-testid="cart-total"
             data-value={total || 0}
           >
-            {convertToLocale({ amount: shippingKnown ? total ?? 0 : item_subtotal ?? 0, currency_code })}
+            {convertToLocale({
+              amount: shippingKnown
+                ? total ?? 0
+                : (item_subtotal ?? 0) + (deliveryKnown ? deliveryAmount ?? 0 : 0),
+              currency_code,
+            })}
           </span>
         </div>
         {!shippingKnown && (
           <p className="mt-1.5 text-caption text-text-secondary" data-testid="cart-total-caveat">
-            + delivery &amp; tax, calculated at checkout
+            {deliveryKnown
+              ? "+ tax, calculated at checkout"
+              : "+ delivery & tax, calculated at checkout"}
           </p>
         )}
       </div>

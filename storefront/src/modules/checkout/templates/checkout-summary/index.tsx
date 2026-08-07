@@ -5,7 +5,13 @@ import DiscountCode from "@modules/checkout/components/discount-code"
 import CartTotals from "@modules/common/components/cart-totals"
 import { HttpTypes } from "@medusajs/types"
 
-const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
+const CheckoutSummary = ({
+  cart,
+  knownDeliveryFee,
+}: {
+  cart: HttpTypes.StoreCart
+  knownDeliveryFee?: number | null
+}) => {
   return (
     <div className="flex flex-col-reverse small:sticky small:top-6 small:flex-col">
       {/* An enclosed panel rather than bare content in a column: on
@@ -18,7 +24,7 @@ const CheckoutSummary = ({ cart }: { cart: HttpTypes.StoreCart }) => {
         </Heading>
         <ItemsPreviewTemplate cart={cart} />
         <div className="border-t border-divider pt-5">
-          <CartTotals totals={cart} />
+          <CartTotals totals={cart} knownDeliveryFee={knownDeliveryFee} />
         </div>
         <div className="border-t border-divider pt-5">
           <DiscountCode cart={cart} />

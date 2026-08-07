@@ -4,7 +4,14 @@ import { useSearchParams } from "next/navigation"
 
 // Kept in one place so `ProgressSteps` (the visual stepper) and this gate
 // can never silently drift out of sync on step count/order.
-export const STEP_ORDER = ["address", "delivery", "payment"] as const
+//
+// The URL key stays "address" (not renamed to "contact") — every step
+// component, plus the cart drawer's own "Go to checkout" link, already
+// reads/writes that exact string, and renaming it would touch every one
+// of them for a purely cosmetic reason. Only the *visible* label changed
+// to "Contact" (Addresses' and ProgressSteps' own copy) — Paul: "it's
+// just contact and then payment."
+export const STEP_ORDER = ["address", "payment"] as const
 export type CheckoutStep = (typeof STEP_ORDER)[number]
 
 /**

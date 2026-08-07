@@ -35,7 +35,14 @@ import { clx } from "@modules/common/components/ui"
  * mid-browse is the wrong place to deliver.
  */
 export default function CartDrawer() {
-  const { cart, isDrawerOpen, closeDrawer, setQuantity, isPending } = useCart()
+  const {
+    cart,
+    isDrawerOpen,
+    closeDrawer,
+    setQuantity,
+    isPending,
+    standardDeliveryFee,
+  } = useCart()
 
   const { productLines, giftWrapByParent } = splitGiftWrapLines(
     cart?.items ?? []
@@ -250,11 +257,12 @@ export default function CartDrawer() {
                   )}
                 </div>
 
-                {/* Sticky foot: the subtotal and the one action. Delivery
-                    and tax are deliberately not shown — they are unknown
-                    until an address and a delivery option exist at
-                    checkout, and stating them here would claim more
-                    certainty than the cart has (§6, §10). */}
+                {/* Sticky foot: the subtotal and the one action. The flat
+                    delivery rate is knowable before checkout (there is
+                    exactly one shipping option site-wide — see
+                    shipping-options-seed.ts), so it's stated below the
+                    subtotal; tax still isn't, so that stays a stated
+                    dependency rather than a guessed figure (§6, §10). */}
                 <footer className="border-t border-divider px-5 pb-5 pt-5">
                   {/* Subtotal and its figure share a weight and size here:
                       at a glance this row is one statement, not a small
@@ -278,7 +286,18 @@ export default function CartDrawer() {
                     </span>
                   </div>
                   <p className="mt-2 text-center text-caption text-text-secondary">
-                    Delivery &amp; tax calculated at checkout
+                    {standardDeliveryFee != null ? (
+                      <>
+                        +{" "}
+                        {convertToLocale({
+                          amount: standardDeliveryFee,
+                          currency_code: currencyCode,
+                        })}{" "}
+                        delivery, tax calculated at checkout
+                      </>
+                    ) : (
+                      "Delivery & tax calculated at checkout"
+                    )}
                   </p>
                   <LocalizedClientLink
                     href="/checkout?step=address"

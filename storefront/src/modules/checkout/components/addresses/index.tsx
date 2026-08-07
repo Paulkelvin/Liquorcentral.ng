@@ -50,7 +50,7 @@ const Addresses = ({
           level="h2"
           className="flex flex-row !text-heading-4 font-semibold gap-x-2 items-center focus:outline-none"
         >
-          Shipping Address
+          Contact
           {!isOpen && <CheckCircleSolid />}
         </Heading>
         {!isOpen && hasRealAddress(cart?.shipping_address) && (
@@ -101,7 +101,7 @@ const Addresses = ({
               className="mt-6 w-full sm:w-auto sm:min-w-[260px] px-8"
               data-testid="submit-address-button"
             >
-              Continue to delivery
+              Continue to payment
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>

@@ -37,7 +37,7 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
   // exactly the window during which `cart.item_subtotal`/`total` below
   // are stale — see `CartTotals`'s own comment for why they're dimmed
   // rather than recomputed.
-  const { isPending } = useCart()
+  const { isPending, standardDeliveryFee } = useCart()
 
   return (
     <div className="flex flex-col gap-6 rounded-radius-md border border-border bg-surface-elevated p-5 small:p-6">
@@ -53,7 +53,11 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
       </div>
 
       <div className="border-t border-divider pt-5">
-        <CartTotals totals={cart} isPending={isPending} />
+        <CartTotals
+          totals={cart}
+          isPending={isPending}
+          knownDeliveryFee={standardDeliveryFee}
+        />
       </div>
 
       <div className="border-t border-divider pt-5">
