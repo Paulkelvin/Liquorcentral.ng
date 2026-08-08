@@ -77,7 +77,7 @@ export default async function ProductPreview({
   const catalogFact = showCatalogBadge
     ? isFoodCentral
       ? "Food Central"
-      : "Wine & Spirits"
+      : "Liquor"
     : isFoodCentral && catalogProduct.food_details?.prep_time_minutes
     ? `~${catalogProduct.food_details.prep_time_minutes} min prep`
     : null

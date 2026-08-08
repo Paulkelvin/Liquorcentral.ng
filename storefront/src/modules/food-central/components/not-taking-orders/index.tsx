@@ -27,7 +27,7 @@ export default function NotTakingOrders({ title }: { title: string }) {
             href="/store"
             className="inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-colors duration-standard ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active px-4 py-2 text-body"
           >
-            Browse Wine &amp; Spirits
+            Browse Liquor
           </LocalizedClientLink>
         }
       />

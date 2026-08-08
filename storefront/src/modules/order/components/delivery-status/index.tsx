@@ -24,7 +24,7 @@ export default function DeliveryStatus({
     <div className="flex flex-col gap-y-8">
       <WineDeliveryStatus
         order={order}
-        heading={isMixed ? "Wine & Spirits status" : "Order status"}
+        heading={isMixed ? "Liquor status" : "Order status"}
       />
       <FoodOrderStatus
         order={order}

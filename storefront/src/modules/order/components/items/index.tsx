@@ -68,7 +68,7 @@ const Items = ({ order }: ItemsProps) => {
   return (
     <div className="flex flex-col">
       <Divider className="!mb-0" />
-      {renderGroup("Wine & Spirits", wineLines)}
+      {renderGroup("Liquor", wineLines)}
       {renderGroup("Food Central", foodLines)}
     </div>
   )

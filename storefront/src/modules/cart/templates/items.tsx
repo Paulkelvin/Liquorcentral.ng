@@ -58,7 +58,7 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
             <summary className="cursor-pointer select-none">Why is my cart split?</summary>
             <p className="mt-2 max-w-sm">
               LiquorCentral is one company serving two catalogs with different delivery
-              models — Wine &amp; Spirits and Food Central are grouped separately so each
+              models — Liquor and Food Central are grouped separately so each
               one&apos;s delivery promise stays clear, but everything still checks out together
               as one order.
             </p>
@@ -67,7 +67,7 @@ const ItemsTemplate = ({ cart, giftWrap, stockByVariantId }: ItemsTemplateProps)
       )}
 
       <FulfillmentGroup
-        title="Wine & Spirits"
+        title="Liquor"
         icon={<TruckFast className="mt-1 shrink-0 text-text-secondary" aria-hidden="true" />}
         deliveryMessage="Delivered across all of Lagos."
         items={wineLines}

@@ -286,7 +286,7 @@ export default function MobileNavDrawer({
                     {/* A quiet uppercase group label carries the section
                         break — no horizontal rules anywhere in this list. */}
                     <h3 className="px-3 mb-2 text-caption font-medium uppercase tracking-wider text-text-muted">
-                      Wine &amp; Spirits
+                      Liquor
                     </h3>
                     <ul className="flex flex-col gap-0.5">
                       {topLevel.map((category) => {

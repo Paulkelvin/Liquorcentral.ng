@@ -45,7 +45,7 @@ export default function MobileWayfindingStrip() {
               departmentSegmentState(!isFoodCentral)
             )}
           >
-            Wine &amp; Spirits
+            Liquor
           </LocalizedClientLink>
         }
         foodSlot={

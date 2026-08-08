@@ -281,7 +281,7 @@ export default function CartDrawer() {
             ) : (
               <>
                 <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-4">
-                  {renderGroup("Wine & Spirits", wineLines)}
+                  {renderGroup("Liquor", wineLines)}
                   {renderGroup("Food Central", foodLines)}
                   {giftWrapByParent.size > 0 && (
                     <p className="text-caption text-text-muted">

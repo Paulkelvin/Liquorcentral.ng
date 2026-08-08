@@ -102,7 +102,7 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
 
   return (
     <div className="flex flex-col gap-6">
-      {renderGroup("Wine & Spirits", wineLines)}
+      {renderGroup("Liquor", wineLines)}
       {renderGroup("Food Central", foodLines)}
     </div>
   )

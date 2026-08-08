@@ -59,7 +59,7 @@ export type Campaign = {
 
 export const ACTIVE_CAMPAIGN: Campaign = {
   collectionHandle: "featured-wines-spirits",
-  eyebrow: "Wine & Spirits",
+  eyebrow: "Liquor",
   title: "Weekend Collection",
   description:
     "Curated bottles for slow evenings and unforgettable gatherings.",

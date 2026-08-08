@@ -89,7 +89,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         segments={[
           { label: "Home", href: "/" },
           {
-            label: isFoodCentral ? "Food Central" : "Wine & Spirits",
+            label: isFoodCentral ? "Food Central" : "Liquor",
             href: isFoodCentral ? "/food-central" : "/store",
           },
           ...(category
