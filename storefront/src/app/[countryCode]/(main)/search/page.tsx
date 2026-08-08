@@ -94,8 +94,8 @@ export default async function SearchPage(props: Props) {
                 itemNoun="result"
                 emptyStateFallbackHref="/store"  // no route exists for a bare /categories index
                 emptyStateTitle={`No results for "${query}"`}
-                emptyStateDescription="Try a different search term, or browse Wine & Spirits or Food Central from the navigation."
-                emptyStateActionLabel="Browse Wine & Spirits"
+                emptyStateDescription="Try a different search term, or browse Liquor or Food Central from the navigation."
+                emptyStateActionLabel="Browse Liquor"
               />
             </Suspense>
           </div>

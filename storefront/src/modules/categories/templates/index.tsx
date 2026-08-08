@@ -56,9 +56,11 @@ export default async function CategoryTemplate({
     // There is no route for a bare `/categories` index — only
     // `/categories/[handle]` exists — so this dead-ended in a 404 for
     // every category page's breadcrumb. `/store` is the site's
-    // established "everything, unfiltered" destination (the same one
-    // "Shop by category"'s own "View all" link uses on the homepage).
-    { label: "Wine & Spirits", href: "/store" },
+    // established "every Liquor product, unfiltered" destination (the
+    // same one "Shop by category"'s own "View all" link uses on the
+    // homepage) — Food Central is a separate catalog with its own nav
+    // entry, not reachable through this breadcrumb.
+    { label: "Liquor", href: "/store" },
     ...parents
       .slice()
       .reverse()

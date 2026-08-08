@@ -5,8 +5,8 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 import StoreTemplate from "@modules/store/templates"
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+  title: "Liquor",
+  description: "Explore our full range of wine, spirits, beer and more.",
 }
 
 type StorePageSearchParams = Record<string, string | string[] | undefined> & {

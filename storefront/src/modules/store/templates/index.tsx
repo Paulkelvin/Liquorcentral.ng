@@ -44,7 +44,7 @@ const StoreTemplate = async ({
             className="min-w-0 truncate text-[22px] font-semibold md:text-[28px]"
             data-testid="store-page-title"
           >
-            All products
+            Liquor
           </h1>
           <SortProducts sortBy={sort} data-testid="sort-by-container" />
         </div>
@@ -54,6 +54,7 @@ const StoreTemplate = async ({
             page={pageNumber}
             countryCode={countryCode}
             optionValueIds={optionValueIds}
+            excludeFoodCentral
           />
         </Suspense>
       </div>

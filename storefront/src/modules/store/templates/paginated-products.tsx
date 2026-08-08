@@ -43,10 +43,11 @@ export default async function PaginatedProducts({
   showCatalogBadge,
   countryCode,
   optionValueIds,
+  excludeFoodCentral,
   emptyStateFallbackHref,
   emptyStateTitle = "Nothing available right now",
   emptyStateDescription = "Check back soon, or browse another category.",
-  emptyStateActionLabel = "Shop Wine & Spirits",
+  emptyStateActionLabel = "Shop Liquor",
   itemNoun = "product",
 }: {
   sortBy?: SortOptions
@@ -60,6 +61,11 @@ export default async function PaginatedProducts({
   showCatalogBadge?: boolean
   countryCode: string
   optionValueIds?: OptionValueIds
+  /** See `listProductsWithSort`'s own comment — the Liquor listing's own
+   * "no food" scoping. Not set by category pages (already scoped by
+   * `category_id`, which Food Central items never carry) or search
+   * (deliberately unscoped across both catalogs). */
+  excludeFoodCentral?: boolean
   /** §21 — "nothing available right now" links to a sibling category/collection. */
   emptyStateFallbackHref?: string
   emptyStateTitle?: string
@@ -114,6 +120,7 @@ export default async function PaginatedProducts({
     countryCode,
     optionValueIds,
     cumulative: true,
+    excludeFoodCentral,
   })
 
   if (count === 0) {

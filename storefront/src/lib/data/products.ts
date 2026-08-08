@@ -195,6 +195,7 @@ export const listProductsWithSort = async ({
   countryCode,
   optionValueIds,
   cumulative = false,
+  excludeFoodCentral = false,
 }: {
   page?: number
   queryParams?: ProductListQueryParams
@@ -212,6 +213,24 @@ export const listProductsWithSort = async ({
    * complete, server-rendered content."
    */
   cumulative?: boolean
+  /**
+   * Liquor's own catalog is "everything that isn't Food Central" — Paul:
+   * "when people click [Liquor] in the header... I want it to show only
+   * alcohol. No food involved." Food Central dishes carry no product
+   * category at all (confirmed against the live catalog: 19 of 91
+   * products), so a category filter can't exclude them — the only
+   * reliable signal is the same `food_details` linked module
+   * `isFoodCentralItem` already checks at the cart-line level
+   * (`lib/util/cart-fulfillment.ts`).
+   *
+   * The Store API has no "linked module absent" query filter, so this
+   * forces the same fetch-everything-then-filter-locally path
+   * `needsLocalFilter` already uses for option filters — mirroring
+   * `FoodCentralMenuGrid`'s own identical problem in reverse (a single
+   * paged request "spent most of its budget" on the other catalog and
+   * silently dropped items past the page boundary).
+   */
+  excludeFoodCentral?: boolean
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number }
   nextPage: number | null
@@ -226,22 +245,38 @@ export const listProductsWithSort = async ({
   const windowEnd = page * limit
 
   const needsLocalSort = sortBy === "price_asc" || sortBy === "price_desc"
-  const needsLocalFilter = optionFilters.length > 0
+  const needsLocalFilter = optionFilters.length > 0 || excludeFoodCentral
 
   if (needsLocalSort || needsLocalFilter) {
     const { products, count } = await listAllProducts({
       queryParams: {
         ...queryParams,
-        ...(needsLocalFilter ? { option_value_id: optionFilters } : {}),
+        ...(optionFilters.length ? { option_value_id: optionFilters } : {}),
+        ...(excludeFoodCentral
+          ? {
+              fields: [queryParams?.fields, "+food_details.*"]
+                .filter(Boolean)
+                .join(","),
+            }
+          : {}),
       },
       countryCode,
     })
 
-    const sortedProducts = sortProducts(products, sortBy)
-    // The fetched set is the filtered set — an option filter is applied
-    // by the API, so `products.length` and `count` agree unless the
+    const scopedProducts = excludeFoodCentral
+      ? products.filter(
+          (p) => !(p as unknown as { food_details?: unknown }).food_details
+        )
+      : products
+
+    const sortedProducts = sortProducts(scopedProducts, sortBy)
+    // The fetched set is the filtered set — an option filter (or the
+    // food_details exclusion above) is already applied, so
+    // `scopedProducts.length` and the true total agree unless the
     // catalog exceeded the local ceiling above.
-    const filteredCount = Math.max(products.length, Math.min(count, MAX_LOCALLY_SORTED_PRODUCTS))
+    const filteredCount = excludeFoodCentral
+      ? scopedProducts.length
+      : Math.max(products.length, Math.min(count, MAX_LOCALLY_SORTED_PRODUCTS))
 
     return {
       response: {

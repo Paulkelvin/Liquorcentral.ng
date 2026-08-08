@@ -59,7 +59,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
         aria-current={isActive ? "page" : undefined}
         className={clx(DEPARTMENT_SEGMENT, activeClass)}
       >
-        Wine &amp; Spirits
+        Liquor
       </LocalizedClientLink>
     )
   }
@@ -90,7 +90,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
             data-testid="mega-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >
-            Wine &amp; Spirits
+            Liquor
           </PopoverButton>
 
           <Transition
@@ -108,7 +108,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
               data-testid="mega-menu-panel"
             >
               <nav
-                aria-label="Wine & Spirits categories"
+                aria-label="Liquor categories"
                 className="ds-container py-8 grid grid-cols-1 sm:grid-cols-3 gap-8"
               >
                 {columns.map((column, columnIndex) => (

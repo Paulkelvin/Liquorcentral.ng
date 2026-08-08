@@ -159,7 +159,7 @@ const STATEMENTS = [
   {
     Icon: TruckIcon,
     title: "Nationwide delivery",
-    subtitle: "Wine & Spirits, anywhere in Nigeria",
+    subtitle: "Liquor, anywhere in Nigeria",
   },
   {
     Icon: ScooterIcon,

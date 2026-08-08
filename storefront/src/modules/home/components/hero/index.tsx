@@ -223,7 +223,7 @@ export default function Hero() {
               className="group inline-flex h-[52px] items-center justify-center gap-2 whitespace-nowrap rounded-radius-md bg-primary px-5 font-medium text-surface-elevated transition-colors duration-standard ease-in-out sm:flex-1 hover:bg-primary-hover active:bg-primary-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
               data-testid="hero-wine-spirits-link"
             >
-              Shop Wine &amp; Spirits
+              Shop Liquor
               <svg
                 aria-hidden="true"
                 viewBox="0 0 20 20"
