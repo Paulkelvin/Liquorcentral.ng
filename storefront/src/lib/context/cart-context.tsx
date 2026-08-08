@@ -23,18 +23,106 @@ type OptimisticAction =
   | { type: "remove"; lineId: string }
   | { type: "add"; item: HttpTypes.StoreCartLineItem }
 
+/** Line-item money fields that scale with quantity, in major units. */
+const SCALABLE_LINE_FIELDS = [
+  "subtotal",
+  "total",
+  "original_total",
+  "original_subtotal",
+  "discount_total",
+  "tax_total",
+] as const
+
+type MoneyBag = Record<string, unknown>
+
+/**
+ * Re-derives a line's money for a new quantity by scaling the server's
+ * own figures for it, rather than recomputing from `unit_price`.
+ *
+ * That distinction is the whole point: `total / quantity` already has
+ * any per-unit promotion, tax-inclusive rounding or price-list override
+ * baked into it, so scaling preserves them, where `unit_price × qty`
+ * would quietly discard a discount and show the customer a higher number
+ * than they are actually charged.
+ *
+ * Fields the server never sent stay absent — this only ever scales a
+ * figure that was already there.
+ */
+function scaleLineMoney(
+  item: HttpTypes.StoreCartLineItem,
+  nextQuantity: number
+): HttpTypes.StoreCartLineItem {
+  const previousQuantity = item.quantity
+  const next = { ...item, quantity: nextQuantity } as MoneyBag
+
+  if (previousQuantity > 0) {
+    for (const field of SCALABLE_LINE_FIELDS) {
+      const value = (item as unknown as MoneyBag)[field]
+      if (typeof value === "number") {
+        next[field] = (value / previousQuantity) * nextQuantity
+      }
+    }
+  }
+
+  return next as unknown as HttpTypes.StoreCartLineItem
+}
+
+const money = (value: unknown): number =>
+  typeof value === "number" ? value : 0
+
+/**
+ * Moves the cart-level figures by the same amount the changed line moved.
+ *
+ * A delta rather than a re-sum of every line: not every line in an
+ * optimistic cart necessarily carries every field (a line added moments
+ * ago is built on the client), and summing a partially-populated list
+ * would read as a sudden drop to near-zero rather than a small change.
+ * Applying only the difference leaves every untouched figure exactly as
+ * the server last stated it.
+ *
+ * Tax and shipping are deliberately left alone: both depend on an
+ * address and a chosen delivery option that don't exist yet at cart
+ * stage (the UI says "calculated at checkout" for precisely that
+ * reason), so there is nothing here to scale that wouldn't be a guess.
+ */
+function applyCartDelta(
+  cart: HttpTypes.StoreCart,
+  subtotalDelta: number,
+  totalDelta: number
+): HttpTypes.StoreCart {
+  const next = { ...cart } as MoneyBag
+
+  if (typeof cart.item_subtotal === "number") {
+    next.item_subtotal = cart.item_subtotal + subtotalDelta
+  }
+  if (typeof cart.subtotal === "number") {
+    next.subtotal = cart.subtotal + subtotalDelta
+  }
+  if (typeof cart.total === "number") {
+    next.total = cart.total + totalDelta
+  }
+
+  return next as unknown as HttpTypes.StoreCart
+}
+
 /**
  * Applies a pending change to the cart the customer is looking at, so a
  * quantity tap or a removal shows immediately rather than after a server
  * round trip.
  *
- * Deliberately touches quantities and line membership only — never a
- * price, a subtotal or a total. Medusa owns all money on this platform
- * (tax, delivery and promotions are computed server-side against the
- * region and the chosen shipping method), so recomputing any of it here
- * would risk showing a figure the customer is not actually charged.
- * Totals continue to come from the server cart; `isPending` lets the UI
- * mark them as settling instead of guessing at them.
+ * **This now moves money as well as quantities, which is a reversal.**
+ * It previously touched quantity and line membership only, on the
+ * reasoning that Medusa owns every figure and a client-side guess risks
+ * showing a price the customer isn't charged. The quantity therefore
+ * changed instantly while the line price and the subtotal sat on their
+ * old values until the round trip landed — Paul's own read: the stepper
+ * is fast "but the price is not." Since the figures here are *scaled
+ * from the server's own numbers* rather than recomputed from scratch
+ * (see `scaleLineMoney`), and since the authoritative cart still
+ * overwrites all of it the moment it arrives, the risk that motivated
+ * the original rule doesn't apply to the fields being touched. Anything
+ * genuinely unknowable before checkout — tax, delivery — is still left
+ * untouched rather than guessed.
  */
 function reduceOptimistic(
   cart: HttpTypes.StoreCart | null,
@@ -45,20 +133,37 @@ function reduceOptimistic(
   }
 
   switch (action.type) {
-    case "setQuantity":
-      return {
-        ...cart,
-        items: (cart.items ?? []).map((item) =>
-          item.id === action.lineId
-            ? { ...item, quantity: action.quantity }
-            : item
-        ),
+    case "setQuantity": {
+      const items = cart.items ?? []
+      const target = items.find((item) => item.id === action.lineId)
+      if (!target) {
+        return cart
       }
-    case "remove":
-      return {
-        ...cart,
-        items: (cart.items ?? []).filter((item) => item.id !== action.lineId),
-      }
+
+      const scaled = scaleLineMoney(target, action.quantity)
+
+      return applyCartDelta(
+        {
+          ...cart,
+          items: items.map((item) => (item.id === action.lineId ? scaled : item)),
+        },
+        money(scaled.subtotal) - money(target.subtotal),
+        money(scaled.total) - money(target.total)
+      )
+    }
+    case "remove": {
+      const items = cart.items ?? []
+      const target = items.find((item) => item.id === action.lineId)
+
+      return applyCartDelta(
+        {
+          ...cart,
+          items: items.filter((item) => item.id !== action.lineId),
+        },
+        -money(target?.subtotal),
+        -money(target?.total)
+      )
+    }
     case "add": {
       const items = cart.items ?? []
       const variantId = action.item.variant_id ?? action.item.variant?.id
@@ -76,20 +181,32 @@ function reduceOptimistic(
       // server was always going to merge these into a single line, so the
       // optimistic view should already show that outcome.
       if (existingIndex !== -1) {
-        return {
-          ...cart,
-          items: items.map((item, index) =>
-            index === existingIndex
-              ? { ...item, quantity: item.quantity + action.item.quantity }
-              : item
-          ),
-        }
+        const target = items[existingIndex]
+        const scaled = scaleLineMoney(
+          target,
+          target.quantity + action.item.quantity
+        )
+
+        return applyCartDelta(
+          {
+            ...cart,
+            items: items.map((item, index) =>
+              index === existingIndex ? scaled : item
+            ),
+          },
+          money(scaled.subtotal) - money(target.subtotal),
+          money(scaled.total) - money(target.total)
+        )
       }
 
-      return {
-        ...cart,
-        items: [...items, action.item],
-      }
+      return applyCartDelta(
+        {
+          ...cart,
+          items: [...items, action.item],
+        },
+        money(action.item.subtotal),
+        money(action.item.total)
+      )
     }
     default:
       return cart

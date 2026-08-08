@@ -206,7 +206,12 @@ export default function QuickAddButton({
       // identical fix for why the optimistic line needs it too.
       thumbnail: demoImageFor(product.handle)?.src ?? product.thumbnail,
       variant: singleVariant,
+      // See product-actions' identical note — this is what keeps the row's
+      // key (and so its photograph) stable across the optimistic→settled
+      // swap.
+      variant_id: singleVariant.id,
       unit_price: unitPrice,
+      subtotal: unitPrice,
       total: unitPrice,
       original_total: unitOriginalPrice,
       created_at: now,

@@ -70,7 +70,10 @@ const FulfillmentGroup = ({
           })
           .map((item) => (
             <Item
-              key={item.id}
+              // Variant, not line id — see cart-drawer's own note for the
+              // image flash that keying on a soon-to-be-replaced
+              // `optimistic-…` id produced.
+              key={item.variant_id ?? item.id}
               item={item}
               giftWrapItem={giftWrapByParent.get(item.id)}
               giftWrap={giftWrap}

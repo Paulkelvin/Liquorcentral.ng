@@ -1,7 +1,6 @@
 "use client"
 
 import { convertToLocale } from "@lib/util/money"
-import { clx } from "@modules/common/components/ui"
 import React from "react"
 
 type CartTotalsProps = {
@@ -32,14 +31,11 @@ type CartTotalsProps = {
   knownDeliveryFee?: number | null
   /**
    * True while a quantity/remove change is in flight elsewhere on the
-   * page. These figures come straight from the server cart and are
-   * deliberately never recomputed client-side (see this component's own
-   * comment on why a guessed total is worse than an honest one) — so
-   * immediately after a "+" tap they're still the *previous* totals for
-   * up to a full round trip. Dimming them is the same signal the cart
-   * drawer's own subtotal already gives during that exact window
-   * (`cart-drawer/index.tsx`): "this number is settling," not "nothing
-   * happened."
+   * page. **Accepted but no longer rendered** — see the note above the
+   * `return` for why these figures stopped needing a "settling" signal.
+   * Kept on the type so callers already passing it don't break, and
+   * because it's the right hook if a genuinely unknowable figure ever
+   * needs marking here.
    */
   isPending?: boolean
 }
@@ -55,7 +51,6 @@ type CartTotalsProps = {
  */
 const CartTotals: React.FC<CartTotalsProps> = ({
   totals,
-  isPending,
   knownDeliveryFee,
 }) => {
   const {
@@ -80,15 +75,18 @@ const CartTotals: React.FC<CartTotalsProps> = ({
     : knownDeliveryFee
   const deliveryKnown = shippingKnown || knownDeliveryFee != null
 
+  /*
+   * **No longer dimmed while a change is in flight.** `isPending` used to
+   * fade this whole block to 50% opacity, because the figures really were
+   * stale until the server answered. They aren't any more — the cart the
+   * caller passes now carries the in-flight change already scaled into it
+   * (see `scaleLineMoney` in cart-context), so what renders here is the
+   * settled number. Greying an already-correct total made the panel look
+   * like it was still catching up, which is the exact impression this
+   * change exists to remove.
+   */
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className={clx(
-        "transition-opacity duration-standard",
-        isPending && "opacity-50"
-      )}
-    >
+    <div role="status" aria-live="polite">
       {/* `gap-y-3` between rows, and each row's own label may wrap to two
           lines — at 10px apart the breakdown read as one block of text
           rather than four scannable figures. */}

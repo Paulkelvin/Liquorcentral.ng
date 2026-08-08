@@ -85,6 +85,18 @@ const Item = ({
    */
   const isOptimisticallyRemoved = !!optimisticCart && !optimisticItem
 
+  /**
+   * The line to read *money* from. Same reasoning as `displayQuantity`
+   * one step further: the quantity moved the instant the stepper was
+   * tapped, but every price beside it still came off the `item` prop —
+   * the server cart this page rendered with — so the line total sat on
+   * its old figure until the round trip landed. The optimistic line
+   * carries totals scaled from the server's own numbers (see
+   * `scaleLineMoney` in cart-context), so preferring it here lets the
+   * price move with the quantity instead of trailing it.
+   */
+  const displayItem = optimisticItem ?? item
+
   // `useCart().setQuantity` (and `removeItem` below) already paint the
   // change immediately via the provider's own optimistic cart — this used
   // to run its own separate `await`+spinner on top of that, which is what
@@ -226,7 +238,7 @@ const Item = ({
                 className="txt-medium-plus text-text-primary"
                 data-testid="product-line-total"
               >
-                <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+                <LineItemPrice item={displayItem} style="tight" currencyCode={currencyCode} />
               </div>
               <DeleteButton
                 id={item.id}
@@ -273,12 +285,12 @@ const Item = ({
             these the prefix became a separate flex item and wrapped
             away from the figure it qualifies. */}
         <span className="mt-0.5 flex items-baseline gap-x-1 whitespace-nowrap text-caption text-text-muted [&_span]:!text-caption">
-          <span className="shrink-0">{item.quantity} ×</span>
+          <span className="shrink-0">{displayQuantity} ×</span>
           <LineItemUnitPrice item={item} style="tight" currencyCode={currencyCode} />
         </span>
       </div>
       <div className="shrink-0 whitespace-nowrap text-right text-[14px] font-medium text-text-primary">
-        <LineItemPrice item={item} style="tight" currencyCode={currencyCode} />
+        <LineItemPrice item={displayItem} style="tight" currencyCode={currencyCode} />
       </div>
     </li>
   )

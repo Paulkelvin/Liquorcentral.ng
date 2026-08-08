@@ -32,12 +32,27 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
  */
 const Summary = ({ cart, itemCount }: SummaryProps) => {
   const step = getCheckoutStep(cart)
-  // The cart page's own quantity/remove taps go through this same
-  // provider (`Item`'s `useOptionalCart`), so `isPending` here reflects
-  // exactly the window during which `cart.item_subtotal`/`total` below
-  // are stale — see `CartTotals`'s own comment for why they're dimmed
-  // rather than recomputed.
-  const { isPending, standardDeliveryFee } = useCart()
+  const {
+    isPending,
+    standardDeliveryFee,
+    cart: optimisticCart,
+  } = useCart()
+
+  /**
+   * Read the breakdown from the optimistic cart when there is one.
+   *
+   * The cart page renders from its own server fetch, so before this the
+   * figures here only moved once that round trip completed — the stepper
+   * beside them updated instantly while the subtotal sat still, which is
+   * exactly the lag Paul called out. The provider's cart carries the same
+   * server figures with the in-flight change already scaled into them
+   * (see `scaleLineMoney` in cart-context), so this shows the same number
+   * a moment sooner rather than a different one.
+   *
+   * Falls back to the page's own `cart` whenever the provider has none —
+   * the two are the same cart, fetched by the layout and by this page.
+   */
+  const totals = optimisticCart ?? cart
 
   return (
     <div className="flex flex-col gap-6 rounded-radius-md border border-border bg-surface-elevated p-5 small:p-6">
@@ -54,7 +69,7 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
 
       <div className="border-t border-divider pt-5">
         <CartTotals
-          totals={cart}
+          totals={totals}
           isPending={isPending}
           knownDeliveryFee={standardDeliveryFee}
         />

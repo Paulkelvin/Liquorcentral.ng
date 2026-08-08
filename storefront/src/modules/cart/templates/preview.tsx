@@ -78,7 +78,8 @@ const ItemsPreviewTemplate = ({ cart }: ItemsTemplateProps) => {
               })
               .map((item) => (
                 <Item
-                  key={item.id}
+                  // Variant, not line id — see cart-drawer's own note.
+                  key={item.variant_id ?? item.id}
                   item={item}
                   type="preview"
                   currencyCode={cart.currency_code}

@@ -244,7 +244,14 @@ export default function ProductActions({
       // image the cart-item components apply once the server cart lands.
       thumbnail: demoImageFor(product.handle)?.src ?? product.thumbnail,
       variant: selectedVariant,
+      // Explicit, not just left to `variant.id`: every cart list keys its
+      // rows off this (see cart-drawer's own note), and the settled
+      // server line carries it — so without it here the row would be
+      // keyed on the throwaway `optimistic-…` id, remount on settle, and
+      // visibly re-load its photograph.
+      variant_id: selectedVariant.id,
       unit_price: unitPrice,
+      subtotal: unitPrice * quantity,
       total: unitPrice * quantity,
       original_total: unitOriginalPrice * quantity,
       created_at: now,

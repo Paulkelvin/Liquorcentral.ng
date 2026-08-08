@@ -20,7 +20,6 @@ import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
 import QuantityStepper from "@modules/products/components/quantity-stepper"
-import { clx } from "@modules/common/components/ui"
 
 /**
  * The platform's primary cart surface: a right-anchored side sheet that
@@ -40,7 +39,6 @@ export default function CartDrawer() {
     isDrawerOpen,
     closeDrawer,
     setQuantity,
-    isPending,
     standardDeliveryFee,
   } = useCart()
 
@@ -60,7 +58,22 @@ export default function CartDrawer() {
     const demo = demoImageFor(item.product_handle)
 
     return (
-    <li key={item.id} className="flex gap-4 py-5" data-testid="cart-item">
+    // Keyed on the *variant*, not the line id. A line added moments ago
+    // carries a throwaway `optimistic-…` id that the server then replaces
+    // with a real one, and keying on that made React tear the whole row
+    // down and rebuild it on settle — remounting the `<img>`, which
+    // re-decoded and flashed the photograph, and re-running the row's
+    // entrance so the divider appeared to pop in. The variant is the one
+    // identifier that is the same before and after, so the row (and its
+    // already-decoded image) simply stays put. Safe as a key here because
+    // Medusa merges same-variant lines into one, and gift-wrap lines —
+    // the one case that can repeat a variant — are split out of
+    // `productLines` before this ever runs.
+    <li
+      key={item.variant_id ?? item.id}
+      className="flex gap-4 py-5"
+      data-testid="cart-item"
+    >
       {/* `self-stretch` + a fixed width, rather than a fixed square: the
           photo then spans the full height of the title/variant/price stack
           beside it, so the two columns read as one block instead of a
@@ -291,11 +304,13 @@ export default function CartDrawer() {
                     <span className="text-[17px] font-semibold leading-none text-text-primary">
                       Subtotal
                     </span>
+                    {/* Not dimmed while settling any more — `item_subtotal`
+                        now arrives with the in-flight change already scaled
+                        into it (see `scaleLineMoney` in cart-context), so
+                        this is the settled figure and fading it only made a
+                        correct number look like it was still catching up. */}
                     <span
-                      className={clx(
-                        "text-[17px] font-semibold leading-none text-text-primary transition-opacity duration-standard",
-                        isPending && "opacity-50"
-                      )}
+                      className="text-[17px] font-semibold leading-none text-text-primary"
                       data-testid="cart-subtotal"
                       data-value={cart?.item_subtotal ?? 0}
                     >
