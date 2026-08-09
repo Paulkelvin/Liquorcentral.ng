@@ -47,6 +47,32 @@ function contentSecurityPolicy() {
     }
   })()
 
+  /**
+   * The Sentry SDK sends every error report to the ingest host embedded
+   * in its own DSN (e.g. `o4507xxxx.ingest.us.sentry.io`) — not a fixed,
+   * guessable domain, and it varies by org/region. Deriving it from
+   * `NEXT_PUBLIC_SENTRY_DSN` rather than hand-listing a wildcard is the
+   * same reasoning `backendOrigin` above already uses, and it's why this
+   * was missing in the first place: Sentry was wired in after this CSP
+   * was written and verified, and nothing re-ran the verification against
+   * the *new* outbound host. **This closed allowlist is exactly why
+   * error reporting looked silently broken** — the error genuinely
+   * happened and Sentry's SDK genuinely tried to send it, but the browser
+   * refused the network request before it left the page, with no
+   * console message a customer would ever report and no error on
+   * Sentry's own side to explain the silence.
+   */
+  const sentryOrigin = (() => {
+    if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      return null
+    }
+    try {
+      return new URL(process.env.NEXT_PUBLIC_SENTRY_DSN).origin
+    } catch {
+      return null
+    }
+  })()
+
   const directives = {
     "default-src": ["'self'"],
     // 'unsafe-eval' is dev-only — React Refresh/HMR needs it; it is never
@@ -86,6 +112,7 @@ function contentSecurityPolicy() {
       "https://*.apicdn.sanity.io",
       "https://api.stripe.com",
       "https://api.paystack.co",
+      ...(sentryOrigin ? [sentryOrigin] : []),
       // HMR websocket, dev only.
       ...(isDev ? ["ws:", "wss:"] : []),
     ],
