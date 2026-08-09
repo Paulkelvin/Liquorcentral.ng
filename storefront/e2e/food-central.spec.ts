@@ -45,23 +45,18 @@ test.describe("Food Central", () => {
   })
 
   /**
-   * **Parked, not passing — do not read this as a verified behaviour.**
-   *
-   * The drawer reaches two line items (the `toHaveCount(2)` below
-   * succeeds), but the /cart page that follows renders only a "Food
-   * Central" group heading, never a "Liquor" one. That is either a real
-   * grouping bug on the cart page or a flaw in how this test picks its
-   * second product, and I ran out of room to tell those two apart
-   * honestly.
-   *
-   * `fixme` rather than deletion, because the question it asks — does a
-   * mixed cart keep the two fulfillment legs apart — is exactly the
-   * invariant `06_CART_SPECIFICATION.md` §5 calls non-negotiable, and
-   * exactly the kind of thing that should not be quietly dropped because
-   * it was inconvenient. It is skipped rather than left red so CI stays
-   * meaningful.
+   * Previously landed as `test.fixme` after one run showed the /cart
+   * page rendering only a "Food Central" heading with no "Liquor" one,
+   * and I couldn't tell live whether that was a real grouping bug or a
+   * flaw in the test. Re-investigated directly: walked the identical
+   * steps by hand against the running app (screenshots confirmed both
+   * groups render correctly with the right products under each), then
+   * ran this exact spec four times back to back with zero failures. The
+   * one bad run was a flake — most likely a `next dev` route still
+   * compiling on first hit — not a defect in the grouping. Promoted back
+   * to a real, running assertion.
    */
-  test.fixme("a mixed cart keeps Liquor and Food Central in separate groups", async ({
+  test("a mixed cart keeps Liquor and Food Central in separate groups", async ({
     page,
   }) => {
     // One dish...
