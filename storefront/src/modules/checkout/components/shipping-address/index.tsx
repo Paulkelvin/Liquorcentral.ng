@@ -1,5 +1,7 @@
 import { HttpTypes } from "@medusajs/types"
-import { Container, Input, Text } from "@modules/common/components/ui"
+import { Container, Input, Label, Text } from "@modules/common/components/ui"
+import NativeSelect from "@modules/common/components/native-select"
+import { LAGOS_LGAS, LAGOS_STATE, NIGERIAN_STATES } from "@lib/constants/nigeria"
 import Checkbox from "@modules/common/components/checkbox"
 import { hasRealAddress } from "@lib/util/cart-fulfillment"
 import { mapKeys } from "lodash"
@@ -106,12 +108,27 @@ const ShippingAddress = ({
     }
   }, [cart])
 
+  const isLagosSelected =
+    formData["shipping_address.province"] === LAGOS_STATE
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+    const { name, value } = e.target
+
+    setFormData((prevState) => {
+      const next = { ...prevState, [name]: value }
+
+      // Changing State invalidates whatever City held: an LGA is
+      // meaningless outside Lagos, and a free-text city ("Wuse II")
+      // is not one of the LGA options the field is about to offer.
+      // Leaving it would submit a city that contradicts its own state,
+      // which is exactly the mismatch these pickers exist to prevent.
+      if (name === "shipping_address.province" && value !== prevState[name]) {
+        next["shipping_address.city"] = ""
+      }
+
+      return next
     })
   }
 
@@ -186,26 +203,65 @@ const ShippingAddress = ({
             rider find you faster.
           </Text>
         </div>
-        <Input
-          label="City / Area"
-          name="shipping_address.city"
-          placeholder="Victoria Island"
-          autoComplete="address-level2"
-          value={formData["shipping_address.city"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-city-input"
-        />
-        <Input
-          label="State"
-          name="shipping_address.province"
-          placeholder="Lagos"
-          autoComplete="address-level1"
-          value={formData["shipping_address.province"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-province-input"
-        />
+        {/* State is a picker, not a box — and in Lagos, City becomes an
+            LGA picker. Free text on both was the whole basis of the
+            "is this Lagos?" check that decides whether Food Central can
+            be delivered at all, so a blank State, a typo, or a street
+            called "Lagos" in another state each silently changed a real
+            order's eligibility. See `nigeria.ts` for the full reasoning.
+            Order swapped too: State is now answered first, because what
+            the City field should even offer depends on it. */}
+        <div className="flex flex-col gap-y-2">
+          <Label htmlFor="shipping-province">State</Label>
+          <NativeSelect
+            id="shipping-province"
+            name="shipping_address.province"
+            autoComplete="address-level1"
+            placeholder="Select a state"
+            value={formData["shipping_address.province"]}
+            onChange={handleChange}
+            required
+            data-testid="shipping-province-input"
+          >
+            {NIGERIAN_STATES.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </NativeSelect>
+        </div>
+        {isLagosSelected ? (
+          <div className="flex flex-col gap-y-2">
+            <Label htmlFor="shipping-city">Local Government Area</Label>
+            <NativeSelect
+              id="shipping-city"
+              name="shipping_address.city"
+              autoComplete="address-level2"
+              placeholder="Select an LGA"
+              value={formData["shipping_address.city"]}
+              onChange={handleChange}
+              required
+              data-testid="shipping-city-input"
+            >
+              {LAGOS_LGAS.map((lga) => (
+                <option key={lga} value={lga}>
+                  {lga}
+                </option>
+              ))}
+            </NativeSelect>
+          </div>
+        ) : (
+          <Input
+            label="City / Area"
+            name="shipping_address.city"
+            placeholder="Victoria Island"
+            autoComplete="address-level2"
+            value={formData["shipping_address.city"]}
+            onChange={handleChange}
+            required
+            data-testid="shipping-city-input"
+          />
+        )}
       </div>
       <div className="my-8">
         <Checkbox

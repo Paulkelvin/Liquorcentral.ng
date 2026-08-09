@@ -78,8 +78,11 @@ test.describe("Wine & Spirits checkout", () => {
     await page.getByTestId("shipping-first-name-input").fill("Test")
     await page.getByTestId("shipping-last-name-input").fill("Customer")
     await page.getByTestId("shipping-address-input").fill("1 Test Close")
-    await page.getByTestId("shipping-city-input").fill("Lagos")
-    await page.getByTestId("shipping-province-input").fill("Lagos")
+    // State, then City — State is a picker now, and choosing Lagos turns
+    // City into an LGA picker (and clears whatever City held), so the
+    // order matters.
+    await page.getByTestId("shipping-province-input").selectOption("Lagos")
+    await page.getByTestId("shipping-city-input").selectOption("Eti-Osa")
     await page
       .getByTestId("shipping-email-input")
       .fill(`e2e-${timestamp}@example.com`)
