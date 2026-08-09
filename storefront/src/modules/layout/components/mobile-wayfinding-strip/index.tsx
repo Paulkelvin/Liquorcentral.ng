@@ -6,6 +6,7 @@ import DepartmentSwitcherTrack, {
   DEPARTMENT_SEGMENT,
   departmentSegmentState,
 } from "@modules/layout/components/department-switcher-track"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 
 /**
@@ -34,6 +35,16 @@ export default function MobileWayfindingStrip() {
       className="sm:hidden border-b border-border bg-surface-elevated px-4 py-1.5"
       data-testid="mobile-wayfinding-strip"
     >
+      {/* The two destinations read as their own logo marks here rather
+          than as plain text — same links, same href/aria-current/click
+          behaviour as before, only the visible label changed. Each
+          image is capped at a fixed height with `w-auto` so it scales
+          to fit its own aspect ratio rather than being stretched, and
+          `object-contain` keeps it from cropping inside the pill.
+          `DEPARTMENT_SEGMENT` already centers its content
+          (`items-center justify-center`), so the swap needed no layout
+          changes beyond it. The image's own `alt` carries the same
+          accessible name the text used to. */}
       <DepartmentSwitcherTrack
         className="mx-auto max-w-[22rem]"
         wineSlot={
@@ -45,7 +56,14 @@ export default function MobileWayfindingStrip() {
               departmentSegmentState(!isFoodCentral)
             )}
           >
-            Liquor
+            <Image
+              src="/brand/logos/liquorcentral-logo.png"
+              alt="Liquor"
+              width={665}
+              height={196}
+              className="h-6 w-auto object-contain"
+              priority
+            />
           </LocalizedClientLink>
         }
         foodSlot={
@@ -57,7 +75,14 @@ export default function MobileWayfindingStrip() {
               departmentSegmentState(isFoodCentral)
             )}
           >
-            Food Central
+            <Image
+              src="/brand/logos/foodcentral-logo.png"
+              alt="Food Central"
+              width={697}
+              height={150}
+              className="h-5 w-auto object-contain"
+              priority
+            />
           </LocalizedClientLink>
         }
       />

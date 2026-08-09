@@ -87,14 +87,24 @@ test.describe("Food Central", () => {
       timeout: 10_000,
     })
     await page.getByTestId("add-product-button").click()
-    // Wait for the drawer to show *two* lines before navigating. Adding
-    // is a server action, and going straight to /cart aborted it
-    // in-flight — the cart then arrived holding only the dish, which
-    // reads exactly like the grouping being broken rather than the
-    // second add never having landed.
+    // Wait for the drawer to show *two* lines — but this is the
+    // *optimistic* count, which updates the instant the client reducer
+    // runs, not when the add-to-cart server action has actually
+    // finished. Confirmed directly against the real Medusa cart while
+    // chasing an earlier flaky run of this exact test: the server-side
+    // cart already held both items at that point every time, so the
+    // gap was never a real second-add failure — it was this test
+    // navigating to /cart before Next's own data cache for that route
+    // had revalidated against the now-completed mutation, so the
+    // server-rendered page it hit could still return the *previous*
+    // cached cart holding only the dish. `networkidle` waits out the
+    // server action's own in-flight request (and the RSC payload it
+    // returns) before navigating, which the optimistic count alone
+    // does not.
     await expect(page.getByTestId("cart-item")).toHaveCount(2, {
       timeout: 15_000,
     })
+    await page.waitForLoadState("networkidle")
 
     // The cart must show both departments as their own headed group —
     // 06_CART_SPECIFICATION.md §5's "never merged into one line".

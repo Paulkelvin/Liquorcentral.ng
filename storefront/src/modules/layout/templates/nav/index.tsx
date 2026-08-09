@@ -73,12 +73,20 @@ export default async function Nav() {
                 the display face" reads as a considered brand mark rather
                 than generic uppercase body text (no logomark exists yet;
                 see DECISION_LOG.md/BRAND_GUIDELINES.md for that open item). */}
+            {/* "LiquorCentral" → "Liquor & Food Central", on Paul's
+                direction — the wordmark now names both departments
+                rather than implying the site is liquor-only. Sized down
+                on mobile (`text-[15px]`, tracking loosened toward
+                normal) since the longer string shares that row with a
+                hamburger trigger and the cart icon; `whitespace-nowrap`
+                keeps it one line rather than wrapping into the header's
+                fixed height at the widths where it's tightest. */}
             <LocalizedClientLink
               href="/"
-              className="font-display text-heading-4 font-semibold tracking-tight text-text-primary hover:text-interactive"
+              className="whitespace-nowrap font-display text-[15px] font-semibold tracking-tight text-text-primary hover:text-interactive sm:text-heading-4"
               data-testid="nav-store-link"
             >
-              LiquorCentral
+              Liquor &amp; Food Central
             </LocalizedClientLink>
           </div>
 
