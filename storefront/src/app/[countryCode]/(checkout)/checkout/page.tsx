@@ -6,7 +6,7 @@ import PaymentWrapper from "@modules/checkout/components/payment-wrapper"
 import CheckoutForm from "@modules/checkout/templates/checkout-form"
 import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { Metadata } from "next"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -37,17 +37,25 @@ export default async function Checkout({ params }: Props) {
   const { countryCode } = await params
   const cart = await retrieveCart(undefined, CHECKOUT_CART_FIELDS)
 
-  if (!cart) {
-    return notFound()
-  }
-
   // §4, §19 — checkout is unreachable with an empty cart or an unresolved
   // blocking condition (a zero-purchasable line item) — both return the
   // customer to the cart with the condition still visible, per
   // `06_CART_SPECIFICATION.md` §20's own empty state and §12/§13's
   // unavailable-item labeling, never a broken or partially-rendered
   // checkout.
-  if (!cart.items?.length) {
+  //
+  // **No cart at all takes the same path as an empty one.** This used to
+  // `notFound()`, which was wrong on both counts: the route plainly
+  // exists, so "not found" is the wrong answer semantically, and it
+  // dead-ends the customer on a 404 instead of the cart's own empty
+  // state. It was also reachable by an ordinary action rather than a
+  // contrived one — `placeOrder` deliberately clears the cart cookie
+  // before redirecting to the confirmation page, so pressing **Back**
+  // after completing an order landed on `/checkout` with no cart and
+  // showed a 404 immediately after a successful purchase. A missing
+  // cart and an emptied cart are the same situation to a customer
+  // ("there is nothing to check out"), so they get the same answer.
+  if (!cart?.items?.length) {
     redirect(`/${countryCode}/cart`)
   }
 

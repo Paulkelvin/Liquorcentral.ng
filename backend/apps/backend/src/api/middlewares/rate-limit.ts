@@ -60,13 +60,39 @@ export function rateLimit({ name, windowMs, max }: RateLimitOptions) {
   ) => {
     try {
       const key = `ratelimit:${name}:${clientIp(req)}`
-      const count = await redis.incr(key)
-      if (count === 1) {
-        await redis.pexpire(key, windowMs)
-      }
+
+      /**
+       * INCR and PEXPIRE in one atomic step, rather than two awaited
+       * round trips.
+       *
+       * As two calls there is a window between them — a process restart,
+       * a Redis failover, or a rejected second command — where the
+       * counter exists with **no TTL at all**. Redis keeps such a key
+       * forever, so the very first request from an IP could leave a
+       * counter that never resets and never decays: that IP is then
+       * permanently locked out of logging in and out of placing orders,
+       * with no self-recovery. Rare, but the failure is silent,
+       * indefinite, and lands on exactly the routes a customer cannot
+       * route around.
+       *
+       * The `PTTL == -1` branch also repairs any key already stuck in
+       * that state from an earlier deploy, so this heals existing
+       * damage rather than only preventing new damage.
+       */
+      const [count, ttl] = (await redis.eval(
+        `local c = redis.call('INCR', KEYS[1])
+         local t = redis.call('PTTL', KEYS[1])
+         if c == 1 or t < 0 then
+           redis.call('PEXPIRE', KEYS[1], ARGV[1])
+           t = tonumber(ARGV[1])
+         end
+         return {c, t}`,
+        1,
+        key,
+        String(windowMs)
+      )) as [number, number]
 
       if (count > max) {
-        const ttl = await redis.pttl(key)
         res.setHeader("Retry-After", Math.ceil(Math.max(ttl, 0) / 1000))
         res.status(429).json({
           message: "Too many requests. Please try again shortly.",
