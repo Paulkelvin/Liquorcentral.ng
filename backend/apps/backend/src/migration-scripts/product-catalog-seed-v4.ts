@@ -1884,7 +1884,7 @@ export default async function product_catalog_seed({
   async function seedCuratedCollections() {
   const COLLECTIONS: { title: string; handle: string; productHandles: string[] }[] = [
     {
-      title: "Featured Wines & Spirits",
+      title: "Featured Liquor",
       handle: "featured-wines-spirits",
       productHandles: [
         "chateau-margaux-2015",
