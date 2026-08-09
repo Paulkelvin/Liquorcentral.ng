@@ -10,8 +10,30 @@ import {
   DEPARTMENT_SEGMENT,
   departmentSegmentState,
 } from "@modules/layout/components/department-switcher-track"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Fragment, useRef } from "react"
+
+/**
+ * The same logo mark used on the mobile wayfinding strip's matching
+ * tab — see that component's own comment for how it was extracted and
+ * why it's built the way it is. Kept as one shared element here rather
+ * than duplicated inline, since this desktop trigger has two separate
+ * places that render "Liquor" (the fallback link below, and the real
+ * Popover trigger) and both need to change together.
+ */
+function LiquorLogo() {
+  return (
+    <Image
+      src="/brand/logos/liquorcentral-logo.png"
+      alt="Liquor"
+      width={665}
+      height={196}
+      className="h-6 w-auto object-contain"
+      priority
+    />
+  )
+}
 
 type MegaMenuProps = {
   categories: HttpTypes.StoreProductCategory[]
@@ -59,7 +81,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
         aria-current={isActive ? "page" : undefined}
         className={clx(DEPARTMENT_SEGMENT, activeClass)}
       >
-        Liquor
+        <LiquorLogo />
       </LocalizedClientLink>
     )
   }
@@ -90,7 +112,7 @@ export default function MegaMenu({ categories, collections }: MegaMenuProps) {
             data-testid="mega-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >
-            Liquor
+            <LiquorLogo />
           </PopoverButton>
 
           <Transition

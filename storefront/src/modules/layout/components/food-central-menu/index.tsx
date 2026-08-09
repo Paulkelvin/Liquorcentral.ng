@@ -8,6 +8,7 @@ import {
   DEPARTMENT_SEGMENT,
   departmentSegmentState,
 } from "@modules/layout/components/department-switcher-track"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Fragment, useRef } from "react"
 
@@ -53,7 +54,17 @@ export default function FoodCentralMenu() {
             data-testid="food-central-menu-trigger"
             onClick={hoverIntent.onTriggerClick}
           >
-            Food Central
+            {/* Same logo mark as the mobile wayfinding strip's matching
+                tab — see that component's comment for how it was
+                extracted. */}
+            <Image
+              src="/brand/logos/foodcentral-logo.png"
+              alt="Food Central"
+              width={697}
+              height={150}
+              className="h-5 w-auto object-contain"
+              priority
+            />
           </PopoverButton>
 
           <Transition
