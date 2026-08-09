@@ -1,0 +1,39 @@
+name: Storefront CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "storefront/**"
+      - ".github/workflows/storefront-ci.yml"
+  pull_request:
+    paths:
+      - "storefront/**"
+      - ".github/workflows/storefront-ci.yml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: storefront
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: storefront/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx next lint
+
+      - name: Unit tests
+        run: yarn test --ci

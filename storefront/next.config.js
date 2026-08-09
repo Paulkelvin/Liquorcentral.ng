@@ -22,11 +22,37 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  // Both gates were previously silenced. `tsc --noEmit` and `next lint`
+  // both run clean against the current codebase (zero type errors, only
+  // two pre-existing exhaustive-deps warnings), so nothing here was
+  // actually hiding a backlog — but leaving broken code shippable by
+  // default is its own risk, so the gates are back on.
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
+  },
+  // Baseline response headers. No CSP yet — a real Content-Security-Policy
+  // needs an audited allowlist of every script/style/image/connect source
+  // this app actually uses (Medusa backend, Sanity CDN, S3, Paystack once
+  // active) or it silently breaks the app instead of protecting it; these
+  // four are safe defaults that need no such inventory.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+    ]
   },
   images: {
     unoptimized: true,
