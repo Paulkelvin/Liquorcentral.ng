@@ -273,7 +273,19 @@ export default function PairingCarousel({
                         // ever added, it will clip rather than wrap, so
                         // re-measure before changing the copy.
                         "whitespace-nowrap text-[10px] font-semibold uppercase leading-tight tracking-[0.1em] md:text-[11px] md:tracking-[0.12em]",
-                        dark ? "text-ink-200" : "text-text-secondary"
+                        // Gold on the dark ground, matching the Featured
+                        // Collection editorial card's own eyebrow. This is
+                        // the Accent token's documented job — DESIGN_SYSTEM.md
+                        // §"Gold Usage" names "curated selections (e.g.
+                        // 'Sommelier's Picks')" on a dark ground as the
+                        // canonical case, which is exactly this eyebrow. It
+                        // was `ink-200`, i.e. the same grey as any other
+                        // muted label, so the one place gold is unambiguously
+                        // correct (and clears AAA, per the same section's
+                        // contrast finding) was reading as neutral chrome.
+                        // The light branch stays neutral — gold fails
+                        // contrast on Off White at every text size.
+                        dark ? "text-accent" : "text-text-secondary"
                       )}
                     >
                       {/* Two lengths, one element: the long form would wrap

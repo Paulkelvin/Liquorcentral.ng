@@ -126,6 +126,26 @@ export default function QuickAddButton({
    * SC 1.4.11's 3:1 for a component boundary because it is the same colour as
    * the label. Verified with axe on `/`, `/store` and `/categories/spirits`.
    */
+  /**
+   * **Green, not red.** This button repeats once per card — a dozen times
+   * on a listing screen — and in red it made Red the single most-repeated
+   * colour on every shopping surface. `BRAND_IDENTITY.md` §13's usage
+   * hierarchy (carried into `DESIGN_SYSTEM.md` §B6) puts Red at "5–10%,
+   * reserved" and Green at "15–25%", and the implementation had it
+   * backwards: Red on every card, Green nowhere but link text. Reserved
+   * has to mean something — Red now marks the one primary action per
+   * screen (the hero CTA, Go to checkout, Place order) rather than every
+   * card in a grid.
+   *
+   * `interactive` rather than raw `secondary`: it is the green already
+   * tuned for legibility on the page (Tier 3 derives it as a darkened
+   * brand green precisely because brand green measured 3.74:1 on white).
+   * The label at rest and white on the filled state both clear AA, and
+   * the border matches the label so the boundary clears SC 1.4.11.
+   *
+   * Food Central keeps its ink treatment — the two departments read as
+   * distinct on the homepage where both grids sit one above the other.
+   */
   const isLoud = status !== "idle"
   const tone =
     department === "food"
@@ -133,8 +153,8 @@ export default function QuickAddButton({
         ? "border-ink-900 bg-ink-900 text-surface-elevated"
         : "border-ink-900 bg-transparent text-ink-900 hover:bg-ink-900 hover:text-surface-elevated active:bg-ink-700 active:border-ink-700"
       : isLoud
-      ? "border-primary bg-primary text-surface-elevated"
-      : "border-primary bg-transparent text-primary hover:bg-primary hover:text-surface-elevated active:bg-primary-active active:border-primary-active"
+      ? "border-interactive bg-interactive text-surface-elevated"
+      : "border-interactive bg-transparent text-interactive hover:bg-interactive hover:text-surface-elevated active:bg-interactive-active active:border-interactive-active"
 
   const variantClass = clx(sharedClass, compactClass, tone, className)
 
