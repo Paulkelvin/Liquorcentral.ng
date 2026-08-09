@@ -1857,7 +1857,16 @@ export default async function product_catalog_seed({
                 sku: seed.handle.toUpperCase(),
                 options: { [seed.optionTitle]: seed.optionValue },
                 prices: [{ amount: seed.price, currency_code: "ngn" }],
-                manage_inventory: false,
+                // Wine & Spirits is real, finite, countable stock — tracked
+                // so the storefront's stock-based "Sold out" logic (product
+                // cards, PDP, cart re-validation) actually engages. Food
+                // Central dishes are made-to-order, not stock-counted — they
+                // stay untracked and use their own `food_available` toggle
+                // instead (see `food-availability.ts`). Existing variants
+                // already live in the database aren't touched by this
+                // seed-data change alone; see
+                // `enable-liquor-inventory-tracking.ts` for those.
+                manage_inventory: !seed.food_details,
               },
             ],
           },
