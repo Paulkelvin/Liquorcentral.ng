@@ -1,5 +1,6 @@
 import { defineMiddlewares } from "@medusajs/framework/http"
 import { z } from "@medusajs/framework/zod"
+import { rateLimit } from "./middlewares/rate-limit"
 
 /**
  * Validates every custom module's fields accepted on `additional_data` by
@@ -60,6 +61,39 @@ export default defineMiddlewares({
       method: "POST",
       matcher: "/admin/products/:id",
       additionalDataValidator: combinedSchema,
+    },
+    // Credential attacks: tight, since a legitimate customer never needs
+    // more than a handful of these in a few minutes.
+    {
+      method: "POST",
+      matcher: "/auth/customer/emailpass",
+      middlewares: [rateLimit({ name: "login", windowMs: 5 * 60_000, max: 10 })],
+    },
+    {
+      method: "POST",
+      matcher: "/auth/customer/emailpass/register",
+      middlewares: [rateLimit({ name: "register", windowMs: 15 * 60_000, max: 5 })],
+    },
+    // Reset-password request also sends an email — unlimited requests
+    // here is a way to email-bomb someone else's inbox, not just a
+    // credential-guessing risk.
+    {
+      method: "POST",
+      matcher: "/auth/customer/emailpass/reset-password",
+      middlewares: [rateLimit({ name: "reset-password", windowMs: 15 * 60_000, max: 5 })],
+    },
+    {
+      method: "POST",
+      matcher: "/auth/customer/emailpass/update",
+      middlewares: [rateLimit({ name: "reset-password-confirm", windowMs: 15 * 60_000, max: 10 })],
+    },
+    // Order placement: card-testing and order-spam guard. Generous
+    // enough that a real customer retrying after a declined card is
+    // never the one who hits it.
+    {
+      method: "POST",
+      matcher: "/store/carts/:id/complete",
+      middlewares: [rateLimit({ name: "checkout-complete", windowMs: 10 * 60_000, max: 15 })],
     },
   ],
 })

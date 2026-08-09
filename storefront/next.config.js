@@ -55,7 +55,14 @@ const nextConfig = {
     ]
   },
   images: {
-    unoptimized: true,
+    // Previously unoptimized outright — assumed the seed catalog's
+    // Wikimedia-hotlinked thumbnails would break under Next's optimizer.
+    // That's not actually how remote optimization works: Next fetches,
+    // resizes and reformats from any host listed below, it doesn't
+    // require the image to live on our own storage. Allowlisting
+    // upload.wikimedia.org (the seed script's real image source — see
+    // product-catalog-seed-v4.ts) gets responsive srcset/AVIF-WebP for
+    // the current catalog today, without waiting on a storage migration.
     remotePatterns: [
       {
         protocol: "http",
@@ -74,6 +81,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "*.s3.amazonaws.com",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
       },
       ...(S3_HOSTNAME && S3_PATHNAME
         ? [

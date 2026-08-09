@@ -23,6 +23,7 @@
     "@portabletext/react": "^7.0.1",
     "@radix-ui/react-accordion": "^1.2.3",
     "@sanity/image-url": "^2.1.1",
+    "@sentry/nextjs": "10.69.0",
     "@stripe/react-stripe-js": "^5.3.0",
     "@stripe/stripe-js": "^8.2.0",
     "clsx": "^2.1.1",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.5",
     "@medusajs/types": "2.17.2",
+    "@playwright/test": "^1.62.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

@@ -125,11 +125,14 @@ export default function LegalPage() {
 
             <H3>What we collect</H3>
             <p>
-              Directly from you: name, delivery address, phone number,
-              email address, and date-of-birth confirmation (age-gate),
-              collected at checkout — guest checkout is supported, so an
-              account is never required to buy. If you create an account,
-              we also hold your order history and any saved addresses.
+              Directly from you: name, delivery address, phone number, and
+              email address, collected at checkout — guest checkout is
+              supported, so an account is never required to buy. Before
+              you can browse at all, you self-declare that you are 18 or
+              older (a yes/no choice, not a date of birth) — see
+              &quot;Age-restricted sales&quot; below. If you create an
+              account, we also hold your order history and any saved
+              addresses.
             </p>
             <p>
               From your payment: we do not store card numbers. Payment is
@@ -181,10 +184,13 @@ export default function LegalPage() {
 
             <H3>Age-restricted sales</H3>
             <p>
-              You must be 18 or older to purchase alcohol from this site,
-              confirmed at entry and again at checkout. We may decline or
-              cancel an order where we reasonably believe this
-              requirement isn&apos;t met.
+              You must be 18 or older to purchase alcohol from this site.
+              You confirm this once, on entry, before you can browse; we
+              don&apos;t ask again at checkout, but someone 18 or older
+              must still be present to accept delivery (see Terms of
+              Service → Delivery) and we may ask for ID at the door. We
+              may decline or cancel an order where we reasonably believe
+              the age requirement isn&apos;t met.
             </p>
           </Section>
 
@@ -214,10 +220,12 @@ export default function LegalPage() {
 
             <H3>Orders &amp; payment</H3>
             <p>
-              An order is placed once payment is confirmed by our payment
-              provider. We&apos;ll reject or cancel an order (with a full
-              refund) if we can&apos;t fulfil it — out of stock, delivery
-              address outside our current delivery area, or a failed
+              We accept online payment only — cards and bank transfer
+              through our payment provider. We do not offer cash on
+              delivery. An order is placed once payment is confirmed.
+              We&apos;ll reject or cancel an order (with a full refund) if
+              we can&apos;t fulfil it — out of stock, delivery address
+              outside our current delivery area, or a failed
               age-verification check.
             </p>
 

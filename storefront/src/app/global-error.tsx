@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import "styles/globals.css"
 
 /**
@@ -12,11 +13,22 @@ import "styles/globals.css"
  * global stylesheet.
  */
 export default function GlobalError({
+  error,
   reset,
 }: {
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  useEffect(() => {
+    // This copy has said "This has been logged" since Phase 0c; nothing
+    // ever actually logged it anywhere until Sentry was wired in.
+    // `captureException` is a safe no-op if Sentry was never initialized
+    // (no DSN configured) — see src/instrumentation-client.ts.
+    import("@sentry/nextjs").then(({ captureException }) =>
+      captureException(error)
+    )
+  }, [error])
+
   return (
     <html lang="en">
       <body className="bg-surface text-text-primary font-sans">
