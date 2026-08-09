@@ -1877,10 +1877,21 @@ export default async function product_catalog_seed({
 
   // Curated Collections — 02_HOMEPAGE_SPECIFICATION.md §8.4/§19: the
   // homepage's Curated Collections section only ever renders its
-  // fallback link until at least one real Collection exists. Seeding two
-  // here so the homepage has genuine shelves to show, same UI-review
+  // fallback link until at least one real Collection exists. Seeding one
+  // here so the homepage has a genuine shelf to show, same UI-review
   // rationale as the products themselves — not a final merchandising
   // decision on naming or grouping.
+  //
+  // Previously seeded three more ("Everyday Favourites", "Top Shelf
+  // Whisky", "Nigerian Kitchen Favourites") alongside this one. Paul had
+  // me remove them from the live site: only this collection is pointed
+  // to by `campaign.ts`'s `ACTIVE_CAMPAIGN`, so it's the only one with a
+  // real homepage placement — the other three were reachable only via a
+  // buried mega-menu link, and the food one was misfiled under the
+  // Liquor-only mega menu regardless. Trimmed here too so a fresh
+  // database seed matches what's actually live, rather than
+  // resurrecting collections that were deliberately deleted in
+  // production.
   async function seedCuratedCollections() {
   const COLLECTIONS: { title: string; handle: string; productHandles: string[] }[] = [
     {
@@ -1891,36 +1902,6 @@ export default async function product_catalog_seed({
         "dom-perignon-vintage-2013",
         "johnnie-walker-blue-label",
         "hennessy-vsop",
-      ],
-    },
-    {
-      title: "Everyday Favourites",
-      handle: "everyday-favourites",
-      productHandles: [
-        "casillero-del-diablo-cabernet-sauvignon",
-        "jack-daniels-old-no-7",
-        "grey-goose-vodka",
-        "heineken-lager-crate",
-      ],
-    },
-    {
-      title: "Top Shelf Whisky",
-      handle: "top-shelf-whisky",
-      productHandles: [
-        "johnnie-walker-blue-label",
-        "macallan-12-double-cask",
-        "chivas-regal-12",
-        "glenfiddich-12",
-      ],
-    },
-    {
-      title: "Nigerian Kitchen Favourites",
-      handle: "nigerian-kitchen-favourites",
-      productHandles: [
-        "jollof-rice-grilled-chicken",
-        "suya-platter-beef-skewers",
-        "egusi-soup-pounded-yam",
-        "moin-moin",
       ],
     },
   ];
