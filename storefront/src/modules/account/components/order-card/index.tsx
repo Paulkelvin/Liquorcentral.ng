@@ -1,4 +1,4 @@
-import { Badge, Button } from "@modules/common/components/ui"
+import { Badge, buttonClasses } from "@modules/common/components/ui"
 import { useMemo } from "react"
 
 import Thumbnail from "@modules/products/components/thumbnail"
@@ -114,10 +114,12 @@ const OrderCard = ({ order }: OrderCardProps) => {
       </div>
       <div className="flex justify-end gap-x-4">
         <ReorderButton orderId={order.id} />
-        <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
-          <Button data-testid="order-details-link" variant="secondary">
-            See details
-          </Button>
+        <LocalizedClientLink
+          href={`/account/orders/details/${order.id}`}
+          data-testid="order-details-link"
+          className={buttonClasses({ variant: "secondary" })}
+        >
+          See details
         </LocalizedClientLink>
       </div>
     </div>

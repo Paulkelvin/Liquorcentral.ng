@@ -94,10 +94,69 @@ export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
 Heading.displayName = "Heading"
 
 // Button Component
+type ButtonVariant = "primary" | "secondary" | "transparent"
+type ButtonSize = "small" | "medium" | "large"
+
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "transparent"
-  size?: "small" | "medium" | "large"
+  variant?: ButtonVariant
+  size?: ButtonSize
   isLoading?: boolean
+}
+
+/**
+ * The button's visual treatment, separated from the `<button>` element
+ * that usually carries it.
+ *
+ * **Why this is exported.** A control that navigates is an anchor, not a
+ * button — but the obvious way to make one *look* like a button was
+ * `<LocalizedClientLink><Button/></LocalizedClientLink>`, which nests a
+ * real `<button>` inside a real `<a>`. That is the `nested-interactive`
+ * WCAG violation (assistive tech cannot say which control it is
+ * announcing) and it also breaks the click: the inner button swallows the
+ * event, so the anchor never navigates — which is exactly how the cart
+ * page's "Go to checkout" came to intermittently do nothing, caught by
+ * the e2e suite rather than by review. `DECISION_LOG.md` records the same
+ * violation being fixed once before in the cart dropdown, in the mirror
+ * direction (an `<a>` inside a `<button>`); this is the pattern that
+ * stops it recurring.
+ *
+ * Links use `className={buttonClasses({ … })}`; anything that genuinely
+ * performs an action rather than navigating keeps using `<Button>`.
+ */
+export function buttonClasses({
+  variant = "primary",
+  size = "medium",
+  className,
+}: {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+} = {}) {
+  return clsx(
+    // Proposed Design Direction / Phase 4 roadmap item 15 ("button
+    // press feedback") — a subtle scale-down on press, on top of the
+    // existing color-only active state, so pressing a button reads as
+    // a physical action, not just a color swap.
+    "inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-[background-color,transform] duration-standard ease-in-out active:scale-[0.98]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
+    // A disabled button is its own designed state, not the enabled
+    // one faded out: opacity-50 over a red fill produced a washed
+    // pink that read as a rendering fault. Flat neutral surface,
+    // muted label, and a cursor that says why nothing happens.
+    "disabled:cursor-not-allowed disabled:bg-disabled-surface disabled:text-disabled disabled:hover:bg-disabled-surface disabled:active:scale-100 disabled:border-transparent",
+    variant === "primary" && "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
+    variant === "secondary" &&
+      "bg-surface-elevated text-text-primary border border-border hover:bg-ink-100",
+    variant === "transparent" &&
+      "bg-transparent text-interactive hover:bg-ink-100",
+    // Minimum 44x44px touch target (DESIGN_SYSTEM.md §B11), regardless
+    // of visual size — "small" keeps a smaller visual footprint via
+    // padding/font-size, but never drops below 44px min-height.
+    size === "small" && "min-h-[44px] px-3 text-caption",
+    size === "medium" && "min-h-[44px] px-4 text-body",
+    size === "large" && "min-h-[48px] px-6 text-body-lg",
+    className
+  )
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -117,31 +176,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || isLoading}
-        className={clsx(
-          // Proposed Design Direction / Phase 4 roadmap item 15 ("button
-          // press feedback") — a subtle scale-down on press, on top of the
-          // existing color-only active state, so pressing a button reads as
-          // a physical action, not just a color swap.
-          "inline-flex gap-2 items-center justify-center rounded-radius-md font-medium transition-[background-color,transform] duration-standard ease-in-out active:scale-[0.98]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2",
-          // A disabled button is its own designed state, not the enabled
-          // one faded out: opacity-50 over a red fill produced a washed
-          // pink that read as a rendering fault. Flat neutral surface,
-          // muted label, and a cursor that says why nothing happens.
-          "disabled:cursor-not-allowed disabled:bg-disabled-surface disabled:text-disabled disabled:hover:bg-disabled-surface disabled:active:scale-100 disabled:border-transparent",
-          variant === "primary" && "bg-primary text-surface-elevated hover:bg-primary-hover active:bg-primary-active",
-          variant === "secondary" &&
-            "bg-surface-elevated text-text-primary border border-border hover:bg-ink-100",
-          variant === "transparent" &&
-            "bg-transparent text-interactive hover:bg-ink-100",
-          // Minimum 44x44px touch target (DESIGN_SYSTEM.md §B11), regardless
-          // of visual size — "small" keeps a smaller visual footprint via
-          // padding/font-size, but never drops below 44px min-height.
-          size === "small" && "min-h-[44px] px-3 text-caption",
-          size === "medium" && "min-h-[44px] px-4 text-body",
-          size === "large" && "min-h-[48px] px-6 text-body-lg",
-          className
-        )}
+        className={buttonClasses({ variant, size, className })}
         {...props}
       >
         {isLoading ? "Loading…" : children}

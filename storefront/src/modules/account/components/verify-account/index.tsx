@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import { Button } from "@modules/common/components/ui"
+import { buttonClasses } from "@modules/common/components/ui"
 import { confirmEmailVerification } from "@lib/data/customer"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -50,8 +50,11 @@ const VerifyAccount = () => {
           <p className="text-body text-text-primary">
             Your email is verified. You can now sign in to your account.
           </p>
-          <LocalizedClientLink href="/account">
-            <Button variant="primary">Go to sign in</Button>
+          <LocalizedClientLink
+            href="/account"
+            className={buttonClasses({ variant: "primary" })}
+          >
+            Go to sign in
           </LocalizedClientLink>
         </>
       )}
@@ -62,8 +65,11 @@ const VerifyAccount = () => {
             This verification link is invalid or has expired. Sign in to receive
             a new verification email.
           </p>
-          <LocalizedClientLink href="/account">
-            <Button variant="secondary">Go to sign in</Button>
+          <LocalizedClientLink
+            href="/account"
+            className={buttonClasses({ variant: "secondary" })}
+          >
+            Go to sign in
           </LocalizedClientLink>
         </>
       )}

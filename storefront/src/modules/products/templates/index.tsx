@@ -136,7 +136,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
       <div
-        className="ds-container my-16 small:my-32"
+        /* `mt` smaller than `mb`, rather than a symmetric `my-32`. The
+           buy column is short and the gallery beside it is tall, so the
+           grid above already ends in a column of empty ground; adding a
+           further 128px on top of that read as the page having finished
+           before the related rail appeared. Trimming only the top keeps
+           the rail's separation from the footer intact. */
+        className="ds-container mt-10 mb-16 small:mt-16 small:mb-32"
         data-testid="related-products-container"
       >
         <Suspense fallback={<SkeletonRelatedProducts />}>

@@ -3,6 +3,7 @@ import { getRegion } from "@lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
 import Product from "../product-preview"
 import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
+import { CuratedMark } from "@modules/common/components/curated-mark"
 
 type RelatedProductsProps = {
   product: HttpTypes.StoreProduct
@@ -55,16 +56,30 @@ export default async function RelatedProducts({
 
   return (
     <div className="product-page-constraint">
-      <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-body text-text-secondary mb-6">
-          Related products
-        </span>
-        {/* Was a fixed `text-heading-2` (31px) at every width — this
-            sentence wrapped to three heavy lines on a phone. Same scale
-            step as the product title above it: smaller on mobile, full
-            size from `small:` up. */}
-        <p className="!text-[22px] leading-snug text-text-primary max-w-lg small:!text-[31px] small:leading-[1.2]">
-          You might also want to check out these products.
+      {/*
+       * The site's own section-header pattern — gold mark, heading, one
+       * line of subtitle, all left-aligned — the same shape "Featured
+       * collection", "Shop by category" and "Today's Menu" already use.
+       *
+       * This was the one section still carrying the Medusa starter's
+       * centred boilerplate ("You might also want to check out these
+       * products."), set at 31px, which made a generic sentence the
+       * largest and only centred text on the page — visually louder than
+       * the product the customer actually came for, and the single place
+       * on the site where a section announced itself that way.
+       *
+       * It also puts the Accent token on a commerce surface for the first
+       * time: gold's documented job is "curated selections", and a
+       * hand-scoped pairing rail is exactly that, but every gold mark on
+       * the site sat on the homepage, blog or About page.
+       */}
+      <div className="mb-10 flex flex-col gap-3 small:mb-12">
+        <CuratedMark />
+        <h2 className="font-display text-[22px] leading-snug text-text-primary small:text-[31px] small:leading-[1.2]">
+          Goes well with this
+        </h2>
+        <p className="max-w-[48ch] text-body text-text-secondary">
+          From the same shelf, chosen by us.
         </p>
       </div>
 

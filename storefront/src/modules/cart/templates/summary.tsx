@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Heading, Text } from "@modules/common/components/ui"
+import { buttonClasses, Heading, Text } from "@modules/common/components/ui"
 
 import CartTotals from "@modules/common/components/cart-totals"
 import DiscountCode from "@modules/checkout/components/discount-code"
@@ -80,13 +80,17 @@ const Summary = ({ cart, itemCount }: SummaryProps) => {
       </div>
 
       <div className="flex flex-col gap-3">
+        {/* A link wearing the button's styling, not a <button> nested
+            inside a link — see `buttonClasses`. The nested form made this
+            control intermittently do nothing when clicked, because the
+            inner button absorbed the event instead of the anchor
+            navigating. */}
         <LocalizedClientLink
           href={"/checkout?step=" + step}
           data-testid="checkout-button"
+          className={buttonClasses({ size: "large", className: "w-full" })}
         >
-          <Button size="large" className="w-full">
-            Go to checkout
-          </Button>
+          Go to checkout
         </LocalizedClientLink>
         <LocalizedClientLink
           href="/store"
