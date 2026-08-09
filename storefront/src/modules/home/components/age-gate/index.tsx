@@ -8,10 +8,14 @@ import { AGE_GATE_COOKIE_NAME as COOKIE_NAME } from "./constants"
 /**
  * 02_HOMEPAGE_SPECIFICATION.md §8.2 — a first-visit interstitial, not a
  * scrollable section. "Shown once per session (exact persistence duration
- * is an open item...)" — this specification assumes a site-wide gate on
- * first visit as the simpler, conservative default (§24), so a
- * session-scoped cookie (no `max-age`, expires when the browser session
- * ends) is the literal, non-inventive reading of "once per session."
+ * is an open item...)". A prior version of this component read "once per
+ * session" literally and set a true session cookie (no `max-age`) —  in
+ * practice that meant mobile visitors, whose browsers routinely drop
+ * background tabs/processes for memory, saw the gate reappear several
+ * times a day despite having already confirmed. Age self-attestation
+ * doesn't need to be re-asked that often, so the cookie now persists for a
+ * year: still a real, revisitable choice (see `MAX_AGE_SECONDS` below),
+ * just not one repeated every time the OS reclaims a background tab.
  *
  * `initiallyVerified` is read from the incoming request's cookie header
  * by the server-rendered parent (`AgeGateWrapper`) so the very first
@@ -27,6 +31,8 @@ import { AGE_GATE_COOKIE_NAME as COOKIE_NAME } from "./constants"
  * `aria-modal`) are still provided by `Dialog`, only the dismiss paths
  * are intentionally disabled.
  */
+const MAX_AGE_SECONDS = 60 * 60 * 24 * 365 // 1 year
+
 export default function AgeGate({
   initiallyVerified,
 }: {
@@ -36,7 +42,7 @@ export default function AgeGate({
   const [declined, setDeclined] = useState(false)
 
   const confirm = () => {
-    document.cookie = `${COOKIE_NAME}=true; path=/; SameSite=Strict`
+    document.cookie = `${COOKIE_NAME}=true; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Strict`
     setOpen(false)
   }
 
