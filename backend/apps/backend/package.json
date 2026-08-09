@@ -13,7 +13,7 @@
     "medusa"
   ],
   "scripts": {
-    "build": "medusa build",
+    "build": "medusa build && node ./scripts/patch-admin-branding.mjs",
     "start": "cd .medusa/server && medusa start",
     "dev": "medusa develop",
     "lint": "medusa lint",
