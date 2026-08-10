@@ -2,6 +2,7 @@
 
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
+import { FetchError } from "@medusajs/js-sdk"
 import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
@@ -40,18 +41,43 @@ export async function retrieveCart(cartId?: string, fields?: string) {
     ...(await getCacheOptions("carts")),
   }
 
-  return await sdk.client
-    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${id}`, {
-      method: "GET",
-      query: {
-        fields,
-      },
-      headers,
-      next,
-      cache: "force-cache",
-    })
-    .then(({ cart }: { cart: HttpTypes.StoreCart }) => cart)
-    .catch(() => null)
+  const fetchCart = () =>
+    sdk.client
+      .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${id}`, {
+        method: "GET",
+        query: {
+          fields,
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      })
+      .then(({ cart }: { cart: HttpTypes.StoreCart }) => cart)
+
+  try {
+    return await fetchCart()
+  } catch (error) {
+    // A 404 means this cart genuinely doesn't exist (expired/deleted
+    // server-side) — that's a real "no cart" and shouldn't retry.
+    if (error instanceof FetchError && error.status === 404) {
+      return null
+    }
+    // Anything else (a network blip, a cold-started backend connection,
+    // a transient 5xx) used to be swallowed here and silently presented
+    // as an empty cart — the exact bug behind "the cart shows nothing
+    // until I add something, then it's slow and shows everything": the
+    // first request after an idle period hit a transient failure, got
+    // treated as "no cart", and only the second request (triggered by
+    // add-to-cart) actually reached Medusa. One retry lets that kind of
+    // blip self-heal instead of lying to the visitor about their cart
+    // being empty; a second consecutive failure is a real outage, not
+    // jitter, so only then does this fall back to null.
+    try {
+      return await fetchCart()
+    } catch {
+      return null
+    }
+  }
 }
 
 export async function getOrSetCart(countryCode: string) {
