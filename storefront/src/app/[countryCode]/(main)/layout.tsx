@@ -15,6 +15,7 @@ import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-p
 import AgeGate from "@modules/home/components/age-gate"
 import { AGE_GATE_COOKIE_NAME } from "@modules/home/components/age-gate/constants"
 import ScrollToTop from "@modules/layout/components/scroll-to-top"
+import WhatsAppFloat from "@modules/layout/components/whatsapp-float"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -69,6 +70,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       <AgeGate initiallyVerified={ageVerified} />
       <Nav />
       <CartDrawer />
+      <WhatsAppFloat />
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart} />
       )}

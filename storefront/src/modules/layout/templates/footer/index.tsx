@@ -25,18 +25,26 @@ const SUPPORT_LINKS = [{ label: "Delivery & Returns", href: "/support" }];
 const LEGAL_LINKS = [{ label: "Legal & Compliance", href: "/legal" }];
 
 /**
- * ⚠️ The four platforms here are the ones chosen for the storefront, but
- * the real account URLs are not known to this codebase — no handle,
- * profile link, or social account appears anywhere in the repo or the
- * specs. Fill each `href` in below and the icon becomes a real link
- * automatically; until then each renders as a non-interactive mark and
- * is skipped by assistive technology, because pointing a customer at a
- * guessed URL risks sending them to an unrelated (or impersonating)
- * account, which is worse than not linking at all.
+ * ⚠️ TikTok and YouTube accounts are not known to this codebase — no
+ * handle, profile link, or social account for either appears anywhere in
+ * the repo or the specs. Fill each `href` in below and the icon becomes
+ * a real link automatically; until then each renders as a
+ * non-interactive mark and is skipped by assistive technology, because
+ * pointing a customer at a guessed URL risks sending them to an
+ * unrelated (or impersonating) account, which is worse than not linking
+ * at all. Instagram and WhatsApp are real, Paul-supplied links.
  */
 const SOCIAL_LINKS: { label: string; href: string; Icon: React.ComponentType<{ className?: string }> }[] = [
-  { label: "Instagram", href: "", Icon: InstagramIcon },
-  { label: "WhatsApp", href: "", Icon: WhatsAppIcon },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/foodandliquorcentral.ng",
+    Icon: InstagramIcon,
+  },
+  {
+    label: "WhatsApp",
+    href: "https://wa.me/2348169804932",
+    Icon: WhatsAppIcon,
+  },
   { label: "TikTok", href: "", Icon: TikTokIcon },
   { label: "YouTube", href: "", Icon: YouTubeIcon },
 ];
@@ -133,6 +141,12 @@ export default async function Footer() {
             <Text className="max-w-[32ch] !text-[15px] leading-relaxed text-text-secondary">
               Premium wine, spirits, and Nigerian food — sold and delivered
               directly by us, never a stranger.
+            </Text>
+
+            {/* Paul-supplied physical address, the same one shown on the
+                brand's Instagram bio. */}
+            <Text className="max-w-[32ch] text-caption" muted>
+              Ifitness Jakande, L.W.S Close, Lekki, Lagos
             </Text>
 
             {/* `-ml-1` is optical, not geometric. The circles' border boxes

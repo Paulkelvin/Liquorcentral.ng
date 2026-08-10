@@ -240,8 +240,19 @@ export default function SupportPage() {
             </p>
             <ul className="ml-5 flex list-disc flex-col gap-2 marker:text-text-muted">
               <li>Email: [support email]</li>
-              <li>WhatsApp: [WhatsApp number]</li>
+              <li>
+                WhatsApp:{" "}
+                <a
+                  href="https://wa.me/2348169804932"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-interactive underline underline-offset-4 hover:text-interactive-hover"
+                >
+                  +234 816 980 4932
+                </a>
+              </li>
               <li>Hours: [support hours]</li>
+              <li>Address: Ifitness Jakande, L.W.S Close, Lekki, Lagos</li>
             </ul>
           </Section>
         </div>
