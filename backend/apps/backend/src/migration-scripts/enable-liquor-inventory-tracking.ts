@@ -49,6 +49,17 @@ import {
  * matching this directory's other seed scripts. Must run after both
  * `product-catalog-seed-v4.ts` (products must exist) and
  * `shipping-options-seed.ts` (the stock location must exist).
+ *
+ * **Also backfills a real `title` on every InventoryItem, not just new
+ * ones.** `createInventoryItemsWorkflow` was only ever given `sku` below
+ * — Paul found the gap directly in Admin: Inventory → a product shows
+ * "PATRON-SILVER-TEQUILA" as its name with a blank Title field, because
+ * that's genuinely what's stored; the SKU only reads as a name because
+ * Admin falls back to it when Title is empty. This is not Medusa
+ * mislabeling anything — the fix is to actually set the field. Runs as
+ * its own pass over every Wine & Spirits inventory item (not just ones
+ * this run just created), since every item tracked before this fix
+ * shipped has the same gap.
  */
 export default async function enable_liquor_inventory_tracking({
   container,
@@ -58,6 +69,7 @@ export default async function enable_liquor_inventory_tracking({
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
   const query = container.resolve(ContainerRegistrationKeys.QUERY);
   const stockLocationModuleService = container.resolve(Modules.STOCK_LOCATION);
+  const inventoryModuleService = container.resolve(Modules.INVENTORY);
 
   // Matches `shipping-options-seed.ts`'s `LOCATION_NAME` exactly.
   const [stockLocation] = await stockLocationModuleService.listStockLocations(
@@ -76,6 +88,7 @@ export default async function enable_liquor_inventory_tracking({
     entity: "product",
     fields: [
       "id",
+      "title",
       "food_details.id",
       "variants.id",
       "variants.sku",
@@ -83,52 +96,93 @@ export default async function enable_liquor_inventory_tracking({
     ],
   });
 
-  const variantsToTrack = products
-    .filter((p) => !p.food_details)
-    .flatMap((p) => p.variants ?? [])
-    .filter((v) => v.manage_inventory !== true);
+  const liquorProducts = products.filter((p) => !p.food_details);
+
+  const variantsToTrack = liquorProducts.flatMap((p) =>
+    (p.variants ?? [])
+      .filter((v) => v.manage_inventory !== true)
+      .map((v) => ({ ...v, productTitle: p.title }))
+  );
 
   if (variantsToTrack.length === 0) {
     logger.info(
       "enable-liquor-inventory-tracking: all Wine & Spirits variants already tracked — nothing to do."
     );
-    return;
+  } else {
+    logger.info(
+      `enable-liquor-inventory-tracking: enabling stock tracking on ${variantsToTrack.length} Wine & Spirits variant(s)...`
+    );
+
+    await updateProductVariantsWorkflow(container).run({
+      input: {
+        product_variants: variantsToTrack.map((v) => ({
+          id: v.id,
+          manage_inventory: true,
+        })),
+      },
+    });
+
+    const { result: createdItems } = await createInventoryItemsWorkflow(
+      container
+    ).run({
+      input: {
+        items: variantsToTrack.map((v) => ({
+          sku: v.sku ?? undefined,
+          // A real Title, not just a SKU — see this file's own header
+          // comment on why this matters (Admin falls back to SKU as the
+          // display name whenever Title is blank).
+          title: v.productTitle,
+          location_levels: [
+            { location_id: stockLocation.id, stocked_quantity: 0 },
+          ],
+        })),
+      },
+    });
+
+    await createLinksWorkflow(container).run({
+      input: variantsToTrack.map((v, index) => ({
+        [Modules.PRODUCT]: { variant_id: v.id },
+        [Modules.INVENTORY]: { inventory_item_id: createdItems[index].id },
+      })),
+    });
+
+    logger.info(
+      `enable-liquor-inventory-tracking: done — ${variantsToTrack.length} variant(s) now tracked. Stock defaults to 0 (shows "Sold out") until real counts are entered in Admin.`
+    );
   }
 
-  logger.info(
-    `enable-liquor-inventory-tracking: enabling stock tracking on ${variantsToTrack.length} Wine & Spirits variant(s)...`
+  // Backfill pass — every inventory item tracked before this file grew a
+  // `title` field has the same blank-Title-shows-SKU gap, not just the
+  // ones just created above. SKU is the join key (set to `handle.
+  // toUpperCase()` at seed time, unique per product) since it's simpler
+  // and more robust here than resolving the exact product-variant↔
+  // inventory-item remote-link field path.
+  const titleBySku = new Map(
+    liquorProducts.flatMap((p) =>
+      (p.variants ?? [])
+        .filter((v): v is typeof v & { sku: string } => !!v.sku)
+        .map((v) => [v.sku, p.title] as const)
+    )
   );
 
-  await updateProductVariantsWorkflow(container).run({
-    input: {
-      product_variants: variantsToTrack.map((v) => ({
-        id: v.id,
-        manage_inventory: true,
-      })),
-    },
-  });
-
-  const { result: createdItems } = await createInventoryItemsWorkflow(
-    container
-  ).run({
-    input: {
-      items: variantsToTrack.map((v) => ({
-        sku: v.sku ?? undefined,
-        location_levels: [
-          { location_id: stockLocation.id, stocked_quantity: 0 },
-        ],
-      })),
-    },
-  });
-
-  await createLinksWorkflow(container).run({
-    input: variantsToTrack.map((v, index) => ({
-      [Modules.PRODUCT]: { variant_id: v.id },
-      [Modules.INVENTORY]: { inventory_item_id: createdItems[index].id },
-    })),
-  });
-
-  logger.info(
-    `enable-liquor-inventory-tracking: done — ${variantsToTrack.length} variant(s) now tracked. Stock defaults to 0 (shows "Sold out") until real counts are entered in Admin.`
+  const existingItems = await inventoryModuleService.listInventoryItems(
+    { sku: Array.from(titleBySku.keys()) },
+    { select: ["id", "sku", "title"] }
   );
+
+  const itemsNeedingTitle = existingItems.filter(
+    (item) => item.sku && !item.title && titleBySku.has(item.sku)
+  );
+
+  if (itemsNeedingTitle.length > 0) {
+    await inventoryModuleService.updateInventoryItems(
+      itemsNeedingTitle.map((item) => ({
+        id: item.id,
+        title: titleBySku.get(item.sku as string),
+      }))
+    );
+    logger.info(
+      `enable-liquor-inventory-tracking: backfilled a real title on ${itemsNeedingTitle.length} inventory item(s) that only had a SKU.`
+    );
+  }
 }
