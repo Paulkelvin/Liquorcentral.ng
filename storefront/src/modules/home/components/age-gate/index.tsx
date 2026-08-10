@@ -1,37 +1,20 @@
 "use client"
 
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { Button, Text } from "@modules/common/components/ui"
 import { AGE_GATE_COOKIE_NAME as COOKIE_NAME } from "./constants"
 
-/**
- * 02_HOMEPAGE_SPECIFICATION.md §8.2 — a first-visit interstitial, not a
- * scrollable section. "Shown once per session (exact persistence duration
- * is an open item...)". A prior version of this component read "once per
- * session" literally and set a true session cookie (no `max-age`) —  in
- * practice that meant mobile visitors, whose browsers routinely drop
- * background tabs/processes for memory, saw the gate reappear several
- * times a day despite having already confirmed. Age self-attestation
- * doesn't need to be re-asked that often, so the cookie now persists for a
- * year: still a real, revisitable choice (see `MAX_AGE_SECONDS` below),
- * just not one repeated every time the OS reclaims a background tab.
- *
- * `initiallyVerified` is read from the incoming request's cookie header
- * by the server-rendered parent (`AgeGateWrapper`) so the very first
- * paint already knows whether to show the gate — avoiding a flash of the
- * gate on every return visit.
- *
- * **`onClose` is deliberately a no-op.** Headless UI's `Dialog` calls it
- * for both `Escape` and an outside click; §8.2 is explicit that "`Escape`
- * does not silently bypass a legal gate." Since visibility is otherwise
- * fully controlled by this component's own `open` state, an ignored
- * `onClose` means the dialog cannot be dismissed except through the two
- * explicit actions below — full keyboard/dialog semantics (focus trap,
- * `aria-modal`) are still provided by `Dialog`, only the dismiss paths
- * are intentionally disabled.
- */
+const STORAGE_KEY = "lc_age_verified"
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 365 // 1 year
+
+function isVerifiedInStorage(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "true"
+  } catch {
+    return false
+  }
+}
 
 export default function AgeGate({
   initiallyVerified,
@@ -41,8 +24,17 @@ export default function AgeGate({
   const [open, setOpen] = useState(!initiallyVerified)
   const [declined, setDeclined] = useState(false)
 
+  useEffect(() => {
+    if (open && isVerifiedInStorage()) {
+      setOpen(false)
+    }
+  }, [open])
+
   const confirm = () => {
-    document.cookie = `${COOKIE_NAME}=true; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Strict`
+    document.cookie = `${COOKIE_NAME}=true; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Lax`
+    try {
+      localStorage.setItem(STORAGE_KEY, "true")
+    } catch {}
     setOpen(false)
   }
 
