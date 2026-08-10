@@ -166,7 +166,7 @@ export default async function enable_liquor_inventory_tracking({
   );
 
   const existingItems = await inventoryModuleService.listInventoryItems(
-    { sku: Array.from(titleBySku.keys()) },
+    { sku: Array.from(titleBySku.keys()) as string[] },
     { select: ["id", "sku", "title"] }
   );
 
@@ -178,7 +178,7 @@ export default async function enable_liquor_inventory_tracking({
     await inventoryModuleService.updateInventoryItems(
       itemsNeedingTitle.map((item) => ({
         id: item.id,
-        title: titleBySku.get(item.sku as string),
+        title: titleBySku.get(item.sku as string) as string,
       }))
     );
     logger.info(

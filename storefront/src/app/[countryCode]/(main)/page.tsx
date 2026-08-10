@@ -63,10 +63,10 @@ export default async function Home({ params }: Props) {
         <BestSellers countryCode={countryCode} />
       </Suspense>
       <Suspense fallback={null}>
-        {/* Between the cellar and the kitchen — the one section that spans
-          both catalogs in a single action. */}
-      <PairingBanner countryCode={countryCode} />
-      <FoodCentralSpotlight countryCode={countryCode} />
+        <PairingBanner countryCode={countryCode} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <FoodCentralSpotlight countryCode={countryCode} />
       </Suspense>
       {/* Editorial before the returning-customer prompt: it earns trust,
           which is what makes the prompt after it worth answering. Its own

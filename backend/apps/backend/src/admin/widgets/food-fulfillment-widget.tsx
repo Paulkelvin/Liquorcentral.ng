@@ -61,8 +61,14 @@ const FoodFulfillmentWidget = ({ data }: DetailWidgetProps<AdminProduct>) => {
       queryClient.invalidateQueries({
         queryKey: ["product", data.id, "food_fulfillment"],
       })
+      queryClient.invalidateQueries({
+        queryKey: ["product", data.id, "food_available"],
+      })
     },
     onError: (error: Error) => {
+      const metadata = queryResult?.product.metadata ?? {}
+      setPickupAvailable(metadata.food_pickup_available !== false)
+      setScheduledAvailable(metadata.food_scheduled_available !== false)
       toast.error("Could not save fulfillment channels", {
         description: error.message,
       })

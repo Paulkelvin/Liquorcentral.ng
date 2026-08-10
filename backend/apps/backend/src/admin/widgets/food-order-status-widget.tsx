@@ -64,8 +64,13 @@ const FoodOrderStatusWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
       queryClient.invalidateQueries({
         queryKey: ["order", data.id, "food_order_status"],
       })
+      queryClient.invalidateQueries({
+        queryKey: ["order", data.id, "wine_delivery_status"],
+      })
     },
     onError: (error: Error) => {
+      const current = (queryResult?.order.metadata ?? {}).food_order_status
+      setStage(typeof current === "string" ? current : "")
       toast.error("Could not save order status", {
         description: error.message,
       })

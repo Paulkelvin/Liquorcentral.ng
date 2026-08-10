@@ -61,8 +61,12 @@ const FoodAvailabilityWidget = ({
       queryClient.invalidateQueries({
         queryKey: ["product", data.id, "food_available"],
       })
+      queryClient.invalidateQueries({
+        queryKey: ["product", data.id, "food_fulfillment"],
+      })
     },
     onError: (error: Error) => {
+      setIsAvailable(!isAvailable)
       toast.error("Could not save availability", {
         description: error.message,
       })
