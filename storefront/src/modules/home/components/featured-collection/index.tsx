@@ -3,7 +3,6 @@ import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { CuratedMark } from "@modules/common/components/curated-mark"
 import SectionCTAButton from "@modules/common/components/section-cta-button"
-import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import ProductPreview from "@modules/products/components/product-preview"
 import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
@@ -102,8 +101,6 @@ export default async function FeaturedCollection({
     return null
   }
 
-  const href = ACTIVE_CAMPAIGN.href ?? `/collections/${collection.handle}`
-
   return (
     // **This band was `ink-100` and is now the page's own `surface`.** The
     // tint existed to make the old white, bordered cards read as sitting *on*
@@ -121,30 +118,28 @@ export default async function FeaturedCollection({
       className="w-full bg-surface"
     >
       <div className="ds-container py-12 small:py-16">
-        {/* `justify-between` inside `ds-container` is what right-aligns the
-            link: the container's content box is the same box the grid starts
-            from, so the link's right edge and the grid's last column share one
-            line. */}
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-          <div>
-            {/* The one gold mark on this page — see curated-mark/index.tsx's
-                own rule. This section's copy is the platform's most direct
-                claim of human curation ("chosen by us, not by an
-                algorithm"), which is exactly what the mark exists for. */}
-            <CuratedMark className="mb-2" />
-            <Heading
-              level="h2"
-              display
-              id="featured-collection-heading"
-              className="!text-[24px] font-semibold tracking-[-0.01em] text-text-primary small:!text-[30px]"
-            >
-              Featured collection
-            </Heading>
-            <Text className="mt-1 text-text-secondary">
-              Chosen by us, not by an algorithm.
-            </Text>
-          </div>
-          <SectionLink href={href}>See all products</SectionLink>
+        {/* No top-right link here on purpose — Paul's direct instruction:
+            this heading's only job is introducing the curated 6, not
+            offering an early exit to the full catalog before a visitor's
+            even seen them. "See all products" now lives once, at the
+            bottom, after the products it's an alternative to. */}
+        <div className="mb-8">
+          {/* The one gold mark on this page — see curated-mark/index.tsx's
+              own rule. This section's copy is the platform's most direct
+              claim of human curation ("chosen by us, not by an
+              algorithm"), which is exactly what the mark exists for. */}
+          <CuratedMark className="mb-2" />
+          <Heading
+            level="h2"
+            display
+            id="featured-collection-heading"
+            className="!text-[24px] font-semibold tracking-[-0.01em] text-text-primary small:!text-[30px]"
+          >
+            Featured collection
+          </Heading>
+          <Text className="mt-1 text-text-secondary">
+            Chosen by us, not by an algorithm.
+          </Text>
         </div>
 
         {/* `col-span-full` rather than a fixed `col-span-2`/`col-span-3` pair:
@@ -162,7 +157,11 @@ export default async function FeaturedCollection({
           ))}
         </ul>
 
-        <SectionCTAButton href={href} data-testid="featured-collection-see-all">
+        {/* Deliberately hardcoded to /store, independent of the campaign's
+            own `collectionHandle`/`href` — "see all products" means the
+            whole catalog, not this campaign's collection, so it isn't
+            configurable the way `EditorialCard`'s "Explore Collection" is. */}
+        <SectionCTAButton href="/store" data-testid="featured-collection-see-all">
           See all products
         </SectionCTAButton>
       </div>

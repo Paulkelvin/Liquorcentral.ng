@@ -63,15 +63,16 @@ export const ACTIVE_CAMPAIGN: Campaign = {
   title: "Weekend Collection",
   description:
     "Curated bottles for slow evenings and unforgettable gatherings.",
+  // "Explore Collection" deliberately still goes to the real Featured
+  // Liquor collection page (the default below), not /store — Paul's
+  // direct correction: this button is specifically for exploring *this*
+  // campaign's collection, distinct from the separate "See all products"
+  // CTA at the section's bottom, which does point at /store. That the
+  // seeded collection holds 4 real products while this campaign's
+  // `productHandles` shows 6 on the homepage is expected, not a bug: a
+  // curated homepage row and a full collection page are different views,
+  // not required to match exactly.
   ctaLabel: "Explore Collection",
-  // Explicit, rather than the default `/collections/${collectionHandle}` —
-  // the seeded "Featured Liquor" collection holds only 4 real products
-  // while this campaign's `productHandles` below shows 6, so following the
-  // default CTA landed a shopper on a page that looked like it had lost
-  // two bottles. Sends to the full liquor catalog instead — a genuine "see
-  // everything" the homepage otherwise has no other link to, since the
-  // header's own catalog entry is the mega-menu dropdown, not a page link.
-  href: "/store",
   image: "/brand/campaigns/weekend-collection.jpg",
   imageAlt:
     "Three unlabelled bottles — whisky, red wine and a clear spirit — grouped on dark stone under low, warm light",
