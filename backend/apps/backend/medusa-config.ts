@@ -88,6 +88,22 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "./src/providers/notification-resend",
+            id: "resend",
+            is_default: true,
+            options: {
+              api_key: process.env.RESEND_API_KEY,
+              from: process.env.RESEND_FROM || "onboarding@resend.dev",
+            },
+          },
+        ],
+      },
+    },
     // Custom modules (MEDUSA_EXTENSIONS.md) — each a small module linked
     // 1:1 to Product via defineLink, never a core change (ARCHITECTURE.md).
     {
