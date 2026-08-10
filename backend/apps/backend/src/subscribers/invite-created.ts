@@ -9,32 +9,30 @@ const ADMIN_URL =
 export default async function inviteCreatedHandler({
   event: { data },
   container,
-}: SubscriberArgs<{ id: string }[]>) {
+}: SubscriberArgs<{ id: string }>) {
   const logger = container.resolve("logger")
   const userService = container.resolve(Modules.USER)
   const notificationService = container.resolve(Modules.NOTIFICATION)
 
-  const invites = Array.isArray(data) ? data : [data]
+  const { id } = data
 
-  for (const { id } of invites) {
-    try {
-      const invite = await userService.retrieveInvite(id)
-      const inviteLink = `${ADMIN_URL}/app/invite?token=${invite.token}`
+  try {
+    const invite = await userService.retrieveInvite(id)
+    const inviteLink = `${ADMIN_URL}/app/invite?token=${invite.token}`
 
-      await notificationService.createNotifications({
-        to: invite.email,
-        channel: "email",
-        template: "invite-user",
-        data: {
-          inviteLink,
-          emailAddress: invite.email,
-        },
-      })
+    await notificationService.createNotifications({
+      to: invite.email,
+      channel: "email",
+      template: "invite-user",
+      data: {
+        inviteLink,
+        emailAddress: invite.email,
+      },
+    })
 
-      logger.info(`[invite] Sent invitation email to ${invite.email}`)
-    } catch (err: any) {
-      logger.error(`[invite] Failed to send invite ${id}: ${err.message}`)
-    }
+    logger.info(`[invite] Sent invitation email to ${invite.email}`)
+  } catch (err: any) {
+    logger.error(`[invite] Failed to send invite ${id}: ${err.message}`)
   }
 }
 
