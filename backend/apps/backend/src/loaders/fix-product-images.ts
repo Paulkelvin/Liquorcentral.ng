@@ -1,11 +1,12 @@
 import { MedusaContainer } from "@medusajs/framework/types"
 import { Modules } from "@medusajs/framework/utils"
+import { v2 as cloudinary } from "cloudinary"
 
 const STOREFRONT_URL =
   process.env.STOREFRONT_URL ||
   "https://liquorcentralng-production.up.railway.app"
 
-const BRAND = (file: string) => `${STOREFRONT_URL}/brand/products/${file}`
+const BRAND = (file: string) => `/brand/products/${file}`
 
 const WIKIPEDIA_REPLACEMENTS: Record<string, string> = {
   "Château Margaux 2015": BRAND("wine-red-bordeaux.webp"),
@@ -32,11 +33,39 @@ const WIKIPEDIA_REPLACEMENTS: Record<string, string> = {
   "Sommelier Corkscrew & Bottle Opener Set": BRAND("whisky-gift-tube.webp"),
 }
 
+async function uploadToCloudinary(
+  imageUrl: string,
+  folder: string
+): Promise<string> {
+  const result = await cloudinary.uploader.upload(imageUrl, {
+    folder,
+    resource_type: "image",
+    overwrite: false,
+    unique_filename: true,
+  })
+  return result.secure_url
+}
+
 export default async function fixProductImages(
   container: MedusaContainer
 ) {
   const logger = container.resolve("logger")
   const productService = container.resolve(Modules.PRODUCT)
+
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME
+  if (!cloudName) {
+    logger.warn("[fix-product-images] CLOUDINARY_CLOUD_NAME not set, skipping")
+    return
+  }
+
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+  })
+
+  const folder = process.env.CLOUDINARY_FOLDER || "liquorcentral"
 
   try {
     const [products] = await productService.listAndCountProducts(
@@ -45,68 +74,59 @@ export default async function fixProductImages(
     )
 
     let fixedCount = 0
+    const uploadCache = new Map<string, string>()
 
     for (const product of products) {
       const thumb = product.thumbnail as string | null
       const title = product.title as string
       const images = (product as any).images || []
-      const update: any = {}
+
+      let sourcePath: string | null = null
 
       if (thumb?.startsWith("/brand/")) {
-        update.thumbnail = STOREFRONT_URL + thumb
+        sourcePath = thumb
       } else if (
         thumb &&
         (thumb.includes("wikimedia") || thumb.includes("localhost"))
       ) {
-        const replacement = WIKIPEDIA_REPLACEMENTS[title]
-        if (replacement) {
-          update.thumbnail = replacement
-        }
+        sourcePath = WIKIPEDIA_REPLACEMENTS[title] || null
       } else if (!thumb) {
-        const replacement = WIKIPEDIA_REPLACEMENTS[title]
-        if (replacement) {
-          update.thumbnail = replacement
-        }
+        sourcePath = WIKIPEDIA_REPLACEMENTS[title] || null
+      } else if (thumb.includes("res.cloudinary.com")) {
+        continue
+      } else {
+        continue
       }
 
-      const newImages: { url: string }[] = []
-      let imagesChanged = false
-      for (const img of images) {
-        const url = img.url as string
-        if (url?.startsWith("/brand/")) {
-          newImages.push({ url: STOREFRONT_URL + url })
-          imagesChanged = true
-        } else if (
-          url &&
-          (url.includes("wikimedia") || url.includes("localhost"))
-        ) {
-          const replacement = WIKIPEDIA_REPLACEMENTS[title]
-          if (replacement) {
-            newImages.push({ url: replacement })
-            imagesChanged = true
-          } else {
-            newImages.push({ url })
-          }
+      if (!sourcePath) continue
+
+      try {
+        let cloudinaryUrl: string
+
+        if (uploadCache.has(sourcePath)) {
+          cloudinaryUrl = uploadCache.get(sourcePath)!
         } else {
-          newImages.push({ url })
+          const fullUrl = STOREFRONT_URL + sourcePath
+          cloudinaryUrl = await uploadToCloudinary(fullUrl, folder)
+          uploadCache.set(sourcePath, cloudinaryUrl)
+          logger.info(`[fix-product-images] Uploaded ${sourcePath} -> ${cloudinaryUrl}`)
         }
-      }
 
-      if (imagesChanged) update.images = newImages
-
-      if (Object.keys(update).length) {
-        await productService.updateProducts(product.id, update)
+        await productService.updateProducts(product.id, {
+          thumbnail: cloudinaryUrl,
+          images: [{ url: cloudinaryUrl }],
+        })
         fixedCount++
-        logger.info(`[fix-product-images] ${title} -> ${update.thumbnail || "images only"}`)
+        logger.info(`[fix-product-images] Updated ${title}`)
+      } catch (err: any) {
+        logger.warn(`[fix-product-images] Failed for ${title}: ${err.message}`)
       }
     }
 
     if (fixedCount > 0) {
-      logger.info(
-        `[fix-product-images] Fixed ${fixedCount} products total`
-      )
+      logger.info(`[fix-product-images] Fixed ${fixedCount} products total`)
     } else {
-      logger.info("[fix-product-images] All product images OK")
+      logger.info("[fix-product-images] All product images already on Cloudinary")
     }
   } catch (err: any) {
     logger.warn(`[fix-product-images] ${err.message}`)
