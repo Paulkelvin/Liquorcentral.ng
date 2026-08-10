@@ -64,6 +64,13 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
+      // Medusa defaults this to "1d" — the admin login token (and the
+      // dashboard's own "please log in again" prompt) expires on that
+      // same clock. Paul asked for something like "remember me" so the
+      // admin doesn't keep re-asking; 30 days is the standard tradeoff
+      // for a low-traffic internal tool, at the cost of a longer window
+      // if a staff device/browser session were ever compromised.
+      jwtExpiresIn: "30d",
     }
   },
   // Production-mode infrastructure from day one — this project never runs
