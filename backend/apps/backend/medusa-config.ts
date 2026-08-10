@@ -71,7 +71,29 @@ module.exports = defineConfig({
       // between convenience and how long a lost/compromised staff
       // session would stay valid.
       jwtExpiresIn: "7d",
-    }
+    },
+    /**
+     * The admin dashboard authenticates with a **session cookie**, not the
+     * JWT above (`ADMIN_AUTH_TYPE=session` — the JWT mode it used before
+     * had a race where the dashboard's first `/admin/users/me` could
+     * outrun the token being written to localStorage, bouncing you back
+     * to a blank login form). That means `jwtExpiresIn` no longer governs
+     * how long a staff login lasts — the session cookie does, and
+     * Medusa's defaults for it are much shorter than the 7 days above:
+     * `ttl` 10 hours and, more importantly, `rolling: false`.
+     *
+     * Non-rolling is the part that actually hurts: the cookie's expiry is
+     * fixed at login and never extended, so an admin is signed out on a
+     * hard clock *while actively working*, and the dashboard surfaces
+     * that as a failed request mid-session rather than a clean "please
+     * log in again". Matching the 7 days intended for staff logins and
+     * making it rolling means the window is refreshed by ordinary use, so
+     * only a genuinely idle session ever ages out.
+     */
+    sessionOptions: {
+      ttl: 7 * 24 * 60 * 60 * 1000,
+      rolling: true,
+    },
   },
   // Production-mode infrastructure from day one — this project never runs
   // on Medusa's in-memory dev defaults (docs/ROADMAP.md Phase 1).
