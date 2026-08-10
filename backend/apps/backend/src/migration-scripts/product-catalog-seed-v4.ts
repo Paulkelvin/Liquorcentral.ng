@@ -1900,15 +1900,19 @@ export default async function product_catalog_seed({
   // decision on naming or grouping.
   //
   // Previously seeded three more ("Everyday Favourites", "Top Shelf
-  // Whisky", "Nigerian Kitchen Favourites") alongside this one. Paul had
-  // me remove them from the live site: only this collection is pointed
-  // to by `campaign.ts`'s `ACTIVE_CAMPAIGN`, so it's the only one with a
-  // real homepage placement — the other three were reachable only via a
+  // Whisky", "Nigerian Kitchen Favourites") alongside "Featured Liquor".
+  // Paul had me remove them from the live site: at the time, only
+  // Featured Liquor had a real homepage placement (via `campaign.ts`'s
+  // `ACTIVE_CAMPAIGN`) — the other three were reachable only via a
   // buried mega-menu link, and the food one was misfiled under the
-  // Liquor-only mega menu regardless. Trimmed here too so a fresh
-  // database seed matches what's actually live, rather than
-  // resurrecting collections that were deliberately deleted in
-  // production.
+  // Liquor-only mega menu regardless.
+  //
+  // "Best Sellers" is added back under that same rule now that it has
+  // one too: the homepage's Best Sellers section (`best-sellers/
+  // index.tsx`) shows 4 hand-picked products via its own
+  // `BEST_SELLER_HANDLES`, and its "View all" link points at this
+  // collection's own page — which needs more than 4 real members for
+  // that link to show anything beyond what's already on the homepage.
   async function seedCuratedCollections() {
   const COLLECTIONS: { title: string; handle: string; productHandles: string[] }[] = [
     {
@@ -1919,6 +1923,20 @@ export default async function product_catalog_seed({
         "dom-perignon-vintage-2013",
         "johnnie-walker-blue-label",
         "hennessy-vsop",
+      ],
+    },
+    {
+      title: "Best Sellers",
+      handle: "best-sellers",
+      productHandles: [
+        "jameson-irish-whiskey",
+        "grey-goose-vodka",
+        "baileys-irish-cream",
+        "heineken-lager-crate",
+        "absolut-vodka",
+        "captain-morgan-spiced-rum",
+        "chivas-regal-12",
+        "courvoisier-cognac",
       ],
     },
   ];

@@ -1,10 +1,14 @@
+import { listCollections } from "@lib/data/collections"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import SectionCTAButton from "@modules/common/components/section-cta-button"
 import SectionLink from "@modules/common/components/section-link"
 import { Heading, Text } from "@modules/common/components/ui"
 import ProductPreview from "@modules/products/components/product-preview"
 import { PRODUCT_GRID } from "@modules/products/components/product-grid/grid"
 import { BEST_SELLER_HANDLES } from "./products"
+
+const BEST_SELLERS_COLLECTION_HANDLE = "best-sellers"
 
 /**
  * A plain 4-card shelf, not an editorial section — no `CuratedMark`
@@ -16,6 +20,14 @@ import { BEST_SELLER_HANDLES } from "./products"
  * merchandising shelves, so keeping them adjacent groups "here's what we
  * recommend" with "here's what's popular" before the page moves on to
  * Food Central.
+ *
+ * **Two distinct exits, same split as Featured Collection's own — Paul's
+ * direct instruction.** "View all" (top-right) goes to the real "Best
+ * Sellers" collection page, which holds more than these 4 — genuinely
+ * "more of this same shelf", not the whole catalog. "See all products"
+ * (bottom, after the grid) always means the whole catalog, so it's
+ * hardcoded to /store rather than derived from the collection, matching
+ * Featured Collection's own reasoning for the same button.
  */
 export default async function BestSellers({
   countryCode,
@@ -26,6 +38,13 @@ export default async function BestSellers({
   if (!region) {
     return null
   }
+
+  const { collections } = await listCollections({
+    handle: BEST_SELLERS_COLLECTION_HANDLE,
+    limit: "1",
+  }).catch(() => ({ collections: [] as { id: string; handle: string }[] }))
+
+  const collection = collections?.[0]
 
   const {
     response: { products: fetched },
@@ -68,7 +87,13 @@ export default async function BestSellers({
               What LiquorCentral customers reach for most.
             </Text>
           </div>
-          <SectionLink href="/store">View all</SectionLink>
+          {/* Only shown once the real collection exists — a "View all"
+              that led nowhere new would be worse than not offering it. */}
+          {collection && (
+            <SectionLink href={`/collections/${collection.handle}`}>
+              View all
+            </SectionLink>
+          )}
         </div>
 
         <ul className={PRODUCT_GRID}>
@@ -78,6 +103,10 @@ export default async function BestSellers({
             </li>
           ))}
         </ul>
+
+        <SectionCTAButton href="/store" data-testid="best-sellers-see-all">
+          See all products
+        </SectionCTAButton>
       </div>
     </section>
   )
