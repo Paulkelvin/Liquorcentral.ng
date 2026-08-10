@@ -13,7 +13,7 @@
     "medusa"
   ],
   "scripts": {
-    "build": "medusa build",
+    "build": "ADMIN_AUTH_TYPE=jwt medusa build",
     "start": "medusa start",
     "dev": "medusa develop",
     "lint": "medusa lint",
