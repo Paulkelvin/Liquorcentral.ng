@@ -26,6 +26,15 @@ const ASSETS_DIR = join(
 
 const REPLACEMENTS = [
   ['"Welcome to Medusa"', '"Welcome to LiquorCentral"'],
+  // The post-account-creation success screen (invite.successHint/
+  // successAction in the vendored i18n bundle) — missed in the first
+  // pass, which only covered the login/invite screens' shared title.
+  // Paul, seeing it live: "I don't want this Medusa thing there."
+  [
+    '"Get started with Medusa Admin right away."',
+    '"Get started with LiquorCentral Admin right away."',
+  ],
+  ['"Start Medusa Admin"', '"Start LiquorCentral Admin"'],
 ]
 
 async function main() {
