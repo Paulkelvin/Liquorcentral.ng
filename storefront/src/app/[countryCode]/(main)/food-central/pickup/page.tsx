@@ -24,6 +24,7 @@ export default async function FoodCentralPickupPage({
       title="Pickup"
       description="Order from today's menu, then choose pickup at checkout — with a clear ready-time estimate, equal weight to delivery."
       page={page ? parseInt(page) : 1}
+      fulfillmentMode="pickup"
     />
   )
 }

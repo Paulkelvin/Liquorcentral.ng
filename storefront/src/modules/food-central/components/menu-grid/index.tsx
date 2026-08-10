@@ -1,5 +1,9 @@
 import { listAllProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import {
+  isFoodCentralAvailableForPickup,
+  isFoodCentralAvailableForScheduled,
+} from "@lib/util/food-availability"
 import ProductPreview from "@modules/products/components/product-preview"
 import NotTakingOrders from "@modules/food-central/components/not-taking-orders"
 import LoadMoreLink from "@modules/food-central/components/load-more-link"
@@ -16,19 +20,28 @@ const MENU_PAGE_SIZE = 12
  * pattern `FoodCentralSpotlight` already proved out on the homepage,
  * rather than inventing a second query shape for the full listing.
  *
- * Pickup and scheduling selection both happen at checkout (§9, §10,
- * `07_CHECKOUT_SPECIFICATION.md` §9/§10) — not redefined here. Since
- * delivery-slot storefront wiring and same-day cutoff timing are both
- * explicitly "not yet built" / "not yet decided" (§25, §28), these three
- * destinations cannot yet behave differently from one another at the
- * menu-browsing stage; each shows the identical real menu, with only its
- * own heading/description differing, until that infrastructure exists.
+ * **Pickup and Scheduled Orders used to show the identical menu** — Paul
+ * noticed and asked for a real per-dish split: some dishes are ready
+ * fast enough for pickup, others genuinely need the lead time scheduling
+ * gives a kitchen. `fulfillmentMode` filters against the
+ * `food_pickup_available`/`food_scheduled_available` metadata flags
+ * (`food-availability.ts`) an Admin widget now sets per dish — absent
+ * metadata defaults both true, so an unedited dish keeps appearing on
+ * both pages exactly as before this existed. Today's Menu passes no
+ * filter, since it's still the one "everything" destination.
+ *
+ * *Slot-level* timing (a specific ready-in-20-minutes window, a specific
+ * future date/time) still happens at checkout (§9, §10,
+ * `07_CHECKOUT_SPECIFICATION.md` §9/§10), not here — this only answers
+ * "is this dish offered through this channel at all," which delivery-
+ * slot storefront wiring being unbuilt (§25, §28) doesn't block.
  */
 export default async function FoodCentralMenuGrid({
   countryCode,
   title,
   description,
   page = 1,
+  fulfillmentMode,
 }: {
   countryCode: string
   title: string
@@ -37,6 +50,9 @@ export default async function FoodCentralMenuGrid({
    * `store/templates/paginated-products`: every render shows every dish
    * from the start through this many pages. */
   page?: number
+  /** Omit for Today's Menu (every dish); "pickup"/"scheduled" narrows to
+   * dishes offered through that specific channel. */
+  fulfillmentMode?: "pickup" | "scheduled"
 }) {
   const region = await getRegion(countryCode)
 
@@ -56,12 +72,33 @@ export default async function FoodCentralMenuGrid({
     queryParams: { fields: "+food_details.*" },
   })
 
-  const allFoodProducts = products.filter(
+  const dishes = products.filter(
     (product) => (product as unknown as { food_details?: unknown }).food_details
   )
 
+  const allFoodProducts = dishes.filter((product) => {
+    if (fulfillmentMode === "pickup") {
+      return isFoodCentralAvailableForPickup(product)
+    }
+    if (fulfillmentMode === "scheduled") {
+      return isFoodCentralAvailableForScheduled(product)
+    }
+    return true
+  })
+
   if (allFoodProducts.length === 0) {
-    return <NotTakingOrders title={title} />
+    // Two genuinely different situations, so two different messages: the
+    // kitchen has nothing on the menu at all, vs. it does, just nothing
+    // currently offered through this specific channel (every dish
+    // defaults to both, so this only happens once someone deliberately
+    // narrows every last one in Admin).
+    const description =
+      fulfillmentMode && dishes.length > 0
+        ? `No dishes are currently offered for ${
+            fulfillmentMode === "pickup" ? "pickup" : "scheduled orders"
+          }. Check Today's Menu for what's available now.`
+        : undefined
+    return <NotTakingOrders title={title} description={description} />
   }
 
   const visibleCount = page * MENU_PAGE_SIZE

@@ -12,12 +12,18 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
  * destination real in the meantime, reusing Phase 0c's EmptyState
  * infrastructure rather than inventing new empty-state UI.
  */
-export default function NotTakingOrders({ title }: { title: string }) {
+export default function NotTakingOrders({
+  title,
+  description = "Food Central isn't taking orders yet. Check back soon.",
+}: {
+  title: string
+  description?: string
+}) {
   return (
     <div className="ds-container">
       <EmptyState
         title={title}
-        description="Food Central isn't taking orders yet. Check back soon."
+        description={description}
         action={
           // A real, single <a> styled like the primary Button (not a
           // <button> nested inside a link) — the exact nested-interactive

@@ -24,6 +24,7 @@ export default async function FoodCentralScheduledPage({
       title="Scheduled Orders"
       description="Order from today's menu, then choose a future date and time at checkout."
       page={page ? parseInt(page) : 1}
+      fulfillmentMode="scheduled"
     />
   )
 }

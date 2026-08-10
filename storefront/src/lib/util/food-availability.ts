@@ -32,3 +32,28 @@ export function isFoodCentralUnavailable(
     isFoodCentralProduct(product) && product.metadata?.food_available === false
   )
 }
+
+/**
+ * Which fulfillment channel(s) a dish is offered through — Paul's direct
+ * instruction, after noticing Pickup and Scheduled Orders showed the
+ * identical menu (per `menu-grid/index.tsx`'s own prior comment, that was
+ * deliberate: no per-dish signal existed to tell them apart). Same
+ * pattern as `food_available` above: two booleans on Product's own
+ * native `metadata`, not a `food_details` field or a new module, for the
+ * same "one flag doesn't need a migration" reasoning.
+ *
+ * Absent metadata defaults **both** to true — every dish already on the
+ * menu keeps showing on both pages exactly as it did before this existed,
+ * until someone deliberately narrows a specific dish in Admin.
+ */
+export function isFoodCentralAvailableForPickup(
+  product: ProductWithFoodMetadata
+): boolean {
+  return product.metadata?.food_pickup_available !== false
+}
+
+export function isFoodCentralAvailableForScheduled(
+  product: ProductWithFoodMetadata
+): boolean {
+  return product.metadata?.food_scheduled_available !== false
+}
