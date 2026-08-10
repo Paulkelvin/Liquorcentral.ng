@@ -6,12 +6,25 @@ module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
+    sessionOptions: {
+      name: "connect.sid",
+      resave: false,
+      saveUninitialized: false,
+      rolling: true,
+      ttl: 7 * 24 * 60 * 60 * 1000,
+    },
+    cookieOptions: {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
+      jwtExpiresIn: "7d",
     }
   },
   // Production-mode infrastructure from day one — this project never runs
