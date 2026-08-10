@@ -90,6 +90,7 @@ module.exports = defineConfig({
             options: {
               api_key: process.env.RESEND_API_KEY,
               from: process.env.RESEND_FROM || "onboarding@resend.dev",
+              channels: ["email"],
             },
           },
         ],
