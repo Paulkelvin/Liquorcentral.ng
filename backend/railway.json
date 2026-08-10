@@ -5,7 +5,7 @@
     "buildCommand": "yarn build"
   },
   "deploy": {
-    "preDeployCommand": "yarn workspace @dtc/backend medusa db:migrate && yarn workspace @dtc/backend medusa exec ./src/scripts/create-admin-from-env.js && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/product-catalog-seed-v4.ts && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/shipping-options-seed.ts && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/enable-liquor-inventory-tracking.ts && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/update-product-photography.ts",
+    "preDeployCommand": "yarn workspace @dtc/backend medusa db:migrate && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/release-orphaned-auth-identities.ts && yarn workspace @dtc/backend medusa exec ./src/scripts/create-admin-from-env.js && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/product-catalog-seed-v4.ts && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/shipping-options-seed.ts && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/enable-liquor-inventory-tracking.ts && yarn workspace @dtc/backend medusa exec ./src/migration-scripts/update-product-photography.ts",
     "startCommand": "yarn start",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
