@@ -144,7 +144,7 @@ export default async function FeaturedCollection({
               Chosen by us, not by an algorithm.
             </Text>
           </div>
-          <SectionLink href={href}>See the collection</SectionLink>
+          <SectionLink href={href}>See all products</SectionLink>
         </div>
 
         {/* `col-span-full` rather than a fixed `col-span-2`/`col-span-3` pair:
@@ -163,7 +163,7 @@ export default async function FeaturedCollection({
         </ul>
 
         <SectionCTAButton href={href} data-testid="featured-collection-see-all">
-          See the collection
+          See all products
         </SectionCTAButton>
       </div>
     </section>

@@ -87,11 +87,14 @@ export default async function CategoryBrowse() {
     }))
 
   // Food Central is not a Medusa category — Milestone 7 established it as a
-  // deliberately static route, so it is appended by hand rather than being
+  // deliberately static route, so it is added by hand rather than being
   // absent from a data-driven row that claims to show everything on sale.
+  // Leads the row (Paul's direct instruction) rather than trailing the
+  // data-driven categories, so it's the tile that's already fully visible
+  // rather than the half-cut one at the edge of the mobile scroll strip.
   const tiles: Tile[] = [
-    ...topLevel,
     { handle: "food-central", name: "Food Central", href: "/food-central", foodCentral: true },
+    ...topLevel,
   ]
 
   // One real category plus Food Central is not a browse row worth showing.
