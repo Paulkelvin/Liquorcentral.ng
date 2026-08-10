@@ -2,20 +2,12 @@
 
 import { Popover, PopoverButton, PopoverPanel, Transition } from "@headlessui/react"
 import { HttpTypes } from "@medusajs/types"
-import { ArrowRightMini, XMark } from "@medusajs/icons"
+import { XMark } from "@medusajs/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { clx } from "@modules/common/components/ui"
 import { Fragment } from "react"
-import CountrySelect from "../country-select"
-import LanguageSelect from "../language-select"
-import { Locale } from "@lib/data/locales"
-import useToggleState from "@lib/hooks/use-toggle-state"
 
 type MobileNavDrawerProps = {
   categories: HttpTypes.StoreProductCategory[]
-  regions: HttpTypes.StoreRegion[] | null
-  locales: Locale[] | null
-  currentLocale: string | null
 }
 
 const FOOD_CENTRAL_DESTINATIONS = [
@@ -24,27 +16,9 @@ const FOOD_CENTRAL_DESTINATIONS = [
   { label: "Pickup", href: "/food-central/pickup" },
 ]
 
-/**
- * 01_NAVIGATION_SPECIFICATION.md §7.3 — "a drawer (opened from a
- * clearly-labeled 'Menu' or 'All Categories' affordance, not an
- * unlabeled hamburger icon alone)... carries the full category tree
- * depth." Replaces the Phase 0c-era generic SideMenu (Home/Store/Account/
- * Cart only, no category depth) — its region/language selectors are
- * carried over unchanged, not dropped.
- *
- * Built the same disclosure way as MegaMenu/FoodCentralMenu (Popover +
- * `focus`): labeled trigger, `aria-expanded`, focus trapped while open,
- * `Escape` closes and returns focus to the trigger (§7, §21, §22).
- */
 export default function MobileNavDrawer({
   categories,
-  regions,
-  locales,
-  currentLocale,
 }: MobileNavDrawerProps) {
-  const countryToggleState = useToggleState()
-  const languageToggleState = useToggleState()
-
   const topLevel = categories
     .filter((c) => !c.parent_category_id)
     .sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
@@ -159,46 +133,6 @@ export default function MobileNavDrawer({
                     </li>
                   </ul>
                 </nav>
-
-                <div className="flex flex-col gap-y-6 border-t border-divider pt-6 mt-6">
-                  {!!locales?.length && (
-                    <div
-                      className="flex justify-between"
-                      onMouseEnter={languageToggleState.open}
-                      onMouseLeave={languageToggleState.close}
-                    >
-                      <LanguageSelect
-                        toggleState={languageToggleState}
-                        locales={locales}
-                        currentLocale={currentLocale}
-                      />
-                      <ArrowRightMini
-                        className={clx(
-                          "transition-transform duration-150",
-                          languageToggleState.state ? "-rotate-90" : ""
-                        )}
-                      />
-                    </div>
-                  )}
-                  <div
-                    className="flex justify-between"
-                    onMouseEnter={countryToggleState.open}
-                    onMouseLeave={countryToggleState.close}
-                  >
-                    {regions && (
-                      <CountrySelect
-                        toggleState={countryToggleState}
-                        regions={regions}
-                      />
-                    )}
-                    <ArrowRightMini
-                      className={clx(
-                        "transition-transform duration-150",
-                        countryToggleState.state ? "-rotate-90" : ""
-                      )}
-                    />
-                  </div>
-                </div>
               </div>
             </PopoverPanel>
           </Transition>

@@ -1,11 +1,7 @@
 import { Suspense } from "react"
 
-import { listLocales } from "@lib/data/locales"
-import { getLocale } from "@lib/data/locale-actions"
-import { listRegions } from "@lib/data/regions"
 import { listCategories } from "@lib/data/categories"
 import { listCollections } from "@lib/data/collections"
-import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import MobileNavDrawer from "@modules/layout/components/mobile-nav-drawer"
@@ -29,11 +25,8 @@ import SearchField from "@modules/layout/components/search-field"
  * `collections.ts`) and by MegaMenu's own empty-columns fallback.
  */
 export default async function Nav() {
-  const [regions, locales, currentLocale, categories, { collections }] =
+  const [categories, { collections }] =
     await Promise.all([
-      listRegions().then((regions: StoreRegion[]) => regions),
-      listLocales(),
-      getLocale(),
       listCategories().catch(() => []),
       listCollections({ limit: "6" }).catch(() => ({ collections: [] })),
     ])
@@ -47,12 +40,7 @@ export default async function Nav() {
         >
           <div className="flex-1 basis-0 h-full flex items-center gap-6">
             <div className="h-full sm:hidden">
-              <MobileNavDrawer
-                categories={categories}
-                regions={regions}
-                locales={locales}
-                currentLocale={currentLocale}
-              />
+              <MobileNavDrawer categories={categories} />
             </div>
             <div className="hidden sm:flex items-center h-full gap-6">
               <MegaMenu categories={categories} collections={collections} />
