@@ -223,7 +223,9 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "grey-goose-vodka",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Grey_Goose_Bottle.jpg",
+    // Paul-supplied product photography, replacing the Wikipedia stock
+    // photo — see `/public/brand/products/grey-goose-vodka.webp`.
+    realImageUrl: "/brand/products/grey-goose-vodka.webp",
     title: "Grey Goose Vodka",
     description: "A clean, smooth French vodka with a subtle almond finish.",
     price: 32000,
@@ -291,7 +293,9 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "baileys-irish-cream",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Baileys_Original_Irish_Cream_Bottle.jpg",
+    // Paul-supplied product photography, replacing the Wikipedia stock
+    // photo — see `/public/brand/products/baileys-irish-cream.webp`.
+    realImageUrl: "/brand/products/baileys-irish-cream.webp",
     title: "Baileys Irish Cream",
     description: "A smooth blend of Irish whiskey and cream with notes of cocoa and vanilla.",
     price: 18000,
@@ -308,7 +312,9 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "heineken-lager-crate",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f0/Heineken_Bottle.JPG",
+    // Paul-supplied product photography, replacing the Wikipedia stock
+    // photo — see `/public/brand/products/heineken-lager-crate.webp`.
+    realImageUrl: "/brand/products/heineken-lager-crate.webp",
     title: "Heineken Lager (Crate of 12)",
     description: "A crisp, balanced lager with a mild bitterness — crate of 12 bottles.",
     price: 9500,
@@ -518,7 +524,9 @@ const PRODUCTS: SeedProduct[] = [
   },
   {
     handle: "jameson-irish-whiskey",
-    realImageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Jameson_Irish_Whiskey.JPG",
+    // Paul-supplied product photography, replacing the Wikipedia stock
+    // photo — see `/public/brand/products/jameson-irish-whiskey.webp`.
+    realImageUrl: "/brand/products/jameson-irish-whiskey.webp",
     title: "Jameson Irish Whiskey",
     description: "A triple-distilled blended Irish whiskey with a smooth, light, and fruity character.",
     price: 26000,
