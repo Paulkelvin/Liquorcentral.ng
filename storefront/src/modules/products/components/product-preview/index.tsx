@@ -1,4 +1,4 @@
-import { Text } from "@modules/common/components/ui"
+import { Text, clx } from "@modules/common/components/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
 import { demoImageFor } from "@lib/util/demo-product-images"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
@@ -125,7 +125,16 @@ export default async function ProductPreview({
             is already `!important`, so a second `!important` radius from a
             caller is resolved by Tailwind's emit order rather than by
             intent. A wrapper sidesteps that entirely. */}
-        <div className="relative overflow-hidden rounded-radius-md bg-ink-100">
+        <div
+          className={clx(
+            "relative overflow-hidden rounded-radius-md bg-ink-100",
+            // A dimmed, desaturated tile reads as unavailable at a glance —
+            // scanning a grid, not reading a caption underneath it — the
+            // same reason the badge below replaces the old red text-block
+            // line rather than sitting next to it.
+            isUnavailable && "opacity-50 grayscale"
+          )}
+        >
           <Thumbnail
             thumbnail={demo?.src ?? product.thumbnail}
             images={demo ? null : product.images}
@@ -135,22 +144,37 @@ export default async function ProductPreview({
             className="!bg-transparent"
           />
 
-          {/* The supporting fact moved **onto** the image.
+          {/* The supporting fact — or, taking priority when unavailable,
+              the sold-out/unavailable state — moved **onto** the image.
               `04_PRODUCT_LISTING_SPECIFICATION.md` §9 still allows at most
-              one, and it is still at most one — but keeping it out of the
-              text block is what leaves title and price alone underneath,
-              which is the thing that makes the reference card read as calm.
-              Same overlay treatment as the Today's Menu dish card, so the
-              two agree. */}
-          {catalogFact && (
+              one badge occupying this slot; unavailability is more urgent
+              than a prep-time or catalog-identity fact, so it wins the slot
+              rather than stacking a second badge beside it. Same overlay
+              treatment as the Today's Menu dish card, so the two agree —
+              and previously a plain red caption line below the price read
+              as an afterthought rather than a real state of the card. */}
+          {isUnavailable ? (
             <span
               className="absolute left-2 top-2 rounded-radius-full bg-scrim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-surface-elevated backdrop-blur-sm"
-              data-testid={
-                showCatalogBadge ? "product-catalog-badge" : "product-catalog-fact"
-              }
+              data-testid="product-unavailable-label"
             >
-              {catalogFact}
+              {/* 09_FOOD_ORDERING_SPECIFICATION.md §6 — Food Central's
+                  kitchen-capacity "Unavailable" is a distinct concept from
+                  Wine & Spirits' stock-based "Sold out", not the same label
+                  reused. */}
+              {foodUnavailable ? "Unavailable" : "Sold out"}
             </span>
+          ) : (
+            catalogFact && (
+              <span
+                className="absolute left-2 top-2 rounded-radius-full bg-scrim px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-surface-elevated backdrop-blur-sm"
+                data-testid={
+                  showCatalogBadge ? "product-catalog-badge" : "product-catalog-fact"
+                }
+              >
+                {catalogFact}
+              </span>
+            )
           )}
         </div>
 
@@ -181,21 +205,6 @@ export default async function ProductPreview({
             <div className="flex items-baseline gap-x-2 text-[15px] font-semibold text-text-primary">
               <PreviewPrice price={cheapestPrice} />
             </div>
-          )}
-
-          {isUnavailable && (
-            <Text
-              as="span"
-              size="caption"
-              className="text-danger"
-              data-testid="product-unavailable-label"
-            >
-              {/* 09_FOOD_ORDERING_SPECIFICATION.md §6 — Food Central's
-                  kitchen-capacity "Unavailable" is a distinct concept from
-                  Wine & Spirits' stock-based "Sold out", not the same label
-                  reused. */}
-              {foodUnavailable ? "Unavailable" : "Sold out"}
-            </Text>
           )}
         </div>
       </LocalizedClientLink>

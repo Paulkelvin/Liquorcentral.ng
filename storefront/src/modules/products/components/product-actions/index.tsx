@@ -6,7 +6,7 @@ import { useIntersection } from "@lib/hooks/use-in-view"
 import { demoImageFor } from "@lib/util/demo-product-images"
 import { isFoodCentralUnavailable } from "@lib/util/food-availability"
 import { HttpTypes } from "@medusajs/types"
-import { Button, Text } from "@modules/common/components/ui"
+import { Button } from "@modules/common/components/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import QuantityStepper from "@modules/products/components/quantity-stepper"
@@ -323,14 +323,6 @@ export default function ProductActions({
             max={maxQuantity}
             disabled={!!disabled}
           />
-        )}
-
-        {!inStock && isValidVariant && (
-          <Text size="caption" className="text-danger">
-            {foodUnavailable
-              ? "This dish is currently unavailable."
-              : "This item is currently out of stock."}
-          </Text>
         )}
 
         {giftWrapProduct?.variants?.[0] && (
