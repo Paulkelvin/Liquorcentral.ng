@@ -1,0 +1,13 @@
+{
+  "login": {
+    "title": "Welcome to LiquorCentral",
+    "hint": "Sign in to access the admin area"
+  },
+  "invite": {
+    "title": "Welcome to LiquorCentral",
+    "hint": "Create your account below",
+    "successTitle": "Your account has been registered",
+    "successHint": "Get started with LiquorCentral Admin right away.",
+    "successAction": "Start LiquorCentral Admin"
+  }
+}
