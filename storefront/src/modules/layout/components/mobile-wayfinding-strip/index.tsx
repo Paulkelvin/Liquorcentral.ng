@@ -61,7 +61,11 @@ export default function MobileWayfindingStrip() {
               alt="Liquor"
               width={665}
               height={196}
-              className="h-6 w-auto object-contain"
+              // A little larger than Food Central's own mark on purpose —
+              // Paul's direct instruction, a small "zoomed in" bump from
+              // h-6. Left Food Central's own sizing alone; only this one
+              // was asked for.
+              className="h-7 w-auto object-contain"
               priority
             />
           </LocalizedClientLink>

@@ -29,7 +29,9 @@ function LiquorLogo() {
       alt="Liquor"
       width={665}
       height={196}
-      className="h-6 w-auto object-contain"
+      // A small "zoomed in" bump from h-6 — Paul's direct instruction,
+      // matching the same increase on the mobile wayfinding strip's tab.
+      className="h-7 w-auto object-contain"
       priority
     />
   )

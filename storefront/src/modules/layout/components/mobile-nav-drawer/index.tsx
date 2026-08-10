@@ -225,15 +225,16 @@ export default function MobileNavDrawer({
             {/* `h-dvh` (dynamic viewport height), not just `inset-0`'s
                 implicit sizing — accounts for mobile Safari/Chrome's
                 collapsing address-bar chrome so the drawer never sits
-                taller than the real visible viewport. Narrowed from 90vw/
-                22rem to 80vw/19rem — Paul's direction, matching the same
-                "leave more of the page visibly tappable" reasoning the
-                cart drawer's own width already got twice over. The dimmed
-                scrim now reads clearly at the right edge as the "this is
-                a panel, not a new page" cue the redesign is built around. */}
+                taller than the real visible viewport. Narrowed a second
+                time, from 80vw/19rem to 72vw/17rem — Paul's direction,
+                matching the same "leave more of the page visibly tappable"
+                reasoning the cart drawer's own width already got twice
+                over. The dimmed scrim now reads clearly at the right edge
+                as the "this is a panel, not a new page" cue the redesign
+                is built around. */}
             <PopoverPanel
               focus
-              className="fixed inset-y-0 left-0 h-dvh z-[61] w-[80vw] max-w-[19rem] bg-surface shadow-2xl flex flex-col overflow-hidden"
+              className="fixed inset-y-0 left-0 h-dvh z-[61] w-[72vw] max-w-[17rem] bg-surface shadow-2xl flex flex-col overflow-hidden"
               data-testid="mobile-nav-drawer"
             >
               {/* Fixed header — the display serif, same weight the wordmark
