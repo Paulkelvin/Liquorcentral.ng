@@ -62,16 +62,14 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
-            resolve: "@medusajs/file-s3",
-            id: "s3",
+            resolve: "./src/providers/file-cloudinary",
+            id: "cloudinary",
             is_default: true,
             options: {
-              file_url: process.env.S3_FILE_URL,
-              access_key_id: process.env.S3_ACCESS_KEY_ID,
-              secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
-              region: process.env.S3_REGION ?? "auto",
-              bucket: process.env.S3_BUCKET,
-              endpoint: process.env.S3_ENDPOINT,
+              cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+              api_key: process.env.CLOUDINARY_API_KEY,
+              api_secret: process.env.CLOUDINARY_API_SECRET,
+              folder: process.env.CLOUDINARY_FOLDER ?? "liquorcentral",
             },
           },
         ],

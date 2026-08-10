@@ -41,11 +41,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "*.r2.cloudflarestorage.com",
-      },
-      {
-        protocol: "https",
-        hostname: "*.r2.dev",
+        hostname: "res.cloudinary.com",
       },
       ...(S3_HOSTNAME && S3_PATHNAME
         ? [
