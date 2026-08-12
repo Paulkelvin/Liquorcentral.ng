@@ -36,6 +36,14 @@ import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
  */
 const PAGE_SIZE = 200
 
+/**
+ * How long an unlinked credential has to sit before it counts as
+ * abandoned rather than in flight. `register` and `accept` fire from the
+ * same click, so a real one is linked within about a second; an hour is
+ * far beyond that while still well inside the 24h an invite is valid.
+ */
+const ABANDONED_AFTER_MS = 60 * 60 * 1000
+
 export default async function releaseOrphanedAuthIdentities({
   container,
 }: ExecArgs) {
@@ -58,27 +66,63 @@ export default async function releaseOrphanedAuthIdentities({
     }
 
     for (const identity of identities) {
-      const metadata = identity.app_metadata
+      const metadata = identity.app_metadata ?? {}
+      const email = identity.provider_identities?.find(
+        (provider) => provider.provider === "emailpass"
+      )?.entity_id
 
-      // No metadata at all => a registration that has not been linked to
-      // anything yet (an invite mid-flight). Leave it alone.
-      if (!metadata || !("user_id" in metadata)) {
+      // Storefront customers live in this same table. Never touch them.
+      if ("customer_id" in metadata) {
         continue
       }
 
-      const userId = metadata.user_id as string | null
+      if ("user_id" in metadata) {
+        const userId = metadata.user_id as string | null
 
-      if (userId) {
-        const [owner] = await userModuleService.listUsers({ id: userId })
-        if (owner) {
-          continue // healthy admin
+        if (userId) {
+          const [owner] = await userModuleService.listUsers({ id: userId })
+          if (owner) {
+            continue // healthy admin
+          }
+        }
+        // Carries a user_id that resolves to nothing: a deleted admin.
+      } else {
+        /**
+         * Linked to nothing at all — an account creation that got as far
+         * as `register` and never completed `accept`. Normally that state
+         * lasts about a second (both calls fire from the same button), so
+         * anything still sitting here later is abandoned, and it squats on
+         * the address exactly like a deleted admin's leftover does.
+         *
+         * This is not hypothetical: an invite that is clicked after it has
+         * expired registers successfully and *then* fails on accept
+         * (verified in production — register 200 followed by accept 401,
+         * 13h after the invite's 24h window closed), stranding one of
+         * these on that address.
+         *
+         * Guarded three ways: an address that already belongs to a live
+         * user is left alone, customers were excluded above, and the age
+         * check keeps a genuine in-flight registration safe — worst case
+         * it is swept mid-flight during a deploy, and that person simply
+         * retries.
+         */
+        const createdAt = (identity as { created_at?: string | Date }).created_at
+        const ageMs = createdAt ? Date.now() - new Date(createdAt).getTime() : 0
+        if (ageMs < ABANDONED_AFTER_MS) {
+          continue
+        }
+
+        if (!email) {
+          continue
+        }
+
+        const [existingUser] = await userModuleService.listUsers({ email })
+        if (existingUser) {
+          continue
         }
       }
 
       orphanIds.push(identity.id)
-      const email = identity.provider_identities?.find(
-        (provider) => provider.provider === "emailpass"
-      )?.entity_id
       if (email) {
         orphanEmails.push(email)
       }
